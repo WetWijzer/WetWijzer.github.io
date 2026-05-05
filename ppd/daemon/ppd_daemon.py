@@ -66,9 +66,11 @@ from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     promote_worktree_files as todo_promote_worktree_files,
     read_text,
     run_command as todo_run_command,
+    run_validation_commands as todo_run_validation_commands,
     select_task as select_todo_task,
     temporary_validation_worktree as temporary_todo_validation_worktree,
     utc_now,
+    validation_commands_for_proposal as todo_validation_commands_for_proposal,
     verify_promoted_worktree_files as todo_verify_promoted_worktree_files,
     workspace_artifact_payload as todo_workspace_artifact_payload,
     worktree_marker_payload as todo_worktree_marker_payload,
@@ -93,7 +95,9 @@ from ipfs_datasets_py.optimizers.todo_daemon.history import (  # noqa: E402
     should_use_compact_prompt_for_failures,
 )
 from ipfs_datasets_py.optimizers.todo_daemon.diagnostics import (  # noqa: E402
+    count_proposal_records_with_failure_markers,
     count_recent_proposal_failures,
+    format_recent_failure_context,
     is_retryable_proposal_failure,
     prompt_limit_for_mode,
     proposal_block_threshold,
@@ -102,6 +106,8 @@ from ipfs_datasets_py.optimizers.todo_daemon.diagnostics import (  # noqa: E402
 )
 from ipfs_datasets_py.optimizers.todo_daemon.task_board import (  # noqa: E402
     count_unmanaged_generated_status_sections as count_todo_unmanaged_generated_status_sections,
+    replace_task_mark as replace_todo_task_mark,
+    should_sleep_between_task_cycles as should_sleep_between_todo_task_cycles,
     strip_unmanaged_generated_status_sections as strip_todo_unmanaged_generated_status_sections,
     update_generated_status_block as update_todo_generated_status_block,
 )
@@ -288,17 +294,7 @@ def select_task_for_config(tasks: Iterable[Task], config: Config) -> Optional[Ta
 
 
 def replace_task_mark(markdown: str, selected: Task, mark: str) -> str:
-    seen = 0
-    lines = markdown.splitlines(keepends=True)
-    for idx, line in enumerate(lines):
-        match = CHECKBOX_RE.match(line.rstrip("\n"))
-        if not match:
-            continue
-        seen += 1
-        if seen == selected.index:
-            lines[idx] = f"{match.group('prefix')}{mark}{match.group('suffix')}{match.group('title')}\n"
-            break
-    return "".join(lines)
+    return replace_todo_task_mark(markdown, selected, mark, checkbox_re=CHECKBOX_RE)
 
 
 def count_unmanaged_generated_status_sections(markdown: str) -> int:
@@ -334,7 +330,12 @@ def update_generated_status(markdown: str, *, latest: dict[str, Any], tasks: lis
 def should_sleep_between_watch_cycles(markdown: str, *, revisit_blocked: bool = False) -> bool:
     """Sleep only when there is no immediately selectable work on the board."""
 
-    return select_task(parse_tasks(markdown), revisit_blocked=revisit_blocked) is None
+    return should_sleep_between_todo_task_cycles(
+        markdown,
+        parse_tasks_fn=parse_tasks,
+        revisit_blocked=revisit_blocked,
+        protected_blocked_checkbox_ids=PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS,
+    )
 
 
 def exception_diagnostic(exc: BaseException, *, limit: int = 5000) -> str:
@@ -421,11 +422,11 @@ def task_failure_count(config: Config, task_label: str, *, kinds: Optional[set[s
 
 
 def llm_termination_failure_count(config: Config, task_label: str) -> int:
-    count = 0
-    for proposal in recent_task_failures(config, task_label, limit=100):
-        if is_llm_termination_failure_record(proposal):
-            count += 1
-    return count
+    return count_proposal_records_with_failure_markers(
+        recent_task_failures(config, task_label, limit=100),
+        failure_kind="llm",
+        markers=frozenset(LLM_TERMINATION_ERROR_MARKERS),
+    )
 
 
 def pre_llm_block_decision(config: Config, task_label: str) -> Optional[PreLlmBlockDecision]:
@@ -754,38 +755,21 @@ def deterministic_artifact_contracts(fallback_kind: str) -> list[str]:
 
 
 def format_failure_context(failures: list[dict[str, Any]]) -> str:
-    if not failures:
-        return "No recent failures for this task."
-    parts: list[str] = []
-    for index, failure in enumerate(failures, start=1):
-        validation_bits: list[str] = []
-        for result in failure.get("validation_results", []) or []:
-            if not isinstance(result, dict) or int(result.get("returncode", 0)) == 0:
-                continue
-            command = " ".join(str(part) for part in result.get("command", []))
-            validation_bits.append(
-                f"{command}: {compact_message(str(result.get('stdout', '')) + ' ' + str(result.get('stderr', '')), limit=900)}"
-            )
-        parts.append(
-            "\n".join(
-                [
-                    f"Failure {index}: kind={failure.get('failure_kind', '')}",
-                    f"summary={compact_message(failure.get('summary', ''), limit=300)}",
-                    f"errors={'; '.join(compact_message(error, limit=300) for error in failure.get('errors', [])[:3])}",
-                    f"validation={'; '.join(validation_bits) if validation_bits else '<none>'}",
-                ]
-            )
-        )
-    if any(is_forbidden_absence_marker_validation_failure(failure) for failure in failures):
-        parts.append(
-            "Recovery guidance: a validator found a forbidden artifact marker inside the proposed fixture or test text. "
-            "Return only one JSON object on the retry, and use a small file set that fixes the self-triggering field names. "
-            "When representing absence, avoid keys or values containing banned substrings such as cookie, screenshot, "
-            "auth-state, storage-state, trace.zip, or .har. Use neutral names like `runtimeArtifactsStored`, "
-            "`visualArtifactsStored`, `authenticatedArtifactsStored`, or `forbiddenArtifactsAbsent` instead of "
-            "`containsCookies`, `screenshotsStored`, or similar self-triggering absence fields."
-        )
-    return "\n\n".join(parts)
+    return format_recent_failure_context(
+        failures,
+        guidance=lambda recent: (
+            [
+                "Recovery guidance: a validator found a forbidden artifact marker inside the proposed fixture or test text. "
+                "Return only one JSON object on the retry, and use a small file set that fixes the self-triggering field names. "
+                "When representing absence, avoid keys or values containing banned substrings such as cookie, screenshot, "
+                "auth-state, storage-state, trace.zip, or .har. Use neutral names like `runtimeArtifactsStored`, "
+                "`visualArtifactsStored`, `authenticatedArtifactsStored`, or `forbiddenArtifactsAbsent` instead of "
+                "`containsCookies`, `screenshotsStored`, or similar self-triggering absence fields."
+            ]
+            if any(is_forbidden_absence_marker_validation_failure(dict(failure)) for failure in recent)
+            else []
+        ),
+    )
 
 
 def is_forbidden_absence_marker_validation_failure(failure: dict[str, Any]) -> bool:
@@ -861,9 +845,7 @@ def run_command(command: tuple[str, ...], *, cwd: Path, timeout: int) -> Command
 
 
 def validation_commands_for_proposal(proposal: Proposal, config: Config) -> tuple[tuple[str, ...], ...]:
-    if proposal.trusted_validation_commands and proposal.validation_commands:
-        return tuple(tuple(command) for command in proposal.validation_commands)
-    return config.validation_commands
+    return todo_validation_commands_for_proposal(proposal, config.validation_commands)
 
 
 def run_validation(
@@ -872,10 +854,12 @@ def run_validation(
     commands: Optional[tuple[tuple[str, ...], ...]] = None,
 ) -> list[CommandResult]:
     selected_commands = commands if commands is not None else config.validation_commands
-    return [
-        run_command(command, cwd=config.repo_root, timeout=config.command_timeout_seconds)
-        for command in selected_commands
-    ]
+    return todo_run_validation_commands(
+        repo_root=config.repo_root,
+        commands=selected_commands,
+        timeout_seconds=config.command_timeout_seconds,
+        run_command_fn=run_command,
+    )
 
 
 def diff_for_file(path: str, before: str, after: str) -> str:
