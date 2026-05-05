@@ -24,6 +24,7 @@ export interface ConfidenceTrainingMetrics {
 }
 
 export interface MLConfidenceModelArtifact {
+  artifactId?: string;
   format: 'deterministic-linear-v1' | 'deterministic-logistic-v1';
   version: string;
   featureNames: Array<MLConfidenceFeatureName>;
@@ -45,9 +46,23 @@ export interface MLConfidenceCalibrationMetadata {
   notes?: string;
 }
 
+export interface MLConfidenceArtifactManifestEntry extends MLConfidenceModelArtifact {
+  artifactId: string;
+}
+
+export interface MLConfidenceArtifactManifest {
+  manifestVersion: 'ml-confidence-artifacts-v1';
+  runtimeVersion: 'browser-native-ml-confidence-v1';
+  activeArtifactId?: string;
+  artifacts: Array<MLConfidenceArtifactManifestEntry>;
+  serverCallsAllowed: false;
+  pythonRuntimeAllowed: false;
+}
+
 export interface MLConfidenceModelState {
   loaded: boolean;
   source: 'heuristic' | 'trained' | 'artifact';
+  artifactId?: string;
   format?: MLConfidenceModelArtifact['format'];
   version?: string;
   featureCount: number;
@@ -66,6 +81,16 @@ export interface MLConfidenceScoreResult {
     withinTolerance: boolean;
     fixtureIds: Array<string>;
   };
+}
+
+export interface MLConfidenceArtifactCacheState {
+  manifestVersion?: MLConfidenceArtifactManifest['manifestVersion'];
+  runtimeVersion: 'browser-native-ml-confidence-v1';
+  cachedArtifactIds: Array<string>;
+  loadedArtifactId?: string;
+  loadedVersion?: string;
+  serverCallsAllowed: false;
+  pythonRuntimeAllowed: false;
 }
 
 export const ML_CONFIDENCE_FEATURE_NAMES = [
@@ -164,6 +189,7 @@ export class MLConfidenceScorer {
       return {
         loaded: true,
         source: 'artifact',
+        artifactId: this.artifact.artifactId,
         format: this.artifact.format,
         version: this.artifact.version,
         featureCount: this.artifact.weights.length,
@@ -368,6 +394,9 @@ export class MLConfidenceScorer {
 }
 
 export const defaultMLConfidenceScorer = new MLConfidenceScorer();
+const ML_CONFIDENCE_RUNTIME_VERSION = 'browser-native-ml-confidence-v1' as const;
+let cachedManifestVersion: MLConfidenceArtifactManifest['manifestVersion'] | undefined;
+const mlConfidenceArtifactCache = new Map<string, MLConfidenceModelArtifact>();
 
 export function extractMLConfidenceFeatures(
   sentence: string,
@@ -404,7 +433,61 @@ export function loadMLConfidenceModelArtifact(
   return defaultMLConfidenceScorer.loadModelArtifact(artifact);
 }
 
-export function unloadMLConfidenceModel(): MLConfidenceModelState {
+export function registerMLConfidenceArtifactManifest(
+  manifest: MLConfidenceArtifactManifest,
+): MLConfidenceArtifactCacheState {
+  validateArtifactManifest(manifest);
+  cachedManifestVersion = manifest.manifestVersion;
+  for (const artifact of manifest.artifacts) {
+    mlConfidenceArtifactCache.set(artifact.artifactId, validateModelArtifact(artifact));
+  }
+  if (manifest.activeArtifactId) {
+    loadMLConfidenceModelFromCache(manifest.activeArtifactId);
+  }
+  return getMLConfidenceArtifactCacheState();
+}
+
+export function loadMLConfidenceModelFromCache(
+  artifactId: string,
+  expectedVersion?: string,
+): MLConfidenceModelState {
+  const artifact = mlConfidenceArtifactCache.get(artifactId);
+  if (!artifact) {
+    throw new Error(`ML confidence artifact is not cached: ${artifactId}`);
+  }
+  if (expectedVersion !== undefined && artifact.version !== expectedVersion) {
+    throw new Error(
+      `ML confidence artifact version mismatch for ${artifactId}: expected ${expectedVersion}, got ${artifact.version}`,
+    );
+  }
+  return loadMLConfidenceModelArtifact(artifact);
+}
+
+export function getMLConfidenceArtifactCacheState(): MLConfidenceArtifactCacheState {
+  const modelState = getMLConfidenceModelState();
+  return {
+    manifestVersion: cachedManifestVersion,
+    runtimeVersion: ML_CONFIDENCE_RUNTIME_VERSION,
+    cachedArtifactIds: Array.from(mlConfidenceArtifactCache.keys()).sort(),
+    loadedArtifactId: modelState.artifactId,
+    loadedVersion: modelState.version,
+    serverCallsAllowed: false,
+    pythonRuntimeAllowed: false,
+  };
+}
+
+export function clearMLConfidenceArtifactCache(): MLConfidenceArtifactCacheState {
+  mlConfidenceArtifactCache.clear();
+  cachedManifestVersion = undefined;
+  return getMLConfidenceArtifactCacheState();
+}
+
+export function unloadMLConfidenceModel(
+  options: { clearCache?: boolean } = {},
+): MLConfidenceModelState {
+  if (options.clearCache) {
+    clearMLConfidenceArtifactCache();
+  }
   return defaultMLConfidenceScorer.unloadModel();
 }
 
@@ -432,6 +515,9 @@ function escapeRegExp(value: string): string {
 }
 
 function validateModelArtifact(artifact: MLConfidenceModelArtifact): MLConfidenceModelArtifact {
+  if (artifact.artifactId !== undefined && !artifact.artifactId.trim()) {
+    throw new Error('ML confidence artifactId must be non-empty when provided');
+  }
   if (
     artifact.format !== 'deterministic-linear-v1' &&
     artifact.format !== 'deterministic-logistic-v1'
@@ -461,10 +547,44 @@ function validateModelArtifact(artifact: MLConfidenceModelArtifact): MLConfidenc
   const metadata = artifact.metadata ? validateCalibrationMetadata(artifact.metadata) : undefined;
   return {
     ...artifact,
+    artifactId: artifact.artifactId,
     featureNames: artifact.featureNames.slice(),
     weights: artifact.weights.slice(),
     metadata,
   };
+}
+
+function validateArtifactManifest(manifest: MLConfidenceArtifactManifest): void {
+  if (manifest.manifestVersion !== 'ml-confidence-artifacts-v1') {
+    throw new Error(`Unsupported ML confidence manifest version: ${manifest.manifestVersion}`);
+  }
+  if (manifest.runtimeVersion !== ML_CONFIDENCE_RUNTIME_VERSION) {
+    throw new Error(`Unsupported ML confidence runtime version: ${manifest.runtimeVersion}`);
+  }
+  if (manifest.serverCallsAllowed !== false || manifest.pythonRuntimeAllowed !== false) {
+    throw new Error(
+      'ML confidence artifact manifest must disallow server and Python runtime calls',
+    );
+  }
+  if (manifest.artifacts.length === 0) {
+    throw new Error('ML confidence artifact manifest requires at least one artifact');
+  }
+  const ids = new Set<string>();
+  for (const artifact of manifest.artifacts) {
+    if (!artifact.artifactId.trim()) {
+      throw new Error('ML confidence manifest artifactId must be non-empty');
+    }
+    if (ids.has(artifact.artifactId)) {
+      throw new Error(`Duplicate ML confidence artifactId: ${artifact.artifactId}`);
+    }
+    ids.add(artifact.artifactId);
+    validateModelArtifact(artifact);
+  }
+  if (manifest.activeArtifactId !== undefined && !ids.has(manifest.activeArtifactId)) {
+    throw new Error(
+      `Active ML confidence artifact is not in manifest: ${manifest.activeArtifactId}`,
+    );
+  }
 }
 
 function validateCalibrationMetadata(

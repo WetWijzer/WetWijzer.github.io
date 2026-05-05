@@ -2414,3 +2414,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T054746Z-added-fixture-backed-calibrated-ml-confidence-scoring-metadata-and-validation-fo.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T054746Z-added-fixture-backed-calibrated-ml-confidence-scoring-metadata-and-validation-fo.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T054746Z-added-fixture-backed-calibrated-ml-confidence-scoring-metadata-and-validation-fo.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 05:51:40 UTC
+
+- Target: `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.`
+- Summary: Added browser-native ML confidence artifact manifests with local cache lifecycle, version-checked loading, and unload cache clearing.
+- Impact: The TypeScript logic runtime can now register local ML model artifact manifests, cache validated artifacts by id, activate them with explicit version checks, and unload model/cache state without server, Python, filesystem, subprocess, or RPC fallbacks. Jest coverage exercises the lifecycle directly through src/lib/logic/mlConfidence.test.ts.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/mlConfidence.test.ts`, `src/lib/logic/mlConfidence.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T055140Z-added-browser-native-ml-confidence-artifact-manifests-with-local-cache-lifecycle.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T055140Z-added-browser-native-ml-confidence-artifact-manifests-with-local-cache-lifecycle.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T055140Z-added-browser-native-ml-confidence-artifact-manifests-with-local-cache-lifecycle.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

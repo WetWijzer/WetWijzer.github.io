@@ -2,10 +2,14 @@ import {
   FeatureExtractor,
   ML_CONFIDENCE_FEATURE_NAMES,
   MLConfidenceCalibrationMetadata,
+  MLConfidenceArtifactManifest,
   MLConfidenceModelArtifact,
   MLConfidenceScorer,
+  getMLConfidenceArtifactCacheState,
   getMLConfidenceModelState,
+  loadMLConfidenceModelFromCache,
   loadMLConfidenceModelArtifact,
+  registerMLConfidenceArtifactManifest,
   predictMLConfidence,
   unloadMLConfidenceModel,
 } from './mlConfidence';
@@ -44,6 +48,10 @@ const calibrationMetadata = (fixture: MLConfidenceFixture): MLConfidenceCalibrat
 });
 
 describe('browser-native ML confidence parity slice', () => {
+  beforeEach(() => {
+    unloadMLConfidenceModel({ clearCache: true });
+  });
+
   it('extracts the same 22 feature slots as the Python FeatureExtractor', () => {
     const features = FeatureExtractor.extractFeatures(
       'All tenants must pay rent, and some landlords may inspect.',
@@ -197,6 +205,56 @@ describe('browser-native ML confidence parity slice', () => {
     });
     expect(result.modelState.calibration).toMatchObject({
       runtime: 'browser-native-typescript',
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+    });
+  });
+
+  it('registers local artifact manifests, enforces versions, and clears cache on unload', () => {
+    const manifest: MLConfidenceArtifactManifest = {
+      manifestVersion: 'ml-confidence-artifacts-v1',
+      runtimeVersion: 'browser-native-ml-confidence-v1',
+      activeArtifactId: 'python-parity-linear',
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+      artifacts: [
+        {
+          artifactId: 'python-parity-linear',
+          format: 'deterministic-linear-v1',
+          version: '2026-05-05.fixture-v1',
+          featureNames: ML_CONFIDENCE_FEATURE_NAMES.slice(),
+          weights: ML_CONFIDENCE_FEATURE_NAMES.map((name) => (name === 'keyword_count' ? 0.05 : 0)),
+          bias: 0.2,
+        },
+      ],
+    };
+
+    expect(registerMLConfidenceArtifactManifest(manifest)).toMatchObject({
+      manifestVersion: 'ml-confidence-artifacts-v1',
+      runtimeVersion: 'browser-native-ml-confidence-v1',
+      cachedArtifactIds: ['python-parity-linear'],
+      loadedArtifactId: 'python-parity-linear',
+      loadedVersion: '2026-05-05.fixture-v1',
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+    });
+
+    expect(
+      loadMLConfidenceModelFromCache('python-parity-linear', '2026-05-05.fixture-v1'),
+    ).toMatchObject({
+      loaded: true,
+      source: 'artifact',
+      artifactId: 'python-parity-linear',
+      version: '2026-05-05.fixture-v1',
+    });
+    expect(() => loadMLConfidenceModelFromCache('python-parity-linear', 'wrong-version')).toThrow(
+      /version mismatch/,
+    );
+
+    unloadMLConfidenceModel({ clearCache: true });
+    expect(getMLConfidenceArtifactCacheState()).toMatchObject({
+      cachedArtifactIds: [],
+      loadedArtifactId: undefined,
       serverCallsAllowed: false,
       pythonRuntimeAllowed: false,
     });

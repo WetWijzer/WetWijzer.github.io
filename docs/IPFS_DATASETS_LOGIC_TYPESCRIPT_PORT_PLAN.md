@@ -574,7 +574,7 @@ Acceptance criteria:
 
 - [x] Replace spaCy extraction with browser-native NLP: Transformers.js token classification, dependency-light NLP, ONNX/WebGPU, or WASM NLP.
 - [!] Port `ml_confidence.py` to local browser inference or an equivalent deterministic TypeScript model.
-- [!] Add local model artifact loading, caching, versioning, and unload controls.
+- [x] Add local model artifact loading, caching, versioning, and unload controls.
 - [x] Add exact/tolerance parity tests against Python ML/spaCy development fixtures.
 - [!] Remove `nlpUnavailable` and `mlUnavailable` capability flags once browser-native parity is implemented.
 
@@ -997,7 +997,7 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 - [x] Manual unblock: complete a modal tableaux countermodel export slice that turns proof search branches into serializable visualization data and validates it against existing TDFOL/CEC examples.
 - [x] Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.
 - [x] Manual unblock: port the next deterministic `ml_confidence.py` parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.
-- [ ] Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.
+- [x] Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.
 - [ ] Manual unblock: remove the next `nlpUnavailable` or `mlUnavailable` capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.
 - [ ] Manual unblock: complete an EVM public-input and verification-key registry helper slice using browser-compatible crypto abstractions and deterministic tests.
 - [ ] Manual unblock: add developer-panel live inspection snapshots for logic parse, proof, cache, ML/NLP, and ZKP capability state.
@@ -1024,11 +1024,11 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 05:47:46 UTC
+Last updated: 2026-05-05 05:51:39 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.`
+Current target: `Task checkbox-459: Manual unblock: remove the next 'nlpUnavailable' or 'mlUnavailable' capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1209,7 +1209,7 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-173: Add deeper CEC/DCEC parity fixtures against Python parser and prover outputs.` - complete
 - [x] `Task checkbox-174: Replace spaCy extraction with browser-native NLP: Transformers.js token classification, dependency-light NLP, ONNX/WebGPU, or WASM NLP.` - complete
 - [!] `Task checkbox-175: Port 'ml_confidence.py' to local browser inference or an equivalent deterministic TypeScript model.` - blocked
-- [!] `Task checkbox-176: Add local model artifact loading, caching, versioning, and unload controls.` - blocked
+- [x] `Task checkbox-176: Add local model artifact loading, caching, versioning, and unload controls.` - complete
 - [x] `Task checkbox-177: Add exact/tolerance parity tests against Python ML/spaCy development fixtures.` - complete
 - [!] `Task checkbox-178: Remove 'nlpUnavailable' and 'mlUnavailable' capability flags once browser-native parity is implemented.` - blocked
 - [x] `Task checkbox-179: Port external prover router and bridge contracts to local browser adapters.` - complete
@@ -1490,8 +1490,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-454: Manual unblock: implement a browser-native TDFOL ZKP acceleration scheduler slice with worker-safe proof-search queues, deterministic simulated prover fallback, and tests covering parallel-search metadata without requiring server crypto.` - complete
 - [x] `Task checkbox-455: Manual unblock: complete a modal tableaux countermodel export slice that turns proof search branches into serializable visualization data and validates it against existing TDFOL/CEC examples.` - complete
 - [x] `Task checkbox-456: Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.` - complete
-- [x] `Task checkbox-457: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.` - validated by latest daemon round
-- [ ] `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.` - needed
+- [x] `Task checkbox-457: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.` - complete
+- [x] `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.` - validated by latest daemon round
 - [ ] `Task checkbox-459: Manual unblock: remove the next 'nlpUnavailable' or 'mlUnavailable' capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.` - needed
 - [ ] `Task checkbox-460: Manual unblock: complete an EVM public-input and verification-key registry helper slice using browser-compatible crypto abstractions and deterministic tests.` - needed
 - [ ] `Task checkbox-461: Manual unblock: add developer-panel live inspection snapshots for logic parse, proof, cache, ML/NLP, and ZKP capability state.` - needed
@@ -1517,11 +1517,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-457: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.`
+- Target: `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.`
 - Result: `valid`
-- Summary: Added fixture-backed calibrated ML confidence scoring metadata and validation for the browser-native ml_confidence.py parity slice.
-- Impact: src/lib/logic/mlConfidence.ts now validates deterministic artifact calibration metadata, exposes calibrated score results, and keeps server/Python runtime calls explicitly disallowed. The Jest coverage loads the existing Python parity fixture, scores it with a local calibrated artifact, and verifies the score stays within the captured Python tolerance; the logic-port ledger marks checkbox-457 complete.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/browserNativeValidation.test.ts`, `src/lib/logic/mlConfidence.test.ts`, `src/lib/logic/mlConfidence.ts`
+- Summary: Added browser-native ML confidence artifact manifests with local cache lifecycle, version-checked loading, and unload cache clearing.
+- Impact: The TypeScript logic runtime can now register local ML model artifact manifests, cache validated artifacts by id, activate them with explicit version checks, and unload model/cache state without server, Python, filesystem, subprocess, or RPC fallbacks. Jest coverage exercises the lifecycle directly through src/lib/logic/mlConfidence.test.ts.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/mlConfidence.test.ts`, `src/lib/logic/mlConfidence.ts`
 
 ### Blocked Backlog
 
@@ -1541,8 +1541,6 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
   - Failures since success: `0`
 - `Task checkbox-175: Port 'ml_confidence.py' to local browser inference or an equivalent deterministic TypeScript model.`
   - Failures since success: `0`
-- `Task checkbox-176: Add local model artifact loading, caching, versioning, and unload controls.`
-  - Failures since success: `0`
 - `Task checkbox-178: Remove 'nlpUnavailable' and 'mlUnavailable' capability flags once browser-native parity is implemented.`
   - Failures since success: `0`
 - `Task checkbox-182: Port EVM/public-input/vk-registry helpers using browser-compatible crypto and chain libraries.`
@@ -1552,6 +1550,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - `Task checkbox-194: Add CLI/devtools command adapter parity for 'logic/cli.py'.`
   - Failures since success: `0`
 - `Task checkbox-195: Port IPFS/IPLD proof cache semantics to browser-native storage/IPFS clients where possible.`
+  - Failures since success: `0`
+- `Task checkbox-199: Port remaining Python logic module 'logic/CEC/native/advanced_inference.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
   - Failures since success: `0`
 
 ### Required Daemon Behavior
