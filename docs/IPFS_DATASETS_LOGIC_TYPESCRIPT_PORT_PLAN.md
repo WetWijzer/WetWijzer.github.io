@@ -1023,7 +1023,7 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 05:01:42 UTC
+Last updated: 2026-05-05 05:11:15 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
@@ -1485,8 +1485,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-450: Refresh the TypeScript port plan with a parity matrix mapping Python logic modules, TypeScript/WASM files, validation evidence, accepted work, and remaining browser-native tasks.` - complete
 - [x] `Task checkbox-451: Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.` - complete
 - [x] `Task checkbox-452: Port remaining Python logic module 'logic/zkp/form_circuit.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [x] `Task checkbox-453: Manual unblock: implement a browser-native TDFOL ZKP acceleration scheduler slice with worker-safe proof-search queues, deterministic simulated prover fallback, and tests covering parallel-search metadata without requiring server crypto.` - validated by latest daemon round
-- [ ] `Task checkbox-454: Manual unblock: complete a modal tableaux countermodel export slice that turns proof search branches into serializable visualization data and validates it against existing TDFOL/CEC examples.` - needed
+- [x] `Task checkbox-453: Manual unblock: implement a browser-native TDFOL ZKP acceleration scheduler slice with worker-safe proof-search queues, deterministic simulated prover fallback, and tests covering parallel-search metadata without requiring server crypto.` - complete
+- [!] `Task checkbox-454: Manual unblock: complete a modal tableaux countermodel export slice that turns proof search branches into serializable visualization data and validates it against existing TDFOL/CEC examples.` - latest daemon round failed validation or preflight
 - [ ] `Task checkbox-455: Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.` - needed
 - [ ] `Task checkbox-456: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.` - needed
 - [ ] `Task checkbox-457: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.` - needed
@@ -1515,11 +1515,23 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-453: Manual unblock: implement a browser-native TDFOL ZKP acceleration scheduler slice with worker-safe proof-search queues, deterministic simulated prover fallback, and tests covering parallel-search metadata without requiring server crypto.`
-- Result: `valid`
-- Summary: Added browser-native TDFOL ZKP proof-search scheduling with bounded parallel queue metadata and deterministic local prover fallback.
-- Impact: The TypeScript TDFOL ZKP bridge now exposes a worker-safe proof-search queue scheduler that annotates simulated ZKP proofs with parallel-search metadata and falls back to the local deterministic prover when a browser ZKP backend is unavailable. Focused Jest coverage validates simulated parallel metadata and fallback behavior without server crypto.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/tdfol/zkpIntegration.test.ts`, `src/lib/logic/tdfol/zkpIntegration.ts`
+- Target: `Task checkbox-454: Manual unblock: complete a modal tableaux countermodel export slice that turns proof search branches into serializable visualization data and validates it against existing TDFOL/CEC examples.`
+- Result: `needs follow-up`
+- Summary: Added browser-native TDFOL and CEC modal tableaux countermodel branch exports for serializable visualization data.
+- Impact: The TypeScript logic port can now turn open modal tableaux branches into deterministic JSON-safe countermodel exports containing branch formulas, Kripke structure data, visualization nodes/edges, modal property checks, and explanations. Existing TDFOL and CEC countermodel Jest suites validate the exports against local proof-search examples without server, Python, filesystem, subprocess, or RPC fallbacks.
+- Accepted changed files: `src/lib/logic/cec/countermodels.test.ts`, `src/lib/logic/cec/countermodels.ts`, `src/lib/logic/tdfol/countermodels.test.ts`, `src/lib/logic/tdfol/countermodels.ts`
+- Errors: Rejected proposal because TypeScript replacement preflight found parser or generic/type-quality errors before touching the worktree:
+../../..src/lib/logic/cec/countermodels.ts(400,5): error TS2322: Type '{ id: number; label: string; positive_formulas: unknown[]; negative_formulas: unknown[]; true_atoms: string[]; }[]' is not assignable to type 'CecCountermodelBranchWorldExport[]'.
+../../..src/lib/logic/tdfol/countermodels.ts(514,5): error TS2322: Type '{ id: number; label: string; positive_formulas: unknown[]; negative_formulas: unknown[]; true_atoms: string[]; }[]' is not assignable to type 'TdfolCountermodelBranchWorldExport[]'.
+
+Replacement diagnostic context:
+src/lib/logic/cec/countermodels.ts:400:5 TS2322: Type '{ id: number; label: string; positive_formulas: unknown[]; negative_formulas: unknown[]; true_atoms: string[]; }[]' is not assignable to type 'CecCountermodelBranchWorldExport[]'.
+  398:     logic_type: logicType,
+  399:     is_closed: branch.isClosed === true,
+> 400:     worlds,
+  401:     accessibility: visualization.links,
+  402:     kripke_structure: countermodel.kripke.toDict(),
+- Failure kind: `typescript_quality`
 
 ### Blocked Backlog
 
