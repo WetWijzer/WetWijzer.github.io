@@ -945,7 +945,7 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Port remaining Python logic module `logic/zkp/examples/zkp_advanced_demo.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/examples/zkp_basic_demo.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/examples/zkp_ipfs_integration.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
-- [ ] Port remaining Python logic module `logic/zkp/legal_theorem_semantics.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
+- [x] Port remaining Python logic module `logic/zkp/legal_theorem_semantics.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/onchain_pipeline.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/setup_artifacts.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/ucan_zkp_bridge.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
@@ -966,11 +966,11 @@ These tasks were added automatically after the daemon found no eligible unchecke
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 03:42:39 UTC
+Last updated: 2026-05-05 03:45:43 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-435: Port remaining Python logic module 'logic/zkp/legal_theorem_semantics.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+Current target: `Task checkbox-436: Port remaining Python logic module 'logic/zkp/onchain_pipeline.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1409,8 +1409,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-431: Port remaining Python logic module 'logic/zkp/evm_public_inputs.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-432: Port remaining Python logic module 'logic/zkp/examples/zkp_advanced_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-433: Port remaining Python logic module 'logic/zkp/examples/zkp_basic_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [x] `Task checkbox-434: Port remaining Python logic module 'logic/zkp/examples/zkp_ipfs_integration.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
-- [ ] `Task checkbox-435: Port remaining Python logic module 'logic/zkp/legal_theorem_semantics.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
+- [x] `Task checkbox-434: Port remaining Python logic module 'logic/zkp/examples/zkp_ipfs_integration.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
+- [x] `Task checkbox-435: Port remaining Python logic module 'logic/zkp/legal_theorem_semantics.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
 - [ ] `Task checkbox-436: Port remaining Python logic module 'logic/zkp/onchain_pipeline.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-437: Port remaining Python logic module 'logic/zkp/setup_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-438: Port remaining Python logic module 'logic/zkp/ucan_zkp_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
@@ -1430,11 +1430,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-434: Port remaining Python logic module 'logic/zkp/examples/zkp_ipfs_integration.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Target: `Task checkbox-435: Port remaining Python logic module 'logic/zkp/legal_theorem_semantics.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 - Result: `valid`
-- Summary: Worktree direct-edit proposal.
-- Impact: Git harvested the isolated-worktree edits for validation.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/index.ts`, `src/lib/logic/zkp/ipfsIntegration.test.ts`, `src/lib/logic/zkp/ipfsIntegration.ts`
+- Summary: Ported the remaining legal theorem semantics slice with deterministic Horn conjunction support and proof summaries.
+- Impact: src/lib/logic/zkp/legalTheoremSemantics.ts now handles multi-antecedent TDFOL_v1 Horn axioms, deterministic forward chaining, stable traces, and Python-style proof summary aliases entirely in browser-native TypeScript. The focused Jest tests exercise the new parser, derivability, trace, and fail-closed behavior, and the TypeScript port ledger marks checkbox-435 complete.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/legalTheoremSemantics.test.ts`, `src/lib/logic/zkp/legalTheoremSemantics.ts`
 
 ### Blocked Backlog
 

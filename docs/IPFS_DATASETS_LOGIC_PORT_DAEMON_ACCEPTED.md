@@ -2198,3 +2198,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T034239Z-worktree-direct-edit-proposal..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T034239Z-worktree-direct-edit-proposal..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T034239Z-worktree-direct-edit-proposal..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 03:45:43 UTC
+
+- Target: `Task checkbox-435: Port remaining Python logic module `logic/zkp/legal_theorem_semantics.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported the remaining legal theorem semantics slice with deterministic Horn conjunction support and proof summaries.
+- Impact: src/lib/logic/zkp/legalTheoremSemantics.ts now handles multi-antecedent TDFOL_v1 Horn axioms, deterministic forward chaining, stable traces, and Python-style proof summary aliases entirely in browser-native TypeScript. The focused Jest tests exercise the new parser, derivability, trace, and fail-closed behavior, and the TypeScript port ledger marks checkbox-435 complete.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/legalTheoremSemantics.test.ts`, `src/lib/logic/zkp/legalTheoremSemantics.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T034543Z-ported-the-remaining-legal-theorem-semantics-slice-with-deterministic-horn-conju.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T034543Z-ported-the-remaining-legal-theorem-semantics-slice-with-deterministic-horn-conju.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T034543Z-ported-the-remaining-legal-theorem-semantics-slice-with-deterministic-horn-conju.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
