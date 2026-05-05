@@ -105,6 +105,47 @@ describe('ZKP prover and verifier browser-native facades', () => {
     });
   });
 
+  it('returns structured verifier results and batch failures without runtime fallbacks', async () => {
+    const prover = new ZKPProver();
+    const verifier = new ZKPVerifier();
+    const proof = await prover.generateProof('Q', ['P']);
+    const malformed = new ZKPProof({
+      metadata: { ...proof.metadata },
+      proofData: proof.proofData,
+      publicInputs: { ...proof.publicInputs, theorem_hash: 'not-a-hash' },
+      timestamp: proof.timestamp,
+    });
+
+    await expect(
+      verifier.verify_proof_detailed(proof, { expected_theorem: 'Q' }),
+    ).resolves.toMatchObject({
+      backend: 'simulated',
+      expected_theorem: 'Q',
+      ok: true,
+      public_inputs_valid: true,
+      structure_valid: true,
+      theorem: 'Q',
+      verified: true,
+    });
+
+    const batch = await verifier.verify_batch_proofs([
+      { proof, expected_theorem: 'Q' },
+      { proof, expectedTheorem: 'R' },
+      malformed,
+    ]);
+
+    expect(batch).toHaveLength(3);
+    expect(batch[0]).toMatchObject({ index: 0, ok: true, verified: true });
+    expect(batch[1]).toMatchObject({ index: 1, ok: false, reason: 'expected_theorem_mismatch' });
+    expect(batch[2]).toMatchObject({
+      index: 2,
+      ok: false,
+      public_inputs_valid: false,
+      reason: 'invalid_public_inputs',
+    });
+    expect(verifier.getStats()).toMatchObject({ proofs_rejected: 2, proofs_verified: 2 });
+  });
+
   it('rejects malformed public inputs and insufficient security', async () => {
     const prover = new ZKPProver({ securityLevel: 64 });
     const verifier = new ZKPVerifier({ securityLevel: 128 });

@@ -33,6 +33,32 @@ export interface ZKPVerifierStats {
   acceptance_rate: number;
 }
 
+export interface ZKPVerificationResult {
+  ok: boolean;
+  verified: boolean;
+  backend: string;
+  elapsed_seconds: number;
+  public_inputs_valid: boolean;
+  structure_valid: boolean;
+  security_level: number;
+  theorem?: string;
+  expected_theorem?: string;
+  reason?: string;
+  error?: string;
+}
+
+export interface ZKPBatchVerificationRequest {
+  proof: ZKPProof;
+  expectedTheorem?: string;
+  expected_theorem?: string;
+}
+
+export interface ZKPBatchVerificationResult extends ZKPVerificationResult {
+  index: number;
+}
+
+export type ZKPBatchVerificationItem = ZKPProof | ZKPBatchVerificationRequest;
+
 export class ZKPProver {
   readonly securityLevel: number;
   readonly security_level: number;
@@ -270,6 +296,91 @@ export class ZKPVerifier {
     return this.verifyProof(proof);
   }
 
+  async verifyProofDetailed(
+    proof: ZKPProof,
+    options: { expectedTheorem?: string; expected_theorem?: string } = {},
+  ): Promise<ZKPVerificationResult> {
+    const expectedTheorem = options.expectedTheorem ?? options.expected_theorem;
+    const start = nowSeconds();
+    const publicInputsValid = this.validatePublicInputs(proof.publicInputs);
+    const structureValid = publicInputsValid && this.validateProofStructure(proof);
+
+    try {
+      if (!structureValid) {
+        this.stats.proofs_rejected += 1;
+        return this.buildVerificationResult({
+          elapsedSeconds: nowSeconds() - start,
+          expectedTheorem,
+          proof,
+          publicInputsValid,
+          reason: publicInputsValid ? 'invalid_proof_structure' : 'invalid_public_inputs',
+          structureValid,
+          verified: false,
+        });
+      }
+
+      const backendVerified = await this.backendInstance.verifyProof(proof);
+      const theoremMatches =
+        expectedTheorem === undefined || proof.publicInputs.theorem === expectedTheorem;
+      const verified = backendVerified && theoremMatches;
+      this.stats.total_verification_time += nowSeconds() - start;
+      if (verified) {
+        this.stats.proofs_verified += 1;
+      } else {
+        this.stats.proofs_rejected += 1;
+      }
+
+      return this.buildVerificationResult({
+        elapsedSeconds: nowSeconds() - start,
+        expectedTheorem,
+        proof,
+        publicInputsValid,
+        reason: backendVerified ? 'expected_theorem_mismatch' : 'backend_verification_failed',
+        structureValid,
+        verified,
+      });
+    } catch (error) {
+      this.stats.proofs_rejected += 1;
+      return this.buildVerificationResult({
+        elapsedSeconds: nowSeconds() - start,
+        error: error instanceof Error ? error.message : String(error),
+        expectedTheorem,
+        proof,
+        publicInputsValid,
+        reason: 'verification_error',
+        structureValid,
+        verified: false,
+      });
+    }
+  }
+
+  verify_proof_detailed(
+    proof: ZKPProof,
+    options: { expectedTheorem?: string; expected_theorem?: string } = {},
+  ): Promise<ZKPVerificationResult> {
+    return this.verifyProofDetailed(proof, options);
+  }
+
+  async verifyBatchProofs(
+    items: ZKPBatchVerificationItem[],
+  ): Promise<ZKPBatchVerificationResult[]> {
+    const results: ZKPBatchVerificationResult[] = [];
+    for (let index = 0; index < items.length; index += 1) {
+      const item = items[index];
+      const request = item instanceof ZKPProof ? { proof: item } : item;
+      const result = await this.verifyProofDetailed(request.proof, {
+        expectedTheorem: request.expectedTheorem,
+        expected_theorem: request.expected_theorem,
+      });
+      results.push({ ...result, index });
+    }
+    return results;
+  }
+
+  verify_batch_proofs(items: ZKPBatchVerificationItem[]): Promise<ZKPBatchVerificationResult[]> {
+    return this.verifyBatchProofs(items);
+  }
+
   validateProofStructure(proof: ZKPProof): boolean {
     try {
       if (proof.proofData.byteLength === 0 || Object.keys(proof.publicInputs).length === 0) {
@@ -372,6 +483,33 @@ export class ZKPVerifier {
 
   reset_stats(): void {
     this.resetStats();
+  }
+
+  private buildVerificationResult(input: {
+    proof: ZKPProof;
+    verified: boolean;
+    elapsedSeconds: number;
+    publicInputsValid: boolean;
+    structureValid: boolean;
+    expectedTheorem?: string;
+    reason?: string;
+    error?: string;
+  }): ZKPVerificationResult {
+    const theorem =
+      typeof input.proof.publicInputs.theorem === 'string' ? input.proof.publicInputs.theorem : '';
+    return {
+      backend: this.backend,
+      elapsed_seconds: input.elapsedSeconds,
+      error: input.error,
+      expected_theorem: input.expectedTheorem,
+      ok: input.verified,
+      public_inputs_valid: input.publicInputsValid,
+      reason: input.verified ? undefined : input.reason,
+      security_level: this.securityLevel,
+      structure_valid: input.structureValid,
+      theorem,
+      verified: input.verified,
+    };
   }
 }
 

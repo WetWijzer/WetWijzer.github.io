@@ -2261,3 +2261,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T040804Z-ported-the-remaining-zkp_prover.py-batch-generation-facade-behavior-into-the-bro.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T040804Z-ported-the-remaining-zkp_prover.py-batch-generation-facade-behavior-into-the-bro.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T040804Z-ported-the-remaining-zkp_prover.py-batch-generation-facade-behavior-into-the-bro.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 04:11:04 UTC
+
+- Target: `Task checkbox-442: Port remaining Python logic module `logic/zkp/zkp_verifier.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported the remaining zkp_verifier.py facade surface for structured and batch verification in browser-native TypeScript.
+- Impact: src/lib/logic/zkp/facade.ts now exposes detailed verifier results plus Python-style batch verification aliases that fail closed per proof without server, Python, filesystem, subprocess, or RPC fallback. src/lib/logic/zkp/facade.test.ts validates successful verification, expected-theorem mismatch rejection, malformed public-input rejection, and verifier statistics through the Jest logic-port suite.
+- Changed files: `src/lib/logic/zkp/facade.test.ts`, `src/lib/logic/zkp/facade.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T041104Z-ported-the-remaining-zkp_verifier.py-facade-surface-for-structured-and-batch-ver.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T041104Z-ported-the-remaining-zkp_verifier.py-facade-surface-for-structured-and-batch-ver.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T041104Z-ported-the-remaining-zkp_verifier.py-facade-surface-for-structured-and-batch-ver.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
