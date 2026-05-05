@@ -2585,3 +2585,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T081800Z-added-browser-native-cec-grammar-artifacts-and-detailed-loader-validation..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T081800Z-added-browser-native-cec-grammar-artifacts-and-detailed-loader-validation..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T081800Z-added-browser-native-cec-grammar-artifacts-and-detailed-loader-validation..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 08:22:57 UTC
+
+- Target: `Task checkbox-478: Manual unblock: port `logic/CEC/native/inference_rules/base.py`, `cognitive.py`, and `modal.py` by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.`
+- Summary: Added browser-native CEC native inference parity tables for base.py, cognitive.py, and modal.py with deterministic proof-step metadata.
+- Impact: The TypeScript CEC inference module now exposes Python-module rule tables and a local batch adapter that applies existing browser-native rules without Python, server, filesystem, subprocess, or RPC fallbacks. The focused Jest test validates table membership, representative conclusions, and proof-step metadata used by the logic port validation suite.
+- Changed files: `src/lib/logic/cec/inferenceRules.test.ts`, `src/lib/logic/cec/inferenceRules.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T082257Z-added-browser-native-cec-native-inference-parity-tables-for-base.py-cognitive.py.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T082257Z-added-browser-native-cec-native-inference-parity-tables-for-base.py-cognitive.py.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T082257Z-added-browser-native-cec-native-inference-parity-tables-for-base.py-cognitive.py.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

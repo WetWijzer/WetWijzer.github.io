@@ -87,11 +87,13 @@ import {
   CecUniversalModusPonensRule,
   CEC_DEONTIC_INFERENCE_RUNTIME,
   applyCecRules,
+  applyCecNativePythonParityRules,
   applyCecDeonticPythonParityRules,
   cecExpressionEquals,
   getAllCecRules,
   getCognitiveCecRules,
   getDeonticCecRules,
+  getCecNativeInferenceRuleTables,
   getCecDeonticPythonParityRuleNames,
   getGenerativeCecRules,
   getModalCecRules,
@@ -388,6 +390,42 @@ describe('CEC inference rules', () => {
       'contradiction',
       '(O (not (enter agent code)))',
     ]);
+  });
+
+  it('ports base.py, cognitive.py, and modal.py rule tables with proof-step metadata', () => {
+    const applications = applyCecNativePythonParityRules([
+      parseCecExpression('(p)'),
+      parseCecExpression('(implies (p) (q))'),
+      parseCecExpression('(B alice (and (raining) (cold)))'),
+      parseCecExpression('(always (stable))'),
+      parseCecExpression('(always (implies (stable) (safe)))'),
+      parseCecExpression('(not (always (not (possible))))'),
+      parseCecExpression('(or (taut) (not (taut)))'),
+    ]);
+
+    const tables = getCecNativeInferenceRuleTables();
+    const byName = new Map(
+      applications.map((application) => [application.pythonRuleName, application]),
+    );
+    expect(tables.base).toContain('ModusPonens');
+    expect(tables.cognitive).toContain('BeliefDistribution');
+    expect(tables.modal).toContain('NecessityDistribution');
+    expect(formatCecExpression(byName.get('ModusPonens')!.conclusion)).toBe('(q)');
+    expect(formatCecExpression(byName.get('BeliefDistribution')!.conclusion)).toBe(
+      '(and (B alice (raining)) (B alice (cold)))',
+    );
+    expect(formatCecExpression(byName.get('NecessityDistribution')!.conclusion)).toBe(
+      '(always (safe))',
+    );
+    expect(applications[0].proofStep).toMatchObject({
+      stepId: 1,
+      rule: 'CecModusPonens',
+      pythonRuleName: 'ModusPonens',
+      ruleGroup: 'base',
+      sourcePythonModule: 'logic/CEC/native/inference_rules/base.py',
+      browserNative: true,
+      pythonRuntime: false,
+    });
   });
 
   it('applies quantified CEC rules', () => {

@@ -43,6 +43,45 @@ export interface CecDeonticPythonRuleApplication {
   };
 }
 
+export type CecNativeInferencePythonModule =
+  | 'logic/CEC/native/inference_rules/base.py'
+  | 'logic/CEC/native/inference_rules/cognitive.py'
+  | 'logic/CEC/native/inference_rules/modal.py';
+
+export type CecNativeInferenceRuleGroup = 'base' | 'cognitive' | 'modal';
+
+export type CecNativePythonRuleName = string;
+
+export interface CecNativePythonProofStepMetadata {
+  stepId: number;
+  rule: string;
+  pythonRuleName: CecNativePythonRuleName;
+  ruleGroup: CecNativeInferenceRuleGroup;
+  sourcePythonModule: CecNativeInferencePythonModule;
+  premiseCount: number;
+  conclusionCount: 1;
+  status: 'SUCCESS';
+  browserNative: true;
+  pythonRuntime: false;
+}
+
+export interface CecNativePythonRuleApplication {
+  rule: string;
+  pythonRuleName: CecNativePythonRuleName;
+  ruleGroup: CecNativeInferenceRuleGroup;
+  sourcePythonModule: CecNativeInferencePythonModule;
+  premises: CecExpression[];
+  conclusion: CecExpression;
+  status: 'SUCCESS';
+  proofStep: CecNativePythonProofStepMetadata;
+}
+
+type CecNativePythonRuleSpec = {
+  pythonRuleName: CecNativePythonRuleName;
+  ruleGroup: CecNativeInferenceRuleGroup;
+  rule: CecInferenceRule;
+};
+
 type CecRuleSpec = {
   name: string;
   description: string;
@@ -1495,6 +1534,99 @@ export function getDeonticCecRules(): CecInferenceRule[] {
   ];
 }
 
+export const CEC_NATIVE_INFERENCE_RUNTIMES = {
+  base: {
+    sourcePythonModule: 'logic/CEC/native/inference_rules/base.py',
+    browserNative: true,
+    pythonRuntime: false,
+  },
+  cognitive: {
+    sourcePythonModule: 'logic/CEC/native/inference_rules/cognitive.py',
+    browserNative: true,
+    pythonRuntime: false,
+  },
+  modal: {
+    sourcePythonModule: 'logic/CEC/native/inference_rules/modal.py',
+    browserNative: true,
+    pythonRuntime: false,
+  },
+} as const;
+
+const nativeSpec = (
+  pythonRuleName: CecNativePythonRuleName,
+  ruleGroup: CecNativeInferenceRuleGroup,
+  rule: CecInferenceRule,
+): CecNativePythonRuleSpec => ({ pythonRuleName, ruleGroup, rule });
+
+const CEC_NATIVE_PYTHON_RULE_SPECS: readonly CecNativePythonRuleSpec[] = [
+  nativeSpec('ModusPonens', 'base', CecModusPonensRule),
+  nativeSpec('HypotheticalSyllogism', 'base', CecHypotheticalSyllogismRule),
+  nativeSpec('ConjunctionIntroduction', 'base', CecConjunctionIntroductionRule),
+  nativeSpec('ConjunctionEliminationLeft', 'base', CecConjunctionEliminationLeftRule),
+  nativeSpec('ConjunctionEliminationRight', 'base', CecConjunctionEliminationRightRule),
+  nativeSpec('DoubleNegationElimination', 'base', CecDoubleNegationEliminationRule),
+  nativeSpec('BeliefDistribution', 'cognitive', CecBeliefDistributionRule),
+  nativeSpec('KnowledgeImpliesBelief', 'cognitive', CecKnowledgeImpliesBeliefRule),
+  nativeSpec('BeliefMonotonicity', 'cognitive', CecBeliefMonotonicityRule),
+  nativeSpec('IntentionCommitment', 'cognitive', CecIntentionCommitmentRule),
+  nativeSpec('PerceptionImpliesKnowledge', 'cognitive', CecPerceptionImpliesKnowledgeRule),
+  nativeSpec('BeliefRevision', 'cognitive', CecBeliefRevisionRule),
+  nativeSpec('NecessityElimination', 'modal', CecNecessityEliminationRule),
+  nativeSpec('NecessityDistribution', 'modal', CecNecessityDistributionRule),
+  nativeSpec('PossibilityIntroduction', 'modal', CecPossibilityIntroductionRule),
+  nativeSpec('PossibilityDuality', 'modal', CecPossibilityDualityRule),
+  nativeSpec('NecessitationIntroduction', 'modal', CecModalNecessitationIntroductionRule),
+];
+
+export function getCecNativeInferenceRuleTables(): Record<
+  CecNativeInferenceRuleGroup,
+  readonly CecNativePythonRuleName[]
+> {
+  return {
+    base: ruleNamesForGroup('base'),
+    cognitive: ruleNamesForGroup('cognitive'),
+    modal: ruleNamesForGroup('modal'),
+  };
+}
+
+export function applyCecNativePythonParityRules(
+  expressions: CecExpression[],
+  ruleGroups: readonly CecNativeInferenceRuleGroup[] = ['base', 'cognitive', 'modal'],
+): CecNativePythonRuleApplication[] {
+  const enabled = new Set<CecNativeInferenceRuleGroup>(ruleGroups);
+  const applications: CecNativePythonRuleApplication[] = [];
+
+  for (const spec of CEC_NATIVE_PYTHON_RULE_SPECS) {
+    if (!enabled.has(spec.ruleGroup)) continue;
+    const application = applyFirstCecRuleMatch(expressions, spec.rule);
+    if (!application) continue;
+    const runtime = CEC_NATIVE_INFERENCE_RUNTIMES[spec.ruleGroup];
+    applications.push({
+      rule: spec.rule.name,
+      pythonRuleName: spec.pythonRuleName,
+      ruleGroup: spec.ruleGroup,
+      sourcePythonModule: runtime.sourcePythonModule,
+      premises: application.premises,
+      conclusion: application.conclusion,
+      status: 'SUCCESS',
+      proofStep: {
+        stepId: applications.length + 1,
+        rule: spec.rule.name,
+        pythonRuleName: spec.pythonRuleName,
+        ruleGroup: spec.ruleGroup,
+        sourcePythonModule: runtime.sourcePythonModule,
+        premiseCount: application.premises.length,
+        conclusionCount: 1,
+        status: 'SUCCESS',
+        browserNative: runtime.browserNative,
+        pythonRuntime: runtime.pythonRuntime,
+      },
+    });
+  }
+
+  return applications;
+}
+
 export const CEC_DEONTIC_INFERENCE_RUNTIME = {
   sourcePythonModule: 'logic/CEC/native/inference_rules/deontic.py',
   browserNative: true,
@@ -1689,6 +1821,14 @@ function applyFirstCecRuleMatch(
     }
   }
   return undefined;
+}
+
+function ruleNamesForGroup(
+  ruleGroup: CecNativeInferenceRuleGroup,
+): readonly CecNativePythonRuleName[] {
+  return CEC_NATIVE_PYTHON_RULE_SPECS.filter((spec) => spec.ruleGroup === ruleGroup).map(
+    (spec) => spec.pythonRuleName,
+  );
 }
 
 export function cecExpressionEquals(left: CecExpression, right: CecExpression): boolean {

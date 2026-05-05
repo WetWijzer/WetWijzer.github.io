@@ -1017,18 +1017,18 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 - [!] Manual unblock: port `logic/CEC/native/error_handling.py` by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.
 - [x] Manual unblock: port `logic/CEC/native/event_calculus.py` by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.
 - [x] Manual unblock: port `logic/CEC/native/grammar_engine.py` and `grammar_loader.py` by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.
-- [ ] Manual unblock: port `logic/CEC/native/inference_rules/base.py`, `cognitive.py`, and `modal.py` by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.
+- [x] Manual unblock: port `logic/CEC/native/inference_rules/base.py`, `cognitive.py`, and `modal.py` by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.
 - [ ] Manual unblock: port `logic/CEC/native/prover_core.py` by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.
 - [ ] Manual unblock: port `logic/external_provers/interactive/coq_prover_bridge.py` by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.
 
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 08:18:00 UTC
+Last updated: 2026-05-05 08:22:57 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-478: Manual unblock: port 'logic/CEC/native/inference_rules/base.py', 'cognitive.py', and 'modal.py' by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.`
+Current target: `Task checkbox-479: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1510,18 +1510,18 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-474: Manual unblock: port 'logic/CEC/native/enhanced_grammar_parser.py' by adding chart-parser style diagnostics, parse alternatives, and grammar fixture tests.` - complete
 - [!] `Task checkbox-475: Manual unblock: port 'logic/CEC/native/error_handling.py' by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.` - blocked
 - [x] `Task checkbox-476: Manual unblock: port 'logic/CEC/native/event_calculus.py' by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.` - complete
-- [x] `Task checkbox-477: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.` - validated by latest daemon round
-- [ ] `Task checkbox-478: Manual unblock: port 'logic/CEC/native/inference_rules/base.py', 'cognitive.py', and 'modal.py' by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.` - needed
+- [x] `Task checkbox-477: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.` - complete
+- [x] `Task checkbox-478: Manual unblock: port 'logic/CEC/native/inference_rules/base.py', 'cognitive.py', and 'modal.py' by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.` - validated by latest daemon round
 - [ ] `Task checkbox-479: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.` - needed
 - [ ] `Task checkbox-480: Manual unblock: port 'logic/external_provers/interactive/coq_prover_bridge.py' by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.` - needed
 
 ### Latest Round
 
-- Target: `Task checkbox-477: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.`
+- Target: `Task checkbox-478: Manual unblock: port 'logic/CEC/native/inference_rules/base.py', 'cognitive.py', and 'modal.py' by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.`
 - Result: `valid`
-- Summary: Added browser-native CEC grammar artifacts and detailed loader validation.
-- Impact: src/lib/logic/cec/grammarEngine.ts now exposes deterministic in-memory grammar artifacts with explicit no-external-resource metadata and fail-closed validation diagnostics; src/lib/logic/cec/grammarEngine.test.ts exercises default artifacts, malformed static grammar validation, and no-network construction for the TypeScript port validation suite.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/grammarEngine.test.ts`, `src/lib/logic/cec/grammarEngine.ts`
+- Summary: Added browser-native CEC native inference parity tables for base.py, cognitive.py, and modal.py with deterministic proof-step metadata.
+- Impact: The TypeScript CEC inference module now exposes Python-module rule tables and a local batch adapter that applies existing browser-native rules without Python, server, filesystem, subprocess, or RPC fallbacks. The focused Jest test validates table membership, representative conclusions, and proof-step metadata used by the logic port validation suite.
+- Accepted changed files: `src/lib/logic/cec/inferenceRules.test.ts`, `src/lib/logic/cec/inferenceRules.ts`
 
 ### Blocked Backlog
 
