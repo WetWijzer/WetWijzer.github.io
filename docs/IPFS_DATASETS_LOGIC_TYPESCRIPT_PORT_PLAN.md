@@ -1025,11 +1025,11 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 12:17:44 UTC
+Last updated: 2026-05-05 12:30:50 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-476: Manual unblock: port 'logic/CEC/native/error_handling.py' by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.`
+Current target: `Task checkbox-480: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1510,22 +1510,31 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-473: Manual unblock: port 'logic/CEC/native/dcec_prototypes.py' by adding prototype/type-conflict checks and deterministic validation fixtures.` - complete
 - [x] `Task checkbox-474: Manual unblock: port 'logic/CEC/native/dcec_types.py' by adding DCEC container helpers, type guards, serialization, and compatibility tests.` - complete
 - [x] `Task checkbox-475: Manual unblock: port 'logic/CEC/native/enhanced_grammar_parser.py' by adding chart-parser style diagnostics, parse alternatives, and grammar fixture tests.` - complete
-- [!] `Task checkbox-476: Manual unblock: port 'logic/CEC/native/error_handling.py' by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.` - latest daemon round failed validation or preflight
+- [!] `Task checkbox-476: Manual unblock: port 'logic/CEC/native/error_handling.py' by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.` - blocked
 - [x] `Task checkbox-477: Manual unblock: port 'logic/CEC/native/event_calculus.py' by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.` - complete
 - [x] `Task checkbox-478: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.` - complete
 - [x] `Task checkbox-479: Manual unblock: port 'logic/CEC/native/inference_rules/base.py', 'cognitive.py', and 'modal.py' by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.` - complete
-- [!] `Task checkbox-480: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.` - blocked
+- [!] `Task checkbox-480: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.` - latest daemon round failed validation or preflight
 - [x] `Task checkbox-481: Manual unblock: port 'logic/external_provers/interactive/coq_prover_bridge.py' by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.` - complete
 
 ### Latest Round
 
-- Target: `Task checkbox-476: Manual unblock: port 'logic/CEC/native/error_handling.py' by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.`
+- Target: `Task checkbox-480: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.`
 - Result: `needs follow-up`
-- Summary: Ported the CEC native error-handling recovery surface with fail-closed browser-native facades and validation adapters.
-- Impact: The CEC TypeScript port can now normalize thrown CEC errors into deterministic recovery metadata, return local fail-closed facade results without server or Python fallbacks, and adapt Python-style validation result objects into the shared LogicValidationResult shape. Focused Jest coverage exercises the new facade and adapter behavior using the existing global test harness.
-- Accepted changed files: `src/lib/logic/cec/cecErrors.test.ts`, `src/lib/logic/cec/cecErrors.ts`
-- Errors: Rejected proposal because it imports from '@jest/globals'; logic tests use Jest globals without test-framework imports.
-- Failure kind: `preflight`
+- Summary: Added browser-native CEC prover_core.py facade metadata, deterministic proof summaries, bounded-search diagnostics, and focused Jest coverage.
+- Impact: CEC proof results from src/lib/logic/cec/prover.ts now expose local runtime provenance for logic/CEC/native/prover_core.py, deterministic search-limit summaries, and fail-closed diagnostics that are directly asserted by the CEC Jest validation suite.
+- Accepted changed files: `src/lib/logic/cec/prover.test.ts`, `src/lib/logic/cec/prover.ts`
+- Errors: Rejected proposal because TypeScript replacement preflight found parser or generic/type-quality errors before touching the worktree:
+../../..src/lib/logic/cec/prover.ts(213,7): error TS2322: Type '{ error?: string; status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; summary: CecProofSummary; diagnostics: CecProofDiagnostic[]; runtime: CecProverCoreRuntime; }' is not assignable to type 'CecProofResult'.
+
+Replacement diagnostic context:
+src/lib/logic/cec/prover.ts:213:7 TS2322: Type '{ error?: string; status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; summary: CecProofSummary; diagnostics: CecProofDiagnostic[]; runtime: CecProverCoreRuntime; }' is not assignable to type 'CecProofResult'.
+  211:     };
+  212:     return {
+> 213:       status,
+  214:       theorem: theoremText,
+  215:       steps,
+- Failure kind: `typescript_quality`
 
 ### Blocked Backlog
 
@@ -1564,10 +1573,10 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
   - Latest failure kind: `preflight`
   - Latest errors: Rejected proposal because it imports from '@jest/globals'; logic tests use Jest globals without test-framework imports.
 - `Task checkbox-480: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.`
-  - Failures since success: `1`
-  - Failure kinds: `{"typescript_quality": 1}`
+  - Failures since success: `2`
+  - Failure kinds: `{"typescript_quality": 2}`
   - Latest failure kind: `typescript_quality`
-  - Latest errors: Rejected proposal because TypeScript replacement preflight found parser or generic/type-quality errors before touching the worktree: ../../..src/lib/logic/cec/prover.ts(273,7): error TS2322: Type '{ status: ProofStatus; theorem: any; steps:...
+  - Latest errors: Rejected proposal because TypeScript replacement preflight found parser or generic/type-quality errors before touching the worktree: ../../..src/lib/logic/cec/prover.ts(213,7): error TS2322: Type '{ error?: string; status: ProofStatus; theo...
 
 ### Required Daemon Behavior
 
