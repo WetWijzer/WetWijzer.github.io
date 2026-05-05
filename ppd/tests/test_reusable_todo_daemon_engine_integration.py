@@ -9,6 +9,10 @@ from ipfs_datasets_py.optimizers.todo_daemon.engine import (
     Proposal as EngineProposal,
     Task as EngineTask,
 )
+from ipfs_datasets_py.optimizers.todo_daemon.artifacts import (
+    DEFAULT_ACCEPTED_WORK_LEDGER_FILENAME,
+    WorkSidecarPaths,
+)
 from ipfs_datasets_py.optimizers.todo_daemon.file_replacement import FileReplacementTodoDaemonRunner
 from ipfs_datasets_py.optimizers.todo_daemon.runner import TodoDaemonRunner
 
@@ -20,6 +24,8 @@ class ReusableTodoDaemonEngineIntegrationTests(unittest.TestCase):
         self.assertIs(ppd_daemon.CommandResult, EngineCommandResult)
         self.assertTrue(issubclass(ppd_daemon.Daemon, TodoDaemonRunner))
         self.assertTrue(issubclass(ppd_daemon.Daemon, FileReplacementTodoDaemonRunner))
+        self.assertIs(ppd_daemon.AcceptedWorkArtifacts, WorkSidecarPaths)
+        self.assertEqual(DEFAULT_ACCEPTED_WORK_LEDGER_FILENAME, ppd_daemon.LEDGER_FILENAME)
 
         task = ppd_daemon.parse_tasks("- [ ] Task checkbox-450: Reusable engine wiring.\n")[0]
 

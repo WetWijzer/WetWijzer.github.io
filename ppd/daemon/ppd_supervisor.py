@@ -45,6 +45,9 @@ from ppd.daemon.recovery_note_compaction import compact_task_board_repair_notes
 from ipfs_datasets_py.optimizers.todo_daemon.diagnostics import (  # noqa: E402
     exception_diagnostic as todo_exception_diagnostic,
 )
+from ipfs_datasets_py.optimizers.todo_daemon.status import (  # noqa: E402
+    build_ready_after_supervisor_repair_status,
+)
 
 FORBIDDEN_ABSENCE_MARKERS = (
     "cookie",
@@ -2305,21 +2308,14 @@ def build_dead_worker_ready_status(
     decision: SupervisorDecision,
     reset_labels: Iterable[str],
 ) -> dict[str, Any]:
-    previous_target = str(previous_status.get("active_target_task") or previous_status.get("target_task") or "")
-    previous_state = str(previous_status.get("active_state") or previous_status.get("state") or "")
-    return {
-        "schemaVersion": 1,
-        "updated_at": created_at,
-        "state": "ready_after_supervisor_dead_worker_repair",
-        "active_state": "ready_after_supervisor_dead_worker_repair",
-        "active_state_started_at": created_at,
-        "active_target_task": "",
-        "previous_state": previous_state,
-        "previous_target_task": previous_target,
-        "reset_task_labels": list(reset_labels),
-        "supervisor_action": decision.action,
-        "supervisor_reason": decision.reason,
-    }
+    return build_ready_after_supervisor_repair_status(
+        created_at=created_at,
+        previous_status=previous_status,
+        repair_state="ready_after_supervisor_dead_worker_repair",
+        supervisor_action=decision.action,
+        supervisor_reason=decision.reason,
+        reset_task_labels=reset_labels,
+    )
 
 
 def invoke_dead_worker_repair(config: SupervisorConfig, decision: SupervisorDecision) -> Proposal:

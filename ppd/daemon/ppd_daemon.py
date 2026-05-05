@@ -36,21 +36,15 @@ if (
 ):
     sys.modules.pop("ipfs_datasets_py", None)
 
-from ppd.daemon.accepted_work_ledger import (
-    AcceptedWorkArtifacts,
-    LEDGER_FILENAME,
-    append_accepted_work_ledger as append_accepted_work_jsonl,
-    build_accepted_work_ledger_entry,
-)
 from ppd.daemon.syntax_preflight import run_apply_flow_syntax_preflight
 from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     CommandResult,
     PathPolicy,
     Proposal,
     Task,
-    ValidationWorkspaceSpec,
     append_jsonl,
     atomic_write_json,
+    build_validation_workspace_spec,
     compact_message,
     cleanup_stale_validation_worktrees as cleanup_todo_validation_worktrees,
     diff_for_file as todo_diff_for_file,
@@ -73,8 +67,12 @@ from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     worktree_marker_payload as todo_worktree_marker_payload,
 )
 from ipfs_datasets_py.optimizers.todo_daemon.artifacts import (  # noqa: E402
+    DEFAULT_ACCEPTED_WORK_LEDGER_FILENAME as LEDGER_FILENAME,
+    WorkSidecarPaths as AcceptedWorkArtifacts,
     accepted_work_manifest,
     accepted_work_workspace_payload,
+    append_accepted_work_ledger as append_accepted_work_jsonl,
+    build_proposal_accepted_work_ledger_entry,
     failed_work_manifest,
     failed_work_workspace_payload,
     timestamped_artifact_base,
@@ -920,18 +918,11 @@ def _ignore_validation_tree_entries(directory: str, names: list[str]) -> set[str
 def temporary_validation_worktree(config: Config) -> Iterator[Path]:
     """Create an isolated PP&D validation tree and remove it after the cycle."""
 
-    plan_doc = config.plan_doc
-    if plan_doc.is_absolute():
-        try:
-            plan_doc = plan_doc.relative_to(config.repo_root)
-        except ValueError:
-            plan_doc = Path()
-    copy_paths = tuple(path for path in (Path("ppd"), plan_doc) if path.as_posix())
-    spec = ValidationWorkspaceSpec(
+    spec = build_validation_workspace_spec(
         repo_root=config.repo_root,
         worktree_dir=config.worktree_dir,
         marker_name="ppd-worktree.json",
-        copy_paths=copy_paths,
+        copy_paths=(Path("ppd"), config.plan_doc),
         root_files=("package.json", "package-lock.json", "tsconfig.json"),
         external_reference_paths=(Path("ipfs_datasets_py/ipfs_datasets_py"),),
         ignore=_ignore_validation_tree_entries,
@@ -1166,19 +1157,13 @@ def append_accepted_work_ledger(
     diff_text: str,
     transport: str = "direct",
 ) -> None:
-    entry = build_accepted_work_ledger_entry(
+    entry = build_proposal_accepted_work_ledger_entry(
         repo_root=config.repo_root,
-        target_task=proposal.target_task,
-        summary=proposal.summary,
-        impact=proposal.impact,
-        changed_files=proposal.changed_files,
+        accepted_dir=config.resolve(config.accepted_dir),
+        proposal=proposal,
         transport=transport,
         artifacts=artifacts,
-        validation_results=[result.compact() for result in proposal.validation_results],
         diff_text=diff_text,
-        promotion_verified=proposal.promotion_verified,
-        promotion_errors=proposal.promotion_errors,
-        ledger_path=config.resolve(config.accepted_dir) / LEDGER_FILENAME,
     )
     append_accepted_work_jsonl(config.resolve(config.accepted_dir), entry)
 

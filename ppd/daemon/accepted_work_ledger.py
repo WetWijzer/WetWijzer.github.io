@@ -14,8 +14,8 @@ from ipfs_datasets_py.optimizers.todo_daemon.artifacts import (
     ACCEPTED_WORK_LEDGER_SCHEMA_VERSION,
     DEFAULT_ACCEPTED_WORK_LEDGER_FILENAME,
     WorkSidecarPaths,
-    append_jsonl_ledger,
-    build_accepted_work_ledger_entry as build_todo_accepted_work_ledger_entry,
+    append_accepted_work_ledger as append_todo_accepted_work_ledger,
+    build_scoped_accepted_work_ledger_entry,
 )
 
 
@@ -42,8 +42,10 @@ def build_accepted_work_ledger_entry(
 ) -> dict[str, Any]:
     """Build a PP&D accepted-work ledger entry using shared todo-daemon logic."""
 
-    return build_todo_accepted_work_ledger_entry(
+    accepted_dir = (ledger_path or repo_root / "ppd/daemon/accepted-work" / LEDGER_FILENAME).parent
+    return build_scoped_accepted_work_ledger_entry(
         repo_root=repo_root,
+        accepted_dir=accepted_dir,
         target_task=target_task,
         summary=summary,
         impact=impact,
@@ -54,7 +56,6 @@ def build_accepted_work_ledger_entry(
         diff_text=diff_text,
         promotion_verified=promotion_verified,
         promotion_errors=promotion_errors,
-        ledger_path=ledger_path or repo_root / "ppd/daemon/accepted-work" / LEDGER_FILENAME,
         created_at=created_at,
         ledger_filename=LEDGER_FILENAME,
     )
@@ -63,4 +64,4 @@ def build_accepted_work_ledger_entry(
 def append_accepted_work_ledger(accepted_dir: Path, entry: dict[str, Any]) -> Path:
     """Append one JSON object to the PP&D accepted-work ledger."""
 
-    return append_jsonl_ledger(accepted_dir, entry, filename=LEDGER_FILENAME)
+    return append_todo_accepted_work_ledger(accepted_dir, entry, filename=LEDGER_FILENAME)
