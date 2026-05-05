@@ -956,7 +956,15 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Replace remaining `nlpUnavailable` capability paths with browser-native NLP parity or explicit local model artifact loading.
 - [x] Replace remaining `mlUnavailable` capability paths with browser-native ML confidence parity or explicit local model artifact loading.
 - [x] Audit remaining TypeScript logic `unsupported` paths and convert feasible ones into browser-native TypeScript/WASM implementations.
-- [ ] Reconcile the Python logic inventory (269 files) with the TypeScript/WASM implementation (253 files) and add browser-native port tasks for uncovered behavior.
+- [x] Reconcile the Python logic inventory (269 files) with the TypeScript/WASM implementation (253 files) and add browser-native port tasks for uncovered behavior.
+  - Reconciliation source: `src/lib/logic/pythonLogicInventory.ts`.
+  - Uncovered behavior tasks added from the 16-file gap:
+    - Port CEC native grammar loader and external grammar registry semantics to deterministic in-memory TypeScript artifacts.
+    - Complete CEC cognitive, deontic, modal, and base inference-rule parity using browser-native rule tables.
+    - Port CEC native error-handling and namespace diagnostics as fail-closed TypeScript validation results.
+    - Replace TDFOL P2P, dashboard, and visualization helper surfaces with browser-local state and serializable exports.
+    - Map remaining external prover routing modules to WASM-capable local adapters or explicit unsupported-local results.
+    - Convert remaining operational benchmark and validation script behavior into browser/devtools TypeScript entry points.
 - [ ] Review the accepted TypeScript logic changes against the original browser-native TypeScript/WASM port goal, then add or implement any missing parity tasks for Python logic behavior that lacks accepted-work evidence.
 - [ ] Add end-to-end browser-native validation proving the converted logic runs without Python, spaCy, or server-side calls, including deterministic coverage for ML and NLP capability surfaces.
 - [ ] Audit Python ML and spaCy expectations against the TypeScript/WASM implementation and add focused parity tests or local-model artifact loading tasks for unsupported browser-native behavior.
@@ -966,11 +974,11 @@ These tasks were added automatically after the daemon found no eligible unchecke
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 04:21:15 UTC
+Last updated: 2026-05-05 04:23:36 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-446: Reconcile the Python logic inventory (269 files) with the TypeScript/WASM implementation (253 files) and add browser-native port tasks for uncovered behavior.`
+Current target: `Task checkbox-447: Review the accepted TypeScript logic changes against the original browser-native TypeScript/WASM port goal, then add or implement any missing parity tasks for Python logic behavior that lacks accepted-work evidence.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1420,8 +1428,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-442: Port remaining Python logic module 'logic/zkp/zkp_verifier.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-443: Replace remaining 'nlpUnavailable' capability paths with browser-native NLP parity or explicit local model artifact loading.` - complete
 - [x] `Task checkbox-444: Replace remaining 'mlUnavailable' capability paths with browser-native ML confidence parity or explicit local model artifact loading.` - complete
-- [x] `Task checkbox-445: Audit remaining TypeScript logic 'unsupported' paths and convert feasible ones into browser-native TypeScript/WASM implementations.` - validated by latest daemon round
-- [ ] `Task checkbox-446: Reconcile the Python logic inventory (269 files) with the TypeScript/WASM implementation (253 files) and add browser-native port tasks for uncovered behavior.` - needed
+- [x] `Task checkbox-445: Audit remaining TypeScript logic 'unsupported' paths and convert feasible ones into browser-native TypeScript/WASM implementations.` - complete
+- [x] `Task checkbox-446: Reconcile the Python logic inventory (269 files) with the TypeScript/WASM implementation (253 files) and add browser-native port tasks for uncovered behavior.` - validated by latest daemon round
 - [ ] `Task checkbox-447: Review the accepted TypeScript logic changes against the original browser-native TypeScript/WASM port goal, then add or implement any missing parity tasks for Python logic behavior that lacks accepted-work evidence.` - needed
 - [ ] `Task checkbox-448: Add end-to-end browser-native validation proving the converted logic runs without Python, spaCy, or server-side calls, including deterministic coverage for ML and NLP capability surfaces.` - needed
 - [ ] `Task checkbox-449: Audit Python ML and spaCy expectations against the TypeScript/WASM implementation and add focused parity tests or local-model artifact loading tasks for unsupported browser-native behavior.` - needed
@@ -1430,11 +1438,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-445: Audit remaining TypeScript logic 'unsupported' paths and convert feasible ones into browser-native TypeScript/WASM implementations.`
+- Target: `Task checkbox-446: Reconcile the Python logic inventory (269 files) with the TypeScript/WASM implementation (253 files) and add browser-native port tasks for uncovered behavior.`
 - Result: `valid`
-- Summary: Converted a previously unsupported browser-native bridge conversion path from FOL to CEC/DCEC into a deterministic TypeScript projection.
-- Impact: BrowserNativeLogicBridge now advertises and executes FOL to CEC/DCEC conversion locally for quantified predicates and core Boolean operators, so validation exercises a real TypeScript route instead of an unsupported result while preserving fail-closed handling for unsupported FOL shapes.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/integration/bridge.test.ts`, `src/lib/logic/integration/bridge.ts`
+- Summary: Added a browser-native Python logic inventory reconciliation helper for the 269-to-253 file comparison and recorded uncovered parity tasks.
+- Impact: The TypeScript port now exposes src/lib/logic/pythonLogicInventory.ts through the public logic index, and Jest validates that the 16 uncovered Python-file gap is represented only as browser-native, no-server, no-Python follow-up tasks. The controlling port ledger marks checkbox-446 complete and lists the uncovered behavior tasks for subsequent daemon cycles.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/index.ts`, `src/lib/logic/pythonLogicInventory.test.ts`, `src/lib/logic/pythonLogicInventory.ts`
 
 ### Blocked Backlog
 
