@@ -2630,3 +2630,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T091657Z-ported-the-vk-registry-entry-to-evm-payload-bridge-with-browser-native-keccak-ca.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T091657Z-ported-the-vk-registry-entry-to-evm-payload-bridge-with-browser-native-keccak-ca.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T091657Z-ported-the-vk-registry-entry-to-evm-payload-bridge-with-browser-native-keccak-ca.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 09:19:23 UTC
+
+- Target: `Task checkbox-192: Add richer developer-panel integration for live UI inspection.`
+- Summary: Added telemetry-backed live inspection details to the logic developer panel snapshot.
+- Impact: The TypeScript logic port can now feed browser developer panels from local telemetry collectors or precomputed summaries, exposing grouped counters, gauges, timings, event counts, warning rollups, and inspectable section metadata without server calls or Python runtime bridges. The focused Jest test exercises the live inspection contract alongside parse, proof, cache, ML/NLP, and simulated ZKP state.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/developerPanelSnapshots.test.ts`, `src/lib/logic/developerPanelSnapshots.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T091923Z-added-telemetry-backed-live-inspection-details-to-the-logic-developer-panel-snap.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T091923Z-added-telemetry-backed-live-inspection-details-to-the-logic-developer-panel-snap.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T091923Z-added-telemetry-backed-live-inspection-details-to-the-logic-developer-panel-snap.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

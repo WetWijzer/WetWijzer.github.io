@@ -1,5 +1,6 @@
 import { parseFolText } from './fol';
 import { getMLConfidenceArtifactCacheState, getMLConfidenceModelState } from './mlConfidence';
+import type { BrowserDeveloperPanelSummary } from './browserTelemetry';
 import type { ProofCacheSnapshotEntry, ProofCacheStats } from './proofCache';
 import { getLogicRuntimeCapabilities } from './runtimeCapabilities';
 import type { ProofResult } from './types';
@@ -26,12 +27,18 @@ export interface LogicDeveloperPanelZkpVerifierLike {
   getStats(): ZKPVerifierStats;
 }
 
+export interface LogicDeveloperPanelTelemetryLike {
+  developerPanelSummary(): BrowserDeveloperPanelSummary;
+}
+
 export interface LogicDeveloperPanelSnapshotOptions {
   parseText?: string;
   proofResult?: ProofResult;
   proofCache?: LogicDeveloperPanelProofCacheLike;
   zkpProver?: LogicDeveloperPanelZkpProverLike;
   zkpVerifier?: LogicDeveloperPanelZkpVerifierLike;
+  telemetry?: LogicDeveloperPanelTelemetryLike;
+  telemetrySummary?: BrowserDeveloperPanelSummary;
   nowMs?: number;
 }
 
@@ -43,6 +50,44 @@ export function buildLogicDeveloperPanelSnapshot(options: LogicDeveloperPanelSna
   const runtime = getLogicRuntimeCapabilities();
   const cacheEntries = options.proofCache?.snapshot() ?? [];
   const proof = options.proofResult;
+  const telemetrySummary = options.telemetrySummary ?? options.telemetry?.developerPanelSummary();
+  const cacheStats = options.proofCache?.getStats();
+  const cachePanel = {
+    available: options.proofCache !== undefined,
+    stats: cacheStats,
+    entryCount: cacheEntries.length,
+    expiredEntryCount: cacheEntries.filter((entry) => entry.expired).length,
+    hottestEntries: topCacheEntries(cacheEntries),
+  };
+  const proofPanel = {
+    status: proof?.status ?? 'not-run',
+    theorem: proof?.theorem,
+    method: proof?.method,
+    stepCount: proof?.steps.length ?? 0,
+    error: proof?.error,
+    serverCallsAllowed: false,
+  };
+  const telemetryPanel = telemetrySummary
+    ? {
+        generatedAtMs: telemetrySummary.generatedAtMs,
+        metricCount: telemetrySummary.metricCount,
+        eventCount: telemetrySummary.eventCount,
+        counters: telemetrySummary.counters,
+        gauges: telemetrySummary.gauges,
+        timings: telemetrySummary.timings,
+        warnings: [...telemetrySummary.warnings],
+        serverCallsAllowed: false,
+      }
+    : {
+        generatedAtMs: undefined,
+        metricCount: 0,
+        eventCount: 0,
+        counters: [],
+        gauges: [],
+        timings: [],
+        warnings: [],
+        serverCallsAllowed: false,
+      };
 
   return {
     generatedAtMs: options.nowMs ?? Date.now(),
@@ -60,21 +105,8 @@ export function buildLogicDeveloperPanelSnapshot(options: LogicDeveloperPanelSna
       nlpBackend: parsed.nlp.backend,
       serverCallsAllowed: false,
     },
-    proof: {
-      status: proof?.status ?? 'not-run',
-      theorem: proof?.theorem,
-      method: proof?.method,
-      stepCount: proof?.steps.length ?? 0,
-      error: proof?.error,
-      serverCallsAllowed: false,
-    },
-    cache: {
-      available: options.proofCache !== undefined,
-      stats: options.proofCache?.getStats(),
-      entryCount: cacheEntries.length,
-      expiredEntryCount: cacheEntries.filter((entry) => entry.expired).length,
-      hottestEntries: topCacheEntries(cacheEntries),
-    },
+    proof: proofPanel,
+    cache: cachePanel,
     mlNlp: {
       model: getMLConfidenceModelState(),
       artifactCache: getMLConfidenceArtifactCacheState(),
@@ -105,6 +137,18 @@ export function buildLogicDeveloperPanelSnapshot(options: LogicDeveloperPanelSna
           }
         : undefined,
     },
+    liveInspection: {
+      generatedAtMs: telemetryPanel.generatedAtMs,
+      refreshMode: 'pull-snapshot',
+      inspectableSections: ['parse', 'proof', 'cache', 'mlNlp', 'zkp', 'telemetry'],
+      telemetry: telemetryPanel,
+      warnings: [
+        ...telemetryPanel.warnings,
+        ...panelWarnings(proofPanel, cachePanel.expiredEntryCount),
+      ],
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+    },
     runtime,
   };
 }
@@ -121,4 +165,18 @@ function topCacheEntries(entries: Array<ProofCacheSnapshotEntry<unknown>>) {
     }))
     .sort((left, right) => right.hitCount - left.hitCount)
     .slice(0, 5);
+}
+
+function panelWarnings(
+  proof: { status: string; error?: string },
+  expiredEntryCount: number,
+): Array<string> {
+  const warnings: Array<string> = [];
+  if (proof.status === 'error' && proof.error) {
+    warnings.push('proof error: ' + proof.error);
+  }
+  if (expiredEntryCount > 0) {
+    warnings.push('proof cache has ' + expiredEntryCount + ' expired entries');
+  }
+  return warnings;
 }

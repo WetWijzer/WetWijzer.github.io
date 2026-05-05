@@ -596,7 +596,7 @@ Acceptance criteria:
 - [x] Port observability structured logging, Prometheus-style metrics, and OTel-style tracing to browser-local equivalents.
 - [x] Port monitoring/metrics to in-browser telemetry objects and developer panels.
   - [x] Initial top-level `logic/monitoring.py` parity for operation metrics, tracking helpers, health checks, error/warning counters, global monitor, reset, operation summaries, and optional Prometheus text export.
-  - [!] Add richer developer-panel integration for live UI inspection.
+  - [x] Add richer developer-panel integration for live UI inspection.
 - [x] Replace Python API/CLI surfaces with TypeScript developer scripts or browser devtools.
   - [x] Initial browser-native public API facade for `logic/api.py` import-surface parity.
   - [!] Add CLI/devtools command adapter parity for `logic/cli.py`.
@@ -1025,11 +1025,11 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 09:16:57 UTC
+Last updated: 2026-05-05 09:19:23 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-192: Add richer developer-panel integration for live UI inspection.`
+Current target: `Task checkbox-195: Add CLI/devtools command adapter parity for 'logic/cli.py'.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1217,7 +1217,7 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-180: Port external prover router and bridge contracts to local browser adapters.` - complete
 - [x] `Task checkbox-181: Evaluate and integrate local WASM provers for Z3/cvc5/Tau Prolog/Lean/Coq-style workflows where feasible.` - complete
 - [x] `Task checkbox-182: Port Groth16 verification/proving path using browser-native cryptographic libraries where feasible.` - complete
-- [x] `Task checkbox-183: Port EVM/public-input/vk-registry helpers using browser-compatible crypto and chain libraries.` - validated by latest daemon round
+- [x] `Task checkbox-183: Port EVM/public-input/vk-registry helpers using browser-compatible crypto and chain libraries.` - complete
 - [x] `Task checkbox-184: Add strict UI/API language distinguishing simulated, heuristic, proof-checking, and cryptographic outputs.` - complete
 - [x] `Task checkbox-185: Port logic integration bridges to route to TS/WASM cores.` - complete
 - [x] `Task checkbox-186: Initial browser-native bridge facade for local route inventory, FOL/deontic/TDFOL/CEC conversion routing, TDFOL/CEC proof routing, and explicit unsupported-route results with 'server_calls_allowed: false'.` - complete
@@ -1226,7 +1226,7 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-189: Port observability structured logging, Prometheus-style metrics, and OTel-style tracing to browser-local equivalents.` - complete
 - [x] `Task checkbox-190: Port monitoring/metrics to in-browser telemetry objects and developer panels.` - complete
 - [x] `Task checkbox-191: Initial top-level 'logic/monitoring.py' parity for operation metrics, tracking helpers, health checks, error/warning counters, global monitor, reset, operation summaries, and optional Prometheus text export.` - complete
-- [!] `Task checkbox-192: Add richer developer-panel integration for live UI inspection.` - blocked
+- [x] `Task checkbox-192: Add richer developer-panel integration for live UI inspection.` - validated by latest daemon round
 - [x] `Task checkbox-193: Replace Python API/CLI surfaces with TypeScript developer scripts or browser devtools.` - complete
 - [x] `Task checkbox-194: Initial browser-native public API facade for 'logic/api.py' import-surface parity.` - complete
 - [!] `Task checkbox-195: Add CLI/devtools command adapter parity for 'logic/cli.py'.` - blocked
@@ -1519,11 +1519,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-183: Port EVM/public-input/vk-registry helpers using browser-compatible crypto and chain libraries.`
+- Target: `Task checkbox-192: Add richer developer-panel integration for live UI inspection.`
 - Result: `valid`
-- Summary: Ported the VK registry entry-to-EVM payload bridge with browser-native Keccak calldata helpers.
-- Impact: The TypeScript ZKP port can now derive registerVK bytes32 payloads and ABI calldata directly from VK registry entry shapes using browser-compatible crypto code, and the focused Jest suite validates the new browser-local chain helper path.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/ethVkRegistryPayloads.test.ts`, `src/lib/logic/zkp/ethVkRegistryPayloads.ts`
+- Summary: Added telemetry-backed live inspection details to the logic developer panel snapshot.
+- Impact: The TypeScript logic port can now feed browser developer panels from local telemetry collectors or precomputed summaries, exposing grouped counters, gauges, timings, event counts, warning rollups, and inspectable section metadata without server calls or Python runtime bridges. The focused Jest test exercises the live inspection contract alongside parse, proof, cache, ML/NLP, and simulated ZKP state.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/developerPanelSnapshots.test.ts`, `src/lib/logic/developerPanelSnapshots.ts`
 
 ### Blocked Backlog
 
@@ -1541,8 +1541,6 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
   - Latest errors: llm_router could not generate with model='gpt-5.5' provider='auto'. Configure the provider credentials or pass --provider. Original error: copilot CLI binary not found on PATH (required for session/tracing flags). Install the GitHub Copilot...
 - `Task checkbox-179: Remove 'nlpUnavailable' and 'mlUnavailable' capability flags once browser-native parity is implemented.`
   - Failures since success: `0`
-- `Task checkbox-192: Add richer developer-panel integration for live UI inspection.`
-  - Failures since success: `0`
 - `Task checkbox-195: Add CLI/devtools command adapter parity for 'logic/cli.py'.`
   - Failures since success: `0`
 - `Task checkbox-196: Port IPFS/IPLD proof cache semantics to browser-native storage/IPFS clients where possible.`
@@ -1554,6 +1552,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - `Task checkbox-203: Port remaining Python logic module 'logic/CEC/native/cec_zkp_integration.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
   - Failures since success: `0`
 - `Task checkbox-204: Port remaining Python logic module 'logic/CEC/native/context_manager.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+  - Failures since success: `0`
+- `Task checkbox-205: Port remaining Python logic module 'logic/CEC/native/dcec_cleaning.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
   - Failures since success: `0`
 
 ### Required Daemon Behavior
