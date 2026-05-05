@@ -17,9 +17,7 @@ import os
 import py_compile
 import re
 import sys
-import traceback
 from dataclasses import dataclass, replace
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable, Iterator, Optional
 from urllib.parse import urlparse
@@ -72,8 +70,15 @@ from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     utc_now,
     validation_commands_for_proposal as todo_validation_commands_for_proposal,
     verify_promoted_worktree_files as todo_verify_promoted_worktree_files,
-    workspace_artifact_payload as todo_workspace_artifact_payload,
     worktree_marker_payload as todo_worktree_marker_payload,
+)
+from ipfs_datasets_py.optimizers.todo_daemon.artifacts import (  # noqa: E402
+    accepted_work_manifest,
+    accepted_work_workspace_payload,
+    failed_work_manifest,
+    failed_work_workspace_payload,
+    timestamped_artifact_base,
+    write_work_sidecars,
 )
 from ipfs_datasets_py.optimizers.todo_daemon.file_replacement import (  # noqa: E402
     FileReplacementHooks,
@@ -95,14 +100,27 @@ from ipfs_datasets_py.optimizers.todo_daemon.history import (  # noqa: E402
     should_use_compact_prompt_for_failures,
 )
 from ipfs_datasets_py.optimizers.todo_daemon.diagnostics import (  # noqa: E402
+    FailureBlockDecision,
+    FailureBlockRule,
     count_proposal_records_with_failure_markers,
     count_recent_proposal_failures,
+    exception_diagnostic as todo_exception_diagnostic,
+    first_failure_block_decision,
     format_recent_failure_context,
     is_retryable_proposal_failure,
     prompt_limit_for_mode,
     proposal_block_threshold,
     proposal_record_has_failure_markers,
     should_skip_validation_for_empty_proposal,
+)
+from ipfs_datasets_py.optimizers.todo_daemon.deterministic_fallback import (  # noqa: E402
+    build_deterministic_progress_record as build_todo_deterministic_progress_record,
+    build_deterministic_replacement_proposal,
+    fallback_kind_for_task,
+    load_deterministic_progress_manifest,
+    open_task_has_deterministic_fallback,
+    task_has_deterministic_fallback,
+    upsert_deterministic_progress_record,
 )
 from ipfs_datasets_py.optimizers.todo_daemon.task_board import (  # noqa: E402
     count_unmanaged_generated_status_sections as count_todo_unmanaged_generated_status_sections,
@@ -250,11 +268,7 @@ class Config:
         return path if path.is_absolute() else self.repo_root / path
 
 
-@dataclass(frozen=True)
-class PreLlmBlockDecision:
-    summary: str
-    failure_kind: str
-    result: str
+PreLlmBlockDecision = FailureBlockDecision
 
 
 def parse_tasks(markdown: str) -> list[Task]:
@@ -339,7 +353,7 @@ def should_sleep_between_watch_cycles(markdown: str, *, revisit_blocked: bool = 
 
 
 def exception_diagnostic(exc: BaseException, *, limit: int = 5000) -> str:
-    return compact_message("".join(traceback.format_exception(type(exc), exc, exc.__traceback__)), limit=limit)
+    return todo_exception_diagnostic(exc, limit=limit)
 
 
 def is_retryable_failure(proposal: Proposal) -> bool:
@@ -433,25 +447,25 @@ def pre_llm_block_decision(config: Config, task_label: str) -> Optional[PreLlmBl
     """Return a durable stop decision for tasks that are already known-stuck."""
 
     syntax_probe = Proposal(failure_kind="syntax_preflight")
-    if (
-        task_failure_count(config, task_label, kinds={"syntax_preflight"})
-        >= failure_block_threshold(syntax_probe, config)
-    ):
-        return PreLlmBlockDecision(
-            summary="Task blocked before LLM after repeated syntax-preflight failures.",
-            failure_kind="syntax_preflight",
-            result="syntax_preflight_blocked",
-        )
-
     termination_probe = Proposal(failure_kind="llm_termination")
-    if llm_termination_failure_count(config, task_label) >= failure_block_threshold(termination_probe, config):
-        return PreLlmBlockDecision(
-            summary="Task blocked before LLM after repeated LLM termination failures.",
-            failure_kind="llm_termination",
-            result="llm_termination_blocked",
+    return first_failure_block_decision(
+        (
+            FailureBlockRule(
+                failure_kind="syntax_preflight",
+                count=task_failure_count(config, task_label, kinds={"syntax_preflight"}),
+                threshold=failure_block_threshold(syntax_probe, config),
+                summary="Task blocked before LLM after repeated syntax-preflight failures.",
+                result="syntax_preflight_blocked",
+            ),
+            FailureBlockRule(
+                failure_kind="llm_termination",
+                count=llm_termination_failure_count(config, task_label),
+                threshold=failure_block_threshold(termination_probe, config),
+                summary="Task blocked before LLM after repeated LLM termination failures.",
+                result="llm_termination_blocked",
+            ),
         )
-
-    return None
+    )
 
 
 def should_block_task_before_llm(config: Config, task_label: str) -> bool:
@@ -593,19 +607,15 @@ def supervisor_idle_policy() -> dict[str, object]:
 
 
 def deterministic_task_fallback_kind(task: Task) -> str:
-    lowered = task.title.lower()
-    for marker, kind in DETERMINISTIC_TASK_FALLBACK_TITLES:
-        if marker in lowered:
-            return kind
-    return ""
+    return fallback_kind_for_task(task, DETERMINISTIC_TASK_FALLBACK_TITLES)
 
 
 def has_deterministic_task_fallback(task: Task) -> bool:
-    return bool(deterministic_task_fallback_kind(task))
+    return task_has_deterministic_fallback(task, DETERMINISTIC_TASK_FALLBACK_TITLES)
 
 
 def has_open_deterministic_task_fallback(tasks: Iterable[Task]) -> bool:
-    return any(task.status in {"needed", "in-progress"} and has_deterministic_task_fallback(task) for task in tasks)
+    return open_task_has_deterministic_fallback(tasks, DETERMINISTIC_TASK_FALLBACK_TITLES)
 
 
 def build_deterministic_task_fallback_proposal(config: Config, selected: Task) -> Optional[Proposal]:
@@ -615,17 +625,11 @@ def build_deterministic_task_fallback_proposal(config: Config, selected: Task) -
     if not fallback_kind:
         return None
 
-    manifest = deterministic_progress_manifest(config)
-    records = [record for record in manifest.get("records", []) if isinstance(record, dict)]
-    records = [
-        record
-        for record in records
-        if str(record.get("taskLabel") or "") != selected.label
-        and int(record.get("checkboxId", -1) if isinstance(record.get("checkboxId"), int) else -1) != selected.checkbox_id
-    ]
-    records.append(deterministic_progress_record(selected, fallback_kind))
-    manifest["records"] = sorted(records, key=lambda item: int(item.get("checkboxId", 0)))
-    manifest["updatedAt"] = utc_now()
+    manifest = upsert_deterministic_progress_record(
+        deterministic_progress_manifest(config),
+        selected,
+        deterministic_progress_record(selected, fallback_kind),
+    )
     validation_commands = (
         DETERMINISTIC_FALLBACK_VALIDATION_COMMANDS
         if config.validation_commands == DEFAULT_VALIDATION_COMMANDS
@@ -633,67 +637,39 @@ def build_deterministic_task_fallback_proposal(config: Config, selected: Task) -
     )
     source_path, source_content = DETERMINISTIC_SOURCE_FILES[fallback_kind]
 
-    return Proposal(
+    return build_deterministic_replacement_proposal(
+        selected=selected,
+        fallback_kind=fallback_kind,
+        manifest=manifest,
+        progress_path=config.deterministic_progress_file,
+        source_files=[
+            ("ppd/platform/__init__.py", DETERMINISTIC_PLATFORM_INIT),
+            (source_path, source_content),
+        ],
         summary=f"Complete {fallback_kind.replace('_', ' ')} with deterministic PP&D fallback.",
         impact=(
             "The daemon can keep making fixture-only PP&D platform progress while the LLM backend is in "
             "a termination storm. The generated record preserves source evidence, processor, draft "
             "automation, PDF-preview, and formal-logic boundaries without live DevHub or official actions."
         ),
-        files=[
-            {
-                "path": "ppd/platform/__init__.py",
-                "content": DETERMINISTIC_PLATFORM_INIT,
-            },
-            {
-                "path": source_path,
-                "content": source_content,
-            },
-            {
-                "path": config.deterministic_progress_file.as_posix(),
-                "content": json.dumps(manifest, indent=2, sort_keys=True) + "\n",
-            }
-        ],
-        validation_commands=[list(command) for command in validation_commands],
-        failure_kind="",
-        trusted_validation_commands=True,
-        requires_visible_source_change=True,
+        validation_commands=validation_commands,
     )
 
 
 def deterministic_progress_manifest(config: Config) -> dict[str, Any]:
-    path = config.resolve(config.deterministic_progress_file)
-    if path.exists():
-        try:
-            parsed = json.loads(path.read_text(encoding="utf-8"))
-            if isinstance(parsed, dict):
-                parsed.setdefault("schemaVersion", 1)
-                parsed.setdefault("records", [])
-                parsed.setdefault("strategy", "deterministic_task_fallback_when_llm_unavailable")
-                return parsed
-        except json.JSONDecodeError:
-            pass
-    return {
-        "schemaVersion": 1,
-        "strategy": "deterministic_task_fallback_when_llm_unavailable",
-        "updatedAt": utc_now(),
-        "records": [],
-    }
+    return load_deterministic_progress_manifest(
+        config.resolve(config.deterministic_progress_file),
+        strategy="deterministic_task_fallback_when_llm_unavailable",
+    )
 
 
 def deterministic_progress_record(selected: Task, fallback_kind: str) -> dict[str, Any]:
-    tranche_match = re.search(r"\btranche\s+(\d+)\b", selected.title.lower())
-    tranche = int(tranche_match.group(1)) if tranche_match else None
-    return {
-        "checkboxId": selected.checkbox_id,
-        "taskLabel": selected.label,
-        "title": selected.title,
-        "fallbackKind": fallback_kind,
-        "tranche": tranche,
-        "completedAt": utc_now(),
-        "sourceEvidenceIds": list(DETERMINISTIC_TASK_SOURCE_EVIDENCE_IDS),
-        "artifactContracts": deterministic_artifact_contracts(fallback_kind),
-        "guardrails": [
+    return build_todo_deterministic_progress_record(
+        selected,
+        fallback_kind,
+        source_evidence_ids=DETERMINISTIC_TASK_SOURCE_EVIDENCE_IDS,
+        artifact_contracts=deterministic_artifact_contracts(fallback_kind),
+        guardrails=[
             "public_sources_only",
             "redacted_user_facts_only",
             "reversible_draft_actions_only",
@@ -701,7 +677,7 @@ def deterministic_progress_record(selected: Task, fallback_kind: str) -> dict[st
             "exact_confirmation_before_official_action",
             "formal_logic_requires_source_evidence",
         ],
-        "blockedActions": [
+        blocked_actions=[
             "official_upload",
             "permit_submission",
             "certification",
@@ -709,13 +685,13 @@ def deterministic_progress_record(selected: Task, fallback_kind: str) -> dict[st
             "account_security_transition",
             "inspection_scheduling",
         ],
-        "runtimePolicy": {
+        runtime_policy={
             "liveCrawlAllowedByDefault": False,
             "officialDevhubActionAllowedByDefault": False,
             "privateArtifactPersistence": "forbidden",
             "requiresHumanAttendanceBeforeBrowserUse": True,
         },
-    }
+    )
 
 
 def deterministic_artifact_contracts(fallback_kind: str) -> list[str]:
@@ -935,12 +911,9 @@ def workspace_artifact_payload(
     promoted: bool,
     reason: str = "",
 ) -> dict[str, Any]:
-    return todo_workspace_artifact_payload(
-        proposal,
-        transport=transport,
-        promoted=promoted,
-        reason=reason,
-    )
+    if promoted:
+        return accepted_work_workspace_payload(proposal, transport=transport)
+    return failed_work_workspace_payload(proposal, reason=reason, transport=transport)
 
 
 def materialize_proposal_in_worktree(proposal: Proposal, config: Config, worktree: Path) -> list[str]:
@@ -1110,38 +1083,26 @@ def apply_files_with_validation(proposal: Proposal, config: Config) -> Proposal:
 
 
 def persist_accepted_work(proposal: Proposal, config: Config, *, diff_text: str, transport: str = "direct") -> None:
-    config.resolve(config.accepted_dir).mkdir(parents=True, exist_ok=True)
-    slug = re.sub(r"[^A-Za-z0-9._-]+", "-", proposal.summary.lower()).strip("-")[:80] or "accepted-work"
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    base = config.resolve(config.accepted_dir) / f"{stamp}-{slug}"
+    accepted_dir = config.resolve(config.accepted_dir)
+    accepted_dir.mkdir(parents=True, exist_ok=True)
+    base = timestamped_artifact_base(
+        accepted_dir,
+        summary=proposal.summary,
+        fallback="accepted-work",
+    )
+    artifacts: Optional[AcceptedWorkArtifacts] = None
     if config.write_accepted_work_sidecars:
-        manifest = {
-            "created_at": utc_now(),
-            "artifact_kind": "accepted_ephemeral_workspace",
-            "target_task": proposal.target_task,
-            "summary": proposal.summary,
-            "impact": proposal.impact,
-            "changed_files": proposal.changed_files,
-            "transport": transport,
-            "promotion_verified": proposal.promotion_verified,
-            "validation_results": [result.compact() for result in proposal.validation_results],
-        }
-        workspace_artifact = workspace_artifact_payload(
-            proposal,
-            transport=transport,
-            promoted=True,
+        artifacts = write_work_sidecars(
+            base=base,
+            manifest=accepted_work_manifest(proposal, transport=transport),
+            workspace=accepted_work_workspace_payload(proposal, transport=transport),
+            diff_text=diff_text,
+            changed_files=proposal.changed_files,
         )
-        base.with_suffix(".json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        base.with_suffix(".workspace.json").write_text(
-            json.dumps(workspace_artifact, indent=2, sort_keys=True) + "\n",
-            encoding="utf-8",
-        )
-        base.with_suffix(".diff.txt").write_text(diff_text, encoding="utf-8")
-        base.with_suffix(".stat.txt").write_text("\n".join(proposal.changed_files) + "\n", encoding="utf-8")
     append_accepted_work_ledger(
         proposal,
         config,
-        base=base if config.write_accepted_work_sidecars else None,
+        artifacts=artifacts,
         diff_text=diff_text,
         transport=transport,
     )
@@ -1151,20 +1112,10 @@ def append_accepted_work_ledger(
     proposal: Proposal,
     config: Config,
     *,
-    base: Optional[Path],
+    artifacts: Optional[AcceptedWorkArtifacts],
     diff_text: str,
     transport: str = "direct",
 ) -> None:
-    artifacts = (
-        AcceptedWorkArtifacts(
-            manifest=base.with_suffix(".json"),
-            workspace=base.with_suffix(".workspace.json"),
-            diff=base.with_suffix(".diff.txt"),
-            stat=base.with_suffix(".stat.txt"),
-        )
-        if base is not None
-        else None
-    )
     entry = build_accepted_work_ledger_entry(
         repo_root=config.repo_root,
         target_task=proposal.target_task,
@@ -1183,36 +1134,21 @@ def append_accepted_work_ledger(
 
 
 def persist_failed_work(proposal: Proposal, config: Config, *, diff_text: str, reason: str, transport: str = "direct") -> None:
-    config.resolve(config.failed_dir).mkdir(parents=True, exist_ok=True)
-    slug = re.sub(r"[^A-Za-z0-9._-]+", "-", (proposal.summary or reason).lower()).strip("-")[:80] or "failed-work"
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    base = config.resolve(config.failed_dir) / f"{stamp}-{reason}-{slug}"
-    manifest = {
-        "created_at": utc_now(),
-        "artifact_kind": "failed_ephemeral_workspace",
-        "reason": reason,
-        "target_task": proposal.target_task,
-        "summary": proposal.summary,
-        "impact": proposal.impact,
-        "files": [item.get("path", "") for item in proposal.files],
-        "changed_files": proposal.changed_files,
-        "errors": [compact_message(error) for error in proposal.errors],
-        "transport": transport,
-        "validation_results": [result.compact() for result in proposal.validation_results],
-    }
-    workspace_artifact = workspace_artifact_payload(
-        proposal,
-        transport=transport,
-        promoted=False,
+    failed_dir = config.resolve(config.failed_dir)
+    failed_dir.mkdir(parents=True, exist_ok=True)
+    base = timestamped_artifact_base(
+        failed_dir,
+        summary=proposal.summary or reason,
+        fallback="failed-work",
         reason=reason,
     )
-    base.with_suffix(".json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    base.with_suffix(".workspace.json").write_text(
-        json.dumps(workspace_artifact, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
+    write_work_sidecars(
+        base=base,
+        manifest=failed_work_manifest(proposal, reason=reason, transport=transport),
+        workspace=failed_work_workspace_payload(proposal, reason=reason, transport=transport),
+        diff_text=diff_text,
+        changed_files=proposal.changed_files,
     )
-    base.with_suffix(".diff.txt").write_text(diff_text, encoding="utf-8")
-    base.with_suffix(".stat.txt").write_text("\n".join(proposal.changed_files) + "\n", encoding="utf-8")
 
 
 def build_prompt(config: Config, selected: Task) -> str:

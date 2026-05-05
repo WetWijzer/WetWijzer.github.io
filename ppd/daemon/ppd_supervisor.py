@@ -17,7 +17,6 @@ import signal
 import subprocess
 import sys
 import time
-import traceback
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -43,6 +42,9 @@ from ppd.daemon.ppd_daemon import (  # noqa: E402
     utc_now,
 )
 from ppd.daemon.recovery_note_compaction import compact_task_board_repair_notes
+from ipfs_datasets_py.optimizers.todo_daemon.diagnostics import (  # noqa: E402
+    exception_diagnostic as todo_exception_diagnostic,
+)
 
 FORBIDDEN_ABSENCE_MARKERS = (
     "cookie",
@@ -271,7 +273,7 @@ def atomic_write_text(path: Path, text: str) -> None:
 
 
 def exception_diagnostic(exc: BaseException, *, limit: int = 5000) -> str:
-    return compact_message("".join(traceback.format_exception(type(exc), exc, exc.__traceback__)), limit=limit)
+    return todo_exception_diagnostic(exc, limit=limit)
 
 
 def read_supervisor_result_rows(path: Path) -> list[dict[str, Any]]:
