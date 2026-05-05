@@ -477,6 +477,32 @@ export type PredicateCategoryType =
   | 'modal'
   | 'unknown';
 
+export const FOL_TYPES_PORT_METADATA = {
+  sourcePythonModule: 'logic/types/fol_types.py',
+  browserNative: true,
+  serverCallsAllowed: false,
+  pythonRuntimeAllowed: false,
+  runtimeDependencies: [],
+} as const;
+
+const FOL_OUTPUT_FORMAT_VALUES: Array<FolOutputFormatType> = [
+  'prolog',
+  'tptp',
+  'json',
+  'defeasible',
+  'smtlib',
+  'natural_language',
+];
+const PREDICATE_CATEGORY_VALUES: Array<PredicateCategoryType> = [
+  'entity',
+  'action',
+  'relation',
+  'property',
+  'temporal',
+  'modal',
+  'unknown',
+];
+
 export class PredicateType {
   constructor(
     readonly name: string,
@@ -488,6 +514,15 @@ export class PredicateType {
   toString(): string {
     if (this.arity === 0) return this.name;
     return `${this.name}(${Array.from({ length: this.arity }, (_, index) => `x${index}`).join(', ')})`;
+  }
+
+  toDict(): Record<string, unknown> {
+    return {
+      name: this.name,
+      arity: this.arity,
+      category: this.category,
+      definition: this.definition,
+    };
   }
 }
 
@@ -510,6 +545,19 @@ export class FOLFormulaType {
   hasQuantifiers(): boolean {
     return this.quantifiers.length > 0;
   }
+
+  toDict(): Record<string, unknown> {
+    return {
+      formula_string: this.formulaString,
+      predicates: this.predicates.map((predicate) => predicate.toDict()),
+      quantifiers: [...this.quantifiers],
+      operators: [...this.operators],
+      variables: [...this.variables],
+      complexity: this.complexity ? complexityMetricsToDict(this.complexity) : undefined,
+      confidence: this.confidence,
+      metadata: { ...this.metadata },
+    };
+  }
 }
 
 export class FOLConversionResultType {
@@ -526,6 +574,18 @@ export class FOLConversionResultType {
   isHighConfidence(threshold = 0.7): boolean {
     return this.confidence >= threshold;
   }
+
+  toDict(): Record<string, unknown> {
+    return {
+      source_text: this.sourceText,
+      fol_formula: this.folFormula.toDict(),
+      output_format: this.outputFormat,
+      formatted_output: this.formattedOutput,
+      confidence: this.confidence,
+      warnings: [...this.warnings],
+      metadata: { ...this.metadata },
+    };
+  }
 }
 
 export class PredicateExtractionType {
@@ -539,6 +599,117 @@ export class PredicateExtractionType {
   getAllPredicates(): PredicateType[] {
     return Object.values(this.predicatesByCategory).flatMap((predicates) => predicates ?? []);
   }
+
+  toDict(): Record<string, unknown> {
+    const predicatesByCategory: Record<string, Array<Record<string, unknown>>> = {};
+    for (const [category, predicates] of Object.entries(this.predicatesByCategory)) {
+      predicatesByCategory[category] = (predicates ?? []).map((predicate) => predicate.toDict());
+    }
+    return {
+      text: this.text,
+      predicates_by_category: predicatesByCategory,
+      total_predicates: this.totalPredicates,
+      confidence: this.confidence,
+    };
+  }
+}
+
+export function predicateTypeFromDict(value: unknown): PredicateType {
+  const record = isRecord(value) ? value : {};
+  const definition = stringField(record, 'definition');
+  return new PredicateType(
+    stringField(record, 'name', 'UnknownPredicate'),
+    Math.max(0, Math.trunc(numberField(record, 'arity', 0))),
+    predicateCategoryFromUnknown(record.category),
+    definition === '' ? undefined : definition,
+  );
+}
+
+export function folFormulaTypeFromDict(value: unknown): FOLFormulaType {
+  const record = isRecord(value) ? value : {};
+  return new FOLFormulaType(
+    stringField(record, 'formula_string', stringField(record, 'formulaString')),
+    arrayField(record, 'predicates').map((predicate) => predicateTypeFromDict(predicate)),
+    stringArrayField(record, 'quantifiers').filter(isQuantifier),
+    stringArrayField(record, 'operators').filter(isLogicOperator),
+    stringArrayField(record, 'variables'),
+    complexityMetricsFromUnknown(record.complexity),
+    numberField(record, 'confidence', 1),
+    recordField(record, 'metadata'),
+  );
+}
+
+export function folConversionResultTypeFromDict(value: unknown): FOLConversionResultType {
+  const record = isRecord(value) ? value : {};
+  return new FOLConversionResultType(
+    stringField(record, 'source_text', stringField(record, 'sourceText')),
+    folFormulaTypeFromDict(record.fol_formula ?? record.folFormula),
+    folOutputFormatFromUnknown(record.output_format ?? record.outputFormat),
+    stringField(record, 'formatted_output', stringField(record, 'formattedOutput')),
+    numberField(record, 'confidence', 1),
+    stringArrayField(record, 'warnings'),
+    recordField(record, 'metadata'),
+  );
+}
+
+export function predicateExtractionTypeFromDict(value: unknown): PredicateExtractionType {
+  const record = isRecord(value) ? value : {};
+  const rawCategories = recordField(
+    record,
+    'predicates_by_category',
+    recordField(record, 'predicatesByCategory'),
+  );
+  const predicatesByCategory: Partial<Record<PredicateCategoryType, Array<PredicateType>>> = {};
+  for (const [category, predicates] of Object.entries(rawCategories)) {
+    const normalizedCategory = predicateCategoryFromUnknown(category);
+    predicatesByCategory[normalizedCategory] = Array.isArray(predicates)
+      ? predicates.map((predicate) => predicateTypeFromDict(predicate))
+      : [];
+  }
+  return new PredicateExtractionType(
+    stringField(record, 'text'),
+    predicatesByCategory,
+    Math.max(
+      0,
+      Math.trunc(numberField(record, 'total_predicates', numberField(record, 'totalPredicates'))),
+    ),
+    numberField(record, 'confidence', 1),
+  );
+}
+
+export function validateFolTypesPort(value: unknown): LogicValidationResult & {
+  metadata: typeof FOL_TYPES_PORT_METADATA;
+} {
+  const issues: Array<LogicValidationIssue> = [];
+  const record = isRecord(value) ? value : {};
+  if (!isRecord(value)) issues.push({ severity: 'error', message: 'expected_object' });
+  if (record.server_calls_allowed === true)
+    issues.push({
+      severity: 'error',
+      field: 'server_calls_allowed',
+      message: 'server calls are forbidden',
+    });
+  if (record.python_runtime_allowed === true)
+    issues.push({
+      severity: 'error',
+      field: 'python_runtime_allowed',
+      message: 'Python runtime is forbidden',
+    });
+  if (
+    'output_format' in record &&
+    !FOL_OUTPUT_FORMAT_VALUES.includes(record.output_format as FolOutputFormatType)
+  )
+    issues.push({
+      severity: 'error',
+      field: 'output_format',
+      message: 'unknown FOL output format',
+    });
+  if (
+    'category' in record &&
+    !PREDICATE_CATEGORY_VALUES.includes(record.category as PredicateCategoryType)
+  )
+    issues.push({ severity: 'error', field: 'category', message: 'unknown predicate category' });
+  return { valid: issues.length === 0, issues, metadata: FOL_TYPES_PORT_METADATA };
 }
 
 export type LogicTranslationTarget =
@@ -639,4 +810,43 @@ function optionalNumberField(
 function booleanField(value: Record<string, unknown>, key: string, defaultValue = false): boolean {
   const field = value[key];
   return typeof field === 'boolean' ? field : defaultValue;
+}
+
+function arrayField(value: Record<string, unknown>, key: string): Array<unknown> {
+  const field = value[key];
+  return Array.isArray(field) ? [...field] : [];
+}
+
+function stringArrayField(value: Record<string, unknown>, key: string): Array<string> {
+  return arrayField(value, key).filter((item): item is string => typeof item === 'string');
+}
+
+function isLogicOperator(value: string): value is LogicOperator {
+  return isCommonLogicOperator(value) || value === 'XOR';
+}
+
+function predicateCategoryFromUnknown(value: unknown): PredicateCategoryType {
+  return typeof value === 'string' &&
+    PREDICATE_CATEGORY_VALUES.includes(value as PredicateCategoryType)
+    ? (value as PredicateCategoryType)
+    : 'unknown';
+}
+
+function folOutputFormatFromUnknown(value: unknown): FolOutputFormatType {
+  return typeof value === 'string' &&
+    FOL_OUTPUT_FORMAT_VALUES.includes(value as FolOutputFormatType)
+    ? (value as FolOutputFormatType)
+    : 'json';
+}
+
+function complexityMetricsFromUnknown(value: unknown): ComplexityMetrics | undefined {
+  if (!isRecord(value)) return undefined;
+  return createComplexityMetrics({
+    quantifierDepth: numberField(value, 'quantifier_depth', numberField(value, 'quantifierDepth')),
+    nestingLevel: numberField(value, 'nesting_level', numberField(value, 'nestingLevel')),
+    operatorCount: numberField(value, 'operator_count', numberField(value, 'operatorCount')),
+    variableCount: numberField(value, 'variable_count', numberField(value, 'variableCount')),
+    predicateCount: numberField(value, 'predicate_count', numberField(value, 'predicateCount')),
+    complexityScore: numberField(value, 'complexity_score', numberField(value, 'complexityScore')),
+  });
 }

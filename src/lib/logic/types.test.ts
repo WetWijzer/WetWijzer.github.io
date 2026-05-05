@@ -16,6 +16,7 @@ import {
   isFormulaType,
   isQuantifier,
   FOLConversionResultType,
+  FOL_TYPES_PORT_METADATA,
   FOLFormulaType,
   LogicBridgeConversionResult,
   PredicateExtractionType,
@@ -27,8 +28,13 @@ import {
   bridgeConfigFromDict,
   bridgeConversionResultFromDict,
   bridgeMetadataFromDict,
+  folConversionResultTypeFromDict,
+  folFormulaTypeFromDict,
+  predicateExtractionTypeFromDict,
+  predicateTypeFromDict,
   proverRecommendationFromDict,
   validateBridgeTypesPort,
+  validateFolTypesPort,
 } from './types';
 
 describe('logic shared type parity helpers', () => {
@@ -242,6 +248,70 @@ describe('logic shared type parity helpers', () => {
     expect(formula.hasQuantifiers()).toBe(true);
     expect(conversion.isHighConfidence()).toBe(true);
     expect(extraction.getAllPredicates()).toEqual([tenant, pays]);
+  });
+
+  it('hydrates fol_types.py dict-compatible records without server or Python dependencies', () => {
+    expect(FOL_TYPES_PORT_METADATA.sourcePythonModule).toBe('logic/types/fol_types.py');
+    expect(FOL_TYPES_PORT_METADATA.runtimeDependencies).toEqual([]);
+
+    const predicate = predicateTypeFromDict({ name: 'Tenant', arity: 1, category: 'entity' });
+    const formula = folFormulaTypeFromDict({
+      formula_string: '∀x (Tenant(x) → PaysRent(x))',
+      predicates: [predicate.toDict(), { name: 'PaysRent', arity: 1, category: 'action' }],
+      quantifiers: ['FORALL', 'INVALID'],
+      operators: ['IMPLIES', 'XOR', 'REMOTE_CALL'],
+      variables: ['x'],
+      complexity: { quantifier_depth: 1, complexity_score: 7.8 },
+      confidence: 0.93,
+      metadata: { source: 'fixture' },
+    });
+    const conversion = folConversionResultTypeFromDict({
+      source_text: 'All tenants pay rent',
+      fol_formula: formula.toDict(),
+      output_format: 'tptp',
+      formatted_output: 'fof(rule, axiom, (! [X] : (tenant(X) => paysrent(X)))).',
+      confidence: 0.93,
+      warnings: ['normalized predicate names'],
+      metadata: { browser_native: true },
+    });
+    const extraction = predicateExtractionTypeFromDict({
+      text: 'All tenants pay rent',
+      predicates_by_category: {
+        entity: [predicate.toDict()],
+        action: [{ name: 'PaysRent', arity: 1, category: 'action' }],
+      },
+      total_predicates: 2,
+      confidence: 0.88,
+    });
+
+    expect(predicate.toDict()).toMatchObject({ category: 'entity' });
+    expect(formula.getPredicateNames()).toEqual(['Tenant', 'PaysRent']);
+    expect(formula.operators).toEqual(['IMPLIES', 'XOR']);
+    expect(formula.toDict()).toMatchObject({
+      formula_string: '∀x (Tenant(x) → PaysRent(x))',
+      complexity: { quantifier_depth: 1, complexity_score: 7 },
+      metadata: { source: 'fixture' },
+    });
+    expect(conversion.toDict()).toMatchObject({
+      source_text: 'All tenants pay rent',
+      output_format: 'tptp',
+      confidence: 0.93,
+      metadata: { browser_native: true },
+    });
+    expect(extraction.getAllPredicates().map((item) => item.name)).toEqual(['Tenant', 'PaysRent']);
+    expect(extraction.toDict()).toMatchObject({ total_predicates: 2, confidence: 0.88 });
+    expect(validateFolTypesPort({ output_format: 'json', category: 'relation' })).toMatchObject({
+      valid: true,
+      metadata: FOL_TYPES_PORT_METADATA,
+    });
+    expect(
+      validateFolTypesPort({
+        output_format: 'remote',
+        category: 'server',
+        server_calls_allowed: true,
+        python_runtime_allowed: true,
+      }),
+    ).toMatchObject({ valid: false });
   });
 
   it('serializes translation result and abstract formula shapes', () => {

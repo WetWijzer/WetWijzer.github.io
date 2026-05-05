@@ -2063,3 +2063,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T023955Z-worktree-direct-edit-proposal..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T023955Z-worktree-direct-edit-proposal..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T023955Z-worktree-direct-edit-proposal..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 02:46:03 UTC
+
+- Target: `Task checkbox-420: Port remaining Python logic module `logic/types/fol_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Fixed TypeScript array-field narrowing in the fol_types browser-native TypeScript port helpers.
+- Impact: Restores compile validation without changing runtime behavior or adding server, Python, filesystem, subprocess, RPC, or Node-only dependencies.
+- Changed files: `src/lib/logic/types.test.ts`, `src/lib/logic/types.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T024603Z-fixed-typescript-array-field-narrowing-in-the-fol_types-browser-native-typescrip.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T024603Z-fixed-typescript-array-field-narrowing-in-the-fol_types-browser-native-typescrip.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T024603Z-fixed-typescript-array-field-narrowing-in-the-fol_types-browser-native-typescrip.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
