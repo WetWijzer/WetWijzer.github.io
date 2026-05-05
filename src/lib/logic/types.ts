@@ -1,8 +1,9 @@
 export type ConfidenceScore = number;
 export type ComplexityScore = number;
 
-export type LogicOperator = 'AND' | 'OR' | 'NOT' | 'IMPLIES' | 'IFF' | 'XOR';
-export type Quantifier = 'FORALL' | 'EXISTS';
+export type CommonLogicOperator = 'AND' | 'OR' | 'NOT' | 'IMPLIES' | 'IFF' | 'EXISTS' | 'FORALL';
+export type LogicOperator = CommonLogicOperator | 'XOR';
+export type Quantifier = 'FORALL' | 'EXISTS' | 'UNIVERSAL' | 'EXISTENTIAL';
 export type FormulaType =
   | 'first_order_logic'
   | 'modal_logic'
@@ -13,19 +14,42 @@ export type FormulaType =
   | 'quantified'
   | 'propositional';
 
+export const COMMON_TYPES_PORT_METADATA = {
+  sourcePythonModule: 'logic/types/common_types.py',
+  browserNative: true,
+  serverCallsAllowed: false,
+  pythonRuntimeAllowed: false,
+  runtimeDependencies: [],
+} as const;
+
 export const LOGIC_OPERATOR_SYMBOLS: Record<LogicOperator, string> = {
   AND: '∧',
   OR: '∨',
   NOT: '¬',
   IMPLIES: '→',
   IFF: '↔',
+  EXISTS: '∃',
+  FORALL: '∀',
   XOR: '⊕',
 };
 
 export const QUANTIFIER_SYMBOLS: Record<Quantifier, string> = {
   FORALL: '∀',
   EXISTS: '∃',
+  UNIVERSAL: '∀',
+  EXISTENTIAL: '∃',
 };
+
+export const FORMULA_TYPE_VALUES = {
+  FOL: 'first_order_logic',
+  MODAL: 'modal_logic',
+  TEMPORAL: 'temporal_logic',
+  DEONTIC: 'deontic_logic',
+  MIXED: 'mixed_logic',
+  ARITHMETIC: 'arithmetic',
+  QUANTIFIED: 'quantified',
+  PROPOSITIONAL: 'propositional',
+} as const satisfies Record<string, FormulaType>;
 
 export interface ComplexityMetrics {
   quantifierDepth: number;
@@ -81,6 +105,11 @@ export interface FormulaLike {
   getComplexity?(): ComplexityMetrics;
 }
 
+export interface PythonFormulaProtocol {
+  to_string(): string;
+  get_complexity(): ComplexityMetrics;
+}
+
 export interface FormulaProtocol {
   toString(): string;
   getComplexity(): ComplexityMetrics;
@@ -91,8 +120,56 @@ export interface ProverProtocol {
   getName(): string;
 }
 
+export interface PythonProverProtocol {
+  prove(formula: string, timeout?: number): ProofResult;
+  get_name(): string;
+}
+
 export interface ConverterProtocol {
   convert(formula: string, sourceFormat: string, targetFormat: string): string;
+}
+
+export interface PythonConverterProtocol {
+  convert(formula: string, source_format: string, target_format: string): string;
+}
+
+export function isCommonLogicOperator(value: unknown): value is CommonLogicOperator {
+  return (
+    typeof value === 'string' &&
+    ['AND', 'OR', 'NOT', 'IMPLIES', 'IFF', 'EXISTS', 'FORALL'].includes(value)
+  );
+}
+
+export function isQuantifier(value: unknown): value is Quantifier {
+  return (
+    typeof value === 'string' && ['FORALL', 'EXISTS', 'UNIVERSAL', 'EXISTENTIAL'].includes(value)
+  );
+}
+
+export function isFormulaType(value: unknown): value is FormulaType {
+  return (
+    typeof value === 'string' && Object.values(FORMULA_TYPE_VALUES).includes(value as FormulaType)
+  );
+}
+
+export function getLogicOperatorSymbol(operator: LogicOperator): string {
+  return LOGIC_OPERATOR_SYMBOLS[operator];
+}
+
+export function getQuantifierSymbol(quantifier: Quantifier): string {
+  return QUANTIFIER_SYMBOLS[quantifier];
+}
+
+export function formulaProtocolToString(formula: FormulaProtocol | PythonFormulaProtocol): string {
+  if ('to_string' in formula) return formula.to_string();
+  return formula.toString();
+}
+
+export function formulaProtocolComplexity(
+  formula: FormulaProtocol | PythonFormulaProtocol,
+): ComplexityMetrics {
+  if ('get_complexity' in formula) return formula.get_complexity();
+  return formula.getComplexity();
 }
 
 export type ProofStatus = 'proved' | 'disproved' | 'unknown' | 'timeout' | 'error';

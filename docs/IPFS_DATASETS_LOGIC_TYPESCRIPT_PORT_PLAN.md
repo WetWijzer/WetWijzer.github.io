@@ -928,7 +928,7 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Port remaining Python logic module `logic/security/llm_circuit_breaker.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/security/rate_limiting.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/types/bridge_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
-- [ ] Port remaining Python logic module `logic/types/common_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
+- [x] Port remaining Python logic module `logic/types/common_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/types/deontic_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/types/fol_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/types/proof_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
@@ -966,11 +966,11 @@ These tasks were added automatically after the daemon found no eligible unchecke
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 02:32:39 UTC
+Last updated: 2026-05-05 02:34:45 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-418: Port remaining Python logic module 'logic/types/common_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+Current target: `Task checkbox-419: Port remaining Python logic module 'logic/types/deontic_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1392,8 +1392,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-414: Port remaining Python logic module 'logic/security/input_validation.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-415: Port remaining Python logic module 'logic/security/llm_circuit_breaker.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-416: Port remaining Python logic module 'logic/security/rate_limiting.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [x] `Task checkbox-417: Port remaining Python logic module 'logic/types/bridge_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
-- [ ] `Task checkbox-418: Port remaining Python logic module 'logic/types/common_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
+- [x] `Task checkbox-417: Port remaining Python logic module 'logic/types/bridge_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
+- [x] `Task checkbox-418: Port remaining Python logic module 'logic/types/common_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
 - [ ] `Task checkbox-419: Port remaining Python logic module 'logic/types/deontic_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-420: Port remaining Python logic module 'logic/types/fol_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-421: Port remaining Python logic module 'logic/types/proof_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
@@ -1430,10 +1430,10 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-417: Port remaining Python logic module 'logic/types/bridge_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Target: `Task checkbox-418: Port remaining Python logic module 'logic/types/common_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 - Result: `valid`
-- Summary: Port bridge_types.py parity helpers into the browser-native shared logic type surface.
-- Impact: src/lib/logic/types.ts now exposes bridge type port metadata, Python dict-compatible hydration helpers, and fail-closed validation for bridge metadata/config/conversion/recommendation records; src/lib/logic/types.test.ts directly exercises those helpers in the Jest validation suite.
+- Summary: Ported common_types.py shared enum/protocol contracts into the browser-native TypeScript logic type surface.
+- Impact: src/lib/logic/types.ts now exposes Python-compatible common_types.py metadata, operator/quantifier/formula enum values, snake_case protocol adapters, and guards without server, Python, filesystem, subprocess, or RPC dependencies; src/lib/logic/types.test.ts validates those contracts in the existing Jest suite.
 - Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/types.test.ts`, `src/lib/logic/types.ts`
 
 ### Blocked Backlog

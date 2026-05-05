@@ -2,8 +2,19 @@ import {
   BRIDGE_CAPABILITIES,
   BridgeConfig,
   BridgeMetadata,
+  COMMON_TYPES_PORT_METADATA,
+  FORMULA_TYPE_VALUES,
+  LOGIC_OPERATOR_SYMBOLS,
+  QUANTIFIER_SYMBOLS,
   complexityMetricsToDict,
   createComplexityMetrics,
+  formulaProtocolComplexity,
+  formulaProtocolToString,
+  getLogicOperatorSymbol,
+  getQuantifierSymbol,
+  isCommonLogicOperator,
+  isFormulaType,
+  isQuantifier,
   FOLConversionResultType,
   FOLFormulaType,
   LogicBridgeConversionResult,
@@ -21,6 +32,42 @@ import {
 } from './types';
 
 describe('logic shared type parity helpers', () => {
+  it('exposes common_types.py enum values and browser-native metadata', () => {
+    expect(COMMON_TYPES_PORT_METADATA).toEqual({
+      sourcePythonModule: 'logic/types/common_types.py',
+      browserNative: true,
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+      runtimeDependencies: [],
+    });
+    expect(LOGIC_OPERATOR_SYMBOLS).toMatchObject({
+      AND: '∧',
+      OR: '∨',
+      NOT: '¬',
+      IMPLIES: '→',
+      IFF: '↔',
+      EXISTS: '∃',
+      FORALL: '∀',
+    });
+    expect(QUANTIFIER_SYMBOLS).toMatchObject({
+      UNIVERSAL: '∀',
+      EXISTENTIAL: '∃',
+    });
+    expect(FORMULA_TYPE_VALUES).toMatchObject({
+      FOL: 'first_order_logic',
+      MODAL: 'modal_logic',
+      TEMPORAL: 'temporal_logic',
+      DEONTIC: 'deontic_logic',
+      MIXED: 'mixed_logic',
+    });
+    expect(isCommonLogicOperator('XOR')).toBe(false);
+    expect(isCommonLogicOperator('FORALL')).toBe(true);
+    expect(isQuantifier('UNIVERSAL')).toBe(true);
+    expect(isFormulaType('first_order_logic')).toBe(true);
+    expect(getLogicOperatorSymbol('EXISTS')).toBe('∃');
+    expect(getQuantifierSymbol('EXISTENTIAL')).toBe('∃');
+  });
+
   it('serializes complexity metrics using Python-compatible field names', () => {
     const metrics = createComplexityMetrics({
       quantifierDepth: 2,
@@ -38,6 +85,25 @@ describe('logic shared type parity helpers', () => {
       variable_count: 5,
       predicate_count: 6,
       complexity_score: 7,
+    });
+  });
+
+  it('supports Python protocol method names without runtime bridges', () => {
+    const formula = {
+      to_string: () => '∀x Tenant(x)',
+      get_complexity: () =>
+        createComplexityMetrics({
+          quantifierDepth: 1,
+          predicateCount: 1,
+          complexityScore: 12,
+        }),
+    };
+
+    expect(formulaProtocolToString(formula)).toBe('∀x Tenant(x)');
+    expect(complexityMetricsToDict(formulaProtocolComplexity(formula))).toMatchObject({
+      quantifier_depth: 1,
+      predicate_count: 1,
+      complexity_score: 12,
     });
   });
 
