@@ -1,15 +1,15 @@
 {
-  "createdAt": "2026-05-05T06:11:24.181550Z",
+  "createdAt": "2026-05-05T06:28:55Z",
   "decision": {
-    "action": "plan_next_tasks",
-    "reason": "daemon has no eligible unblocked tasks; review blocked work against the PP&D goal and append a fresh goal-aligned tranche instead of retrying parked tasks",
+    "action": "manual_supervisor_recovery_continuation",
+    "reason": "repeated generated Autonomous PP&D Platform tranches and closed circuit-breaker recovery tasks left no selectable source-backed work",
     "severity": "warning"
   },
   "failedAgenticRepair": {
     "changedFiles": [],
     "errors": [],
-    "failureKind": "no_eligible_tasks",
-    "summary": "All currently planned PP&D tasks are complete.",
+    "failureKind": "generated_recovery_exhausted",
+    "summary": "Repeated generated platform and blocked-cascade recovery work was compacted and replaced with vetted continuation tasks.",
     "validationResults": []
   },
   "fallbackActions": [
@@ -19,7 +19,7 @@
     "keep future retry scope narrow and fixture-first"
   ],
   "llmBackend": "llm_router",
-  "repairKind": "builtin_supervisor_fallback",
+  "repairKind": "manual_supervisor_recovery_continuation",
   "safetyBoundaries": [
     "no private DevHub session artifacts",
     "no raw crawl output",
@@ -31,10 +31,10 @@
   "taskBoardRepair": {
     "parkedRepeatedSyntaxLoopTasks": [],
     "replenishedGoalTaskLabels": [
-      "checkbox-1026",
-      "checkbox-1027",
-      "checkbox-1028",
-      "checkbox-1029"
+      "checkbox-450",
+      "checkbox-451",
+      "checkbox-452",
+      "checkbox-453"
     ],
     "supersededTaskBoardOnlyLabels": [],
     "taskBoardUpdated": true

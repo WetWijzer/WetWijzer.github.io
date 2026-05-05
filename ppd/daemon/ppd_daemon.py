@@ -12,21 +12,16 @@ from __future__ import annotations
 
 import argparse
 from contextlib import contextmanager
-import difflib
 import json
 import os
 import py_compile
 import re
-import shutil
 import signal
 import subprocess
 import sys
 import tempfile
-import threading
-import time
 import traceback
-import uuid
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable, Iterator, Optional
@@ -34,17 +29,61 @@ from urllib.parse import urlparse
 
 if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+_IPFS_DATASETS_SUBMODULE = Path(__file__).resolve().parents[2] / "ipfs_datasets_py"
+if _IPFS_DATASETS_SUBMODULE.exists() and str(_IPFS_DATASETS_SUBMODULE) not in sys.path:
+    sys.path.insert(0, str(_IPFS_DATASETS_SUBMODULE))
+_IPFS_DATASETS_PACKAGE = _IPFS_DATASETS_SUBMODULE / "ipfs_datasets_py"
+_CACHED_IPFS_PACKAGE = sys.modules.get("ipfs_datasets_py")
+if (
+    _CACHED_IPFS_PACKAGE is not None
+    and getattr(_CACHED_IPFS_PACKAGE, "__file__", None) is None
+    and _IPFS_DATASETS_PACKAGE.exists()
+):
+    sys.modules.pop("ipfs_datasets_py", None)
 
 from ppd.daemon.accepted_work_ledger import (
     AcceptedWorkArtifacts,
+    LEDGER_FILENAME,
     append_accepted_work_ledger as append_accepted_work_jsonl,
     build_accepted_work_ledger_entry,
 )
 from ppd.daemon.syntax_preflight import run_apply_flow_syntax_preflight
+from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
+    CommandResult,
+    PathPolicy,
+    Proposal,
+    Task,
+    ValidationWorkspaceSpec,
+    append_jsonl,
+    atomic_write_json,
+    compact_message,
+    cleanup_stale_validation_worktrees as cleanup_todo_validation_worktrees,
+    diff_for_file as todo_diff_for_file,
+    extract_json as todo_extract_json,
+    materialize_proposal_files,
+    normalized_relative_path as todo_normalized_relative_path,
+    parse_json_proposal,
+    parse_markdown_tasks,
+    proposal_diff_from_worktree as todo_proposal_diff_from_worktree,
+    proposal_files_from_worktree as todo_proposal_files_from_worktree,
+    promote_worktree_files as todo_promote_worktree_files,
+    read_text,
+    run_command as todo_run_command,
+    select_task as select_todo_task,
+    temporary_validation_worktree as temporary_todo_validation_worktree,
+    utc_now,
+    verify_promoted_worktree_files as todo_verify_promoted_worktree_files,
+    workspace_artifact_payload as todo_workspace_artifact_payload,
+    worktree_marker_payload as todo_worktree_marker_payload,
+)
+from ipfs_datasets_py.optimizers.todo_daemon.runner import (  # noqa: E402
+    PreTaskBlock,
+    TodoDaemonHooks,
+    TodoDaemonRunner,
+)
 
 
 CHECKBOX_RE = re.compile(r"^(?P<prefix>\s*-\s+\[)(?P<mark>[ xX~!])(?P<suffix>\]\s+)(?P<title>.+)$")
-JSON_BLOCK_RE = re.compile(r"```json\s*([\s\S]*?)\s*```", re.IGNORECASE)
 TASK_BOARD_STATUS_RE = re.compile(
     r"\n?<!-- ppd-daemon-task-board:start -->[\s\S]*?<!-- ppd-daemon-task-board:end -->\n?",
     re.MULTILINE,
@@ -138,75 +177,6 @@ PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS = frozenset(
 _ACTIVE_LLM_PROCESS: Optional[subprocess.Popen[Any]] = None
 
 
-@dataclass(frozen=True)
-class Task:
-    index: int
-    title: str
-    status: str
-    checkbox_id: int
-
-    @property
-    def label(self) -> str:
-        return f"Task checkbox-{self.checkbox_id}: {self.title}"
-
-
-@dataclass(frozen=True)
-class CommandResult:
-    command: tuple[str, ...]
-    returncode: int
-    stdout: str
-    stderr: str
-
-    @property
-    def ok(self) -> bool:
-        return self.returncode == 0
-
-    def compact(self, limit: int = 5000) -> dict[str, Any]:
-        return {
-            "command": list(self.command),
-            "returncode": self.returncode,
-            "stdout": compact_message(self.stdout, limit=limit),
-            "stderr": compact_message(self.stderr, limit=limit),
-        }
-
-
-@dataclass
-class Proposal:
-    summary: str = ""
-    impact: str = ""
-    files: list[dict[str, str]] = field(default_factory=list)
-    validation_commands: list[list[str]] = field(default_factory=list)
-    raw_response: str = ""
-    errors: list[str] = field(default_factory=list)
-    failure_kind: str = ""
-    target_task: str = ""
-    changed_files: list[str] = field(default_factory=list)
-    validation_results: list[CommandResult] = field(default_factory=list)
-    applied: bool = False
-    dry_run: bool = True
-    trusted_validation_commands: bool = False
-
-    @property
-    def valid(self) -> bool:
-        return self.applied and not self.errors and all(result.ok for result in self.validation_results)
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "summary": self.summary,
-            "impact": self.impact,
-            "target_task": self.target_task,
-            "files": [item.get("path", "") for item in self.files],
-            "changed_files": self.changed_files,
-            "applied": self.applied,
-            "dry_run": self.dry_run,
-            "validation_passed": bool(self.validation_results) and all(result.ok for result in self.validation_results),
-            "validation_results": [result.compact() for result in self.validation_results],
-            "errors": [compact_message(error) for error in self.errors],
-            "failure_kind": self.failure_kind,
-            "trusted_validation_commands": self.trusted_validation_commands,
-        }
-
-
 @dataclass
 class Config:
     repo_root: Path
@@ -237,6 +207,7 @@ class Config:
     max_task_failures_before_block: int = 3
     repair_validation_failures: bool = False
     max_validation_repair_attempts: int = 1
+    write_accepted_work_sidecars: bool = False
     worktree_stale_seconds: int = 7200
     crash_backoff_seconds: float = 5.0
     validation_repair_callback: Optional[Callable[[str, "Config"], str]] = None
@@ -253,65 +224,16 @@ class PreLlmBlockDecision:
     result: str
 
 
-def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-
-
-def read_text(path: Path, limit: Optional[int] = None) -> str:
-    text = path.read_text(encoding="utf-8")
-    if limit is not None and len(text) > limit:
-        return text[:limit] + "\n\n[truncated]\n"
-    return text
-
-
-def atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    tmp.replace(path)
-
-
-def append_jsonl(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(payload, sort_keys=True) + "\n")
-
-
 def parse_tasks(markdown: str) -> list[Task]:
-    tasks: list[Task] = []
-    for line in markdown.splitlines():
-        match = CHECKBOX_RE.match(line)
-        if not match:
-            continue
-        mark = match.group("mark")
-        raw_title = match.group("title").strip()
-        checkbox_id = len(tasks) + 1
-        title = raw_title
-        id_match = re.match(r"Task checkbox-(?P<id>\d+):\s*(?P<title>.+)$", raw_title)
-        if id_match:
-            checkbox_id = int(id_match.group("id"))
-            title = id_match.group("title").strip()
-        status = "needed"
-        if mark.lower() == "x":
-            status = "complete"
-        elif mark == "~":
-            status = "in-progress"
-        elif mark == "!":
-            status = "blocked"
-        tasks.append(Task(index=len(tasks) + 1, title=title, status=status, checkbox_id=checkbox_id))
-    return tasks
+    return parse_markdown_tasks(markdown, checkbox_re=CHECKBOX_RE)
 
 
 def select_task(tasks: Iterable[Task], *, revisit_blocked: bool = False) -> Optional[Task]:
-    task_list = list(tasks)
-    for task in task_list:
-        if task.status in {"needed", "in-progress"}:
-            return task
-    if revisit_blocked:
-        for task in task_list:
-            if task.status == "blocked" and task.checkbox_id not in PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS:
-                return task
-    return None
+    return select_todo_task(
+        tasks,
+        revisit_blocked=revisit_blocked,
+        protected_blocked_checkbox_ids=PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS,
+    )
 
 
 def select_task_for_config(tasks: Iterable[Task], config: Config) -> Optional[Task]:
@@ -432,28 +354,6 @@ def should_sleep_between_watch_cycles(markdown: str, *, revisit_blocked: bool = 
     return select_task(parse_tasks(markdown), revisit_blocked=revisit_blocked) is None
 
 
-def compact_message(value: Any, limit: int = 700) -> str:
-    text = str(value or "")
-    text = re.sub(
-        r"<!doctype html[\s\S]*",
-        "[html response omitted]",
-        text,
-        flags=re.IGNORECASE,
-    )
-    text = re.sub(
-        r"<(?:html|head|body|script|style|svg|path|div|meta|noscript)\b[\s\S]*",
-        "[html response omitted]",
-        text,
-        flags=re.IGNORECASE,
-    )
-    text = re.sub(r"__cf_chl_[A-Za-z0-9_.=-]+", "__cf_chl_[omitted]", text)
-    text = re.sub(r"c[A-Z][A-Za-z0-9_]*:\s*'[^']{80,}'", "cloudflare_token: '[omitted]'", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    if len(text) > limit:
-        return text[:limit].rstrip() + "..."
-    return text
-
-
 def exception_diagnostic(exc: BaseException, *, limit: int = 5000) -> str:
     return compact_message("".join(traceback.format_exception(type(exc), exc, exc.__traceback__)), limit=limit)
 
@@ -488,6 +388,8 @@ def failure_block_threshold(proposal: Proposal, config: Config) -> int:
 
     if proposal.failure_kind in {"syntax_preflight", "llm_termination"}:
         return min(config.max_task_failures_before_block, 2)
+    if proposal.failure_kind == "no_visible_source_change":
+        return 1
     return config.max_task_failures_before_block
 
 
@@ -627,6 +529,123 @@ DETERMINISTIC_TASK_SOURCE_EVIDENCE_IDS = (
     "evidence:single-pdf-process:2026-05-01",
 )
 
+DETERMINISTIC_PLATFORM_INIT = '''"""Source-backed PP&D autonomous platform contracts.
+
+Modules in this package are imported directly by capability area so a partially
+implemented tranche never imports a source file that has not been created yet.
+"""
+'''
+
+DETERMINISTIC_SOURCE_FILES: dict[str, tuple[str, str]] = {
+    "platform_continuation": (
+        "ppd/platform/autonomous_archival_contract.py",
+        '''"""Source-backed contract for PP&D public archival capability.
+
+The contract is intentionally side-effect-free: it names the implementation
+surfaces the daemon must wire together before any live crawl is allowed.
+"""
+
+from __future__ import annotations
+
+
+def archival_contract() -> dict[str, object]:
+    return {
+        "capability": "whole_site_public_archival",
+        "entrypoints": [
+            "ppd.crawler.live_public_preflight",
+            "ppd.crawler.whole_site_archival",
+            "ipfs_datasets_py.processors",
+        ],
+        "requiredOutputs": [
+            "archive_manifest",
+            "normalized_document_record",
+            "source_evidence_id",
+            "requirement_batch",
+        ],
+        "defaultMode": "fixture_only",
+        "liveCrawlAllowedByDefault": False,
+    }
+''',
+    ),
+    "processor_suite_planning": (
+        "ppd/platform/processor_suite_contract.py",
+        '''"""Source-backed contract for processor-suite PP&D handoff."""
+
+from __future__ import annotations
+
+
+def processor_suite_contract() -> dict[str, object]:
+    return {
+        "capability": "processor_suite_handoff",
+        "processorSuite": "ipfs_datasets_py.processors",
+        "requiredInputs": [
+            "public_source_url",
+            "robots_decision",
+            "content_type",
+            "canonical_document_id",
+        ],
+        "requiredOutputs": [
+            "processor_handoff_manifest",
+            "pdf_metadata_record",
+            "normalized_public_document",
+            "formal_logic_source_evidence_id",
+        ],
+        "rawBodyPersistenceAllowed": False,
+    }
+''',
+    ),
+    "playwright_pdf_handoff": (
+        "ppd/platform/playwright_pdf_contract.py",
+        '''"""Source-backed contract for attended Playwright and PDF draft work."""
+
+from __future__ import annotations
+
+
+def playwright_pdf_contract() -> dict[str, object]:
+    return {
+        "capability": "attended_draft_automation",
+        "allowedActions": [
+            "manual_login_handoff",
+            "journal_replay",
+            "reversible_draft_field_fill",
+            "local_pdf_preview_fill",
+        ],
+        "blockedActions": [
+            "official_upload",
+            "permit_submission",
+            "certification",
+            "fee_payment",
+            "account_security_transition",
+            "inspection_scheduling",
+        ],
+        "requiresHumanAttendanceBeforeBrowserUse": True,
+        "exactConfirmationBeforeOfficialAction": True,
+    }
+''',
+    ),
+    "supervisor_idle_recovery": (
+        "ppd/platform/supervisor_idle_policy.py",
+        '''"""Source-backed contract for supervisor idle and replenishment behavior."""
+
+from __future__ import annotations
+
+
+def supervisor_idle_policy() -> dict[str, object]:
+    return {
+        "capability": "supervisor_idle_recovery",
+        "noEligibleTasksPolicy": "review_goal_before_replenishment",
+        "replenishmentLimits": {
+            "autonomousPlatformTranches": 1,
+            "executionCapabilityTranches": 1,
+        },
+        "mustNotAcceptRuntimeOnlyProgress": True,
+        "mustVerifyPromotionToMainWorktree": True,
+        "acceptedEvidenceMode": "ledger_only",
+    }
+''',
+    ),
+}
+
 
 def deterministic_task_fallback_kind(task: Task) -> str:
     lowered = task.title.lower()
@@ -667,6 +686,7 @@ def build_deterministic_task_fallback_proposal(config: Config, selected: Task) -
         if config.validation_commands == DEFAULT_VALIDATION_COMMANDS
         else config.validation_commands
     )
+    source_path, source_content = DETERMINISTIC_SOURCE_FILES[fallback_kind]
 
     return Proposal(
         summary=f"Complete {fallback_kind.replace('_', ' ')} with deterministic PP&D fallback.",
@@ -677,6 +697,14 @@ def build_deterministic_task_fallback_proposal(config: Config, selected: Task) -
         ),
         files=[
             {
+                "path": "ppd/platform/__init__.py",
+                "content": DETERMINISTIC_PLATFORM_INIT,
+            },
+            {
+                "path": source_path,
+                "content": source_content,
+            },
+            {
                 "path": config.deterministic_progress_file.as_posix(),
                 "content": json.dumps(manifest, indent=2, sort_keys=True) + "\n",
             }
@@ -684,6 +712,7 @@ def build_deterministic_task_fallback_proposal(config: Config, selected: Task) -
         validation_commands=[list(command) for command in validation_commands],
         failure_kind="",
         trusted_validation_commands=True,
+        requires_visible_source_change=True,
     )
 
 
@@ -834,98 +863,57 @@ def is_forbidden_absence_marker_validation_failure(failure: dict[str, Any]) -> b
     return any(marker in text for marker in FORBIDDEN_ABSENCE_MARKERS)
 
 
+RUNTIME_ONLY_CHANGE_PATHS = frozenset(
+    {
+        "ppd/daemon/builtin-repair-status.json",
+        "ppd/daemon/deterministic-progress.json",
+        "ppd/daemon/task-board.md",
+    }
+)
+
+PPD_PATH_POLICY = PathPolicy(
+    allowed_write_prefixes=ALLOWED_WRITE_PREFIXES,
+    disallowed_write_prefixes=DISALLOWED_WRITE_PREFIXES,
+    private_write_path_fragments=PRIVATE_WRITE_PATH_FRAGMENTS,
+    private_write_path_tokens=PRIVATE_WRITE_PATH_TOKENS,
+    runtime_only_change_paths=RUNTIME_ONLY_CHANGE_PATHS,
+    ignored_visible_prefixes=(
+        "ppd/daemon/accepted-work/",
+        "ppd/daemon/failed-patches/",
+        "ppd/daemon/worktrees/",
+    ),
+    visible_source_prefixes=("ppd/",),
+)
+
+
 def extract_json(text: str) -> Optional[dict[str, Any]]:
-    match = JSON_BLOCK_RE.search(text)
-    candidates = [match.group(1)] if match else []
-    stripped = text.strip()
-    if stripped.startswith("{") and stripped.endswith("}"):
-        candidates.append(stripped)
-    start = stripped.find("{")
-    end = stripped.rfind("}")
-    if start >= 0 and end > start:
-        candidates.append(stripped[start : end + 1])
-    for candidate in candidates:
-        try:
-            parsed = json.loads(candidate)
-            if isinstance(parsed, dict):
-                return parsed
-        except json.JSONDecodeError:
-            continue
-    return None
+    return todo_extract_json(text)
 
 
 def parse_proposal(text: str) -> Proposal:
-    parsed = extract_json(text)
-    if parsed is None:
-        return Proposal(raw_response=text, errors=["LLM response did not contain a JSON object."], failure_kind="parse")
-    files: list[dict[str, str]] = []
-    raw_files = parsed.get("files", [])
-    if isinstance(raw_files, list):
-        for item in raw_files:
-            if not isinstance(item, dict):
-                continue
-            path = item.get("path")
-            content = item.get("content")
-            if isinstance(path, str) and isinstance(content, str):
-                files.append({"path": path, "content": content})
-    commands: list[list[str]] = []
-    raw_commands = parsed.get("validation_commands", [])
-    if isinstance(raw_commands, list):
-        for command in raw_commands:
-            if isinstance(command, list) and all(isinstance(part, str) for part in command):
-                commands.append(command)
-    return Proposal(
-        summary=str(parsed.get("summary", "")),
-        impact=str(parsed.get("impact", "")),
-        files=files,
-        validation_commands=commands,
-        raw_response=text,
-    )
+    return parse_json_proposal(text)
 
 
 def normalized_relative_path(path: str) -> str:
-    candidate = Path(path)
-    if candidate.is_absolute():
-        raise ValueError(f"absolute paths are not allowed: {path}")
-    normalized = candidate.as_posix()
-    if normalized.startswith("../") or "/../" in normalized or normalized == "..":
-        raise ValueError(f"path traversal is not allowed: {path}")
-    return normalized
+    return todo_normalized_relative_path(path)
 
 
 def validate_write_path(path: str) -> list[str]:
-    errors: list[str] = []
-    try:
-        normalized = normalized_relative_path(path)
-    except ValueError as exc:
-        return [str(exc)]
-    if any(normalized.startswith(prefix) for prefix in DISALLOWED_WRITE_PREFIXES):
-        errors.append(f"disallowed PP&D daemon write target: {normalized}")
-    if not any(normalized.startswith(prefix) or normalized == prefix.rstrip("/") for prefix in ALLOWED_WRITE_PREFIXES):
-        errors.append(f"write target is outside PP&D allowlist: {normalized}")
-    if is_private_write_path(normalized):
-        errors.append(f"private/session artifacts may not be generated by daemon proposals: {normalized}")
-    return errors
+    return PPD_PATH_POLICY.validate_write_path(path, daemon_label="PP&D daemon")
 
 
 def is_private_write_path(normalized: str) -> bool:
-    lowered = normalized.lower()
-    if any(fragment in lowered for fragment in PRIVATE_WRITE_PATH_FRAGMENTS):
-        return True
-    tokens = [token for token in re.split(r"[/._-]+", lowered) if token]
-    return any(token in PRIVATE_WRITE_PATH_TOKENS for token in tokens)
+    return PPD_PATH_POLICY.is_private_write_path(normalized)
+
+
+def has_visible_source_change(changed_files: Iterable[str]) -> bool:
+    """Return True when accepted work changes source or fixture files, not only runtime state."""
+
+    return PPD_PATH_POLICY.has_visible_source_change(changed_files)
 
 
 def run_command(command: tuple[str, ...], *, cwd: Path, timeout: int) -> CommandResult:
-    completed = subprocess.run(
-        list(command),
-        cwd=str(cwd),
-        text=True,
-        capture_output=True,
-        timeout=timeout,
-        check=False,
-    )
-    return CommandResult(command=command, returncode=completed.returncode, stdout=completed.stdout, stderr=completed.stderr)
+    return todo_run_command(command, cwd=cwd, timeout=timeout)
 
 
 def validation_commands_for_proposal(proposal: Proposal, config: Config) -> tuple[tuple[str, ...], ...]:
@@ -947,75 +935,20 @@ def run_validation(
 
 
 def diff_for_file(path: str, before: str, after: str) -> str:
-    return "".join(
-        difflib.unified_diff(
-            before.splitlines(keepends=True),
-            after.splitlines(keepends=True),
-            fromfile=f"a/{path}",
-            tofile=f"b/{path}",
-        )
-    )
+    return todo_diff_for_file(path, before, after)
 
 
 def worktree_marker_payload(*, state: str, source_root: Path) -> dict[str, Any]:
-    return {
-        "created_at": utc_now(),
-        "schema_version": 1,
-        "source_root": source_root.as_posix(),
-        "state": state,
-        "transport": "ephemeral_worktree",
-    }
+    return todo_worktree_marker_payload(state=state, source_root=source_root)
 
 
 def cleanup_stale_validation_worktrees(config: Config, *, max_age_seconds: Optional[int] = None) -> list[str]:
     """Remove old PP&D validation worktrees left by interrupted daemon runs."""
 
-    root = config.resolve(config.worktree_dir)
-    if not root.exists():
-        return []
-    cutoff = time.time() - float(config.worktree_stale_seconds if max_age_seconds is None else max_age_seconds)
-    removed: list[str] = []
-    for child in root.iterdir():
-        marker = child / "ppd-worktree.json"
-        if not child.is_dir() or not marker.exists():
-            continue
-        try:
-            if child.stat().st_mtime > cutoff:
-                continue
-            shutil.rmtree(child)
-            removed.append(child.name)
-        except FileNotFoundError:
-            continue
-    return removed
-
-
-def _copy_if_exists(source: Path, destination: Path, *, ignore: Optional[Callable[[str, list[str]], set[str]]] = None) -> None:
-    if not source.exists():
-        return
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    if source.is_dir():
-        shutil.copytree(source, destination, symlinks=True, dirs_exist_ok=True, ignore=ignore)
-    else:
-        shutil.copy2(source, destination)
-
-
-def _link_or_copy_if_exists(source: Path, destination: Path) -> None:
-    if not source.exists():
-        return
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        destination.symlink_to(source.resolve(), target_is_directory=source.is_dir())
-    except OSError:
-        _copy_if_exists(source, destination)
-
-
-def _copy_validation_external_references(config: Config, worktree: Path) -> None:
-    """Expose read-only external metadata needed by PP&D validation tests."""
-
-    processor_metadata = Path("ipfs_datasets_py/ipfs_datasets_py/processors")
-    _link_or_copy_if_exists(
-        config.repo_root / processor_metadata,
-        worktree / processor_metadata,
+    return cleanup_todo_validation_worktrees(
+        config.resolve(config.worktree_dir),
+        marker_name="ppd-worktree.json",
+        max_age_seconds=int(config.worktree_stale_seconds if max_age_seconds is None else max_age_seconds),
     )
 
 
@@ -1033,36 +966,25 @@ def _ignore_validation_tree_entries(directory: str, names: list[str]) -> set[str
 def temporary_validation_worktree(config: Config) -> Iterator[Path]:
     """Create an isolated PP&D validation tree and remove it after the cycle."""
 
-    cleanup_stale_validation_worktrees(config)
-    root = config.resolve(config.worktree_dir)
-    root.mkdir(parents=True, exist_ok=True)
-    worktree = root / f"cycle-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')}-{uuid.uuid4().hex[:8]}"
-    worktree.mkdir(parents=True)
-    marker = worktree / "ppd-worktree.json"
-    marker.write_text(
-        json.dumps(worktree_marker_payload(state="initializing", source_root=config.repo_root), indent=2, sort_keys=True)
-        + "\n",
-        encoding="utf-8",
-    )
-    try:
-        _copy_if_exists(config.repo_root / "ppd", worktree / "ppd", ignore=_ignore_validation_tree_entries)
-        docs_plan = config.resolve(config.plan_doc)
-        if docs_plan.exists():
-            _copy_if_exists(docs_plan, worktree / config.plan_doc)
-        for root_file in ("package.json", "package-lock.json", "tsconfig.json"):
-            _copy_if_exists(config.repo_root / root_file, worktree / root_file)
-        _copy_validation_external_references(config, worktree)
-        marker.write_text(
-            json.dumps(worktree_marker_payload(state="ready", source_root=config.repo_root), indent=2, sort_keys=True)
-            + "\n",
-            encoding="utf-8",
-        )
-        yield worktree
-    finally:
+    plan_doc = config.plan_doc
+    if plan_doc.is_absolute():
         try:
-            shutil.rmtree(worktree)
-        except FileNotFoundError:
-            pass
+            plan_doc = plan_doc.relative_to(config.repo_root)
+        except ValueError:
+            plan_doc = Path()
+    copy_paths = tuple(path for path in (Path("ppd"), plan_doc) if path.as_posix())
+    spec = ValidationWorkspaceSpec(
+        repo_root=config.repo_root,
+        worktree_dir=config.worktree_dir,
+        marker_name="ppd-worktree.json",
+        copy_paths=copy_paths,
+        root_files=("package.json", "package-lock.json", "tsconfig.json"),
+        external_reference_paths=(Path("ipfs_datasets_py/ipfs_datasets_py/processors"),),
+        ignore=_ignore_validation_tree_entries,
+        stale_seconds=config.worktree_stale_seconds,
+    )
+    with temporary_todo_validation_worktree(spec) as worktree:
+        yield worktree
 
 
 def worktree_config(config: Config, worktree: Path) -> Config:
@@ -1075,14 +997,7 @@ def worktree_config(config: Config, worktree: Path) -> Config:
 
 
 def proposal_diff_from_worktree(config: Config, worktree: Path, changed: Iterable[str]) -> str:
-    parts: list[str] = []
-    for rel in changed:
-        source = config.resolve(Path(rel))
-        candidate = worktree / rel
-        before = source.read_text(encoding="utf-8") if source.exists() else ""
-        after = candidate.read_text(encoding="utf-8") if candidate.exists() else ""
-        parts.append(diff_for_file(rel, before, after))
-    return "".join(parts)
+    return todo_proposal_diff_from_worktree(config.repo_root, worktree, changed)
 
 
 def workspace_artifact_payload(
@@ -1092,55 +1007,30 @@ def workspace_artifact_payload(
     promoted: bool,
     reason: str = "",
 ) -> dict[str, Any]:
-    return {
-        "artifact_kind": "ephemeral-workspace",
-        "schema_version": 1,
-        "created_at": utc_now(),
-        "transport": transport,
-        "promoted_to_main_worktree": promoted,
-        "reason": reason,
-        "target_task": proposal.target_task,
-        "summary": proposal.summary,
-        "changed_files": list(proposal.changed_files),
-        "validation_passed": bool(proposal.validation_results)
-        and all(result.ok for result in proposal.validation_results),
-        "validation_commands": [list(result.command) for result in proposal.validation_results],
-    }
+    return todo_workspace_artifact_payload(
+        proposal,
+        transport=transport,
+        promoted=promoted,
+        reason=reason,
+    )
 
 
 def materialize_proposal_in_worktree(proposal: Proposal, config: Config, worktree: Path) -> list[str]:
-    changed: list[str] = []
-    seen: set[str] = set()
-    for item in proposal.files:
-        rel = normalized_relative_path(item["path"])
-        target = worktree / rel
-        before = target.read_text(encoding="utf-8") if target.exists() else None
-        after = item["content"]
-        if before == after:
-            continue
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(after, encoding="utf-8")
-        if rel not in seen:
-            seen.add(rel)
-            changed.append(rel)
-    return changed
+    return materialize_proposal_files(proposal, worktree)
 
 
 def proposal_files_from_worktree(worktree: Path, changed: Iterable[str]) -> list[dict[str, str]]:
-    files: list[dict[str, str]] = []
-    for rel in changed:
-        target = worktree / rel
-        if target.exists():
-            files.append({"path": rel, "content": target.read_text(encoding="utf-8")})
-    return files
+    return todo_proposal_files_from_worktree(worktree, changed)
 
 
 def promote_worktree_files(config: Config, worktree: Path, changed: Iterable[str]) -> None:
-    for rel in changed:
-        source = worktree / rel
-        target = config.resolve(Path(rel))
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+    todo_promote_worktree_files(config.repo_root, worktree, changed)
+
+
+def verify_promoted_worktree_files(config: Config, worktree: Path, changed: Iterable[str]) -> list[str]:
+    """Verify promoted files in the main worktree exactly match the accepted worktree."""
+
+    return todo_verify_promoted_worktree_files(config.repo_root, worktree, changed)
 
 
 def validation_results_from_syntax_preflight(worktree: Path, changed: list[str], config: Config) -> tuple[list[CommandResult], list[str], str]:
@@ -1276,6 +1166,25 @@ def apply_files_with_validation(proposal: Proposal, config: Config) -> Proposal:
             persist_failed_work(proposal, config, diff_text="", reason="no_change", transport="ephemeral_worktree")
             return proposal
 
+        if proposal.requires_visible_source_change and not has_visible_source_change(changed):
+            proposal.errors.append(
+                "Accepted work must promote at least one visible PP&D source or fixture file; "
+                "runtime-only progress records are not sufficient."
+            )
+            proposal.failure_kind = "no_visible_source_change"
+            proposal.validation_results = run_validation(
+                worktree_config(config, worktree),
+                commands=proposal_validation_commands,
+            )
+            persist_failed_work(
+                proposal,
+                config,
+                diff_text=proposal_diff_from_worktree(config, worktree, changed),
+                reason="no_visible_source_change",
+                transport="ephemeral_worktree",
+            )
+            return proposal
+
         diff_text = proposal_diff_from_worktree(config, worktree, changed)
         proposal.validation_results, preflight_errors, failure_kind = validation_results_from_syntax_preflight(
             worktree,
@@ -1304,6 +1213,14 @@ def apply_files_with_validation(proposal: Proposal, config: Config) -> Proposal:
                 return proposal
 
         promote_worktree_files(config, worktree, proposal.changed_files)
+        promotion_errors = verify_promoted_worktree_files(config, worktree, proposal.changed_files)
+        proposal.promotion_errors = promotion_errors
+        proposal.promotion_verified = not promotion_errors
+        if promotion_errors:
+            proposal.errors.extend(promotion_errors)
+            proposal.failure_kind = "promotion"
+            persist_failed_work(proposal, config, diff_text=diff_text, reason="promotion", transport="ephemeral_worktree")
+            return proposal
         proposal.applied = True
         persist_accepted_work(proposal, config, diff_text=diff_text, transport="ephemeral_worktree")
     return proposal
@@ -1314,32 +1231,57 @@ def persist_accepted_work(proposal: Proposal, config: Config, *, diff_text: str,
     slug = re.sub(r"[^A-Za-z0-9._-]+", "-", proposal.summary.lower()).strip("-")[:80] or "accepted-work"
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     base = config.resolve(config.accepted_dir) / f"{stamp}-{slug}"
-    manifest = {
-        "created_at": utc_now(),
-        "artifact_kind": "accepted_ephemeral_workspace",
-        "target_task": proposal.target_task,
-        "summary": proposal.summary,
-        "impact": proposal.impact,
-        "changed_files": proposal.changed_files,
-        "transport": transport,
-        "validation_results": [result.compact() for result in proposal.validation_results],
-    }
-    workspace_artifact = workspace_artifact_payload(
+    if config.write_accepted_work_sidecars:
+        manifest = {
+            "created_at": utc_now(),
+            "artifact_kind": "accepted_ephemeral_workspace",
+            "target_task": proposal.target_task,
+            "summary": proposal.summary,
+            "impact": proposal.impact,
+            "changed_files": proposal.changed_files,
+            "transport": transport,
+            "promotion_verified": proposal.promotion_verified,
+            "validation_results": [result.compact() for result in proposal.validation_results],
+        }
+        workspace_artifact = workspace_artifact_payload(
+            proposal,
+            transport=transport,
+            promoted=True,
+        )
+        base.with_suffix(".json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        base.with_suffix(".workspace.json").write_text(
+            json.dumps(workspace_artifact, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        base.with_suffix(".diff.txt").write_text(diff_text, encoding="utf-8")
+        base.with_suffix(".stat.txt").write_text("\n".join(proposal.changed_files) + "\n", encoding="utf-8")
+    append_accepted_work_ledger(
         proposal,
+        config,
+        base=base if config.write_accepted_work_sidecars else None,
+        diff_text=diff_text,
         transport=transport,
-        promoted=True,
     )
-    base.with_suffix(".json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    base.with_suffix(".workspace.json").write_text(
-        json.dumps(workspace_artifact, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    base.with_suffix(".diff.txt").write_text(diff_text, encoding="utf-8")
-    base.with_suffix(".stat.txt").write_text("\n".join(proposal.changed_files) + "\n", encoding="utf-8")
-    append_accepted_work_ledger(proposal, config, base=base, transport=transport)
 
 
-def append_accepted_work_ledger(proposal: Proposal, config: Config, *, base: Path, transport: str = "direct") -> None:
+def append_accepted_work_ledger(
+    proposal: Proposal,
+    config: Config,
+    *,
+    base: Optional[Path],
+    diff_text: str,
+    transport: str = "direct",
+) -> None:
+    artifacts = (
+        AcceptedWorkArtifacts(
+            manifest=base.with_suffix(".json"),
+            workspace=base.with_suffix(".workspace.json"),
+            diff=base.with_suffix(".diff.txt"),
+            stat=base.with_suffix(".stat.txt"),
+        )
+        if base is not None
+        else None
+    )
     entry = build_accepted_work_ledger_entry(
         repo_root=config.repo_root,
         target_task=proposal.target_task,
@@ -1347,13 +1289,12 @@ def append_accepted_work_ledger(proposal: Proposal, config: Config, *, base: Pat
         impact=proposal.impact,
         changed_files=proposal.changed_files,
         transport=transport,
-        artifacts=AcceptedWorkArtifacts(
-            manifest=base.with_suffix(".json"),
-            workspace=base.with_suffix(".workspace.json"),
-            diff=base.with_suffix(".diff.txt"),
-            stat=base.with_suffix(".stat.txt"),
-        ),
+        artifacts=artifacts,
         validation_results=[result.compact() for result in proposal.validation_results],
+        diff_text=diff_text,
+        promotion_verified=proposal.promotion_verified,
+        promotion_errors=proposal.promotion_errors,
+        ledger_path=config.resolve(config.accepted_dir) / LEDGER_FILENAME,
     )
     append_accepted_work_jsonl(config.resolve(config.accepted_dir), entry)
 
@@ -1648,254 +1589,84 @@ def install_daemon_signal_handlers() -> None:
     signal.signal(signal.SIGHUP, handle_daemon_signal)
 
 
-class Daemon:
+def ppd_pre_task_block(config: Config, selected: Task) -> Optional[PreTaskBlock]:
+    deterministic_fallback_available = has_deterministic_task_fallback(selected)
+    if not (
+        config.apply
+        and selected.status in {"needed", "in-progress"}
+        and not deterministic_fallback_available
+    ):
+        return None
+    decision = pre_llm_block_decision(config, selected.label)
+    if decision is None:
+        return None
+    return PreTaskBlock(
+        summary=decision.summary,
+        failure_kind=decision.failure_kind,
+        result=decision.result,
+    )
+
+
+def ppd_produce_proposal(config: Config, selected: Task, write_status: Any) -> Proposal:
+    proposal = build_deterministic_task_fallback_proposal(config, selected)
+    if proposal is not None:
+        write_status("deterministic_fallback", target_task=selected.label)
+        return proposal
+    write_status("calling_llm", target_task=selected.label)
+    try:
+        raw = call_llm(build_prompt(config, selected), config)
+        return parse_proposal(raw)
+    except KeyboardInterrupt:
+        raise
+    except BaseException as exc:
+        return Proposal(summary="LLM proposal failed.", errors=[compact_message(exc)], failure_kind="llm")
+
+
+def ppd_run_proposal_validation(config: Config, proposal: Proposal) -> list[CommandResult]:
+    return run_validation(
+        config,
+        commands=validation_commands_for_proposal(proposal, config),
+    )
+
+
+def ppd_failure_count_for_block(config: Config, task_label: str) -> int:
+    return task_failure_count(
+        config,
+        task_label,
+        kinds={"validation", "preflight", "no_change", "syntax_preflight"},
+    )
+
+
+def build_ppd_daemon_hooks() -> TodoDaemonHooks:
+    return TodoDaemonHooks(
+        parse_tasks=parse_tasks,
+        select_task=lambda tasks, config: select_task_for_config(tasks, config),
+        replace_task_mark=replace_task_mark,
+        update_generated_status=lambda markdown, latest, tasks: update_generated_status(
+            markdown,
+            latest=latest,
+            tasks=tasks,
+        ),
+        produce_proposal=ppd_produce_proposal,
+        apply_proposal=apply_files_with_validation,
+        run_validation=ppd_run_proposal_validation,
+        should_skip_validation=should_skip_validation_for_no_file_failure,
+        is_retryable_failure=is_retryable_failure,
+        failure_block_threshold=failure_block_threshold,
+        failure_count_for_block=ppd_failure_count_for_block,
+        should_sleep_between_cycles=lambda markdown, config: should_sleep_between_watch_cycles(
+            markdown,
+            revisit_blocked=config.revisit_blocked,
+        ),
+        exception_diagnostic=exception_diagnostic,
+        pre_task_block=ppd_pre_task_block,
+        no_eligible_summary="No eligible PP&D tasks remain.",
+    )
+
+
+class Daemon(TodoDaemonRunner):
     def __init__(self, config: Config) -> None:
-        self.config = config
-        self._heartbeat_stop = threading.Event()
-        self._active_state = "initializing"
-        self._active_state_started_at = utc_now()
-        self._active_target_task = ""
-
-    def write_status(self, state: str, **extra: Any) -> None:
-        if state != "heartbeat":
-            target_task = (
-                str(extra.get("target_task") or "")
-                if "target_task" in extra
-                else self._active_target_task
-            )
-            if state != self._active_state or target_task != self._active_target_task:
-                self._active_state_started_at = utc_now()
-            self._active_state = state
-            self._active_target_task = target_task
-        payload = {
-            "updated_at": utc_now(),
-            "pid": os.getpid(),
-            "state": state,
-            "active_state": self._active_state,
-            "active_state_started_at": self._active_state_started_at,
-            "active_target_task": self._active_target_task,
-            **extra,
-        }
-        atomic_write_json(self.config.resolve(self.config.status_file), payload)
-
-    def heartbeat(self) -> None:
-        while not self._heartbeat_stop.wait(self.config.heartbeat_seconds):
-            self.write_status("heartbeat", active_state=self._active_state)
-
-    def run_cycle(self) -> Proposal:
-        board_path = self.config.resolve(self.config.task_board)
-        board = read_text(board_path)
-        tasks = parse_tasks(board)
-        selected = select_task_for_config(tasks, self.config)
-        if selected is None:
-            proposal = Proposal(summary="No eligible PP&D tasks remain.", failure_kind="no_eligible_tasks")
-            proposal.dry_run = not self.config.apply
-            self.write_status("no_eligible_tasks", target_task="")
-            self.write_progress([proposal])
-            self.write_cycle_diagnostic(proposal, stage="no_eligible_tasks")
-            return proposal
-
-        self.write_status("selected_task", target_task=selected.label)
-        deterministic_fallback_available = has_deterministic_task_fallback(selected)
-        pre_llm_block = (
-            pre_llm_block_decision(self.config, selected.label)
-            if self.config.apply
-            and selected.status in {"needed", "in-progress"}
-            and not deterministic_fallback_available
-            else None
-        )
-        if (
-            self.config.apply
-            and selected.status in {"needed", "in-progress"}
-            and pre_llm_block is not None
-        ):
-            proposal = Proposal(
-                summary=pre_llm_block.summary,
-                failure_kind=pre_llm_block.failure_kind,
-                target_task=selected.label,
-            )
-            proposal.dry_run = False
-            board = replace_task_mark(board, selected, "!")
-            tasks_after = parse_tasks(board)
-            board = update_generated_status(
-                board,
-                latest={
-                    "target_task": selected.label,
-                    "result": pre_llm_block.result,
-                    "summary": proposal.summary,
-                },
-                tasks=tasks_after,
-            )
-            board_path.write_text(board, encoding="utf-8")
-            self.write_progress([proposal])
-            append_jsonl(self.config.resolve(self.config.result_log), {"created_at": utc_now(), "proposal": proposal.to_dict()})
-            self.write_status("cycle_completed", valid=False, artifact=proposal.to_dict())
-            return proposal
-        if selected.status == "needed" and self.config.apply:
-            board = replace_task_mark(board, selected, "~")
-            board_path.write_text(board, encoding="utf-8")
-
-        proposal = build_deterministic_task_fallback_proposal(self.config, selected)
-        if proposal is not None:
-            self.write_status("deterministic_fallback", target_task=selected.label)
-        else:
-            self.write_status("calling_llm", target_task=selected.label)
-            try:
-                raw = call_llm(build_prompt(self.config, selected), self.config)
-                proposal = parse_proposal(raw)
-            except KeyboardInterrupt:
-                raise
-            except BaseException as exc:
-                proposal = Proposal(summary="LLM proposal failed.", errors=[compact_message(exc)], failure_kind="llm")
-        proposal.target_task = selected.label
-        proposal.dry_run = not self.config.apply
-        if proposal.failure_kind in {"parse", "llm"} or not proposal.files:
-            self.write_progress([proposal])
-            self.write_cycle_diagnostic(proposal, stage="before_validation")
-
-        if self.config.apply and proposal.files:
-            self.write_status("applying_files", target_task=selected.label)
-            proposal = apply_files_with_validation(proposal, self.config)
-        elif should_skip_validation_for_no_file_failure(proposal):
-            proposal.validation_results = []
-        else:
-            proposal.validation_results = run_validation(
-                self.config,
-                commands=validation_commands_for_proposal(proposal, self.config),
-            )
-
-        board = read_text(board_path)
-        if self.config.apply:
-            if proposal.valid:
-                board = replace_task_mark(board, selected, "x")
-            elif selected.status in {"needed", "in-progress"} and not is_retryable_failure(proposal):
-                prior_failures = task_failure_count(
-                    self.config,
-                    selected.label,
-                    kinds={"validation", "preflight", "no_change", "syntax_preflight"},
-                )
-                mark = "!" if prior_failures + 1 >= failure_block_threshold(proposal, self.config) else " "
-                board = replace_task_mark(board, selected, mark)
-            elif selected.status in {"needed", "in-progress"}:
-                board = replace_task_mark(board, selected, " ")
-        tasks_after = parse_tasks(board)
-        board = update_generated_status(
-            board,
-            latest={
-                "target_task": selected.label,
-                "result": "accepted" if proposal.valid else proposal.failure_kind or "not_applied",
-                "summary": proposal.summary,
-            },
-            tasks=tasks_after,
-        )
-        board_path.write_text(board, encoding="utf-8")
-        self.write_progress([proposal])
-        append_jsonl(self.config.resolve(self.config.result_log), {"created_at": utc_now(), "proposal": proposal.to_dict()})
-        self.write_status("cycle_completed", valid=proposal.valid, artifact=proposal.to_dict())
-        return proposal
-
-    def write_cycle_diagnostic(self, proposal: Proposal, *, stage: str) -> None:
-        append_jsonl(
-            self.config.resolve(self.config.result_log),
-            {
-                "created_at": utc_now(),
-                "stage": stage,
-                "diagnostic": proposal.to_dict(),
-            },
-        )
-
-    def record_cycle_exception(self, exc: BaseException, *, consecutive_exceptions: int) -> Proposal:
-        proposal = Proposal(
-            summary="Daemon cycle crashed before completion.",
-            impact=(
-                "The exception was captured as a durable diagnostic so watch mode can continue "
-                "and the supervisor can inspect the failure history."
-            ),
-            errors=[exception_diagnostic(exc)],
-            failure_kind="daemon_exception",
-            target_task=self._active_target_task,
-        )
-        proposal.dry_run = not self.config.apply
-        proposal.applied = False
-        artifact = proposal.to_dict()
-        try:
-            self.write_progress([proposal])
-        except Exception as progress_exc:
-            artifact["progress_error"] = exception_diagnostic(progress_exc, limit=1200)
-        try:
-            self.write_cycle_diagnostic(proposal, stage="cycle_exception")
-        except Exception:
-            pass
-        try:
-            self.write_status(
-                "cycle_exception",
-                valid=False,
-                consecutive_exceptions=consecutive_exceptions,
-                artifact=artifact,
-            )
-        except Exception:
-            pass
-        return proposal
-
-    def write_progress(self, proposals: list[Proposal]) -> None:
-        board = read_text(self.config.resolve(self.config.task_board))
-        tasks = parse_tasks(board)
-        payload = {
-            "updated_at": utc_now(),
-            "task_counts": {
-                "needed": sum(1 for task in tasks if task.status == "needed"),
-                "in_progress": sum(1 for task in tasks if task.status == "in-progress"),
-                "complete": sum(1 for task in tasks if task.status == "complete"),
-                "blocked": sum(1 for task in tasks if task.status == "blocked"),
-            },
-            "latest": proposals[-1].to_dict() if proposals else {},
-        }
-        atomic_write_json(self.config.resolve(self.config.progress_file), payload)
-
-    def run(self) -> list[Proposal]:
-        thread = threading.Thread(target=self.heartbeat, daemon=True)
-        thread.start()
-        proposals: list[Proposal] = []
-        try:
-            count = 0
-            consecutive_exceptions = 0
-            while True:
-                count += 1
-                try:
-                    proposal = self.run_cycle()
-                    consecutive_exceptions = 0
-                except KeyboardInterrupt:
-                    raise
-                except BaseException as exc:
-                    consecutive_exceptions += 1
-                    proposal = self.record_cycle_exception(
-                        exc,
-                        consecutive_exceptions=consecutive_exceptions,
-                    )
-                proposals.append(proposal)
-                if not self.config.watch:
-                    break
-                if proposal.failure_kind == "no_eligible_tasks":
-                    break
-                if self.config.iterations > 0 and count >= self.config.iterations:
-                    break
-                if proposal.failure_kind == "daemon_exception":
-                    if self.config.crash_backoff_seconds > 0:
-                        time.sleep(self.config.crash_backoff_seconds)
-                    continue
-                if self.config.interval_seconds > 0:
-                    board_now = read_text(self.config.resolve(self.config.task_board))
-                    if not should_sleep_between_watch_cycles(
-                        board_now,
-                        revisit_blocked=self.config.revisit_blocked,
-                    ):
-                        continue
-                    self.write_status("sleeping", seconds=self.config.interval_seconds)
-                    time.sleep(self.config.interval_seconds)
-        finally:
-            self._heartbeat_stop.set()
-            thread.join(timeout=1)
-        return proposals
+        super().__init__(config, build_ppd_daemon_hooks())
 
 
 def self_test(repo_root: Path) -> int:

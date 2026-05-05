@@ -1,16 +1,19 @@
 """Append-only accepted-work ledger support for the PP&D daemon.
 
-The daemon writes per-round ephemeral-workspace artifacts. This module keeps
-the cumulative ledger logic small, deterministic, and easy to test.
+The daemon keeps accepted-work evidence compact by default. Older runs wrote a
+manifest, workspace record, diff, and stat file for every accepted task; new
+runs write one JSONL ledger entry per accepted task and store only compact
+digests plus promotion status unless an operator explicitly enables sidecars.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 
 
 LEDGER_FILENAME = "accepted-work.jsonl"
@@ -61,8 +64,12 @@ def build_accepted_work_ledger_entry(
     impact: str,
     changed_files: Iterable[str],
     transport: str,
-    artifacts: AcceptedWorkArtifacts,
+    artifacts: Optional[AcceptedWorkArtifacts],
     validation_results: Iterable[dict[str, Any]],
+    diff_text: str = "",
+    promotion_verified: bool = False,
+    promotion_errors: Optional[Iterable[str]] = None,
+    ledger_path: Optional[Path] = None,
     created_at: str | None = None,
 ) -> dict[str, Any]:
     """Build a stable accepted-work ledger entry.
@@ -72,6 +79,19 @@ def build_accepted_work_ledger_entry(
     """
 
     compact_results = [_compact_validation_result(result) for result in validation_results]
+    if artifacts is None:
+        artifact_payload = {
+            "mode": "ledger_only",
+            "ledger": _as_repo_path(ledger_path or repo_root / "ppd/daemon/accepted-work" / LEDGER_FILENAME, repo_root),
+        }
+    else:
+        artifact_payload = {
+            "mode": "sidecars",
+            "manifest": _as_repo_path(artifacts.manifest, repo_root),
+            "workspace": _as_repo_path(artifacts.workspace, repo_root),
+            "diff": _as_repo_path(artifacts.diff, repo_root),
+            "stat": _as_repo_path(artifacts.stat, repo_root),
+        }
     return {
         "schema_version": SCHEMA_VERSION,
         "created_at": created_at or utc_now(),
@@ -80,11 +100,14 @@ def build_accepted_work_ledger_entry(
         "impact": str(impact),
         "changed_files": sorted(str(path) for path in changed_files),
         "transport": str(transport),
-        "artifacts": {
-            "manifest": _as_repo_path(artifacts.manifest, repo_root),
-            "workspace": _as_repo_path(artifacts.workspace, repo_root),
-            "diff": _as_repo_path(artifacts.diff, repo_root),
-            "stat": _as_repo_path(artifacts.stat, repo_root),
+        "artifacts": artifact_payload,
+        "diff": {
+            "sha256": hashlib.sha256(diff_text.encode("utf-8")).hexdigest(),
+            "line_count": len(diff_text.splitlines()),
+        },
+        "promotion": {
+            "verified": bool(promotion_verified),
+            "errors": [str(error) for error in (promotion_errors or [])],
         },
         "validation_results": compact_results,
         "validation_passed": bool(compact_results) and all(result["returncode"] == 0 for result in compact_results),

@@ -12,6 +12,7 @@ import ppd.daemon.ppd_supervisor as supervisor
 from ppd.daemon.ppd_daemon import atomic_write_json
 from ppd.daemon.ppd_supervisor import (
     AUTONOMOUS_EXECUTION_CAPABILITY_TITLES,
+    CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES,
     CIRCUIT_BREAKER_RECOVERY_TITLES,
     SupervisorConfig,
     append_circuit_breaker_recovery_tasks,
@@ -54,6 +55,42 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
 
         self.assertEqual("plan_next_tasks", decision.action)
         self.assertTrue(decision.should_invoke_codex)
+
+    def test_completed_execution_capability_board_observes_instead_of_generating_more_platform_tranches(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            board = repo / "ppd" / "daemon" / "task-board.md"
+            board.parent.mkdir(parents=True)
+            board.write_text(
+                "## Built-In Autonomous PP&D Execution Capability Tranche\n\n"
+                + "\n".join(
+                    f"- [x] Task checkbox-{241 + offset}: {title}"
+                    for offset, title in enumerate(AUTONOMOUS_EXECUTION_CAPABILITY_TITLES)
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            atomic_write_json(
+                repo / "ppd" / "daemon" / "status.json",
+                {
+                    "updated_at": "2026-05-02T00:00:00Z",
+                    "active_state": "no_eligible_tasks",
+                    "state": "no_eligible_tasks",
+                },
+            )
+            atomic_write_json(
+                repo / "ppd" / "daemon" / "progress.json",
+                {"latest": {"failure_kind": "no_eligible_tasks"}},
+            )
+
+            board_text = board.read_text(encoding="utf-8")
+            decision = diagnose(SupervisorConfig(repo_root=repo))
+            repaired, labels = builtin_autonomous_execution_replenish_task_board(board_text)
+
+        self.assertEqual("observe", decision.action)
+        self.assertIn("source-backed tranche", decision.reason)
+        self.assertEqual((), labels)
+        self.assertEqual(board_text, repaired)
 
     def test_blocked_only_board_with_no_eligible_status_plans_fresh_tasks(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
@@ -607,6 +644,19 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
             self.assertIn(title, repaired)
         self.assertNotIn("generated blocked-cascade daemon-repair", "\n".join(CIRCUIT_BREAKER_RECOVERY_TITLES))
 
+    def test_recovery_appends_continuation_when_original_recovery_titles_are_closed(self) -> None:
+        board = "\n".join(
+            f"- [!] Task checkbox-{446 + offset}: {title}"
+            for offset, title in enumerate(CIRCUIT_BREAKER_RECOVERY_TITLES)
+        ) + "\n"
+
+        repaired, labels = append_circuit_breaker_recovery_tasks(board)
+
+        self.assertEqual(tuple(f"checkbox-{450 + offset}" for offset in range(4)), labels)
+        for title in CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES:
+            self.assertIn(title, repaired)
+        self.assertNotIn("generated blocked-cascade daemon-repair", "\n".join(CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES))
+
     def test_open_circuit_breaker_recovery_task_restarts_daemon_despite_old_storm(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
             repo = Path(tempdir)
@@ -644,6 +694,28 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
                     termination_storm_threshold=4,
                 )
             )
+
+        self.assertEqual("restart_daemon", decision.action)
+        self.assertTrue(decision.should_restart_daemon)
+        self.assertIn("vetted circuit-breaker recovery tasks", decision.reason)
+
+    def test_open_circuit_breaker_continuation_task_restarts_before_generated_budget_breaker(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            generated = "\n".join(
+                "- [!] Task checkbox-"
+                f"{300 + offset}: Add generated blocked-cascade daemon-repair coverage for tranche "
+                f"{offset + 1} item 1 proving blocked PP&D work stays parked until a fresh daemon repair task validates."
+                for offset in range(supervisor.MAX_GENERATED_BLOCKED_CASCADE_TASKS)
+            )
+            (daemon_dir / "task-board.md").write_text(
+                generated + f"\n- [ ] Task checkbox-500: {CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES[0]}\n",
+                encoding="utf-8",
+            )
+
+            decision = diagnose(SupervisorConfig(repo_root=repo, pid_file=Path("ppd/daemon/missing.pid")))
 
         self.assertEqual("restart_daemon", decision.action)
         self.assertTrue(decision.should_restart_daemon)
@@ -705,6 +777,18 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
                 )
             board = "\n".join(lines) + "\n"
             (daemon_dir / "task-board.md").write_text(board, encoding="utf-8")
+            atomic_write_json(
+                daemon_dir / "status.json",
+                {
+                    "updated_at": "2026-05-04T12:00:00Z",
+                    "active_state": "no_eligible_tasks",
+                    "state": "no_eligible_tasks",
+                },
+            )
+            atomic_write_json(
+                daemon_dir / "progress.json",
+                {"latest": {"failure_kind": "no_eligible_tasks"}},
+            )
 
             decision = diagnose(SupervisorConfig(repo_root=repo, pid_file=Path("ppd/daemon/missing.pid")))
             repaired, labels = builtin_blocked_cascade_replenish_task_board(board)

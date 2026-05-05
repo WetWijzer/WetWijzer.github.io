@@ -12,9 +12,11 @@ from ppd.crawler.whole_site_archival import (
 )
 from ppd.daemon.ppd_daemon import parse_tasks, select_task, should_sleep_between_watch_cycles
 from ppd.daemon.ppd_supervisor import (
+    AUTONOMOUS_EXECUTION_CAPABILITY_TITLES,
     AUTONOMOUS_PLATFORM_REPLENISHMENT_TITLES,
     SupervisorConfig,
     builtin_replenish_goal_tasks,
+    compact_repeated_autonomous_platform_tranches,
     diagnose,
 )
 from ppd.devhub.playwright_pdf_automation import (
@@ -126,7 +128,7 @@ class AutonomousPlatformRedesignTest(unittest.TestCase):
         self.assertEqual(219, selected.checkbox_id)
         self.assertIn("whole-site PP&D archival plan", selected.title)
 
-    def test_supervisor_generates_unique_platform_followup_after_static_tranche_completes(self) -> None:
+    def test_supervisor_escalates_once_to_execution_capability_after_platform_tranche_completes(self) -> None:
         first_board = "\n".join(
             (
                 "# PP&D Daemon Task Board",
@@ -147,13 +149,56 @@ class AutonomousPlatformRedesignTest(unittest.TestCase):
         repaired, labels = builtin_replenish_goal_tasks(first_board, rows=[])
         selected = select_task(parse_tasks(repaired), revisit_blocked=True)
 
-        self.assertEqual(("checkbox-225", "checkbox-226", "checkbox-227", "checkbox-228"), labels)
-        self.assertIn("## Built-In Autonomous PP&D Platform Tranche 2", repaired)
-        self.assertIn("tranche 2", repaired)
+        self.assertEqual(tuple(f"checkbox-{number}" for number in range(225, 231)), labels)
+        self.assertIn("## Built-In Autonomous PP&D Execution Capability Tranche", repaired)
+        self.assertNotIn("## Built-In Autonomous PP&D Platform Tranche 2", repaired)
+        for title in AUTONOMOUS_EXECUTION_CAPABILITY_TITLES:
+            self.assertIn(title, repaired)
         self.assertIsNotNone(selected)
         assert selected is not None
         self.assertEqual(225, selected.checkbox_id)
-        self.assertIn("autonomous platform continuation", selected.title)
+        self.assertIn("supervised live whole-site public crawl runner", selected.title)
+
+    def test_supervisor_compacts_repeated_generated_platform_tranches(self) -> None:
+        board = "\n".join(
+            (
+                "# PP&D Daemon Task Board",
+                "",
+                "## Built-In Autonomous PP&D Platform Tranche",
+                "",
+                "- [x] Task checkbox-219: Add a side-effect-free whole-site PP&D archival plan.",
+                "",
+                "## Built-In Supervisor Planning Notes",
+                "",
+                "- First planning note.",
+                "",
+                "## Built-In Autonomous PP&D Platform Tranche 2",
+                "",
+                "- [x] Task checkbox-225: Add autonomous platform continuation coverage for tranche 2.",
+                "",
+                "## Built-In Supervisor Planning Notes",
+                "",
+                "- Duplicate planning note.",
+                "",
+                "## Built-In Autonomous PP&D Platform Tranche 3",
+                "",
+                "- [x] Task checkbox-229: Add autonomous platform continuation coverage for tranche 3.",
+                "",
+                "## Manual Followup",
+                "",
+                "- [ ] Task checkbox-233: Keep independent work.",
+            )
+        )
+
+        compacted, removed = compact_repeated_autonomous_platform_tranches(board)
+
+        self.assertEqual(2, removed)
+        self.assertIn("## Built-In Autonomous PP&D Platform Tranche", compacted)
+        self.assertNotIn("## Built-In Autonomous PP&D Platform Tranche 2", compacted)
+        self.assertNotIn("tranche 3", compacted)
+        self.assertIn("## Manual Followup", compacted)
+        self.assertIn("- [ ] Task checkbox-233: Keep independent work.", compacted)
+        self.assertIn("Built-In Autonomous Platform Compaction Notes", compacted)
 
     def test_supervisor_diagnoses_completed_board_as_platform_replanning(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:

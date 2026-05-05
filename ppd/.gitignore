@@ -9,6 +9,11 @@
 /daemon/*.pid
 /daemon/*.out
 /daemon/accepted-work/*.tmp
+/daemon/accepted-work/*.json
+/daemon/accepted-work/*.workspace.json
+/daemon/accepted-work/*.diff.txt
+/daemon/accepted-work/*.stat.txt
+!/daemon/accepted-work/accepted-work.jsonl
 /daemon/failed-patches/
 /daemon/worktrees/
 

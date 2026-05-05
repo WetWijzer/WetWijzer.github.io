@@ -143,6 +143,13 @@ CIRCUIT_BREAKER_RECOVERY_TITLES = (
     "Add a fixture-only circuit-breaker status scenario proving paused daemon state records quarantine, restart eligibility, and source-safe recovery boundaries before autonomous work resumes.",
 )
 
+CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES = (
+    "Add supervisor blocked-cascade compaction coverage proving repeated generated repair tranches collapse into one quarantine note and never create more accepted-work sidecar panels.",
+    "Add daemon promotion-mismatch coverage proving temporary-worktree files are byte-checked after promotion and failed promotions are persisted without marking tasks complete.",
+    "Add accepted-work ledger-only migration coverage proving new accepted rounds append one JSONL ledger row by default and leave legacy sidecar artifacts ignored unless explicitly enabled.",
+    "Add source-backed recovery continuation coverage proving all closed circuit-breaker recovery tasks synthesize this vetted non-generated tranche before restarting the daemon.",
+)
+
 
 @dataclass(frozen=True)
 class SupervisorConfig:
@@ -460,7 +467,7 @@ def generated_blocked_cascade_budget_exhausted(tasks: list[Task]) -> bool:
 
 
 def is_circuit_breaker_recovery_task(task: Task) -> bool:
-    return task.title.strip() in CIRCUIT_BREAKER_RECOVERY_TITLES
+    return task.title.strip() in CIRCUIT_BREAKER_RECOVERY_TITLES + CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES
 
 
 def has_open_circuit_breaker_recovery_task(tasks: list[Task]) -> bool:
@@ -497,6 +504,12 @@ def append_circuit_breaker_recovery_tasks(markdown: str) -> tuple[str, tuple[str
         for title in CIRCUIT_BREAKER_RECOVERY_TITLES
         if not task_title_already_covered(title, titles)
     ]
+    if not templates:
+        templates = [
+            title
+            for title in CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES
+            if not task_title_already_covered(title, titles)
+        ]
     if not templates:
         return markdown, ()
 
@@ -974,6 +987,8 @@ def next_autonomous_execution_heading(markdown: str) -> str:
 def should_append_autonomous_platform_tranche(markdown: str) -> bool:
     """Return True when completed recovery work should advance to platform work."""
 
+    if any(autonomous_platform_heading_number(line) is not None for line in markdown.splitlines()):
+        return False
     lowered = markdown.casefold()
     markers = (
         "manual recovery tranche 20",
@@ -988,6 +1003,59 @@ def should_append_autonomous_platform_tranche(markdown: str) -> bool:
         or "devhub" in lowered
         or "processor" in lowered
     )
+
+
+def has_autonomous_execution_tranche(markdown: str) -> bool:
+    return any(autonomous_execution_heading_number(line) is not None for line in markdown.splitlines())
+
+
+def compact_repeated_autonomous_platform_tranches(markdown: str) -> tuple[str, int]:
+    """Remove repeated generated platform tranches while preserving the first one."""
+
+    lines = markdown.splitlines()
+    output: list[str] = []
+    seen_platform_tranches = 0
+    removed_tranches = 0
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        if autonomous_platform_heading_number(line) is None:
+            output.append(line)
+            index += 1
+            continue
+
+        seen_platform_tranches += 1
+        if seen_platform_tranches == 1:
+            output.append(line)
+            index += 1
+            continue
+
+        removed_tranches += 1
+        index += 1
+        while index < len(lines):
+            current = lines[index]
+            if current.startswith("## "):
+                if current.strip() == "## Built-In Supervisor Planning Notes":
+                    index += 1
+                    while index < len(lines) and not lines[index].startswith("## "):
+                        index += 1
+                    continue
+                break
+            index += 1
+
+    if not removed_tranches:
+        return markdown, 0
+    compacted = "\n".join(output).rstrip()
+    if "## Built-In Autonomous Platform Compaction Notes" not in compacted:
+        compacted += (
+            "\n\n## Built-In Autonomous Platform Compaction Notes\n\n"
+            f"- Compacted {removed_tranches} repeated generated Autonomous PP&D Platform tranches. "
+            "The supervisor now caps platform tranches at one and escalates once to source-backed "
+            "execution-capability work instead of accepting runtime-only progress.\n"
+        )
+    else:
+        compacted += "\n"
+    return compacted, removed_tranches
 
 
 def generated_autonomous_platform_templates(markdown: str, tranche_number: int) -> list[str]:
@@ -1133,11 +1201,16 @@ def builtin_replenish_goal_tasks(markdown: str, rows: Optional[list[dict[str, An
     broader implementation-plus-validation slices after a healthy accepted streak.
     """
 
+    markdown, _removed_platform_tranches = compact_repeated_autonomous_platform_tranches(markdown)
     tasks = parse_tasks(markdown)
     if not tasks or any(task.status in {"needed", "in-progress"} for task in tasks):
         return markdown, ()
 
     start = next_checkbox_number(markdown)
+    if any(autonomous_platform_heading_number(line) is not None for line in markdown.splitlines()):
+        if not has_autonomous_execution_tranche(markdown):
+            return builtin_autonomous_execution_replenish_task_board(markdown)
+        return markdown, ()
     if should_append_autonomous_platform_tranche(markdown):
         heading = next_autonomous_platform_heading(markdown)
         heading_number = autonomous_platform_heading_number(heading) or 1
@@ -1468,6 +1541,16 @@ def diagnose(config: SupervisorConfig, *, now: Optional[datetime] = None) -> Sup
     has_recovery_work = has_open_circuit_breaker_recovery_task(tasks)
     has_deterministic_work = has_open_deterministic_task_fallback(tasks)
 
+    if tasks and all(task.status == "complete" for task in tasks) and has_autonomous_execution_tranche(board):
+        return SupervisorDecision(
+            action="observe",
+            reason=(
+                "all PP&D execution-capability tasks are complete; wait for a human-authored or agentic "
+                "source-backed tranche instead of appending more generated platform placeholders"
+            ),
+            severity="info",
+        )
+
     if tasks and all(task.status == "complete" for task in tasks):
         return SupervisorDecision(
             action="plan_next_tasks",
@@ -1490,6 +1573,7 @@ def diagnose(config: SupervisorConfig, *, now: Optional[datetime] = None) -> Sup
         and not any(task.status in {"needed", "in-progress"} for task in tasks)
         and any(task.status == "blocked" for task in tasks)
         and termination_storm_count < config.termination_storm_threshold
+        and generated_blocked_total < MAX_GENERATED_BLOCKED_CASCADE_TASKS
     ):
         return SupervisorDecision(
             action="plan_next_tasks",

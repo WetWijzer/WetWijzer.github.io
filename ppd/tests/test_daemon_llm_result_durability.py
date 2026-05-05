@@ -114,6 +114,7 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
 
         self.assertEqual(2, failure_block_threshold(Proposal(failure_kind="syntax_preflight"), config))
         self.assertEqual(3, failure_block_threshold(Proposal(failure_kind="validation"), config))
+        self.assertEqual(1, failure_block_threshold(Proposal(failure_kind="no_visible_source_change"), config))
         self.assertEqual(
             1,
             failure_block_threshold(
@@ -303,12 +304,21 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
 
             proposal = build_deterministic_task_fallback_proposal(config, task)
             assert proposal is not None
-            payload = json.loads(proposal.files[0]["content"])
+            files = {item["path"]: item["content"] for item in proposal.files}
+            payload = json.loads(files["ppd/daemon/deterministic-progress.json"])
             record = payload["records"][0]
 
         self.assertTrue(has_deterministic_task_fallback(task))
         self.assertTrue(proposal.trusted_validation_commands)
-        self.assertEqual(["ppd/daemon/deterministic-progress.json"], [item["path"] for item in proposal.files])
+        self.assertTrue(proposal.requires_visible_source_change)
+        self.assertEqual(
+            [
+                "ppd/platform/__init__.py",
+                "ppd/platform/processor_suite_contract.py",
+                "ppd/daemon/deterministic-progress.json",
+            ],
+            [item["path"] for item in proposal.files],
+        )
         self.assertIn(["python3", "ppd/tests/validate_ppd.py"], proposal.validation_commands)
         self.assertEqual(455, record["checkboxId"])
         self.assertEqual("processor_suite_planning", record["fallbackKind"])
@@ -340,9 +350,19 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
             proposal = daemon.run_cycle()
             board = (daemon_dir / "task-board.md").read_text(encoding="utf-8")
             manifest = json.loads((daemon_dir / "deterministic-progress.json").read_text(encoding="utf-8"))
+            source_contract_exists = (repo / "ppd" / "platform" / "processor_suite_contract.py").exists()
 
         self.assertTrue(proposal.valid)
-        self.assertEqual(["ppd/daemon/deterministic-progress.json"], proposal.changed_files)
+        self.assertEqual(
+            [
+                "ppd/platform/__init__.py",
+                "ppd/platform/processor_suite_contract.py",
+                "ppd/daemon/deterministic-progress.json",
+            ],
+            proposal.changed_files,
+        )
+        self.assertTrue(source_contract_exists)
+        self.assertTrue(proposal.promotion_verified)
         self.assertIn(f"- [x] {target}", board)
         self.assertEqual(455, manifest["records"][0]["checkboxId"])
         self.assertEqual("processor_suite_planning", manifest["records"][0]["fallbackKind"])

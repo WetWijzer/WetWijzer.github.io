@@ -18,6 +18,7 @@ class AcceptedWorkLedgerTests(unittest.TestCase):
                 validation_results=[CommandResult(("python3", "--version"), 0, "Python", "")],
                 applied=True,
                 dry_run=False,
+                promotion_verified=True,
             )
 
             persist_accepted_work(proposal, config, diff_text="--- diff\n")
@@ -27,11 +28,12 @@ class AcceptedWorkLedgerTests(unittest.TestCase):
             self.assertEqual(len(entries), 1)
             self.assertEqual(entries[0]["target_task"], "Task checkbox-99: Fixture")
             self.assertEqual(entries[0]["changed_files"], ["ppd/example.py"])
-            self.assertTrue(entries[0]["artifacts"]["manifest"].endswith(".json"))
-            self.assertTrue(entries[0]["artifacts"]["workspace"].endswith(".workspace.json"))
-            self.assertTrue(entries[0]["artifacts"]["diff"].endswith(".diff.txt"))
+            self.assertEqual("ledger_only", entries[0]["artifacts"]["mode"])
+            self.assertEqual("accepted-work/accepted-work.jsonl", entries[0]["artifacts"]["ledger"])
+            self.assertEqual(1, entries[0]["diff"]["line_count"])
+            self.assertTrue(entries[0]["promotion"]["verified"])
             self.assertTrue(entries[0]["validation_passed"])
-            self.assertFalse(any(path.suffix == ".patch" for path in (Path(temp) / "accepted-work").iterdir()))
+            self.assertEqual(["accepted-work.jsonl"], sorted(path.name for path in (Path(temp) / "accepted-work").iterdir()))
 
 
 if __name__ == "__main__":
