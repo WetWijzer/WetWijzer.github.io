@@ -5,6 +5,8 @@ import {
   COMMON_TYPES_PORT_METADATA,
   FORMULA_TYPE_VALUES,
   LOGIC_OPERATOR_SYMBOLS,
+  PROOF_STATUS_VALUES,
+  PROOF_TYPES_PORT_METADATA,
   QUANTIFIER_SYMBOLS,
   complexityMetricsToDict,
   createComplexityMetrics,
@@ -32,9 +34,16 @@ import {
   folFormulaTypeFromDict,
   predicateExtractionTypeFromDict,
   predicateTypeFromDict,
+  isProofResultConclusive,
+  isProofStatus,
+  proofResultFromDict,
+  proofResultToDict,
+  proofStepFromDict,
+  proofStepToDict,
   proverRecommendationFromDict,
   validateBridgeTypesPort,
   validateFolTypesPort,
+  validateProofTypesPort,
 } from './types';
 
 describe('logic shared type parity helpers', () => {
@@ -111,6 +120,51 @@ describe('logic shared type parity helpers', () => {
       predicate_count: 1,
       complexity_score: 12,
     });
+  });
+
+  it('ports proof_types.py re-exported TDFOL proof shapes without Python runtime bridges', () => {
+    expect(PROOF_TYPES_PORT_METADATA.sourcePythonModule).toBe('logic/types/proof_types.py');
+    expect(PROOF_TYPES_PORT_METADATA.runtimeDependencies).toEqual([]);
+    expect(PROOF_STATUS_VALUES.UNPROVABLE).toBe('unprovable');
+    expect(isProofStatus('proved')).toBe(true);
+    expect(isProofStatus('server_proved')).toBe(false);
+
+    const step = proofStepFromDict(
+      {
+        formula: 'Tenant(ada)',
+        justification: 'Axiom lookup',
+        rule_name: 'Axiom',
+        premises: ['Lease(ada)'],
+      },
+      0,
+    );
+    const result = proofResultFromDict({
+      status: 'proved',
+      formula: 'Tenant(ada)',
+      proof_steps: [proofStepToDict(step)],
+      time_ms: 4.5,
+      method: 'forward_chaining',
+      message: '',
+    });
+
+    expect(step).toMatchObject({ id: 'step-1', rule: 'Axiom', conclusion: 'Tenant(ada)' });
+    expect(isProofResultConclusive(result)).toBe(true);
+    expect(proofResultToDict(result)).toMatchObject({
+      status: 'proved',
+      formula: 'Tenant(ada)',
+      time_ms: 4.5,
+      method: 'forward_chaining',
+    });
+    expect(proofResultToDict(result).proof_steps).toEqual([proofStepToDict(step)]);
+    expect(validateProofTypesPort(proofResultToDict(result))).toMatchObject({ valid: true });
+    expect(
+      validateProofTypesPort({
+        status: 'remote_proved',
+        proof_steps: {},
+        server_calls_allowed: true,
+        python_runtime_allowed: true,
+      }),
+    ).toMatchObject({ valid: false });
   });
 
   it('models bridge metadata, config, conversion results, and recommendations', () => {

@@ -172,7 +172,24 @@ export function formulaProtocolComplexity(
   return formula.getComplexity();
 }
 
-export type ProofStatus = 'proved' | 'disproved' | 'unknown' | 'timeout' | 'error';
+export type ProofStatus = 'proved' | 'disproved' | 'unknown' | 'timeout' | 'error' | 'unprovable';
+
+export const PROOF_TYPES_PORT_METADATA = {
+  sourcePythonModule: 'logic/types/proof_types.py',
+  browserNative: true,
+  serverCallsAllowed: false,
+  pythonRuntimeAllowed: false,
+  runtimeDependencies: [],
+} as const;
+
+export const PROOF_STATUS_VALUES: Record<string, ProofStatus> = {
+  PROVED: 'proved',
+  DISPROVED: 'disproved',
+  UNKNOWN: 'unknown',
+  TIMEOUT: 'timeout',
+  ERROR: 'error',
+  UNPROVABLE: 'unprovable',
+} as const;
 
 export interface ProofStep {
   id: string;
@@ -180,15 +197,119 @@ export interface ProofStep {
   premises: string[];
   conclusion: string;
   explanation?: string;
+  formula?: string;
+  justification?: string;
+  ruleName?: string;
 }
 
 export interface ProofResult {
   status: ProofStatus;
   theorem: string;
   steps: ProofStep[];
+  formula?: string;
+  proofSteps?: ProofStep[];
   method?: string;
   timeMs?: number;
+  time_ms?: number;
   error?: string;
+  message?: string;
+}
+
+export function isProofStatus(value: unknown): value is ProofStatus {
+  return (
+    typeof value === 'string' && Object.values(PROOF_STATUS_VALUES).includes(value as ProofStatus)
+  );
+}
+
+export function proofStepFromDict(value: unknown, index = 0): ProofStep {
+  const record = isRecord(value) ? value : {};
+  const formula = stringifyProofFormula(record.formula ?? record.conclusion);
+  const justification = stringField(record, 'justification', stringField(record, 'explanation'));
+  const ruleName = stringField(record, 'rule_name', stringField(record, 'ruleName'));
+  return {
+    id: stringField(record, 'id', `step-${index + 1}`),
+    rule: stringField(record, 'rule', ruleName),
+    premises: arrayField(record, 'premises').map(stringifyProofFormula),
+    conclusion: stringField(record, 'conclusion', formula),
+    explanation: stringField(record, 'explanation', justification) || undefined,
+    formula,
+    justification,
+    ruleName: ruleName || undefined,
+  };
+}
+
+export function proofStepToDict(step: ProofStep): Record<string, unknown> {
+  return {
+    formula: step.formula ?? step.conclusion,
+    justification: step.justification ?? step.explanation ?? '',
+    rule_name: step.ruleName ?? step.rule,
+    premises: step.premises.map((premise) => String(premise)),
+  };
+}
+
+export function proofResultFromDict(value: unknown): ProofResult {
+  const record = isRecord(value) ? value : {};
+  const status = isProofStatus(record.status) ? record.status : 'unknown';
+  const proofSteps = arrayField(record, 'proof_steps');
+  const rawSteps = proofSteps.length > 0 ? proofSteps : arrayField(record, 'steps');
+  const steps = rawSteps.map((step, index) => proofStepFromDict(step, index));
+  const formula = stringifyProofFormula(record.formula ?? record.theorem);
+  const message = stringField(record, 'message', stringField(record, 'error'));
+  const timeMs = numberField(record, 'time_ms', numberField(record, 'timeMs'));
+  return {
+    status,
+    theorem: stringField(record, 'theorem', formula),
+    formula,
+    steps,
+    proofSteps: steps,
+    method: stringField(record, 'method', 'unknown'),
+    timeMs,
+    time_ms: timeMs,
+    error: status === 'error' ? message : undefined,
+    message,
+  };
+}
+
+export function proofResultToDict(result: ProofResult): Record<string, unknown> {
+  return {
+    status: result.status,
+    formula: result.formula ?? result.theorem,
+    proof_steps: (result.proofSteps ?? result.steps).map(proofStepToDict),
+    time_ms: result.time_ms ?? result.timeMs ?? 0,
+    method: result.method ?? 'unknown',
+    message: result.message ?? result.error ?? '',
+  };
+}
+
+export function isProofResultConclusive(result: ProofResult): boolean {
+  return result.status === 'proved' || result.status === 'disproved';
+}
+
+export function validateProofTypesPort(value: unknown): LogicValidationResult & {
+  metadata: typeof PROOF_TYPES_PORT_METADATA;
+} {
+  const issues: Array<LogicValidationIssue> = [];
+  const record = isRecord(value) ? value : {};
+  if (!isRecord(value)) issues.push({ severity: 'error', message: 'expected_object' });
+  if ('status' in record && !isProofStatus(record.status)) {
+    issues.push({ severity: 'error', field: 'status', message: 'unknown proof status' });
+  }
+  if ('proof_steps' in record && !Array.isArray(record.proof_steps)) {
+    issues.push({ severity: 'error', field: 'proof_steps', message: 'expected proof step array' });
+  }
+  if (record.server_calls_allowed === true)
+    issues.push({
+      severity: 'error',
+      field: 'server_calls_allowed',
+      message: 'server calls are forbidden',
+    });
+  if (record.python_runtime_allowed === true)
+    issues.push({
+      severity: 'error',
+      field: 'python_runtime_allowed',
+      message: 'Python runtime is forbidden',
+    });
+  return { valid: issues.length === 0, issues, metadata: PROOF_TYPES_PORT_METADATA };
 }
 
 export interface LogicValidationIssue {
@@ -819,6 +940,12 @@ function arrayField(value: Record<string, unknown>, key: string): Array<unknown>
 
 function stringArrayField(value: Record<string, unknown>, key: string): Array<string> {
   return arrayField(value, key).filter((item): item is string => typeof item === 'string');
+}
+
+function stringifyProofFormula(value: unknown): string {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object' && 'toString' in value) return String(value);
+  return '';
 }
 
 function isLogicOperator(value: string): value is LogicOperator {
