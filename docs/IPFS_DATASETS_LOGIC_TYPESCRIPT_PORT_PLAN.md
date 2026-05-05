@@ -843,7 +843,7 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Port remaining Python logic module `logic/deontic/utils/deontic_parser.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/e2e_validation.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/external_provers/formula_analyzer.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
-- [!] Port remaining Python logic module `logic/external_provers/interactive/coq_prover_bridge.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
+- [x] Port remaining Python logic module `logic/external_provers/interactive/coq_prover_bridge.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/external_provers/interactive/lean_prover_bridge.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/external_provers/neural/symbolicai_prover_bridge.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/external_provers/proof_cache.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
@@ -1025,11 +1025,11 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 12:50:04 UTC
+Last updated: 2026-05-05 12:57:41 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-232: Port remaining Python logic module 'logic/CEC/native/prover_core.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+Current target: `Task checkbox-476: Manual unblock: port 'logic/CEC/native/error_handling.py' by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1266,7 +1266,7 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-229: Port remaining Python logic module 'logic/CEC/native/problem_parser.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-230: Port remaining Python logic module 'logic/CEC/native/proof_optimization.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-231: Port remaining Python logic module 'logic/CEC/native/proof_strategies.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [!] `Task checkbox-232: Port remaining Python logic module 'logic/CEC/native/prover_core.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - latest daemon round failed validation or preflight
+- [!] `Task checkbox-232: Port remaining Python logic module 'logic/CEC/native/prover_core.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - blocked
 - [x] `Task checkbox-233: Port remaining Python logic module 'logic/CEC/native/prover_core_extended_rules.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-234: Port remaining Python logic module 'logic/CEC/native/shadow_prover.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-235: Port remaining Python logic module 'logic/CEC/native/syntax_tree.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
@@ -1355,7 +1355,7 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-318: Port remaining Python logic module 'logic/deontic/utils/deontic_parser.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-319: Port remaining Python logic module 'logic/e2e_validation.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-320: Port remaining Python logic module 'logic/external_provers/formula_analyzer.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [!] `Task checkbox-321: Port remaining Python logic module 'logic/external_provers/interactive/coq_prover_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - blocked
+- [x] `Task checkbox-321: Port remaining Python logic module 'logic/external_provers/interactive/coq_prover_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
 - [x] `Task checkbox-322: Port remaining Python logic module 'logic/external_provers/interactive/lean_prover_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-323: Port remaining Python logic module 'logic/external_provers/neural/symbolicai_prover_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-324: Port remaining Python logic module 'logic/external_provers/proof_cache.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
@@ -1519,30 +1519,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-232: Port remaining Python logic module 'logic/CEC/native/prover_core.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
-- Result: `needs follow-up`
-- Summary: Ported CEC native prover_core.py as browser-native TypeScript proof-core metadata on bounded forward proving results.
-- Impact: CecProver now exposes deterministic prover_core.py runtime metadata, initial and derived expression counts, applied rule counts, configured proof budgets, and budget exhaustion diagnostics on every proof result. The CEC bridge and manager propagate the same fail-closed local metadata, and the focused Jest coverage validates the browser-native contract without Python, server, filesystem, subprocess, RPC, or Node-only runtime dependencies.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/prover.test.ts`, `src/lib/logic/cec/prover.ts`, `src/lib/logic/cec/proverManager.ts`, `src/lib/logic/integration/cecBridge.ts`
-- Errors: Rejected proposal because it imports from '@jest/globals'; logic tests use Jest globals without test-framework imports.; Rejected proposal because TypeScript replacement preflight found parser or generic/type-quality errors before touching the worktree:
-../../..src/lib/logic/cec/prover.ts(106,11): error TS2322: Type '{ ruleDescription?: any; ruleGroup?: CecNativeRuleGroupName; id: string; rule: any; premises: any; conclusion: any; explanation: string; derivedExpressionCount: number; }' is not assignable to type 'CecProofTraceStep'.
-../../..src/lib/logic/cec/prover.ts(170,7): error TS2322: Type '{ error?: string; status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; core: CecProverCoreSummary; }' is not assignable to type 'CecProofResult'.
-
-Replacement diagnostic context:
-src/lib/logic/cec/prover.ts:106:11 TS2322: Type '{ ruleDescription?: any; ruleGroup?: CecNativeRuleGroupName; id: string; rule: any; premises: any; conclusion: any; explanation: string; derivedExpressionCount: number; }' is not assignable to type 'CecProofTraceStep'.
-  104:         const ruleGroup = this.ruleGroupByRuleName.get(application.rule);
-  105:         const step: CecProofTraceStep = {
-> 106:           id: `cec-step-${steps.length + 1}`,
-  107:           rule: application.rule,
-  108:           premises: application.premises.map(formatCecExpression),
-
-src/lib/logic/cec/prover.ts:170:7 TS2322: Type '{ error?: string; status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; core: CecProverCoreSummary; }' is not assignable to type 'CecProofResult'.
-  168:     };
-  169:     return {
-> 170:       status,
-  171:       theorem: formatCecExpression(theorem),
-  172:       steps,
-- Failure kind: `typescript_quality`
+- Target: `Task checkbox-321: Port remaining Python logic module 'logic/external_provers/interactive/coq_prover_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Result: `valid`
+- Summary: Ported the interactive Coq prover bridge session surface to browser-native TypeScript with deterministic local vernacular validation.
+- Impact: The Coq integration now exposes a browser-local interactive session facade for logic/external_provers/interactive/coq_prover_bridge.py semantics, records proof-state history, accepts a bounded proof script subset, and fails closed for commands requiring module loading, filesystem access, subprocess control, Python, RPC, or server calls. Existing integration Jest coverage directly validates the new session behavior and fail-closed command handling without importing test-framework helpers.
+- Accepted changed files: `src/lib/logic/integration/bridge.test.ts`, `src/lib/logic/integration/coqProverBridge.ts`
 
 ### Blocked Backlog
 
@@ -1572,11 +1553,6 @@ src/lib/logic/cec/prover.ts:170:7 TS2322: Type '{ error?: string; status: ProofS
   - Failure kinds: `{"typescript_quality": 3}`
   - Latest failure kind: `typescript_quality`
   - Latest errors: Rejected proposal because it imports from '@jest/globals'; logic tests use Jest globals without test-framework imports.; Rejected proposal because TypeScript replacement preflight found parser or generic/type-quality errors before touching the worktree: ../../..src/lib/logic/cec/prover.ts(106,11): error TS2322: Type '{ ruleDescription?: any; ruleGroup?: CecNa...
-- `Task checkbox-321: Port remaining Python logic module 'logic/external_provers/interactive/coq_prover_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
-  - Failures since success: `2`
-  - Failure kinds: `{"preflight": 2}`
-  - Latest failure kind: `preflight`
-  - Latest errors: Rejected proposal because it imports from '@jest/globals'; logic tests use Jest globals without test-framework imports.
 - `Task checkbox-476: Manual unblock: port 'logic/CEC/native/error_handling.py' by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.`
   - Failures since success: `2`
   - Failure kinds: `{"preflight": 2}`

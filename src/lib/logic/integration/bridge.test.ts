@@ -4,7 +4,11 @@ import {
   createBrowserNativeBaseProverBridge,
   createBrowserNativeIntegrationBridgesBaseProverBridge,
 } from './baseProverBridge';
-import type { BrowserNativeCoqProofResult } from './coqProverBridge';
+import {
+  createBrowserNativeCoqInteractiveSession,
+  validateCoqVernacularLocal,
+  type BrowserNativeCoqProofResult,
+} from './coqProverBridge';
 import {
   createBrowserNativeCvc5ProverBridge,
   type BrowserNativeCvc5ProofResult,
@@ -1063,6 +1067,39 @@ describe('BrowserNativeLogicBridge', () => {
         prover: 'vampire',
       }),
     ).toThrow('no Python, subprocess, RPC, or server fallback is available');
+  });
+
+  it('ports interactive coq_prover_bridge.py sessions with local fail-closed validation', () => {
+    const session = createBrowserNativeCoqInteractiveSession();
+    const validation = session.submitScript(
+      'Axiom h1 : Resident Ada. Theorem target : Resident Ada. Proof. exact h1. Qed.',
+    );
+
+    expect(validation.valid).toBe(true);
+    expect(validation.results.map((result) => result.status)).toEqual([
+      'accepted',
+      'needs-proof',
+      'accepted',
+      'accepted',
+      'proved',
+    ]);
+    expect(session.snapshot()).toMatchObject({
+      sourcePythonModule: 'logic/external_provers/interactive/coq_prover_bridge.py',
+      failClosed: true,
+      proofMode: false,
+      pendingGoals: [],
+    });
+
+    const blocked = validateCoqVernacularLocal('Require Import Coq.Lists.List.');
+    expect(blocked.valid).toBe(false);
+    expect(blocked.firstFailure).toMatchObject({
+      status: 'failed',
+      serverCallsAllowed: false,
+      pythonRuntime: false,
+      subprocessAllowed: false,
+      filesystemAllowed: false,
+    });
+    expect(blocked.firstFailure?.blockedReason).toContain('module loading');
   });
 
   it('ports prover_installer.py as a browser-native local adapter catalog', () => {
