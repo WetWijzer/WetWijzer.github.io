@@ -2441,3 +2441,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T055733Z-completed-the-evm-public-input-and-vk-registry-helper-slice-with-injectable-brow.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T055733Z-completed-the-evm-public-input-and-vk-registry-helper-slice-with-injectable-brow.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T055733Z-completed-the-evm-public-input-and-vk-registry-helper-slice-with-injectable-brow.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 06:02:25 UTC
+
+- Target: `Task checkbox-461: Manual unblock: add developer-panel live inspection snapshots for logic parse, proof, cache, ML/NLP, and ZKP capability state.`
+- Summary: Added browser-native developer-panel inspection snapshots for parse, proof, proof cache, ML/NLP, and ZKP state.
+- Impact: The TypeScript logic port now exports buildLogicDeveloperPanelSnapshot for live UI/devtools inspection without server calls or Python bridges, and Jest validation exercises the snapshot against the local proof cache and simulated ZKP facade.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/developerPanelSnapshots.test.ts`, `src/lib/logic/developerPanelSnapshots.ts`, `src/lib/logic/index.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T060225Z-added-browser-native-developer-panel-inspection-snapshots-for-parse-proof-proof-.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T060225Z-added-browser-native-developer-panel-inspection-snapshots-for-parse-proof-proof-.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T060225Z-added-browser-native-developer-panel-inspection-snapshots-for-parse-proof-proof-.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

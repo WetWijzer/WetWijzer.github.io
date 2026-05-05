@@ -35,6 +35,7 @@ export * from './cec';
 export * from './config';
 export * from './converters';
 export * from './deontic';
+export * from './developerPanelSnapshots';
 export * from './errors';
 export * from './featureDetection';
 export * from './flogic';
