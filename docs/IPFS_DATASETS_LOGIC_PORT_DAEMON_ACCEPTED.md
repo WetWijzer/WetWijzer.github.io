@@ -2099,3 +2099,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T025636Z-ported-the-zkp-backend-protocol-surface-to-browser-native-typescript-with-fail-c.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T025636Z-ported-the-zkp-backend-protocol-surface-to-browser-native-typescript-with-fail-c.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T025636Z-ported-the-zkp-backend-protocol-surface-to-browser-native-typescript-with-fail-c.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 03:05:25 UTC
+
+- Target: `Task checkbox-424: Port remaining Python logic module `logic/zkp/backends/groth16_backup.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Added the missing Groth16 backup backend exports to the browser-native TypeScript Groth16 module.
+- Impact: The ZKP index barrel now resolves createGroth16BackupBackend, create_groth16_backup_backend, Groth16BackupBackend, and GROTH16_BACKUP_BACKEND_METADATA. The backend uses injected local Groth16/WASM-compatible prove and verify functions, wraps successful proofs in ZKPProof, and fails closed when artifacts, verification keys, public signals, or proof payloads are invalid or unavailable.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/groth16.ts`, `src/lib/logic/zkp/groth16BackupBackend.test.ts`, `src/lib/logic/zkp/index.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T030525Z-added-the-missing-groth16-backup-backend-exports-to-the-browser-native-typescrip.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T030525Z-added-the-missing-groth16-backup-backend-exports-to-the-browser-native-typescrip.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T030525Z-added-the-missing-groth16-backup-backend-exports-to-the-browser-native-typescrip.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

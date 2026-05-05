@@ -934,7 +934,7 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Port remaining Python logic module `logic/types/proof_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/types/translation_types.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/backends/backend_protocol.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
-- [ ] Port remaining Python logic module `logic/zkp/backends/groth16_backup.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
+- [x] Port remaining Python logic module `logic/zkp/backends/groth16_backup.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/backends/groth16_ffi.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/backends/simulated.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/eth_contract_artifacts.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
@@ -966,11 +966,11 @@ These tasks were added automatically after the daemon found no eligible unchecke
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 02:56:36 UTC
+Last updated: 2026-05-05 03:05:25 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-424: Port remaining Python logic module 'logic/zkp/backends/groth16_backup.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+Current target: `Task checkbox-425: Port remaining Python logic module 'logic/zkp/backends/groth16_ffi.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1398,8 +1398,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-420: Port remaining Python logic module 'logic/types/fol_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-421: Port remaining Python logic module 'logic/types/proof_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-422: Port remaining Python logic module 'logic/types/translation_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [x] `Task checkbox-423: Port remaining Python logic module 'logic/zkp/backends/backend_protocol.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
-- [ ] `Task checkbox-424: Port remaining Python logic module 'logic/zkp/backends/groth16_backup.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
+- [x] `Task checkbox-423: Port remaining Python logic module 'logic/zkp/backends/backend_protocol.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
+- [x] `Task checkbox-424: Port remaining Python logic module 'logic/zkp/backends/groth16_backup.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
 - [ ] `Task checkbox-425: Port remaining Python logic module 'logic/zkp/backends/groth16_ffi.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-426: Port remaining Python logic module 'logic/zkp/backends/simulated.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-427: Port remaining Python logic module 'logic/zkp/eth_contract_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
@@ -1430,11 +1430,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-423: Port remaining Python logic module 'logic/zkp/backends/backend_protocol.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Target: `Task checkbox-424: Port remaining Python logic module 'logic/zkp/backends/groth16_backup.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 - Result: `valid`
-- Summary: Ported the ZKP backend protocol surface to browser-native TypeScript with fail-closed runtime validation.
-- Impact: The new backendProtocol module exports the Python backend_protocol.py parity contract, metadata proving browser-native/no-Python constraints, and validation helpers used by the existing simulated ZKP backend tests. The simulated backend now implements the protocol type, and the ZKP barrel export makes the contract available to downstream TypeScript logic validation.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/backendProtocol.ts`, `src/lib/logic/zkp/index.ts`, `src/lib/logic/zkp/simulatedBackend.test.ts`, `src/lib/logic/zkp/simulatedBackend.ts`
+- Summary: Added the missing Groth16 backup backend exports to the browser-native TypeScript Groth16 module.
+- Impact: The ZKP index barrel now resolves createGroth16BackupBackend, create_groth16_backup_backend, Groth16BackupBackend, and GROTH16_BACKUP_BACKEND_METADATA. The backend uses injected local Groth16/WASM-compatible prove and verify functions, wraps successful proofs in ZKPProof, and fails closed when artifacts, verification keys, public signals, or proof payloads are invalid or unavailable.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/groth16.ts`, `src/lib/logic/zkp/groth16BackupBackend.test.ts`, `src/lib/logic/zkp/index.ts`
 
 ### Blocked Backlog
 

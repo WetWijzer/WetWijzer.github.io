@@ -1,3 +1,7 @@
+import type { BrowserNativeZkpBackendProtocol } from './zkp/backendProtocol';
+import { axiomsCommitmentHex, theoremHashHex } from './zkp/canonicalization';
+import { ZKPProof } from './zkp/simulatedBackend';
+
 export type Groth16JsonScalar = string | number | boolean | null;
 export type Groth16JsonValue =
   | Groth16JsonScalar
@@ -57,9 +61,38 @@ export interface BrowserGroth16Backend {
 export interface Groth16Adapter {
   supportsVerification: boolean;
   supportsProving: boolean;
-  verify: (verificationKey: unknown, publicSignals: unknown, proof: unknown) => unknown;
-  prove: (artifacts: unknown, input: unknown) => unknown;
+  verify: (verificationKey: unknown, publicSignals: unknown, proof: unknown) => Promise<boolean>;
+  prove: (artifacts: unknown, input: unknown) => Promise<Groth16ProvingResult>;
 }
+
+export interface Groth16BackupBackendOptions {
+  backend?: BrowserGroth16Backend;
+  provingArtifacts?: Groth16ProvingArtifacts;
+  verificationKey?: Groth16VerificationKey;
+  circuitId?: string;
+  circuitVersion?: number;
+  rulesetId?: string;
+}
+
+export interface Groth16BackupBackendMetadata {
+  sourcePythonModule: 'logic/zkp/backends/groth16_backup.py';
+  backendId: 'groth16_backup';
+  proofSystem: 'Groth16';
+  browserNative: true;
+  serverCallsAllowed: false;
+  pythonRuntimeAllowed: false;
+  requiresInjectedWasmBackend: true;
+}
+
+export const GROTH16_BACKUP_BACKEND_METADATA: Groth16BackupBackendMetadata = {
+  backendId: 'groth16_backup',
+  browserNative: true,
+  proofSystem: 'Groth16',
+  pythonRuntimeAllowed: false,
+  requiresInjectedWasmBackend: true,
+  serverCallsAllowed: false,
+  sourcePythonModule: 'logic/zkp/backends/groth16_backup.py',
+};
 
 function isObject(value: unknown): value is { [key: string]: unknown } {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -210,6 +243,106 @@ export function createGroth16Adapter(backend?: BrowserGroth16Backend): Groth16Ad
   };
 }
 
+export class Groth16BackupBackend implements BrowserNativeZkpBackendProtocol {
+  readonly backendId = 'groth16_backup';
+  readonly backend_id = 'groth16_backup';
+
+  private readonly adapter: Groth16Adapter;
+  private readonly provingArtifacts?: Groth16ProvingArtifacts;
+  private readonly verificationKey?: Groth16VerificationKey;
+  private readonly circuitId: string;
+  private readonly circuitVersion: number;
+  private readonly rulesetId: string;
+
+  constructor(options: Groth16BackupBackendOptions = {}) {
+    this.adapter = createGroth16Adapter(options.backend);
+    this.provingArtifacts = options.provingArtifacts;
+    this.verificationKey = options.verificationKey;
+    this.circuitId = options.circuitId ?? 'legal_theorem_groth16';
+    this.circuitVersion = options.circuitVersion ?? 1;
+    this.rulesetId = options.rulesetId ?? 'TDFOL_v1';
+  }
+
+  async generateProof(
+    theorem: string,
+    privateAxioms: string[],
+    metadata: Record<string, unknown> = {},
+  ): Promise<ZKPProof> {
+    if (!theorem) {
+      throw new Error('Theorem cannot be empty');
+    }
+    if (privateAxioms.length === 0) {
+      throw new Error('At least one axiom required');
+    }
+
+    const artifacts = readProvingArtifacts(metadata) ?? this.provingArtifacts;
+    const provingResult = await this.adapter.prove(artifacts, {
+      axioms: privateAxioms,
+      metadata: metadata as Groth16WitnessInput,
+      theorem,
+    });
+
+    if (!provingResult.ok) {
+      throw new Error(`Groth16 proof generation failed: ${provingResult.error}`);
+    }
+
+    const publicInputs: Record<string, unknown> = {
+      axioms_commitment: await axiomsCommitmentHex(privateAxioms),
+      circuit_ref: `${this.circuitId}@v${this.circuitVersion}`,
+      circuit_version: this.circuitVersion,
+      groth16_public_signals: [...provingResult.publicSignals],
+      ruleset_id: this.rulesetId,
+      theorem,
+      theorem_hash: await theoremHashHex(theorem),
+    };
+
+    return new ZKPProof({
+      metadata: {
+        ...metadata,
+        backend: this.backendId,
+        browser_native: true,
+        groth16_proof: cloneJson(provingResult.proof),
+        proof_system: 'Groth16',
+        source_python_module: GROTH16_BACKUP_BACKEND_METADATA.sourcePythonModule,
+      },
+      proofData: encodeProofPayload(provingResult.proof, provingResult.publicSignals),
+      publicInputs,
+      timestamp: Date.now() / 1000,
+    });
+  }
+
+  generate_proof(
+    theorem: string,
+    privateAxioms: string[],
+    metadata: Record<string, unknown> = {},
+  ): Promise<ZKPProof> {
+    return this.generateProof(theorem, privateAxioms, metadata);
+  }
+
+  async verifyProof(proof: ZKPProof): Promise<boolean> {
+    const verificationKey = readVerificationKey(proof.metadata) ?? this.verificationKey;
+    const groth16Proof =
+      readGroth16Proof(proof.metadata) ?? decodeProofPayload(proof.proofData)?.proof;
+    const publicSignals =
+      readPublicSignals(proof.publicInputs.groth16_public_signals) ??
+      decodeProofPayload(proof.proofData)?.publicSignals;
+
+    return this.adapter.verify(verificationKey, publicSignals, groth16Proof);
+  }
+
+  verify_proof(proof: ZKPProof): Promise<boolean> {
+    return this.verifyProof(proof);
+  }
+}
+
+export function createGroth16BackupBackend(
+  options: Groth16BackupBackendOptions = {},
+): Groth16BackupBackend {
+  return new Groth16BackupBackend(options);
+}
+
+export const create_groth16_backup_backend = createGroth16BackupBackend;
+
 export async function verifyGroth16Proof(
   verificationKey: unknown,
   publicSignals: unknown,
@@ -225,4 +358,52 @@ export async function proveGroth16(
   backend?: BrowserGroth16Backend,
 ) {
   return createGroth16Adapter(backend).prove(artifacts, input);
+}
+
+function readProvingArtifacts(
+  record: Record<string, unknown>,
+): Groth16ProvingArtifacts | undefined {
+  const candidate = record.groth16_proving_artifacts ?? record.provingArtifacts;
+  return isGroth16ProvingArtifacts(candidate) ? candidate : undefined;
+}
+
+function readVerificationKey(record: Record<string, unknown>): Groth16VerificationKey | undefined {
+  const candidate = record.groth16_verification_key ?? record.verificationKey;
+  return isGroth16VerificationKey(candidate) ? candidate : undefined;
+}
+
+function readGroth16Proof(record: Record<string, unknown>): Groth16Proof | undefined {
+  const candidate = record.groth16_proof ?? record.proof;
+  return isGroth16Proof(candidate) ? candidate : undefined;
+}
+
+function readPublicSignals(value: unknown): Groth16PublicSignals | undefined {
+  return isGroth16PublicSignals(value) ? value : undefined;
+}
+
+function encodeProofPayload(proof: Groth16Proof, publicSignals: Groth16PublicSignals): Uint8Array {
+  return new TextEncoder().encode(JSON.stringify({ proof, publicSignals }));
+}
+
+function decodeProofPayload(
+  proofData: Uint8Array,
+): { proof: Groth16Proof; publicSignals: Groth16PublicSignals } | undefined {
+  try {
+    const decoded = JSON.parse(new TextDecoder().decode(proofData)) as unknown;
+    if (
+      isObject(decoded) &&
+      isGroth16Proof(decoded.proof) &&
+      isGroth16PublicSignals(decoded.publicSignals)
+    ) {
+      return { proof: decoded.proof, publicSignals: decoded.publicSignals };
+    }
+  } catch {
+    return undefined;
+  }
+
+  return undefined;
+}
+
+function cloneJson<T extends Groth16JsonValue>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
 }
