@@ -56,6 +56,7 @@ export interface TdfolCountermodelDemoOptions {
 export interface TdfolTableauxWorldLike {
   id: number;
   formulas: TdfolFormula[];
+  negatedFormulas?: TdfolFormula[];
 }
 
 export interface TdfolTableauxBranchLike {
@@ -70,6 +71,32 @@ export interface TdfolKripkeStructureJson {
   valuation: Record<string, string[]>;
   initial_world: number;
   logic_type: TdfolModalLogicType;
+}
+
+export interface TdfolTableauxBranchExport {
+  is_closed: boolean;
+  worlds: Array<{
+    id: number;
+    formulas: string[];
+    negated_formulas: string[];
+  }>;
+  accessibility: Array<{
+    from: number;
+    to: number;
+    source: string;
+    target: string;
+  }>;
+}
+
+export interface TdfolTableauxCountermodelExport {
+  formula: string;
+  logic_type: TdfolModalLogicType;
+  is_valid: false;
+  proof_steps: string[];
+  open_branch: TdfolTableauxBranchExport;
+  countermodel: TdfolKripkeStructureJson;
+  visualization: TdfolCountermodelVisualizerSnapshot;
+  explanation: string[];
 }
 
 export class TdfolKripkeStructure {
@@ -524,6 +551,26 @@ export function createTdfolCountermodelVisualizerDemo(
   });
 }
 
+export function exportTdfolTableauxCountermodelData(
+  formula: TdfolFormula,
+  branch: TdfolTableauxBranchLike,
+  logicType: TdfolModalLogicType = 'K',
+  proofSteps: string[] = [],
+): TdfolTableauxCountermodelExport {
+  const countermodel = extractTdfolCountermodel(formula, branch, logicType);
+  const visualizer = new TdfolCounterModelVisualizer(countermodel.kripke);
+  return {
+    formula: formatTdfolFormula(formula),
+    logic_type: logicType,
+    is_valid: false,
+    proof_steps: [...proofSteps],
+    open_branch: serializeTdfolBranch(branch),
+    countermodel: countermodel.kripke.toDict(),
+    visualization: visualizer.toDataSnapshot(),
+    explanation: [...countermodel.explanation],
+  };
+}
+
 function buildDemoCountermodels(): Array<{
   id: string;
   title: string;
@@ -597,6 +644,23 @@ function normalizeAccessibilityEntries(
     : Object.entries(accessibility)
         .map(([key, value]): [number, number[]] => [Number(key), value])
         .sort(([left], [right]) => left - right);
+}
+
+function serializeTdfolBranch(branch: TdfolTableauxBranchLike): TdfolTableauxBranchExport {
+  const worlds = normalizeWorldEntries(branch.worlds).map(([worldId, world]) => ({
+    id: worldId,
+    formulas: world.formulas.map((formula) => formatTdfolFormula(formula)).sort(),
+    negated_formulas: (world.negatedFormulas ?? [])
+      .map((formula) => formatTdfolFormula(formula))
+      .sort(),
+  }));
+  const accessibility = normalizeAccessibilityEntries(branch.accessibility).flatMap(
+    ([from, targets]) =>
+      [...targets]
+        .sort((left, right) => left - right)
+        .map((to) => ({ from, to, source: `w${from}`, target: `w${to}` })),
+  );
+  return { is_closed: branch.isClosed ?? false, worlds, accessibility };
 }
 
 function isMapLike<Key, Value>(value: unknown): value is Map<Key, Value> {

@@ -1,6 +1,10 @@
 import { parseTdfolFormula } from './parser';
+import { exportCecTableauxCountermodelData } from '../cec/countermodels';
+import { proveCecModalFormula } from '../cec/modalTableaux';
+import { parseCecExpression } from '../cec/parser';
 import {
   createTdfolCountermodelVisualizerDemo,
+  exportTdfolTableauxCountermodelData,
   extractTdfolCountermodel,
   TdfolCounterModel,
   TdfolCounterModelExtractor,
@@ -171,5 +175,47 @@ describe('TDFOL countermodels', () => {
     });
     expect(snapshot).toMatchObject({ num_worlds: 1, num_relations: 0, expected_properties: [] });
     expect(JSON.parse(JSON.stringify(snapshot)).nodes[0].id).toBe('w0');
+  });
+
+  it('exports TDFOL and CEC modal tableaux countermodels with matching visualization payloads', () => {
+    const tdfolFormula = parseTdfolFormula('always(Pred(x)) -> Pred(x)');
+    const tdfolResult = new TdfolModalTableaux({ logicType: 'K' }).prove(tdfolFormula);
+    const cecFormula = parseCecExpression(
+      '(implies (always (comply_with agent code)) (comply_with agent code))',
+    );
+    const cecResult = proveCecModalFormula(cecFormula, 'K');
+
+    const tdfolExport = exportTdfolTableauxCountermodelData(
+      tdfolFormula,
+      tdfolResult.openBranch!,
+      'K',
+      tdfolResult.proofSteps,
+    );
+    const cecExport = exportCecTableauxCountermodelData(
+      cecFormula,
+      cecResult.openBranch!,
+      'K',
+      cecResult.proofSteps,
+    );
+
+    expect(tdfolExport).toMatchObject({
+      formula: '(□(Pred(x))) → (Pred(x))',
+      logic_type: 'K',
+      is_valid: false,
+      countermodel: { worlds: [0], accessibility: { '0': [] }, logic_type: 'K' },
+      visualization: { num_worlds: 1, num_relations: 0, expected_properties: [] },
+    });
+    expect(tdfolExport.open_branch.worlds[0].negated_formulas).toEqual(['Pred(x)']);
+    expect(tdfolExport.open_branch.accessibility).toEqual([]);
+    expect(tdfolExport.proof_steps).toEqual(tdfolResult.proofSteps);
+    expect(JSON.parse(JSON.stringify(tdfolExport)).visualization.nodes[0]).toMatchObject({
+      id: 'w0',
+      is_initial: true,
+    });
+
+    expect(Object.keys(tdfolExport).sort()).toEqual(Object.keys(cecExport).sort());
+    expect(tdfolExport.open_branch.worlds[0]).toHaveProperty('formulas');
+    expect(tdfolExport.open_branch.worlds[0]).toHaveProperty('negated_formulas');
+    expect(cecExport.visualization.nodes[0].id).toBe(tdfolExport.visualization.nodes[0].id);
   });
 });
