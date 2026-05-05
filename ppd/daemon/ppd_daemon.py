@@ -11,7 +11,6 @@ commands returned by the model.
 from __future__ import annotations
 
 import argparse
-from contextlib import contextmanager
 import json
 import os
 import py_compile
@@ -19,7 +18,7 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Iterable, Iterator, Optional
+from typing import Any, Callable, Iterable, Optional
 from urllib.parse import urlparse
 
 if __package__ in {None, ""}:
@@ -44,10 +43,9 @@ from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     Task,
     append_jsonl,
     atomic_write_json,
-    build_validation_workspace_spec,
     command_results_from_objects,
     compact_message,
-    cleanup_stale_validation_worktrees as cleanup_todo_validation_worktrees,
+    cleanup_stale_config_validation_worktrees,
     config_validation_commands_for_proposal,
     dataclass_worktree_config,
     diff_for_file as todo_diff_for_file,
@@ -59,7 +57,7 @@ from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     run_config_validation_commands,
     run_command as todo_run_command,
     select_task as select_todo_task,
-    temporary_validation_worktree as temporary_todo_validation_worktree,
+    temporary_config_validation_worktree,
     utc_now,
     worktree_marker_payload as todo_worktree_marker_payload,
 )
@@ -889,10 +887,10 @@ def worktree_marker_payload(*, state: str, source_root: Path) -> dict[str, Any]:
 def cleanup_stale_validation_worktrees(config: Config, *, max_age_seconds: Optional[int] = None) -> list[str]:
     """Remove old PP&D validation worktrees left by interrupted daemon runs."""
 
-    return cleanup_todo_validation_worktrees(
-        config.resolve(config.worktree_dir),
+    return cleanup_stale_config_validation_worktrees(
+        config,
         marker_name="ppd-worktree.json",
-        max_age_seconds=int(config.worktree_stale_seconds if max_age_seconds is None else max_age_seconds),
+        max_age_seconds=max_age_seconds,
     )
 
 
@@ -906,22 +904,17 @@ def _ignore_validation_tree_entries(directory: str, names: list[str]) -> set[str
     return {name for name in names if name in ignored}
 
 
-@contextmanager
-def temporary_validation_worktree(config: Config) -> Iterator[Path]:
+def temporary_validation_worktree(config: Config):
     """Create an isolated PP&D validation tree and remove it after the cycle."""
 
-    spec = build_validation_workspace_spec(
-        repo_root=config.repo_root,
-        worktree_dir=config.worktree_dir,
+    return temporary_config_validation_worktree(
+        config,
         marker_name="ppd-worktree.json",
         copy_paths=(Path("ppd"), config.plan_doc),
         root_files=("package.json", "package-lock.json", "tsconfig.json"),
         external_reference_paths=(Path("ipfs_datasets_py/ipfs_datasets_py"),),
         ignore=_ignore_validation_tree_entries,
-        stale_seconds=config.worktree_stale_seconds,
     )
-    with temporary_todo_validation_worktree(spec) as worktree:
-        yield worktree
 
 
 def validation_results_from_syntax_preflight(worktree: Path, changed: list[str], config: Config) -> tuple[list[CommandResult], list[str], str]:
