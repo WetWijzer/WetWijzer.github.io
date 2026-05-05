@@ -2315,3 +2315,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T042614Z-add-accepted-work-parity-review-evidence-for-checkbox-447.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T042614Z-add-accepted-work-parity-review-evidence-for-checkbox-447.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T042614Z-add-accepted-work-parity-review-evidence-for-checkbox-447.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 04:29:57 UTC
+
+- Target: `Task checkbox-448: Add end-to-end browser-native validation proving the converted logic runs without Python, spaCy, or server-side calls, including deterministic coverage for ML and NLP capability surfaces.`
+- Summary: Add browser-native end-to-end validation for logic runtime NLP, ML confidence, and deontic conversion surfaces.
+- Impact: The new validation helper is exported from the TypeScript logic library and is directly exercised by Jest to prove deterministic FOL NLP extraction, local ML confidence scoring, local ML artifact mode, and deontic conversion all report no Python, no spaCy, and no server-call runtime paths.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/browserNativeValidation.test.ts`, `src/lib/logic/browserNativeValidation.ts`, `src/lib/logic/index.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T042957Z-add-browser-native-end-to-end-validation-for-logic-runtime-nlp-ml-confidence-and.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T042957Z-add-browser-native-end-to-end-validation-for-logic-runtime-nlp-ml-confidence-and.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T042957Z-add-browser-native-end-to-end-validation-for-logic-runtime-nlp-ml-confidence-and.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

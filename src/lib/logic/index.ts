@@ -29,6 +29,7 @@ export type {
 export * from './cache';
 export * from './batchProcessing';
 export * from './benchmarks';
+export * from './browserNativeValidation';
 export * from './cli';
 export * from './cec';
 export * from './config';
