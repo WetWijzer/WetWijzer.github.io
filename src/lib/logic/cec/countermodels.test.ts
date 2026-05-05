@@ -5,6 +5,7 @@ import {
   CecCounterModelExtractor,
   CecCounterModelVisualizer,
   CecKripkeStructure,
+  exportCecTableauxCountermodelData,
   extractCecCountermodel,
   visualizeCecCountermodel,
 } from './countermodels';
@@ -29,7 +30,9 @@ describe('CEC countermodels', () => {
   });
 
   it('extracts a CEC countermodel from an open modal tableaux branch', () => {
-    const formula = parseCecExpression('(implies (always (comply_with agent code)) (comply_with agent code))');
+    const formula = parseCecExpression(
+      '(implies (always (comply_with agent code)) (comply_with agent code))',
+    );
     const result = proveCecModalFormula(formula, 'K');
     const countermodel = extractCecCountermodel(formula, result.openBranch!, 'K');
 
@@ -81,7 +84,9 @@ describe('CEC countermodels', () => {
     expect(countermodel.toDot()).toContain('w0 -> w1;');
     expect(JSON.parse(countermodel.toJson()).kripke_structure.logic_type).toBe('D');
     expect(visualizeCecCountermodel(countermodel, 'compact-ascii')).toContain('CecKripke(D)');
-    expect(visualizeCecCountermodel(countermodel, 'html')).toContain('<script type="application/json" id="cec-kripke-data">');
+    expect(visualizeCecCountermodel(countermodel, 'html')).toContain(
+      '<script type="application/json" id="cec-kripke-data">',
+    );
   });
 
   it('checks modal accessibility properties for CEC visualizer summaries', () => {
@@ -99,7 +104,36 @@ describe('CEC countermodels', () => {
       transitive: true,
       serial: true,
     });
-    expect(visualizer.renderLogicProperties()).toContain('Expected for S5: Reflexive, Symmetric, Transitive');
+    expect(visualizer.renderLogicProperties()).toContain(
+      'Expected for S5: Reflexive, Symmetric, Transitive',
+    );
     expect(visualizer.renderAsciiEnhanced()).toContain('CEC Kripke Structure (Logic: S5)');
+  });
+
+  it('exports CEC modal tableaux open branches as serializable visualization data', () => {
+    const formula = parseCecExpression(
+      '(implies (always (comply_with agent code)) (comply_with agent code))',
+    );
+    const result = proveCecModalFormula(formula, 'K');
+
+    expect(result.isValid).toBe(false);
+    expect(result.openBranch).toBeDefined();
+
+    const exported = exportCecTableauxCountermodelData(
+      formula,
+      result.openBranch!,
+      'K',
+      result.proofSteps,
+    );
+
+    expect(exported).toMatchObject({
+      formula: '(implies (always (comply_with agent code)) (comply_with agent code))',
+      logic_type: 'K',
+      is_valid: false,
+      countermodel: { worlds: [0], accessibility: { '0': [] }, logic_type: 'K' },
+      visualization: { num_worlds: 1, num_relations: 0, expected_properties: [] },
+    });
+    expect(exported.open_branch.worlds[0].negated_formulas).toEqual(['(comply_with agent code)']);
+    expect(JSON.parse(JSON.stringify(exported)).visualization.nodes[0].id).toBe('w0');
   });
 });

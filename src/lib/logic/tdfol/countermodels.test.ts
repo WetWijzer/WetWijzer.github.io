@@ -8,6 +8,7 @@ import {
   TdfolKripkeStructure,
   visualizeTdfolCountermodel,
 } from './countermodels';
+import { TdfolModalTableaux } from './modalTableaux';
 
 describe('TDFOL countermodels', () => {
   it('models Kripke worlds, accessibility, valuation, and JSON export', () => {
@@ -151,5 +152,24 @@ describe('TDFOL countermodels', () => {
     expect(scenarios[1].logic_type).toBe('D');
     expect(scenarios[1].snapshot.property_checks.serial).toBe(true);
     expect(scenarios[1].countermodel.valuation['1']).toEqual(['Permitted(a)']);
+  });
+
+  it('turns modal tableaux open branches into existing serializable visualization data', () => {
+    const formula = parseTdfolFormula('always(Pred(x)) -> Pred(x)');
+    const result = new TdfolModalTableaux({ logicType: 'K' }).prove(formula);
+
+    expect(result.isValid).toBe(false);
+    expect(result.openBranch).toBeDefined();
+
+    const countermodel = extractTdfolCountermodel(formula, result.openBranch!, 'K');
+    const snapshot = new TdfolCounterModelVisualizer(countermodel.kripke).toDataSnapshot();
+
+    expect(countermodel.kripke.toDict()).toMatchObject({
+      worlds: [0],
+      accessibility: { '0': [] },
+      logic_type: 'K',
+    });
+    expect(snapshot).toMatchObject({ num_worlds: 1, num_relations: 0, expected_properties: [] });
+    expect(JSON.parse(JSON.stringify(snapshot)).nodes[0].id).toBe('w0');
   });
 });

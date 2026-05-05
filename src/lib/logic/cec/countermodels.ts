@@ -4,9 +4,36 @@ import type { CecModalLogicType } from './modalTableaux';
 
 export type CecCountermodelFormat = 'ascii' | 'dot' | 'json' | 'html' | 'compact-ascii';
 
+export interface CecCountermodelWorldSnapshot {
+  id: string;
+  label: string;
+  atoms: string[];
+  is_initial: boolean;
+  world_id: number;
+}
+
+export interface CecCountermodelRelationSnapshot {
+  source: string;
+  target: string;
+  from: number;
+  to: number;
+}
+
+export interface CecCountermodelVisualizerSnapshot {
+  nodes: CecCountermodelWorldSnapshot[];
+  links: CecCountermodelRelationSnapshot[];
+  logic_type: CecModalLogicType;
+  initial_world: number;
+  num_worlds: number;
+  num_relations: number;
+  property_checks: { reflexive: boolean; symmetric: boolean; transitive: boolean; serial: boolean };
+  expected_properties: string[];
+}
+
 export interface CecTableauxWorldLike {
   id: number;
   formulas: CecExpression[];
+  negatedFormulas?: CecExpression[];
 }
 
 export interface CecTableauxBranchLike {
@@ -21,6 +48,32 @@ export interface CecKripkeStructureJson {
   valuation: Record<string, string[]>;
   initial_world: number;
   logic_type: CecModalLogicType;
+}
+
+export interface CecTableauxBranchExport {
+  is_closed: boolean;
+  worlds: Array<{
+    id: number;
+    formulas: string[];
+    negated_formulas: string[];
+  }>;
+  accessibility: Array<{
+    from: number;
+    to: number;
+    source: string;
+    target: string;
+  }>;
+}
+
+export interface CecTableauxCountermodelExport {
+  formula: string;
+  logic_type: CecModalLogicType;
+  is_valid: false;
+  proof_steps: string[];
+  open_branch: CecTableauxBranchExport;
+  countermodel: CecKripkeStructureJson;
+  visualization: CecCountermodelVisualizerSnapshot;
+  explanation: string[];
 }
 
 export class CecKripkeStructure {
@@ -66,7 +119,10 @@ export class CecKripkeStructure {
       accessibility: Object.fromEntries(
         [...this.accessibility.entries()]
           .sort(([left], [right]) => left - right)
-          .map(([world, targets]) => [String(world), [...targets].sort((left, right) => left - right)]),
+          .map(([world, targets]) => [
+            String(world),
+            [...targets].sort((left, right) => left - right),
+          ]),
       ),
       valuation: Object.fromEntries(
         [...this.valuation.entries()]
@@ -98,7 +154,9 @@ export class CecCounterModel {
     const lines = [
       `CEC countermodel for: ${formatCecExpression(this.formula)}`,
       `Logic: ${this.kripke.logicType}`,
-      `Worlds: ${this.sortedWorlds().map((world) => `w${world}`).join(', ')}`,
+      `Worlds: ${this.sortedWorlds()
+        .map((world) => `w${world}`)
+        .join(', ')}`,
       `Initial: w${this.kripke.initialWorld}`,
       '',
       'Valuation (true atoms):',
@@ -111,8 +169,11 @@ export class CecCounterModel {
 
     lines.push('', 'Accessibility:');
     for (const worldId of this.sortedWorlds()) {
-      const targets = [...this.kripke.getAccessibleWorlds(worldId)].sort((left, right) => left - right);
-      if (targets.length > 0) lines.push(`  w${worldId} -> ${targets.map((target) => `w${target}`).join(', ')}`);
+      const targets = [...this.kripke.getAccessibleWorlds(worldId)].sort(
+        (left, right) => left - right,
+      );
+      if (targets.length > 0)
+        lines.push(`  w${worldId} -> ${targets.map((target) => `w${target}`).join(', ')}`);
     }
 
     if (this.explanation.length > 0) {
@@ -127,7 +188,9 @@ export class CecCounterModel {
       const atoms = this.sortedAtoms(worldId);
       const prefix = worldId === this.kripke.initialWorld ? '-> ' : '   ';
       lines.push(`${prefix}w${worldId}: {${atoms.length > 0 ? atoms.join(', ') : 'none'}}`);
-      for (const target of [...this.kripke.getAccessibleWorlds(worldId)].sort((left, right) => left - right)) {
+      for (const target of [...this.kripke.getAccessibleWorlds(worldId)].sort(
+        (left, right) => left - right,
+      )) {
         lines.push(`   |-> w${target}`);
       }
     }
@@ -145,13 +208,16 @@ export class CecCounterModel {
 
     for (const worldId of this.sortedWorlds()) {
       const atomLabel = this.sortedAtoms(worldId).join('\\n') || 'none';
-      const style = worldId === this.kripke.initialWorld ? ', style=filled, fillcolor=lightblue' : '';
+      const style =
+        worldId === this.kripke.initialWorld ? ', style=filled, fillcolor=lightblue' : '';
       lines.push(`  w${worldId} [label="w${worldId}\\n${escapeDot(atomLabel)}"${style}];`);
     }
 
     lines.push('');
     for (const worldId of this.sortedWorlds()) {
-      for (const target of [...this.kripke.getAccessibleWorlds(worldId)].sort((left, right) => left - right)) {
+      for (const target of [...this.kripke.getAccessibleWorlds(worldId)].sort(
+        (left, right) => left - right,
+      )) {
         lines.push(`  w${worldId} -> w${target};`);
       }
     }
@@ -207,7 +273,10 @@ export class CecCounterModelExtractor {
 
   private generateExplanation(formula: CecExpression, kripke: CecKripkeStructure): string[] {
     const initialAtoms = [...(kripke.valuation.get(kripke.initialWorld) ?? [])].sort();
-    const relations = [...kripke.accessibility.values()].reduce((sum, targets) => sum + targets.size, 0);
+    const relations = [...kripke.accessibility.values()].reduce(
+      (sum, targets) => sum + targets.size,
+      0,
+    );
     const lines = [
       `CEC formula '${formatCecExpression(formula)}' is not ${this.logicType}-valid`,
       `Countermodel has ${kripke.worlds.size} world(s)`,
@@ -235,18 +304,33 @@ export class CecCounterModelVisualizer {
   }
 
   renderCompactAscii(): string {
-    const relationCount = [...this.kripke.accessibility.values()].reduce((sum, targets) => sum + targets.size, 0);
-    const lines = [`CecKripke(${this.kripke.logicType}) W=${this.kripke.worlds.size} R=${relationCount}`, '--------------------------------------------------'];
+    const relationCount = [...this.kripke.accessibility.values()].reduce(
+      (sum, targets) => sum + targets.size,
+      0,
+    );
+    const lines = [
+      `CecKripke(${this.kripke.logicType}) W=${this.kripke.worlds.size} R=${relationCount}`,
+      '--------------------------------------------------',
+    ];
     for (const worldId of [...this.kripke.worlds].sort((left, right) => left - right)) {
       const atoms = [...(this.kripke.valuation.get(worldId) ?? [])].sort().join(',') || 'none';
-      const targets = [...this.kripke.getAccessibleWorlds(worldId)].sort((left, right) => left - right).map((target) => `w${target}`).join(',') || 'none';
-      lines.push(`${worldId === this.kripke.initialWorld ? '=>' : '*'} w${worldId}: {${atoms}} -> {${targets}}`);
+      const targets =
+        [...this.kripke.getAccessibleWorlds(worldId)]
+          .sort((left, right) => left - right)
+          .map((target) => `w${target}`)
+          .join(',') || 'none';
+      lines.push(
+        `${worldId === this.kripke.initialWorld ? '=>' : '*'} w${worldId}: {${atoms}} -> {${targets}}`,
+      );
     }
     return lines.join('\n');
   }
 
   renderExpandedAscii(): string {
-    const relationCount = [...this.kripke.accessibility.values()].reduce((sum, targets) => sum + targets.size, 0);
+    const relationCount = [...this.kripke.accessibility.values()].reduce(
+      (sum, targets) => sum + targets.size,
+      0,
+    );
     const header = `CEC Kripke Structure (Logic: ${this.kripke.logicType})`;
     const info = `Worlds: ${this.kripke.worlds.size}, Relations: ${relationCount}`;
     const width = Math.max(header.length, info.length) + 4;
@@ -260,10 +344,16 @@ export class CecCounterModelVisualizer {
 
     for (const worldId of [...this.kripke.worlds].sort((left, right) => left - right)) {
       const atoms = [...(this.kripke.valuation.get(worldId) ?? [])].sort();
-      const targets = [...this.kripke.getAccessibleWorlds(worldId)].sort((left, right) => left - right);
-      lines.push(`${worldId === this.kripke.initialWorld ? '->' : '  '} World w${worldId}${worldId === this.kripke.initialWorld ? ' (initial)' : ''}`);
+      const targets = [...this.kripke.getAccessibleWorlds(worldId)].sort(
+        (left, right) => left - right,
+      );
+      lines.push(
+        `${worldId === this.kripke.initialWorld ? '->' : '  '} World w${worldId}${worldId === this.kripke.initialWorld ? ' (initial)' : ''}`,
+      );
       lines.push(`| Atoms: ${atoms.length > 0 ? atoms.join(', ') : 'none'}`);
-      lines.push(`| Accessible: ${targets.length > 0 ? targets.map((target) => `w${target}`).join(', ') : '(none)'}`);
+      lines.push(
+        `| Accessible: ${targets.length > 0 ? targets.map((target) => `w${target}`).join(', ') : '(none)'}`,
+      );
       lines.push('+----------------------------------------+');
     }
 
@@ -281,11 +371,17 @@ export class CecCounterModelVisualizer {
       `  ${checks.serial ? 'yes' : 'no'} Serial: ${checks.serial}`,
     ];
     const expected = expectedModalProperties(this.kripke.logicType);
-    if (expected.length > 0) lines.push('', `Expected for ${this.kripke.logicType}: ${expected.join(', ')}`);
+    if (expected.length > 0)
+      lines.push('', `Expected for ${this.kripke.logicType}: ${expected.join(', ')}`);
     return lines.join('\n');
   }
 
-  getPropertyChecks(): { reflexive: boolean; symmetric: boolean; transitive: boolean; serial: boolean } {
+  getPropertyChecks(): {
+    reflexive: boolean;
+    symmetric: boolean;
+    transitive: boolean;
+    serial: boolean;
+  } {
     return {
       reflexive: this.isReflexive(),
       symmetric: this.isSymmetric(),
@@ -294,41 +390,70 @@ export class CecCounterModelVisualizer {
     };
   }
 
+  toDataSnapshot(): CecCountermodelVisualizerSnapshot {
+    const nodes = [...this.kripke.worlds]
+      .sort((left, right) => left - right)
+      .map((worldId) => ({
+        id: `w${worldId}`,
+        label: `w${worldId}`,
+        atoms: [...(this.kripke.valuation.get(worldId) ?? [])].sort(),
+        is_initial: worldId === this.kripke.initialWorld,
+        world_id: worldId,
+      }));
+    const links = [...this.kripke.accessibility.entries()]
+      .sort(([left], [right]) => left - right)
+      .flatMap(([from, targets]) =>
+        [...targets]
+          .sort((left, right) => left - right)
+          .map((to) => ({ source: `w${from}`, target: `w${to}`, from, to })),
+      );
+    return {
+      nodes,
+      links,
+      logic_type: this.kripke.logicType,
+      initial_world: this.kripke.initialWorld,
+      num_worlds: nodes.length,
+      num_relations: links.length,
+      property_checks: this.getPropertyChecks(),
+      expected_properties: expectedModalProperties(this.kripke.logicType),
+    };
+  }
+
   toHtmlString(): string {
-    const nodes = [...this.kripke.worlds].sort((left, right) => left - right).map((worldId) => ({
-      id: `w${worldId}`,
-      label: `w${worldId}`,
-      atoms: [...(this.kripke.valuation.get(worldId) ?? [])].sort(),
-      is_initial: worldId === this.kripke.initialWorld,
-      world_id: worldId,
-    }));
-    const links = [...this.kripke.accessibility.entries()].flatMap(([from, targets]) =>
-      [...targets].sort((left, right) => left - right).map((to) => ({ source: `w${from}`, target: `w${to}`, from, to })),
-    );
-    const data = { nodes, links, logic_type: this.kripke.logicType, num_worlds: nodes.length, num_relations: links.length };
+    const data = this.toDataSnapshot();
+    const nodes = data.nodes;
+    const links = data.links;
     return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>CEC Kripke Structure - ${escapeHtml(this.kripke.logicType)}</title><style>body{font-family:system-ui,sans-serif;margin:24px}.world{border:1px solid #999;border-radius:6px;padding:8px;margin:8px 0}.initial{border-color:#0a7;background:#eefaf4}.edge{color:#555}</style></head><body><h1>CEC Kripke Structure (${escapeHtml(this.kripke.logicType)})</h1><script type="application/json" id="cec-kripke-data">${escapeHtml(JSON.stringify(data))}</script>${nodes.map((node) => `<section class="world${node.is_initial ? ' initial' : ''}"><strong>${escapeHtml(node.label)}</strong><div>Atoms: ${escapeHtml(node.atoms.join(', ') || 'none')}</div></section>`).join('')}<h2>Accessibility</h2>${links.map((link) => `<div class="edge">${escapeHtml(link.source)} -> ${escapeHtml(link.target)}</div>`).join('') || '<div class="edge">(none)</div>'}</body></html>`;
   }
 
   private isReflexive(): boolean {
-    return [...this.kripke.worlds].every((world) => this.kripke.getAccessibleWorlds(world).has(world));
+    return [...this.kripke.worlds].every((world) =>
+      this.kripke.getAccessibleWorlds(world).has(world),
+    );
   }
 
   private isSymmetric(): boolean {
     return [...this.kripke.worlds].every((from) =>
-      [...this.kripke.getAccessibleWorlds(from)].every((to) => this.kripke.getAccessibleWorlds(to).has(from)),
+      [...this.kripke.getAccessibleWorlds(from)].every((to) =>
+        this.kripke.getAccessibleWorlds(to).has(from),
+      ),
     );
   }
 
   private isTransitive(): boolean {
     return [...this.kripke.worlds].every((first) =>
       [...this.kripke.getAccessibleWorlds(first)].every((second) =>
-        [...this.kripke.getAccessibleWorlds(second)].every((third) => this.kripke.getAccessibleWorlds(first).has(third)),
+        [...this.kripke.getAccessibleWorlds(second)].every((third) =>
+          this.kripke.getAccessibleWorlds(first).has(third),
+        ),
       ),
     );
   }
 
   private isSerial(): boolean {
-    return [...this.kripke.worlds].every((world) => this.kripke.getAccessibleWorlds(world).size > 0);
+    return [...this.kripke.worlds].every(
+      (world) => this.kripke.getAccessibleWorlds(world).size > 0,
+    );
   }
 }
 
@@ -340,7 +465,10 @@ export function extractCecCountermodel(
   return new CecCounterModelExtractor(logicType).extract(formula, branch);
 }
 
-export function visualizeCecCountermodel(countermodel: CecCounterModel, format: CecCountermodelFormat = 'ascii'): string {
+export function visualizeCecCountermodel(
+  countermodel: CecCounterModel,
+  format: CecCountermodelFormat = 'ascii',
+): string {
   if (format === 'ascii') return countermodel.toAsciiArt();
   if (format === 'dot') return countermodel.toDot();
   if (format === 'json') return countermodel.toJson();
@@ -350,28 +478,76 @@ export function visualizeCecCountermodel(countermodel: CecCounterModel, format: 
   throw new Error(`Unsupported CEC countermodel format: ${format}`);
 }
 
+export function exportCecTableauxCountermodelData(
+  formula: CecExpression,
+  branch: CecTableauxBranchLike,
+  logicType: CecModalLogicType = 'K',
+  proofSteps: string[] = [],
+): CecTableauxCountermodelExport {
+  const countermodel = extractCecCountermodel(formula, branch, logicType);
+  const visualizer = new CecCounterModelVisualizer(countermodel.kripke);
+  return {
+    formula: formatCecExpression(formula),
+    logic_type: logicType,
+    is_valid: false,
+    proof_steps: [...proofSteps],
+    open_branch: serializeCecBranch(branch),
+    countermodel: countermodel.kripke.toDict(),
+    visualization: visualizer.toDataSnapshot(),
+    explanation: [...countermodel.explanation],
+  };
+}
+
 function extractPositiveAtoms(formulas: CecExpression[]): Set<string> {
   const atoms = new Set<string>();
   for (const formula of formulas) {
-    if (formula.kind === 'atom' || formula.kind === 'application') atoms.add(formatCecExpression(formula));
+    if (formula.kind === 'atom' || formula.kind === 'application')
+      atoms.add(formatCecExpression(formula));
   }
   return atoms;
 }
 
-function normalizeWorldEntries(worlds: CecTableauxBranchLike['worlds']): Array<[number, CecTableauxWorldLike]> {
-  return worlds instanceof Map
+function normalizeWorldEntries(
+  worlds: CecTableauxBranchLike['worlds'],
+): Array<[number, CecTableauxWorldLike]> {
+  return isMapLike<number, CecTableauxWorldLike>(worlds)
     ? [...worlds.entries()].sort(([left], [right]) => left - right)
     : Object.entries(worlds)
         .map(([key, value]): [number, CecTableauxWorldLike] => [Number(key), value])
         .sort(([left], [right]) => left - right);
 }
 
-function normalizeAccessibilityEntries(accessibility: CecTableauxBranchLike['accessibility']): Array<[number, number[]]> {
-  return accessibility instanceof Map
-    ? [...accessibility.entries()].map(([key, value]): [number, number[]] => [key, [...value]]).sort(([left], [right]) => left - right)
+function normalizeAccessibilityEntries(
+  accessibility: CecTableauxBranchLike['accessibility'],
+): Array<[number, number[]]> {
+  return isMapLike<number, Iterable<number>>(accessibility)
+    ? [...accessibility.entries()]
+        .map(([key, value]): [number, number[]] => [key, [...value]])
+        .sort(([left], [right]) => left - right)
     : Object.entries(accessibility)
         .map(([key, value]): [number, number[]] => [Number(key), value])
         .sort(([left], [right]) => left - right);
+}
+
+function serializeCecBranch(branch: CecTableauxBranchLike): CecTableauxBranchExport {
+  const worlds = normalizeWorldEntries(branch.worlds).map(([worldId, world]) => ({
+    id: worldId,
+    formulas: world.formulas.map((formula) => formatCecExpression(formula)).sort(),
+    negated_formulas: (world.negatedFormulas ?? [])
+      .map((formula) => formatCecExpression(formula))
+      .sort(),
+  }));
+  const accessibility = normalizeAccessibilityEntries(branch.accessibility).flatMap(
+    ([from, targets]) =>
+      [...targets]
+        .sort((left, right) => left - right)
+        .map((to) => ({ from, to, source: `w${from}`, target: `w${to}` })),
+  );
+  return { is_closed: branch.isClosed ?? false, worlds, accessibility };
+}
+
+function isMapLike<Key, Value>(value: unknown): value is Map<Key, Value> {
+  return Object.prototype.toString.call(value) === '[object Map]';
 }
 
 function expectedModalProperties(logicType: CecModalLogicType): string[] {
@@ -387,5 +563,9 @@ function escapeDot(value: string): string {
 }
 
 function escapeHtml(value: string): string {
-  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
