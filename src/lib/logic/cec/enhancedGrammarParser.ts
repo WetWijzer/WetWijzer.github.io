@@ -16,7 +16,8 @@ export const DcecGrammarCategory = {
   MODAL: 'MODAL',
 } as const;
 
-export type DcecGrammarCategoryValue = typeof DcecGrammarCategory[keyof typeof DcecGrammarCategory];
+export type DcecGrammarCategoryValue =
+  (typeof DcecGrammarCategory)[keyof typeof DcecGrammarCategory];
 
 export class DcecGrammarTerminal {
   readonly word: string;
@@ -41,7 +42,11 @@ export class DcecGrammarRule {
   readonly rhs: DcecGrammarCategoryValue[];
   readonly semanticFn?: (...args: unknown[]) => unknown;
 
-  constructor(lhs: DcecGrammarCategoryValue, rhs: DcecGrammarCategoryValue[], semanticFn?: (...args: unknown[]) => unknown) {
+  constructor(
+    lhs: DcecGrammarCategoryValue,
+    rhs: DcecGrammarCategoryValue[],
+    semanticFn?: (...args: unknown[]) => unknown,
+  ) {
     this.lhs = lhs;
     this.rhs = [...rhs];
     this.semanticFn = semanticFn;
@@ -64,7 +69,11 @@ export class DcecParseTree {
 
   constructor(
     category: DcecGrammarCategoryValue,
-    options: { children?: DcecParseTree[]; terminal?: DcecGrammarTerminal; semantics?: unknown } = {},
+    options: {
+      children?: DcecParseTree[];
+      terminal?: DcecGrammarTerminal;
+      semantics?: unknown;
+    } = {},
   ) {
     this.category = category;
     this.children = [...(options.children ?? [])];
@@ -96,13 +105,22 @@ export class DcecEarleyState {
   readonly origin: number;
   readonly current: number;
   readonly tree?: DcecParseTree;
+  readonly children: DcecParseTree[];
 
-  constructor(rule: DcecGrammarRule, dotPos: number, origin: number, current: number, tree?: DcecParseTree) {
+  constructor(
+    rule: DcecGrammarRule,
+    dotPos: number,
+    origin: number,
+    current: number,
+    tree?: DcecParseTree,
+    children: DcecParseTree[] = [],
+  ) {
     this.rule = rule;
     this.dotPos = dotPos;
     this.origin = origin;
     this.current = current;
     this.tree = tree;
+    this.children = [...children];
   }
 
   nextCategory(): DcecGrammarCategoryValue | undefined {
@@ -114,7 +132,15 @@ export class DcecEarleyState {
   }
 
   advance(tree = this.tree, current = this.current): DcecEarleyState {
-    return new DcecEarleyState(this.rule, this.dotPos + 1, this.origin, current, tree);
+    const children = tree === undefined ? this.children : [...this.children, tree];
+    return new DcecEarleyState(
+      this.rule,
+      this.dotPos + 1,
+      this.origin,
+      current,
+      undefined,
+      children,
+    );
   }
 
   toString(): string {
@@ -124,8 +150,31 @@ export class DcecEarleyState {
   }
 
   key(): string {
-    return `${this.rule.key()}|${this.dotPos}|${this.origin}|${this.current}`;
+    const childKey = this.children.map((child) => child.toString()).join('|');
+    return `${this.rule.key()}|${this.dotPos}|${this.origin}|${this.current}|${childKey}`;
   }
+}
+
+export interface DcecParseDiagnostic {
+  readonly code: 'empty-input' | 'unknown-token' | 'incomplete-parse' | 'parse-complete';
+  readonly message: string;
+  readonly position?: number;
+  readonly token?: string;
+  readonly expected?: DcecGrammarCategoryValue[];
+}
+
+export interface DcecChartParserDiagnostics {
+  readonly words: string[];
+  readonly chartSizes: number[];
+  readonly predictions: number;
+  readonly scans: number;
+  readonly completions: number;
+  readonly diagnostics: DcecParseDiagnostic[];
+}
+
+export interface DcecParseResult {
+  readonly alternatives: DcecParseTree[];
+  readonly diagnostics: DcecChartParserDiagnostics;
 }
 
 export class DcecEnhancedGrammarParser {
@@ -147,11 +196,26 @@ export class DcecEnhancedGrammarParser {
   }
 
   parse(sentence: string): DcecParseTree[] {
+    return this.parseWithDiagnostics(sentence).alternatives;
+  }
+
+  parseWithDiagnostics(sentence: string): DcecParseResult {
     const words = sentence.toLowerCase().trim().split(/\s+/).filter(Boolean);
-    const chart = Array.from({ length: words.length + 1 }, () => new Map<string, DcecEarleyState>());
+    const chart = Array.from(
+      { length: words.length + 1 },
+      () => new Map<string, DcecEarleyState>(),
+    );
+    const diagnostics: DcecParseDiagnostic[] = [];
+    let predictions = 0;
+    let scans = 0;
+    let completions = 0;
 
     for (const rule of this.rules.filter((candidate) => candidate.lhs === this.startSymbol)) {
       this.addState(chart[0], new DcecEarleyState(rule, 0, 0, 0));
+    }
+
+    if (words.length === 0) {
+      diagnostics.push({ code: 'empty-input', message: 'No input tokens were provided.' });
     }
 
     for (let position = 0; position <= words.length; position += 1) {
@@ -160,22 +224,61 @@ export class DcecEnhancedGrammarParser {
         changed = false;
         for (const state of [...chart[position].values()]) {
           const beforeSize = chart[position].size + (chart[position + 1]?.size ?? 0);
-          if (state.isComplete()) this.completer(chart, state, position);
+          if (state.isComplete()) completions += this.completer(chart, state, position);
           else if (this.isTerminalCategory(state.nextCategory())) {
-            if (position < words.length) this.scanner(chart, state, words[position], position);
+            if (position < words.length)
+              scans += this.scanner(chart, state, words[position], position);
           } else {
-            this.predictor(chart, state, position);
+            predictions += this.predictor(chart, state, position);
           }
           const afterSize = chart[position].size + (chart[position + 1]?.size ?? 0);
           if (afterSize > beforeSize) changed = true;
         }
       }
+
+      if (position < words.length && !this.lexicon.has(words[position])) {
+        diagnostics.push({
+          code: 'unknown-token',
+          message: `No lexical entries matched token "${words[position]}".`,
+          position,
+          token: words[position],
+          expected: this.expectedCategories(chart[position]),
+        });
+      }
     }
 
-    return [...chart[words.length].values()]
-      .filter((state) => state.rule.lhs === this.startSymbol && state.isComplete() && state.origin === 0)
+    const alternatives = [...chart[words.length].values()]
+      .filter(
+        (state) => state.rule.lhs === this.startSymbol && state.isComplete() && state.origin === 0,
+      )
       .map((state) => this.buildTree(state))
       .filter((tree): tree is DcecParseTree => tree !== undefined);
+
+    diagnostics.push(
+      alternatives.length > 0
+        ? {
+            code: 'parse-complete',
+            message: `${alternatives.length} parse alternative${alternatives.length === 1 ? '' : 's'} matched ${this.startSymbol}.`,
+          }
+        : {
+            code: 'incomplete-parse',
+            message: `No complete ${this.startSymbol} parse matched the full input.`,
+            position: words.length,
+            expected: this.expectedCategories(chart[Math.min(words.length, chart.length - 1)]),
+          },
+    );
+
+    return {
+      alternatives,
+      diagnostics: {
+        words,
+        chartSizes: chart.map((cell) => cell.size),
+        predictions,
+        scans,
+        completions,
+        diagnostics,
+      },
+    };
   }
 
   validateGrammar(): [boolean, string[]] {
@@ -223,44 +326,83 @@ export class DcecEnhancedGrammarParser {
     return [issues.length === 0, issues];
   }
 
-  private predictor(chart: Array<Map<string, DcecEarleyState>>, state: DcecEarleyState, position: number): void {
+  private predictor(
+    chart: Array<Map<string, DcecEarleyState>>,
+    state: DcecEarleyState,
+    position: number,
+  ): number {
     const next = state.nextCategory();
-    if (!next) return;
+    if (!next) return 0;
+    let added = 0;
     for (const rule of this.rules) {
-      if (rule.lhs === next) this.addState(chart[position], new DcecEarleyState(rule, 0, position, position));
+      if (
+        rule.lhs === next &&
+        this.addState(chart[position], new DcecEarleyState(rule, 0, position, position))
+      )
+        added += 1;
     }
+    return added;
   }
 
-  private scanner(chart: Array<Map<string, DcecEarleyState>>, state: DcecEarleyState, word: string, position: number): void {
+  private scanner(
+    chart: Array<Map<string, DcecEarleyState>>,
+    state: DcecEarleyState,
+    word: string,
+    position: number,
+  ): number {
     const next = state.nextCategory();
-    if (!next) return;
+    if (!next) return 0;
+    let added = 0;
     for (const terminal of this.lexicon.get(word) ?? []) {
       if (terminal.category === next) {
         const tree = new DcecParseTree(next, { terminal });
-        this.addState(chart[position + 1], state.advance(tree, position + 1));
+        if (this.addState(chart[position + 1], state.advance(tree, position + 1))) added += 1;
       }
     }
+    return added;
   }
 
-  private completer(chart: Array<Map<string, DcecEarleyState>>, completed: DcecEarleyState, position: number): void {
+  private completer(
+    chart: Array<Map<string, DcecEarleyState>>,
+    completed: DcecEarleyState,
+    position: number,
+  ): number {
+    let added = 0;
+    const completedTree = this.buildTree(completed);
+    if (!completedTree) return 0;
     for (const state of [...chart[completed.origin].values()]) {
       if (state.nextCategory() === completed.rule.lhs) {
-        this.addState(chart[position], state.advance(undefined, position));
+        if (this.addState(chart[position], state.advance(completedTree, position))) added += 1;
       }
     }
+    return added;
   }
 
   private buildTree(state: DcecEarleyState): DcecParseTree | undefined {
-    return state.tree ?? new DcecParseTree(state.rule.lhs);
+    return state.tree ?? new DcecParseTree(state.rule.lhs, { children: state.children });
   }
 
   private isTerminalCategory(category?: DcecGrammarCategoryValue): boolean {
     if (!category) return false;
-    return [...this.lexicon.values()].some((terminals) => terminals.some((terminal) => terminal.category === category));
+    return [...this.lexicon.values()].some((terminals) =>
+      terminals.some((terminal) => terminal.category === category),
+    );
   }
 
-  private addState(chartCell: Map<string, DcecEarleyState>, state: DcecEarleyState): void {
-    if (!chartCell.has(state.key())) chartCell.set(state.key(), state);
+  private expectedCategories(chartCell: Map<string, DcecEarleyState>): DcecGrammarCategoryValue[] {
+    return [
+      ...new Set(
+        [...chartCell.values()]
+          .map((state) => state.nextCategory())
+          .filter(Boolean) as DcecGrammarCategoryValue[],
+      ),
+    ].sort();
+  }
+
+  private addState(chartCell: Map<string, DcecEarleyState>, state: DcecEarleyState): boolean {
+    if (chartCell.has(state.key())) return false;
+    chartCell.set(state.key(), state);
+    return true;
   }
 
   private initGrammar(): void {
@@ -274,14 +416,38 @@ export class DcecEnhancedGrammarParser {
       new DcecGrammarRule(DcecGrammarCategory.NP, [DcecGrammarCategory.AGENT]),
       new DcecGrammarRule(DcecGrammarCategory.VP, [DcecGrammarCategory.V]),
       new DcecGrammarRule(DcecGrammarCategory.VP, [DcecGrammarCategory.V, DcecGrammarCategory.NP]),
-      new DcecGrammarRule(DcecGrammarCategory.VP, [DcecGrammarCategory.MODAL, DcecGrammarCategory.V]),
+      new DcecGrammarRule(DcecGrammarCategory.VP, [
+        DcecGrammarCategory.MODAL,
+        DcecGrammarCategory.V,
+      ]),
       new DcecGrammarRule(DcecGrammarCategory.VP, [DcecGrammarCategory.ACTION]),
-      new DcecGrammarRule(DcecGrammarCategory.DEONTIC, [DcecGrammarCategory.AGENT, DcecGrammarCategory.MODAL, DcecGrammarCategory.ACTION]),
-      new DcecGrammarRule(DcecGrammarCategory.DEONTIC, [DcecGrammarCategory.MODAL, DcecGrammarCategory.ACTION]),
-      new DcecGrammarRule(DcecGrammarCategory.COGNITIVE, [DcecGrammarCategory.AGENT, DcecGrammarCategory.V, DcecGrammarCategory.S]),
-      new DcecGrammarRule(DcecGrammarCategory.COGNITIVE, [DcecGrammarCategory.AGENT, DcecGrammarCategory.V, DcecGrammarCategory.FLUENT]),
-      new DcecGrammarRule(DcecGrammarCategory.TEMPORAL, [DcecGrammarCategory.ADV, DcecGrammarCategory.S]),
-      new DcecGrammarRule(DcecGrammarCategory.TEMPORAL, [DcecGrammarCategory.ADV, DcecGrammarCategory.FLUENT]),
+      new DcecGrammarRule(DcecGrammarCategory.DEONTIC, [
+        DcecGrammarCategory.AGENT,
+        DcecGrammarCategory.MODAL,
+        DcecGrammarCategory.ACTION,
+      ]),
+      new DcecGrammarRule(DcecGrammarCategory.DEONTIC, [
+        DcecGrammarCategory.MODAL,
+        DcecGrammarCategory.ACTION,
+      ]),
+      new DcecGrammarRule(DcecGrammarCategory.COGNITIVE, [
+        DcecGrammarCategory.AGENT,
+        DcecGrammarCategory.V,
+        DcecGrammarCategory.S,
+      ]),
+      new DcecGrammarRule(DcecGrammarCategory.COGNITIVE, [
+        DcecGrammarCategory.AGENT,
+        DcecGrammarCategory.V,
+        DcecGrammarCategory.FLUENT,
+      ]),
+      new DcecGrammarRule(DcecGrammarCategory.TEMPORAL, [
+        DcecGrammarCategory.ADV,
+        DcecGrammarCategory.S,
+      ]),
+      new DcecGrammarRule(DcecGrammarCategory.TEMPORAL, [
+        DcecGrammarCategory.ADV,
+        DcecGrammarCategory.FLUENT,
+      ]),
     );
   }
 

@@ -2558,3 +2558,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T072743Z-ported-dcec-native-type-helper-parity-with-browser-native-symbol-guards-json-ser.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T072743Z-ported-dcec-native-type-helper-parity-with-browser-native-symbol-guards-json-ser.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T072743Z-ported-dcec-native-type-helper-parity-with-browser-native-symbol-guards-json-ser.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 07:30:37 UTC
+
+- Target: `Task checkbox-474: Manual unblock: port `logic/CEC/native/enhanced_grammar_parser.py` by adding chart-parser style diagnostics, parse alternatives, and grammar fixture tests.`
+- Summary: Added enhanced DCEC grammar parser diagnostics and parse alternatives with focused fixture tests.
+- Impact: The browser-native TypeScript CEC parser now exposes parseWithDiagnostics() for chart sizes, scanner/predictor/completer counts, unknown-token diagnostics, completion status, and preserved alternative parse trees. Existing parse() callers continue to receive parse trees, while Jest validates successful parses, failed diagnostics, and an ambiguous grammar fixture without Python, server, filesystem, or Node-only runtime dependencies.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/enhancedGrammarParser.test.ts`, `src/lib/logic/cec/enhancedGrammarParser.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T073037Z-added-enhanced-dcec-grammar-parser-diagnostics-and-parse-alternatives-with-focus.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T073037Z-added-enhanced-dcec-grammar-parser-diagnostics-and-parse-alternatives-with-focus.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T073037Z-added-enhanced-dcec-grammar-parser-diagnostics-and-parse-alternatives-with-focus.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
