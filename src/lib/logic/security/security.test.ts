@@ -6,7 +6,14 @@ import {
   LLMCircuitBreaker,
   resetAllCircuitBreakers,
 } from './circuitBreaker';
-import { InputValidator, validateFormulaList, validateText } from './inputValidation';
+import {
+  INPUT_VALIDATION_METADATA,
+  InputValidator,
+  sanitizeInput,
+  validateFormulaList,
+  validateSafeInput,
+  validateText,
+} from './inputValidation';
 import { RateLimitExceeded, RateLimiter, rateLimit, setRateLimiter } from './rateLimiting';
 
 describe('logic security browser-native parity helpers', () => {
@@ -19,14 +26,35 @@ describe('logic security browser-native parity helpers', () => {
   it('validates text, formulas, and formula lists with Python-style errors', () => {
     const validator = new InputValidator();
 
+    expect(validator.metadata).toEqual(INPUT_VALIDATION_METADATA);
     expect(validator.validateText('Legal text')).toBe('Legal text');
     expect(validator.validateFormula('P(x)')).toBe('P(x)');
     expect(validator.validateFormulaList(['P(x)', 'Q(y)'])).toEqual(['P(x)', 'Q(y)']);
 
     expect(() => validateText('')).toThrow(LogicValidationError);
+    expect(() => validateText('bad\u0001text')).toThrow('control characters');
+    expect(() => validateText('<script>alert(1)</script>')).toThrow('unsafe input pattern');
     expect(() => validateText('abcd', { maxLength: 3 })).toThrow('exceeds maximum length');
     expect(() => validateFormulaList('P(x)')).toThrow("'formulas' must be iterable");
     expect(() => validateFormulaList(['P(x)', ''])).toThrow("'formulas[1]' must not be empty.");
+  });
+
+  it('sanitizes browser-local input without server or Python runtime dependencies', () => {
+    expect(INPUT_VALIDATION_METADATA).toMatchObject({
+      sourcePythonModule: 'logic/security/input_validation.py',
+      browserNative: true,
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+    });
+
+    expect(sanitizeInput('  <b>Permit</b>\u0000  ')).toEqual({
+      value: '&lt;b&gt;Permit&lt;/b&gt;',
+      changed: true,
+      removed: ['control:0'],
+    });
+    expect(validateSafeInput('  Permit & deny  ')).toBe('Permit &amp; deny');
+    expect(() => validateSafeInput('javascript:alert(1)')).toThrow('unsafe input pattern');
+    expect(() => sanitizeInput(42)).toThrow(LogicValidationError);
   });
 
   it('rate limits by user with sliding-window reset and wrapper support', () => {
