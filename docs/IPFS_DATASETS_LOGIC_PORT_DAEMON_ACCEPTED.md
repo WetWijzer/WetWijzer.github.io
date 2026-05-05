@@ -2504,3 +2504,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T070316Z-ported-the-cec-context-manager-snapshot-controls-for-bindings-temporal-scopes-de.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T070316Z-ported-the-cec-context-manager-snapshot-controls-for-bindings-temporal-scopes-de.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T070316Z-ported-the-cec-context-manager-snapshot-controls-for-bindings-temporal-scopes-de.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 07:05:39 UTC
+
+- Target: `Task checkbox-468: Manual unblock: port `logic/CEC/native/dcec_cleaning.py` by adding DCEC text/formula normalization, token cleanup, and fixture tests for malformed legal-text inputs.`
+- Summary: Ported DCEC cleaning unblock with browser-native legal-text normalization, token cleanup, fail-closed malformed input handling, and focused fixtures.
+- Impact: The DCEC cleaner now normalizes Unicode legal/formula punctuation, exposes deterministic token cleanup metadata, and rejects malformed legal-text inputs locally without Python or server fallbacks; the Jest suite directly exercises the new runtime helpers and malformed fixture cases.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/dcecCleaning.test.ts`, `src/lib/logic/cec/dcecCleaning.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T070539Z-ported-dcec-cleaning-unblock-with-browser-native-legal-text-normalization-token-.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T070539Z-ported-dcec-cleaning-unblock-with-browser-native-legal-text-normalization-token-.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T070539Z-ported-dcec-cleaning-unblock-with-browser-native-legal-text-normalization-token-.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

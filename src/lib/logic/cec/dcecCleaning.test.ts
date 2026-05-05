@@ -1,9 +1,12 @@
 import {
   checkDcecParens,
+  cleanDcecLegalText,
   cleanDcecExpression,
   consolidateDcecParens,
+  cleanupDcecTokens,
   functorizeDcecSymbols,
   getMatchingDcecCloseParen,
+  normalizeDcecText,
   removeDcecSemicolonComments,
   stripDcecComments,
   stripDcecWhitespace,
@@ -58,6 +61,57 @@ describe('DCEC cleaning utilities', () => {
     expect(cleanDcecExpression('  ((and a b)) # comment')).toBe('(and,a,b)');
     expect(cleanDcecExpression('Happens(Attack(e),t1) ; ignored')).toBe('(Happens,(Attack,e),t1)');
     expect(cleanDcecExpression('(a -> b)')).toBe('(a,implies,b)');
+    expect(cleanDcecExpression('(∀ x) (Permitted(x) → Safe(x))')).toBe(
+      '((forall,x),((Permitted,x),implies,(Safe,x)))',
+    );
     expect(cleanDcecExpression(')and a b(')).toBe('');
+  });
+
+  it('normalizes legal-text punctuation and Unicode formula operators', () => {
+    expect(normalizeDcecText(' “Duty” — (¬Breach(x) ∧ Notice(x)); trailing note')).toBe(
+      '"Duty" - ( not Breach(x) and Notice(x))',
+    );
+    expect(cleanupDcecTokens('(Claim(x) iff Defense(y)) # docket note')).toEqual([
+      '(',
+      'Claim',
+      '(',
+      'x',
+      ')',
+      'ifAndOnlyIf',
+      'Defense',
+      '(',
+      'y',
+      ')',
+      ')',
+    ]);
+  });
+
+  it('returns fail-closed fixture results for malformed legal-text inputs', () => {
+    const malformedFixtures = [
+      {
+        input: 'Section 12(a) says (Obligated(agent,act) → Done(act)',
+        warning: 'unbalanced-parentheses',
+      },
+      {
+        input: '   # only a margin comment',
+        warning: 'empty-input',
+      },
+    ];
+
+    for (const fixture of malformedFixtures) {
+      const result = cleanDcecLegalText(fixture.input);
+      expect(result.cleaned).toBe('');
+      expect(result.rejected).toBe(true);
+      expect(result.warnings).toContain(fixture.warning);
+    }
+  });
+
+  it('cleans normalized legal formulas while preserving browser-native token metadata', () => {
+    const result = cleanDcecLegalText('Happens(“Filing”(case_1), t1) ∧ Valid(case_1) ; clerk note');
+
+    expect(result.cleaned).toBe('((Happens,(Filing,case_1),t1),and,(Valid,case_1))');
+    expect(result.rejected).toBe(false);
+    expect(result.tokens).toContain('and');
+    expect(result.normalizedText).toBe('Happens("Filing"(case_1), t1) and Valid(case_1)');
   });
 });

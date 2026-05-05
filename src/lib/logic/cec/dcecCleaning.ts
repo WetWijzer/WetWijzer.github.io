@@ -18,7 +18,38 @@ const SYMBOL_REPLACEMENTS: Record<string, string> = {
   '~': 'not',
 };
 
-const DCEC_SYMBOLS = Object.keys(SYMBOL_REPLACEMENTS).sort((left, right) => right.length - left.length);
+const DCEC_SYMBOLS = Object.keys(SYMBOL_REPLACEMENTS).sort(
+  (left, right) => right.length - left.length,
+);
+
+const TOKEN_REPLACEMENTS: Record<string, string> = {
+  '∀': 'forall',
+  '∃': 'exists',
+  '¬': 'not',
+  '∧': 'and',
+  '∨': 'or',
+  '→': 'implies',
+  '↔': 'ifAndOnlyIf',
+  '≥': 'greaterOrEqual',
+  '≤': 'lessOrEqual',
+};
+
+const TOKEN_ALIASES: Record<string, string> = {
+  'if-and-only-if': 'ifAndOnlyIf',
+  if_and_only_if: 'ifAndOnlyIf',
+  greater_or_equal: 'greaterOrEqual',
+  less_or_equal: 'lessOrEqual',
+  true_: 'true',
+  false_: 'false',
+};
+
+export interface DcecCleaningResult {
+  cleaned: string;
+  normalizedText: string;
+  tokens: Array<string>;
+  rejected: boolean;
+  warnings: Array<string>;
+}
 
 export function stripDcecWhitespace(expression: string): string {
   let text = expression.trim();
@@ -104,7 +135,9 @@ export function consolidateDcecParens(expression: string): string {
     firstParen += 1;
   }
 
-  let result = Array.from(text).filter((_, index) => !deleteIndexes.has(index)).join('');
+  let result = Array.from(text)
+    .filter((_, index) => !deleteIndexes.has(index))
+    .join('');
   if (result.includes(' ')) {
     const innerAtomPattern = /(?<![A-Za-z0-9_])\(([A-Za-z_][A-Za-z0-9_]*)\)(?![A-Za-z0-9_])/g;
     let previous: string | undefined;
@@ -174,8 +207,70 @@ export function functorizeDcecSymbols(expression: string): string {
   return result.replaceAll('( ', '(');
 }
 
+export function normalizeDcecText(expression: string): string {
+  let text = expression.normalize('NFKC');
+  text = removeDcecSemicolonComments(stripDcecComments(text));
+  text = text
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .replace(/[‐‑‒–—−]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  for (const [from, to] of Object.entries(TOKEN_REPLACEMENTS)) {
+    text = text.replaceAll(from, ` ${to} `);
+  }
+
+  return text
+    .replace(/\biff\b/gi, ' ifAndOnlyIf ')
+    .replace(/\bimplies\b/gi, ' implies ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function cleanupDcecTokens(expression: string): Array<string> {
+  const normalized = normalizeDcecText(expression);
+  if (normalized.length === 0) {
+    return [];
+  }
+
+  const tokens =
+    normalized.match(/[A-Za-z_][A-Za-z0-9_-]*|\d+(?:\.\d+)?|<->|->|>=|<=|==|[()[\],~^*/+=<>|-]/g) ??
+    [];
+  return tokens
+    .map((token) => TOKEN_ALIASES[token] ?? token)
+    .filter((token) => token.trim().length > 0 && token !== ',,');
+}
+
+export function cleanDcecLegalText(expression: string): DcecCleaningResult {
+  const normalizedText = normalizeDcecText(expression);
+  const warnings: Array<string> = [];
+
+  if (normalizedText.length === 0) {
+    return { cleaned: '', normalizedText, tokens: [], rejected: true, warnings: ['empty-input'] };
+  }
+
+  if (!checkDcecParens(normalizedText)) {
+    return {
+      cleaned: '',
+      normalizedText,
+      tokens: cleanupDcecTokens(normalizedText),
+      rejected: true,
+      warnings: ['unbalanced-parentheses'],
+    };
+  }
+
+  const tokens = cleanupDcecTokens(normalizedText);
+  const cleaned = cleanDcecExpression(renderDcecTokensForCleaning(tokens));
+  if (cleaned.length === 0) {
+    warnings.push('empty-cleaned-expression');
+  }
+
+  return { cleaned, normalizedText, tokens, rejected: cleaned.length === 0, warnings };
+}
+
 export function cleanDcecExpression(expression: string): string {
-  const uncommented = removeDcecSemicolonComments(stripDcecComments(expression)).trim();
+  const uncommented = normalizeDcecText(expression);
   if (uncommented.length === 0 || !checkDcecParens(uncommented)) {
     return '';
   }
@@ -213,6 +308,22 @@ function splitTopLevelArguments(input: string): Array<string> {
     parts.push(finalPart);
   }
   return parts;
+}
+
+function renderDcecTokensForCleaning(tokens: Array<string>): string {
+  let result = '';
+
+  for (const token of tokens) {
+    if (token === '(' || token === '[') {
+      result = result.trimEnd() + token;
+    } else if (token === ')' || token === ']' || token === ',') {
+      result += token;
+    } else {
+      result += `${result.length === 0 || result.endsWith('(') || result.endsWith('[') ? '' : ' '}${token}`;
+    }
+  }
+
+  return result;
 }
 
 function isIdentifierStart(value: string | undefined): boolean {
