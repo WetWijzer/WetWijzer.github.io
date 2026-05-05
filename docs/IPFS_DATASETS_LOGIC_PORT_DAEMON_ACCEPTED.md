@@ -2234,3 +2234,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T040052Z-ported-logic-zkp-ucan_zkp_bridge.py-as-a-browser-native-ucan-to-zkp-bridge..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T040052Z-ported-logic-zkp-ucan_zkp_bridge.py-as-a-browser-native-ucan-to-zkp-bridge..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T040052Z-ported-logic-zkp-ucan_zkp_bridge.py-as-a-browser-native-ucan-to-zkp-bridge..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 04:03:24 UTC
+
+- Target: `Task checkbox-439: Port remaining Python logic module `logic/zkp/vk_registry.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported remaining vk_registry parity for browser-native TypeScript by tightening JSON hash inputs, preserving uint64 versions with bigint, and adding Python-style registry aliases.
+- Impact: src/lib/logic/zkp/vkRegistry.ts now exposes browser-native VK hash input typing, Python-compatible register/get/list aliases, fail-closed JSON serialization checks, and lossless uint64 version round-trips without Python, server calls, filesystem, subprocess, or RPC fallbacks. src/lib/logic/zkp/vkRegistry.test.ts validates those behaviors in the existing Jest suite, and the port ledger marks checkbox-439 complete.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/vkRegistry.test.ts`, `src/lib/logic/zkp/vkRegistry.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T040324Z-ported-remaining-vk_registry-parity-for-browser-native-typescript-by-tightening-.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T040324Z-ported-remaining-vk_registry-parity-for-browser-native-typescript-by-tightening-.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T040324Z-ported-remaining-vk_registry-parity-for-browser-native-typescript-by-tightening-.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

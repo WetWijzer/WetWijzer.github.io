@@ -2,6 +2,8 @@ import { parseCircuitRefLenient } from './statement';
 
 const U64_MAX = (BigInt(1) << BigInt(64)) - BigInt(1);
 
+export type VKHashInput = Uint8Array | string | Array<unknown> | Record<string, unknown>;
+
 export interface VKRegistryEntry {
   circuitId: string;
   version: number | bigint;
@@ -12,7 +14,7 @@ export interface VKRegistryDict {
   vk_registry: Record<string, Record<string, string>>;
 }
 
-export async function computeVkHash(vk: Uint8Array | string | unknown[] | Record<string, unknown>): Promise<string> {
+export async function computeVkHash(vk: VKHashInput): Promise<string> {
   let payload: Uint8Array;
   if (vk instanceof Uint8Array) {
     payload = vk;
@@ -27,7 +29,7 @@ export async function computeVkHash(vk: Uint8Array | string | unknown[] | Record
   return bytesToHex(new Uint8Array(digest));
 }
 
-export async function compute_vk_hash(vk: Uint8Array | string | unknown[] | Record<string, unknown>): Promise<string> {
+export async function compute_vk_hash(vk: VKHashInput): Promise<string> {
   return computeVkHash(vk);
 }
 
@@ -42,7 +44,12 @@ export class VKRegistry {
     }
   }
 
-  register(circuitId: string, version: number | bigint, vkHashHex: string, options: { overwrite?: boolean } = {}): void {
+  register(
+    circuitId: string,
+    version: number | bigint,
+    vkHashHex: string,
+    options: { overwrite?: boolean } = {},
+  ): void {
     const normalizedCircuitId = validateCircuitId(circuitId);
     const normalizedVersion = validateVersion(version);
     const normalizedHash = validateVkHashHex(vkHashHex);
@@ -57,8 +64,38 @@ export class VKRegistry {
     this.entries.set(key, normalizedHash);
   }
 
+  registerVk(
+    circuitId: string,
+    version: number | bigint,
+    vkHashHex: string,
+    overwrite = false,
+  ): void {
+    this.register(circuitId, version, vkHashHex, { overwrite });
+  }
+
+  register_vk(
+    circuitId: string,
+    version: number | bigint,
+    vkHashHex: string,
+    overwrite = false,
+  ): void {
+    this.registerVk(circuitId, version, vkHashHex, overwrite);
+  }
+
   get(circuitId: string, version: number | bigint): string | undefined {
     return this.entries.get(registryKey(validateCircuitId(circuitId), validateVersion(version)));
+  }
+
+  getVkHash(circuitId: string, version: number | bigint): string {
+    const hash = this.get(circuitId, version);
+    if (hash === undefined) {
+      throw new Error('VK hash not registered for this circuit_id/version');
+    }
+    return hash;
+  }
+
+  get_vk_hash(circuitId: string, version: number | bigint): string {
+    return this.getVkHash(circuitId, version);
   }
 
   getByRef(circuitRef: string): string | undefined {
@@ -84,6 +121,23 @@ export class VKRegistry {
 
   list_versions(circuitId: string): number[] {
     return this.listVersions(circuitId);
+  }
+
+  listEntries(): VKRegistryEntry[] {
+    return [...this.entries.entries()]
+      .map(([key, vkHashHex]) => {
+        const [circuitId, version] = key.split('\u0000');
+        return { circuitId, version: parseStoredVersion(version), vkHashHex };
+      })
+      .sort((left, right) =>
+        left.circuitId === right.circuitId
+          ? compareVersions(BigInt(left.version), BigInt(right.version))
+          : left.circuitId.localeCompare(right.circuitId),
+      );
+  }
+
+  list_entries(): VKRegistryEntry[] {
+    return this.listEntries();
   }
 
   toDict(): VKRegistryDict {
@@ -118,7 +172,7 @@ export class VKRegistry {
         if (!/^[0-9]+$/.test(versionString)) {
           throw new Error('version keys must be base-10 integer strings');
         }
-        entries.push({ circuitId, version: Number(versionString), vkHashHex: String(vkHashHex) });
+        entries.push({ circuitId, version: BigInt(versionString), vkHashHex: String(vkHashHex) });
       }
     }
     return new VKRegistry(entries);
@@ -149,6 +203,11 @@ export function validateVersion(version: unknown): bigint {
   if (typeof version === 'number' && !Number.isInteger(version)) {
     throw new TypeError('version must be an int');
   }
+  if (typeof version === 'number' && !Number.isSafeInteger(version)) {
+    throw new TypeError(
+      'version must be a safe integer number; use bigint for uint64 values above Number.MAX_SAFE_INTEGER',
+    );
+  }
   const normalized = BigInt(version);
   if (normalized < BigInt(0) || normalized > U64_MAX) {
     throw new Error('version must be in uint64 range');
@@ -173,6 +232,21 @@ function registryKey(circuitId: string, version: bigint): string {
   return `${circuitId}\u0000${version.toString()}`;
 }
 
+function parseStoredVersion(version: string): number | bigint {
+  const asBigInt = BigInt(version);
+  return asBigInt <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(asBigInt) : asBigInt;
+}
+
+function compareVersions(left: bigint, right: bigint): number {
+  if (left < right) {
+    return -1;
+  }
+  if (left > right) {
+    return 1;
+  }
+  return 0;
+}
+
 function stableJsonStringify(value: unknown): string {
   if (Array.isArray(value)) {
     return `[${value.map(stableJsonStringify).join(',')}]`;
@@ -183,6 +257,17 @@ function stableJsonStringify(value: unknown): string {
       .sort()
       .map((key) => `${JSON.stringify(key)}:${stableJsonStringify(record[key])}`)
       .join(',')}}`;
+  }
+  if (typeof value === 'number' && !Number.isFinite(value)) {
+    throw new TypeError('vk JSON values must be finite');
+  }
+  if (
+    typeof value === 'bigint' ||
+    typeof value === 'undefined' ||
+    typeof value === 'function' ||
+    typeof value === 'symbol'
+  ) {
+    throw new TypeError('vk must contain JSON-serializable values');
   }
   return JSON.stringify(value);
 }

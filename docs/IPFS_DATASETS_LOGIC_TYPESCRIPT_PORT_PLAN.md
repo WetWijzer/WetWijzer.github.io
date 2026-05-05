@@ -949,7 +949,7 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Port remaining Python logic module `logic/zkp/onchain_pipeline.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/setup_artifacts.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/ucan_zkp_bridge.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
-- [ ] Port remaining Python logic module `logic/zkp/vk_registry.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
+- [x] Port remaining Python logic module `logic/zkp/vk_registry.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/witness_manager.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/zkp_prover.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/zkp_verifier.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
@@ -966,11 +966,11 @@ These tasks were added automatically after the daemon found no eligible unchecke
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 04:00:52 UTC
+Last updated: 2026-05-05 04:03:24 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-439: Port remaining Python logic module 'logic/zkp/vk_registry.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+Current target: `Task checkbox-440: Port remaining Python logic module 'logic/zkp/witness_manager.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1413,8 +1413,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-435: Port remaining Python logic module 'logic/zkp/legal_theorem_semantics.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-436: Port remaining Python logic module 'logic/zkp/onchain_pipeline.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-437: Port remaining Python logic module 'logic/zkp/setup_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [x] `Task checkbox-438: Port remaining Python logic module 'logic/zkp/ucan_zkp_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
-- [ ] `Task checkbox-439: Port remaining Python logic module 'logic/zkp/vk_registry.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
+- [x] `Task checkbox-438: Port remaining Python logic module 'logic/zkp/ucan_zkp_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
+- [x] `Task checkbox-439: Port remaining Python logic module 'logic/zkp/vk_registry.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
 - [ ] `Task checkbox-440: Port remaining Python logic module 'logic/zkp/witness_manager.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-441: Port remaining Python logic module 'logic/zkp/zkp_prover.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-442: Port remaining Python logic module 'logic/zkp/zkp_verifier.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
@@ -1430,11 +1430,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-438: Port remaining Python logic module 'logic/zkp/ucan_zkp_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Target: `Task checkbox-439: Port remaining Python logic module 'logic/zkp/vk_registry.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 - Result: `valid`
-- Summary: Ported logic/zkp/ucan_zkp_bridge.py as a browser-native UCAN-to-ZKP bridge.
-- Impact: Adds a TypeScript ZKP bridge that validates unsigned UCAN delegation payloads, derives deterministic local capability commitments, generates simulated browser-native ZKP proofs through the existing facade, verifies proof-to-delegation bindings fail-closed, exports the module from the ZKP index, and exercises the behavior in the validation-covered ZKP facade Jest suite.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/facade.test.ts`, `src/lib/logic/zkp/index.ts`, `src/lib/logic/zkp/ucanZkpBridge.ts`
+- Summary: Ported remaining vk_registry parity for browser-native TypeScript by tightening JSON hash inputs, preserving uint64 versions with bigint, and adding Python-style registry aliases.
+- Impact: src/lib/logic/zkp/vkRegistry.ts now exposes browser-native VK hash input typing, Python-compatible register/get/list aliases, fail-closed JSON serialization checks, and lossless uint64 version round-trips without Python, server calls, filesystem, subprocess, or RPC fallbacks. src/lib/logic/zkp/vkRegistry.test.ts validates those behaviors in the existing Jest suite, and the port ledger marks checkbox-439 complete.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/vkRegistry.test.ts`, `src/lib/logic/zkp/vkRegistry.ts`
 
 ### Blocked Backlog
 
