@@ -24,6 +24,15 @@ export interface CecTimelineEntry {
   holds: boolean;
 }
 
+export interface CecEventCalculusRuntimeMetadata {
+  sourcePythonModule: 'logic/CEC/native/event_calculus.py';
+  browserNative: true;
+  pythonRuntime: false;
+  serverDelegation: false;
+  supportedPredicates: readonly CecEventCalculusPredicate[];
+  supportedPythonApi: readonly string[];
+}
+
 export type CecEventCalculusPredicate =
   | 'happens'
   | 'initiates'
@@ -32,6 +41,64 @@ export type CecEventCalculusPredicate =
   | 'releasedAt'
   | 'holdsAt'
   | 'clipped';
+
+export const CEC_EVENT_CALCULUS_RUNTIME: CecEventCalculusRuntimeMetadata = {
+  sourcePythonModule: 'logic/CEC/native/event_calculus.py',
+  browserNative: true,
+  pythonRuntime: false,
+  serverDelegation: false,
+  supportedPredicates: [
+    'happens',
+    'initiates',
+    'terminates',
+    'releases',
+    'releasedAt',
+    'holdsAt',
+    'clipped',
+  ],
+  supportedPythonApi: [
+    'Event',
+    'Fluent',
+    'TimePoint',
+    'record_event',
+    'add_initiation_rule',
+    'add_termination_rule',
+    'set_initially_true',
+    'holds_at',
+    'get_all_fluents_at',
+    'get_timeline',
+  ],
+};
+
+export class Event implements CecEventTerm {
+  readonly name: string;
+  readonly parameters: readonly unknown[];
+
+  constructor(name: string, parameters: readonly unknown[] = []) {
+    const term = createCecEventTerm(name, parameters);
+    this.name = term.name;
+    this.parameters = term.parameters;
+  }
+
+  toString(): string {
+    return formatPythonTerm(this);
+  }
+}
+
+export class Fluent implements CecFluentTerm {
+  readonly name: string;
+  readonly parameters: readonly unknown[];
+
+  constructor(name: string, parameters: readonly unknown[] = []) {
+    const term = createCecFluentTerm(name, parameters);
+    this.name = term.name;
+    this.parameters = term.parameters;
+  }
+
+  toString(): string {
+    return formatPythonTerm(this);
+  }
+}
 
 export class CecTimePoint {
   readonly value: number;
@@ -43,6 +110,12 @@ export class CecTimePoint {
 
   toString(): string {
     return `t${this.value}`;
+  }
+}
+
+export class TimePoint extends CecTimePoint {
+  toString(): string {
+    return super.toString();
   }
 }
 
@@ -60,6 +133,10 @@ export class CecEventCalculus {
     this.clearCache();
   }
 
+  record_event(event: CecEventTerm | string, time: number): void {
+    this.recordEvent(event, time);
+  }
+
   happens(event: CecEventTerm | string, time: number): boolean {
     assertTime(time);
     return this.eventOccurrences.has(eventOccurrenceKey(toEventTerm(event), time));
@@ -68,6 +145,10 @@ export class CecEventCalculus {
   addInitiationRule(event: CecEventTerm | string, fluent: CecFluentTerm | string): void {
     this.initiationRules.add(ruleKey(toEventTerm(event), toFluentTerm(fluent)));
     this.clearCache();
+  }
+
+  add_initiation_rule(event: CecEventTerm | string, fluent: CecFluentTerm | string): void {
+    this.addInitiationRule(event, fluent);
   }
 
   initiates(event: CecEventTerm | string, fluent: CecFluentTerm | string, time: number): boolean {
@@ -81,6 +162,10 @@ export class CecEventCalculus {
   addTerminationRule(event: CecEventTerm | string, fluent: CecFluentTerm | string): void {
     this.terminationRules.add(ruleKey(toEventTerm(event), toFluentTerm(fluent)));
     this.clearCache();
+  }
+
+  add_termination_rule(event: CecEventTerm | string, fluent: CecFluentTerm | string): void {
+    this.addTerminationRule(event, fluent);
   }
 
   terminates(event: CecEventTerm | string, fluent: CecFluentTerm | string, time: number): boolean {
@@ -107,6 +192,10 @@ export class CecEventCalculus {
   setInitiallyTrue(fluent: CecFluentTerm | string): void {
     this.initiallyTrue.add(termKey(toFluentTerm(fluent)));
     this.clearCache();
+  }
+
+  set_initially_true(fluent: CecFluentTerm | string): void {
+    this.setInitiallyTrue(fluent);
   }
 
   releasedAt(fluent: CecFluentTerm | string, time: number): boolean {
@@ -144,12 +233,20 @@ export class CecEventCalculus {
     return result;
   }
 
+  holds_at(fluent: CecFluentTerm | string, time: number): boolean {
+    return this.holdsAt(fluent, time);
+  }
+
   getAllFluentsAt(time: number): CecFluentTerm[] {
     assertTime(time);
     return [...this.knownFluentKeys()]
       .map(parseTermKey)
       .filter((fluent) => this.holdsAt(fluent, time))
       .sort(compareTerms);
+  }
+
+  get_all_fluents_at(time: number): Set<CecFluentTerm> {
+    return new Set(this.getAllFluentsAt(time));
   }
 
   getTimeline(fluent: CecFluentTerm | string, maxTime: number): Array<CecTimelineEntry> {
@@ -166,6 +263,10 @@ export class CecEventCalculus {
     }
 
     return timeline;
+  }
+
+  get_timeline(fluent: CecFluentTerm | string, maxTime: number): Array<[number, boolean]> {
+    return this.getTimeline(fluent, maxTime).map(({ time, holds }) => [time, holds]);
   }
 
   loadFact(expression: CecExpression): boolean {
@@ -424,6 +525,11 @@ function toFluentTerm(fluent: CecFluentTerm | string): CecFluentTerm {
 function termKey(term: CecEventTerm | CecFluentTerm): string {
   if (term.parameters.length === 0) return term.name;
   return `${term.name}(${term.parameters.map(String).join(',')})`;
+}
+
+function formatPythonTerm(term: CecEventTerm | CecFluentTerm): string {
+  if (term.parameters.length === 0) return term.name;
+  return `${term.name}(${term.parameters.map(String).join(', ')})`;
 }
 
 function eventOccurrenceKey(event: CecEventTerm, time: number): string {

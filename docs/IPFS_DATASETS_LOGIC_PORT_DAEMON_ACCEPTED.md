@@ -2756,3 +2756,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T100140Z-added-browser-native-dcec-enhanced-grammar-snapshot-import-export-with-fail-clos.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T100140Z-added-browser-native-dcec-enhanced-grammar-snapshot-import-export-with-fail-clos.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T100140Z-added-browser-native-dcec-enhanced-grammar-snapshot-import-export-with-fail-clos.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 10:13:45 UTC
+
+- Target: `Task checkbox-215: Port remaining Python logic module `logic/CEC/native/event_calculus.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Extended the browser-native CEC event calculus port with Python-compatible constructors, snake_case API aliases, and runtime parity metadata.
+- Impact: The TypeScript CEC event calculus now exposes Event, Fluent, TimePoint, and event_calculus.py-style method names directly in the browser-native module, while focused Jest coverage validates the aliases, timelines, fluent queries, and no-Python/no-server metadata.
+- Changed files: `src/lib/logic/cec/eventCalculus.test.ts`, `src/lib/logic/cec/eventCalculus.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T101345Z-extended-the-browser-native-cec-event-calculus-port-with-python-compatible-const.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T101345Z-extended-the-browser-native-cec-event-calculus-port-with-python-compatible-const.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T101345Z-extended-the-browser-native-cec-event-calculus-port-with-python-compatible-const.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

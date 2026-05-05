@@ -1,6 +1,10 @@
 import {
+  CEC_EVENT_CALCULUS_RUNTIME,
   CecEventCalculus,
   CecTimePoint,
+  Event,
+  Fluent,
+  TimePoint,
   createCecEventTerm,
   createCecFluentTerm,
   event,
@@ -55,6 +59,30 @@ describe('CEC event calculus', () => {
       { time: 2, holds: true },
       { time: 5, holds: false },
     ]);
+  });
+
+  it('exposes Python event_calculus.py constructors and snake_case API aliases', () => {
+    const ec = new CecEventCalculus();
+    const approve = new Event('approve', ['permit-17']);
+    const revoke = new Event('revoke', ['permit-17']);
+    const active = new Fluent('active', ['permit-17']);
+
+    ec.add_initiation_rule(approve, active);
+    ec.add_termination_rule(revoke, active);
+    ec.record_event(approve, 1);
+    ec.record_event(revoke, 4);
+
+    expect(String(approve)).toBe('approve(permit-17)');
+    expect(String(active)).toBe('active(permit-17)');
+    expect(ec.holds_at(active, 2)).toBe(true);
+    expect(ec.holds_at(active, 5)).toBe(false);
+    expect([...ec.get_all_fluents_at(2)]).toEqual([createCecFluentTerm('active', ['permit-17'])]);
+    expect(ec.get_timeline(active, 5)).toEqual([
+      [0, false],
+      [2, true],
+      [5, false],
+    ]);
+    expect(new TimePoint(3).toString()).toBe('t3');
   });
 
   it('implements Python-compatible discrete HoldsAt and Clipped semantics', () => {
@@ -142,5 +170,16 @@ describe('CEC event calculus', () => {
       initiationRules: 0,
       cachedHoldsAtQueries: 0,
     });
+  });
+
+  it('reports browser-native parity metadata for the Python event calculus module', () => {
+    expect(CEC_EVENT_CALCULUS_RUNTIME).toMatchObject({
+      sourcePythonModule: 'logic/CEC/native/event_calculus.py',
+      browserNative: true,
+      pythonRuntime: false,
+      serverDelegation: false,
+    });
+    expect(CEC_EVENT_CALCULUS_RUNTIME.supportedPythonApi).toContain('record_event');
+    expect(CEC_EVENT_CALCULUS_RUNTIME.supportedPredicates).toContain('holdsAt');
   });
 });
