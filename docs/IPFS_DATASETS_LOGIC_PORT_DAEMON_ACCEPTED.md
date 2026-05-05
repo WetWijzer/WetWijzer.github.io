@@ -2153,3 +2153,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T032435Z-ported-eth_vk_registry_payloads-remaining-keccak-and-registervk-calldata-behavio.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032435Z-ported-eth_vk_registry_payloads-remaining-keccak-and-registervk-calldata-behavio.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032435Z-ported-eth_vk_registry_payloads-remaining-keccak-and-registervk-calldata-behavio.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 03:29:47 UTC
+
+- Target: `Task checkbox-430: Port remaining Python logic module `logic/zkp/evm_harness.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported a browser-native EVM Groth16 harness for verifier calldata and EIP-1193 verification.
+- Impact: The new zkp/evmHarness module is exported from the ZKP package and is exercised by Jest tests that validate ABI encoding, public input packing, injected-provider eth_call delegation, and fail-closed behavior without Python, server, filesystem, subprocess, or RPC fallbacks.
+- Changed files: `src/lib/logic/zkp/evmHarness.test.ts`, `src/lib/logic/zkp/evmHarness.ts`, `src/lib/logic/zkp/index.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T032947Z-ported-a-browser-native-evm-groth16-harness-for-verifier-calldata-and-eip-1193-v.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032947Z-ported-a-browser-native-evm-groth16-harness-for-verifier-calldata-and-eip-1193-v.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032947Z-ported-a-browser-native-evm-groth16-harness-for-verifier-calldata-and-eip-1193-v.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

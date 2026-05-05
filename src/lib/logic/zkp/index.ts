@@ -4,6 +4,7 @@ export * from './circuits';
 export * from './ethContractArtifacts';
 export * from './ethIntegration';
 export * from './ethVkRegistryPayloads';
+export * from './evmHarness';
 export * from './evmPublicInputs';
 export * from './facade';
 export {
