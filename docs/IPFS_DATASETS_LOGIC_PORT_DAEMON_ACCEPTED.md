@@ -2612,3 +2612,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T091227Z-completed-tdfol-security-validator-parity-with-deterministic-proof-result-auditi.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T091227Z-completed-tdfol-security-validator-parity-with-deterministic-proof-result-auditi.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T091227Z-completed-tdfol-security-validator-parity-with-deterministic-proof-result-auditi.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 09:14:48 UTC
+
+- Target: `Task checkbox-176: Port `ml_confidence.py` to local browser inference or an equivalent deterministic TypeScript model.`
+- Summary: Added an exact browser-native deterministic artifact format for Python ml_confidence.py heuristic inference.
+- Impact: src/lib/logic/mlConfidence.ts can now load a deterministic-python-heuristic-v1 artifact that scores from the existing feature vector with the same rule weights as the Python fallback model, so browser callers can use local artifact inference without Python, server, filesystem, subprocess, or RPC fallbacks. src/lib/logic/mlConfidence.test.ts validates the artifact against the captured Python parity fixture, and the port ledger marks checkbox-176 complete.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/mlConfidence.test.ts`, `src/lib/logic/mlConfidence.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T091448Z-added-an-exact-browser-native-deterministic-artifact-format-for-python-ml_confid.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T091448Z-added-an-exact-browser-native-deterministic-artifact-format-for-python-ml_confid.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T091448Z-added-an-exact-browser-native-deterministic-artifact-format-for-python-ml_confid.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

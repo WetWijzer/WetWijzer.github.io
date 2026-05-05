@@ -25,7 +25,10 @@ export interface ConfidenceTrainingMetrics {
 
 export interface MLConfidenceModelArtifact {
   artifactId?: string;
-  format: 'deterministic-linear-v1' | 'deterministic-logistic-v1';
+  format:
+    | 'deterministic-linear-v1'
+    | 'deterministic-logistic-v1'
+    | 'deterministic-python-heuristic-v1';
   version: string;
   featureNames: Array<MLConfidenceFeatureName>;
   weights: Array<number>;
@@ -427,6 +430,24 @@ export function predictMLConfidence(
 export const extract_ml_confidence_features = extractMLConfidenceFeatures;
 export const predict_ml_confidence = predictMLConfidence;
 
+export function createMLConfidencePythonHeuristicArtifact(
+  options: {
+    artifactId?: string;
+    version?: string;
+    metadata?: MLConfidenceCalibrationMetadata;
+  } = {},
+): MLConfidenceModelArtifact {
+  return {
+    artifactId: options.artifactId,
+    format: 'deterministic-python-heuristic-v1',
+    version: options.version ?? 'python-ml-confidence-heuristic-v1',
+    featureNames: ML_CONFIDENCE_FEATURE_NAMES.slice(),
+    weights: ML_CONFIDENCE_FEATURE_NAMES.map(() => 0),
+    bias: 0,
+    metadata: options.metadata,
+  };
+}
+
 export function loadMLConfidenceModelArtifact(
   artifact: MLConfidenceModelArtifact,
 ): MLConfidenceModelState {
@@ -520,7 +541,8 @@ function validateModelArtifact(artifact: MLConfidenceModelArtifact): MLConfidenc
   }
   if (
     artifact.format !== 'deterministic-linear-v1' &&
-    artifact.format !== 'deterministic-logistic-v1'
+    artifact.format !== 'deterministic-logistic-v1' &&
+    artifact.format !== 'deterministic-python-heuristic-v1'
   ) {
     throw new Error(`Unsupported ML confidence artifact format: ${artifact.format}`);
   }
@@ -620,6 +642,9 @@ function scoreFeatureVector(
   bias: number,
   format: MLConfidenceModelArtifact['format'],
 ): number {
+  if (format === 'deterministic-python-heuristic-v1') {
+    return scorePythonHeuristicFeatureVector(features);
+  }
   const raw = features.reduce(
     (total, feature, index) => total + feature * (weights[index] ?? 0),
     bias,
@@ -628,6 +653,24 @@ function scoreFeatureVector(
     return clamp01(raw);
   }
   return clamp01(1 / (1 + Math.exp(-raw)));
+}
+
+function scorePythonHeuristicFeatureVector(features: MLConfidenceFeatureVector): number {
+  let score = 0;
+  const formulaLength = features[4] ?? 0;
+  const totalPredicates = features[7] ?? 0;
+  const quantifierCount = features[11] ?? 0;
+  const operatorCount = features[12] ?? 0;
+  const keywordCount = features[21] ?? 0;
+
+  if (totalPredicates > 0) score += 0.3;
+  if (quantifierCount > 0) score += 0.2;
+  if (operatorCount > 0) score += 0.2;
+  score += Math.min(0.2, keywordCount * 0.05);
+  if (formulaLength < 5) score -= 0.2;
+  if (formulaLength > 200) score -= 0.1;
+
+  return clamp01(score);
 }
 
 function clamp01(value: number): number {

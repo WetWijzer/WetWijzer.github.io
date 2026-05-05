@@ -5,6 +5,7 @@ import {
   MLConfidenceArtifactManifest,
   MLConfidenceModelArtifact,
   MLConfidenceScorer,
+  createMLConfidencePythonHeuristicArtifact,
   getMLConfidenceArtifactCacheState,
   getMLConfidenceModelState,
   loadMLConfidenceModelFromCache,
@@ -208,6 +209,37 @@ describe('browser-native ML confidence parity slice', () => {
       serverCallsAllowed: false,
       pythonRuntimeAllowed: false,
     });
+  });
+
+  it('loads an exact deterministic Python heuristic artifact for local inference parity', () => {
+    expect(mlFixture).toBeDefined();
+    const fixture = mlFixture as MLConfidenceFixture;
+    const scorer = new MLConfidenceScorer();
+    const artifact = createMLConfidencePythonHeuristicArtifact({
+      artifactId: 'python-heuristic-rule-model',
+      version: 'python-ml-confidence-heuristic-fixture-v1',
+      metadata: calibrationMetadata(fixture),
+    });
+
+    expect(scorer.loadModelArtifact(artifact)).toMatchObject({
+      loaded: true,
+      source: 'artifact',
+      artifactId: 'python-heuristic-rule-model',
+      format: 'deterministic-python-heuristic-v1',
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+    });
+
+    const result = scorer.scoreWithCalibration(
+      fixture.sentence,
+      fixture.fol_formula,
+      fixture.predicates,
+      fixture.quantifiers,
+      fixture.operators,
+    );
+
+    expect(result.confidence).toBeCloseTo(fixture.python_heuristic_confidence, 10);
+    expect(result.calibration?.withinTolerance).toBe(true);
   });
 
   it('registers local artifact manifests, enforces versions, and clears cache on unload', () => {
