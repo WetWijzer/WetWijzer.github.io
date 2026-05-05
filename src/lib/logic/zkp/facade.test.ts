@@ -1,6 +1,7 @@
 import { webcrypto } from 'node:crypto';
 import { TextEncoder } from 'node:util';
 
+import { runBasicZkpDemo, run_basic_zkp_demo } from './basicDemo';
 import { ZKPProver, ZKPVerifier } from './facade';
 import { ZKPError, ZKPProof } from './simulatedBackend';
 
@@ -46,7 +47,9 @@ describe('ZKP prover and verifier browser-native facades', () => {
     const prover = new ZKPProver();
 
     await expect(prover.generateProof('', ['P'])).rejects.toThrow(ZKPError);
-    await expect(prover.generateProof('', ['P'])).rejects.toThrow('Proof generation failed: Theorem cannot be empty');
+    await expect(prover.generateProof('', ['P'])).rejects.toThrow(
+      'Proof generation failed: Theorem cannot be empty',
+    );
   });
 
   it('validates and verifies proofs with public input checks and stats', async () => {
@@ -84,5 +87,50 @@ describe('ZKP prover and verifier browser-native facades', () => {
 
     verifier.resetStats();
     expect(verifier.getStats()).toMatchObject({ proofs_rejected: 0, proofs_verified: 0 });
+  });
+
+  it('runs the basic ZKP demo as a browser-native TypeScript port', async () => {
+    const first = await runBasicZkpDemo({ seed: 'fixture' });
+    const second = await runBasicZkpDemo({ seed: 'fixture' });
+
+    expect(first).toMatchObject({
+      axioms: ['P', 'P -> Q'],
+      backend: 'simulated',
+      cryptographic: false,
+      module: 'logic/zkp/examples/zkp_basic_demo.py',
+      runtime: 'browser-native-typescript',
+      tampered_verified: false,
+      theorem: 'Q',
+      verified: true,
+    });
+    expect(first.proof.proof_data).toBe(second.proof.proof_data);
+    expect(first.proof.public_inputs).toMatchObject({
+      circuit_version: 1,
+      ruleset_id: 'TDFOL_v1',
+      theorem: 'Q',
+    });
+    expect(first.proof.metadata.circuit_ref).toBe('knowledge_of_axioms@1');
+    expect(first.prover_stats).toMatchObject({
+      cache_hits: 0,
+      proofs_generated: 1,
+    });
+    expect(first.verifier_stats).toMatchObject({
+      acceptance_rate: 0.5,
+      proofs_rejected: 1,
+      proofs_verified: 1,
+    });
+    expect(first.warnings.join(' ')).toContain('without Python');
+  });
+
+  it('keeps the Python-style basic demo alias available', async () => {
+    const result = await run_basic_zkp_demo({
+      axioms: ['Permit(Alice)', 'Permit(Alice) -> Access(Alice)'],
+      seed: 'alias',
+      theorem: 'Access(Alice)',
+    });
+
+    expect(result.verified).toBe(true);
+    expect(result.proof.public_inputs.theorem).toBe('Access(Alice)');
+    expect(result.proof.public_inputs.ruleset_id).toBe('TDFOL_v1');
   });
 });
