@@ -1,5 +1,13 @@
 import type { CecExpression } from './ast';
-import { DcecFunctionSymbol, DcecPredicateSymbol, DcecSort, DcecVariable } from './dcecTypes';
+import {
+  DcecFunctionSymbol,
+  DcecPredicateSymbol,
+  DcecSort,
+  type DcecSymbolContainerJson,
+  DcecVariable,
+  isDcecSymbolJson,
+  serializeDcecSymbolContainer,
+} from './dcecTypes';
 
 const DCEC_BUILTIN_SORT_NAMES = [
   'Entity',
@@ -67,6 +75,11 @@ export interface DcecNamespaceValidationResult {
   diagnostics: DcecNamespaceDiagnostic[];
 }
 
+export interface DcecNamespaceJson extends DcecSymbolContainerJson {
+  readonly kind: 'namespace';
+  readonly version: 1;
+}
+
 export interface DcecStatement<Formula = CecExpression | string> {
   formula: Formula;
   label?: string;
@@ -89,6 +102,28 @@ export class DcecNamespace {
 
   constructor() {
     this.initBuiltinSorts();
+  }
+
+  static fromJSON(json: unknown): DcecNamespace {
+    if (!isDcecNamespaceJson(json)) {
+      throw new DcecNamespaceError('Invalid DCEC namespace JSON snapshot', {
+        operation: 'from_json',
+        suggestion: 'Provide a namespace snapshot produced by DcecNamespace.toJSON().',
+      });
+    }
+
+    const namespace = new DcecNamespace();
+    namespace.loadSorts(json.sorts);
+    for (const variable of json.variables) {
+      namespace.addVariable(variable.name, variable.sort);
+    }
+    for (const func of json.functions) {
+      namespace.addFunction(func.name, func.argumentSorts, func.returnSort);
+    }
+    for (const predicate of json.predicates) {
+      namespace.addPredicate(predicate.name, predicate.argumentSorts);
+    }
+    return namespace;
   }
 
   addSort(name: string, parent?: string): DcecSort {
@@ -251,6 +286,19 @@ export class DcecNamespace {
     };
   }
 
+  toJSON(): DcecNamespaceJson {
+    return {
+      kind: 'namespace',
+      version: 1,
+      ...serializeDcecSymbolContainer({
+        sorts: this.sorts.values(),
+        variables: this.variables.values(),
+        functions: this.functions.values(),
+        predicates: this.predicates.values(),
+      }),
+    };
+  }
+
   validate(): DcecNamespaceValidationResult {
     const diagnostics: DcecNamespaceDiagnostic[] = this.findCollisions().map((collision) => ({
       code: 'symbol_collision',
@@ -295,6 +343,41 @@ export class DcecNamespace {
     this.addSort('ActionType');
     this.addSort('Obligation', 'Boolean');
     this.addSort('Permission', 'Boolean');
+  }
+
+  private loadSorts(sorts: DcecNamespaceJson['sorts']) {
+    const pending = sorts.filter((sort) => !this.isMatchingBuiltinSort(sort.name, sort.parent));
+    while (pending.length > 0) {
+      const before = pending.length;
+      for (let index = pending.length - 1; index >= 0; index -= 1) {
+        const sort = pending[index];
+        if (sort.parent !== undefined && !this.sorts.has(sort.parent)) continue;
+        this.addSort(sort.name, sort.parent);
+        pending.splice(index, 1);
+      }
+      if (pending.length === before) {
+        const unresolved = pending.map((sort) => sort.name).join(', ');
+        throw new DcecNamespaceError(
+          `Unable to resolve namespace sort parents for: ${unresolved}`,
+          {
+            operation: 'from_json',
+            suggestion: 'Order custom sorts after their parents or include all parent sorts.',
+          },
+        );
+      }
+    }
+  }
+
+  private isMatchingBuiltinSort(name: string, parent?: string): boolean {
+    const existing = this.sorts.get(name);
+    if (existing === undefined) return false;
+    const existingParent = existing.parent?.name;
+    if (existingParent === parent) return true;
+    throw new DcecNamespaceError(`Builtin sort '${name}' has incompatible parent`, {
+      symbol: name,
+      operation: 'from_json',
+      suggestion: `Use the browser-native builtin sort definition for '${name}'.`,
+    });
   }
 
   private requireSort(name: string, operation: string, message: string): DcecSort {
@@ -363,6 +446,28 @@ export class DcecNamespace {
       suggestion: `Register sort '${sort.name}' before registering '${symbol}'.`,
     });
   }
+}
+
+export function isDcecNamespaceJson(value: unknown): value is DcecNamespaceJson {
+  if (!isRecord(value) || value.kind !== 'namespace' || value.version !== 1) return false;
+  return (
+    Array.isArray(value.sorts) &&
+    Array.isArray(value.variables) &&
+    Array.isArray(value.functions) &&
+    Array.isArray(value.predicates) &&
+    value.sorts.every(isDcecSymbolJson) &&
+    value.variables.every(isDcecSymbolJson) &&
+    value.functions.every(isDcecSymbolJson) &&
+    value.predicates.every(isDcecSymbolJson) &&
+    value.sorts.every((symbol) => symbol.kind === 'sort') &&
+    value.variables.every((symbol) => symbol.kind === 'variable') &&
+    value.functions.every((symbol) => symbol.kind === 'function') &&
+    value.predicates.every((symbol) => symbol.kind === 'predicate')
+  );
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
 }
 
 export class DcecContainer<Formula = CecExpression | string> {

@@ -1,5 +1,10 @@
 import { parseCecExpression } from './parser';
-import { DcecContainer, DcecNamespace, DcecNamespaceError } from './dcecNamespace';
+import {
+  DcecContainer,
+  DcecNamespace,
+  DcecNamespaceError,
+  isDcecNamespaceJson,
+} from './dcecNamespace';
 import {
   DcecCognitiveOperator,
   DcecDeonticOperator,
@@ -87,6 +92,67 @@ describe('DCEC namespace and type utilities', () => {
       { kind: 'predicate', name: 'liable', argumentSorts: ['Agent'] },
     ]);
     expect(serialized.functions.every(isDcecSymbolJson)).toBe(true);
+  });
+
+  it('round-trips namespace snapshots through deterministic browser-native JSON', () => {
+    const namespace = new DcecNamespace();
+    namespace.registerSort('Document', 'Entity');
+    namespace.registerSort('Contract', 'Document');
+    namespace.registerVariable('party', 'Agent');
+    namespace.registerFunction('signedDocument', ['Agent'], 'Document');
+    namespace.registerPredicate('validContract', ['Contract']);
+
+    const json = namespace.toJSON();
+    const restored = DcecNamespace.fromJSON(json);
+
+    expect(isDcecNamespaceJson(json)).toBe(true);
+    expect(json).toEqual({
+      kind: 'namespace',
+      version: 1,
+      sorts: [
+        { kind: 'sort', name: 'Entity' },
+        { kind: 'sort', name: 'Boolean' },
+        { kind: 'sort', name: 'Moment' },
+        { kind: 'sort', name: 'Event' },
+        { kind: 'sort', name: 'Action' },
+        { kind: 'sort', name: 'Agent', parent: 'Entity' },
+        { kind: 'sort', name: 'ActionType' },
+        { kind: 'sort', name: 'Obligation', parent: 'Boolean' },
+        { kind: 'sort', name: 'Permission', parent: 'Boolean' },
+        { kind: 'sort', name: 'Document', parent: 'Entity' },
+        { kind: 'sort', name: 'Contract', parent: 'Document' },
+      ],
+      variables: [{ kind: 'variable', name: 'party', sort: 'Agent' }],
+      functions: [
+        {
+          kind: 'function',
+          name: 'signedDocument',
+          argumentSorts: ['Agent'],
+          returnSort: 'Document',
+        },
+      ],
+      predicates: [{ kind: 'predicate', name: 'validContract', argumentSorts: ['Contract'] }],
+    });
+    expect(restored.toJSON()).toEqual(json);
+    expect(restored.getSort('Contract')?.isSubtypeOf(restored.getSort('Entity')!)).toBe(true);
+    expect(restored.validate()).toEqual({ valid: true, diagnostics: [] });
+  });
+
+  it('fails closed for malformed namespace snapshots and unresolved sort parents', () => {
+    expect(isDcecNamespaceJson({ kind: 'namespace', version: 1, sorts: [] })).toBe(false);
+    expect(() => DcecNamespace.fromJSON({ kind: 'namespace', version: 2 })).toThrow(
+      DcecNamespaceError,
+    );
+    expect(() =>
+      DcecNamespace.fromJSON({
+        kind: 'namespace',
+        version: 1,
+        sorts: [{ kind: 'sort', name: 'Contract', parent: 'MissingSort' }],
+        variables: [],
+        functions: [],
+        predicates: [],
+      }),
+    ).toThrow(DcecNamespaceError);
   });
 
   it('initializes Python-compatible built-in sorts and statistics', () => {
