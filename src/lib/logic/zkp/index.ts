@@ -24,6 +24,7 @@ export * from './legalTheoremSemantics';
 export * from './onchainPipeline';
 export * from './simulatedBackend';
 export * from './simulatedVerifier';
+export * from './setupArtifacts';
 export * from './statement';
 export * from './vkRegistry';
 export * from './witnessManager';

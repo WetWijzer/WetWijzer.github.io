@@ -947,7 +947,7 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Port remaining Python logic module `logic/zkp/examples/zkp_ipfs_integration.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/legal_theorem_semantics.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/onchain_pipeline.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
-- [ ] Port remaining Python logic module `logic/zkp/setup_artifacts.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
+- [x] Port remaining Python logic module `logic/zkp/setup_artifacts.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/ucan_zkp_bridge.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/vk_registry.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/witness_manager.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
@@ -966,11 +966,11 @@ These tasks were added automatically after the daemon found no eligible unchecke
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 03:50:54 UTC
+Last updated: 2026-05-05 03:56:05 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-437: Port remaining Python logic module 'logic/zkp/setup_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+Current target: `Task checkbox-438: Port remaining Python logic module 'logic/zkp/ucan_zkp_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1411,8 +1411,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-433: Port remaining Python logic module 'logic/zkp/examples/zkp_basic_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-434: Port remaining Python logic module 'logic/zkp/examples/zkp_ipfs_integration.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-435: Port remaining Python logic module 'logic/zkp/legal_theorem_semantics.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [x] `Task checkbox-436: Port remaining Python logic module 'logic/zkp/onchain_pipeline.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
-- [ ] `Task checkbox-437: Port remaining Python logic module 'logic/zkp/setup_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
+- [x] `Task checkbox-436: Port remaining Python logic module 'logic/zkp/onchain_pipeline.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
+- [x] `Task checkbox-437: Port remaining Python logic module 'logic/zkp/setup_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
 - [ ] `Task checkbox-438: Port remaining Python logic module 'logic/zkp/ucan_zkp_bridge.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-439: Port remaining Python logic module 'logic/zkp/vk_registry.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-440: Port remaining Python logic module 'logic/zkp/witness_manager.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
@@ -1430,11 +1430,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-436: Port remaining Python logic module 'logic/zkp/onchain_pipeline.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Target: `Task checkbox-437: Port remaining Python logic module 'logic/zkp/setup_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 - Result: `valid`
-- Summary: Ported zkp/onchain_pipeline.py as a browser-native Groth16-to-EVM pipeline facade.
-- Impact: src/lib/logic/zkp/onchainPipeline.ts composes the existing browser-native Groth16 backup backend, EVM public-input packing, verifier calldata builder, VK registry payload builder, and injected EIP-1193 provider calls without Python, server RPC fallback, filesystem, or subprocess dependencies. The existing ZKP facade Jest suite now validates pipeline metadata, proof-to-public-input conversion, verifier read-call construction, optional VK registration calldata, successful injected-provider verification, and fail-closed missing-provider behavior.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/facade.test.ts`, `src/lib/logic/zkp/index.ts`, `src/lib/logic/zkp/onchainPipeline.ts`
+- Summary: Ported Groth16 setup artifact preparation to browser-native TypeScript.
+- Impact: Adds in-memory Groth16 setup artifact normalization for wasm/zkey bytes and verification-key JSON/object inputs, exports Python-style aliases through the ZKP barrel, and validates fail-closed browser behavior without filesystem, server, or Python runtime fallback.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/index.ts`, `src/lib/logic/zkp/setupArtifacts.test.ts`, `src/lib/logic/zkp/setupArtifacts.ts`
 
 ### Blocked Backlog
 
