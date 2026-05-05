@@ -2225,3 +2225,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T035605Z-ported-groth16-setup-artifact-preparation-to-browser-native-typescript..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T035605Z-ported-groth16-setup-artifact-preparation-to-browser-native-typescript..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T035605Z-ported-groth16-setup-artifact-preparation-to-browser-native-typescript..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 04:00:52 UTC
+
+- Target: `Task checkbox-438: Port remaining Python logic module `logic/zkp/ucan_zkp_bridge.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported logic/zkp/ucan_zkp_bridge.py as a browser-native UCAN-to-ZKP bridge.
+- Impact: Adds a TypeScript ZKP bridge that validates unsigned UCAN delegation payloads, derives deterministic local capability commitments, generates simulated browser-native ZKP proofs through the existing facade, verifies proof-to-delegation bindings fail-closed, exports the module from the ZKP index, and exercises the behavior in the validation-covered ZKP facade Jest suite.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/facade.test.ts`, `src/lib/logic/zkp/index.ts`, `src/lib/logic/zkp/ucanZkpBridge.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T040052Z-ported-logic-zkp-ucan_zkp_bridge.py-as-a-browser-native-ucan-to-zkp-bridge..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T040052Z-ported-logic-zkp-ucan_zkp_bridge.py-as-a-browser-native-ucan-to-zkp-bridge..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T040052Z-ported-logic-zkp-ucan_zkp_bridge.py-as-a-browser-native-ucan-to-zkp-bridge..stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

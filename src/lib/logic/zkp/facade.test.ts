@@ -6,6 +6,12 @@ import { runBasicZkpDemo, run_basic_zkp_demo } from './basicDemo';
 import { ZKPProver, ZKPVerifier } from './facade';
 import { ONCHAIN_PIPELINE_METADATA, buildOnchainProofPipeline } from './onchainPipeline';
 import { ZKPError, ZKPProof } from './simulatedBackend';
+import {
+  UCAN_ZKP_BRIDGE_METADATA,
+  proveUcanDelegationZkp,
+  verifyUcanDelegationZkp,
+  type UcanZkpDelegation,
+} from './ucanZkpBridge';
 
 Object.defineProperty(globalThis, 'crypto', {
   value: webcrypto,
@@ -192,5 +198,70 @@ describe('ZKP prover and verifier browser-native facades', () => {
         verifyOnchain: true,
       }),
     ).rejects.toThrow('no server RPC fallback');
+  });
+
+  it('binds and verifies unsigned UCAN delegations through local ZKP proofs', async () => {
+    const delegation: UcanZkpDelegation = {
+      iss: 'did:key:issuer',
+      aud: 'did:key:audience',
+      att: [
+        {
+          with: 'urn:policy:tenant',
+          can: 'policy/maintain',
+          nb: { requirement: 'OBLIGATION', subject: 'tenant' },
+        },
+      ],
+      prf: ['bafyproof'],
+      signed: false,
+    };
+    const bundle = await proveUcanDelegationZkp(delegation, { theorem: 'tenant_must_maintain' });
+    const verified = await verifyUcanDelegationZkp(delegation, bundle.proof!, {
+      theorem: 'tenant_must_maintain',
+    });
+    const tampered = await verifyUcanDelegationZkp(
+      { ...delegation, aud: 'did:key:other-audience' },
+      bundle.proof!,
+      { theorem: 'tenant_must_maintain' },
+    );
+
+    expect(UCAN_ZKP_BRIDGE_METADATA).toMatchObject({
+      sourcePythonModule: 'logic/zkp/ucan_zkp_bridge.py',
+      browserNative: true,
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+    });
+    expect(bundle).toMatchObject({ ok: true, verified: true, theorem: 'tenant_must_maintain' });
+    expect(bundle.proof?.metadata).toMatchObject({
+      audience: 'did:key:audience',
+      capability_count: 1,
+      circuit_ref: 'ucan_capability_binding@v1',
+      issuer: 'did:key:issuer',
+      ruleset_id: 'UCAN_ZKP_v1',
+      source_python_module: 'logic/zkp/ucan_zkp_bridge.py',
+    });
+    expect(verified.ok).toBe(true);
+    expect(tampered).toMatchObject({
+      ok: false,
+      fail_closed_reason: 'ucan_zkp_binding_verification_failed',
+    });
+  });
+
+  it('fails closed for invalid UCAN ZKP bridge inputs', async () => {
+    const invalid: UcanZkpDelegation = {
+      iss: 'issuer',
+      aud: 'did:key:audience',
+      att: [{ with: 'urn:policy:tenant', can: 'policy/maintain' }],
+    };
+
+    await expect(proveUcanDelegationZkp(invalid)).resolves.toMatchObject({
+      ok: false,
+      fail_closed_reason: 'ucan_zkp_invalid_delegation',
+    });
+    await expect(
+      proveUcanDelegationZkp({ ...invalid, iss: 'did:key:issuer' }, { requireSigned: true }),
+    ).resolves.toMatchObject({
+      ok: false,
+      errors: ['signed UCAN verification is not available in this browser-native bridge.'],
+    });
   });
 });
