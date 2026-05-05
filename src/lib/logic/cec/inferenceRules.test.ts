@@ -79,6 +79,7 @@ import {
   CecTemporalTRule,
   CecTemporalNegationRule,
   CecTautologyRule,
+  CecNativeProofResult,
   CEC_NATIVE_INFERENCE_RUNTIMES,
   CecTemporallyInducedCommonKnowledgeRule,
   CecTranspositionRule,
@@ -91,10 +92,12 @@ import {
   applyCecNativePythonParityRules,
   applyCecDeonticPythonParityRules,
   cecExpressionEquals,
+  applyCecNativeBaseInferenceRule,
   getAllCecRules,
   getCognitiveCecRules,
   getDeonticCecRules,
   getCecNativeInferenceRuleTables,
+  getCecNativeBaseInferenceRuleContracts,
   getCecDeonticPythonParityRuleNames,
   getGenerativeCecRules,
   getModalCecRules,
@@ -463,6 +466,59 @@ describe('CEC inference rules', () => {
       browserNative: true,
       pythonRuntime: false,
     });
+  });
+
+  it('ports base.py list-based inference rule contract with fail-closed results', () => {
+    const contracts = getCecNativeBaseInferenceRuleContracts();
+    expect(contracts.map((contract) => contract.pythonRuleName)).toEqual([
+      'ModusPonens',
+      'HypotheticalSyllogism',
+      'ConjunctionIntroduction',
+      'ConjunctionEliminationLeft',
+      'ConjunctionEliminationRight',
+      'DoubleNegationElimination',
+    ]);
+    expect(
+      contracts.every(
+        (contract) =>
+          contract.sourcePythonModule === 'logic/CEC/native/inference_rules/base.py' &&
+          contract.browserNative &&
+          !contract.pythonRuntime,
+      ),
+    ).toBe(true);
+
+    const success = applyCecNativeBaseInferenceRule('ModusPonens', [
+      parseCecExpression('(p)'),
+      parseCecExpression('(implies (p) (q))'),
+    ]);
+    expect(success.status).toBe(CecNativeProofResult.SUCCESS);
+    expect(formatCecExpression(success.conclusions[0])).toBe('(q)');
+    expect(success.proofStep).toMatchObject({
+      rule: 'CecModusPonens',
+      pythonRuleName: 'ModusPonens',
+      ruleGroup: 'base',
+      sourcePythonModule: 'logic/CEC/native/inference_rules/base.py',
+      premiseCount: 2,
+      conclusionCount: 1,
+      status: 'SUCCESS',
+      browserNative: true,
+      pythonRuntime: false,
+    });
+
+    const arityFailure = applyCecNativeBaseInferenceRule('ModusPonens', [
+      parseCecExpression('(p)'),
+    ]);
+    expect(arityFailure.status).toBe(CecNativeProofResult.FAILURE);
+    expect(arityFailure.conclusions).toEqual([]);
+    expect(arityFailure.error).toBe('Expected 2 premise(s), received 1');
+    expect(arityFailure.metadata).toEqual(CEC_NATIVE_INFERENCE_RUNTIMES.base);
+
+    const applicabilityFailure = applyCecNativeBaseInferenceRule('ModusPonens', [
+      parseCecExpression('(p)'),
+      parseCecExpression('(implies (r) (q))'),
+    ]);
+    expect(applicabilityFailure.status).toBe(CecNativeProofResult.FAILURE);
+    expect(applicabilityFailure.error).toContain('cannot be applied');
   });
 
   it('ports cognitive.py rule applications through the browser-native parity adapter', () => {

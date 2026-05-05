@@ -21,6 +21,9 @@ export interface CecRuleApplication {
   conclusion: CecExpression;
 }
 
+export const CecNativeProofResult = { SUCCESS: 'SUCCESS', FAILURE: 'FAILURE' } as const;
+export type CecNativeProofResult = (typeof CecNativeProofResult)[keyof typeof CecNativeProofResult];
+
 export type CecDeonticPythonRuleName =
   | 'ObligationDistribution'
   | 'ObligationImplication'
@@ -116,6 +119,33 @@ export interface CecNativePythonRuleApplication {
   conclusion: CecExpression;
   status: 'SUCCESS';
   proofStep: CecNativePythonProofStepMetadata;
+}
+
+export interface CecNativeBaseInferenceRuleContract {
+  name: string;
+  pythonRuleName: CecNativeBasePythonRuleName;
+  description: string;
+  arity: 1 | 2 | 3;
+  sourcePythonModule: 'logic/CEC/native/inference_rules/base.py';
+  browserNative: true;
+  pythonRuntime: false;
+  canApply(premises: readonly CecExpression[]): boolean;
+  apply(premises: readonly CecExpression[]): CecNativeBaseInferenceRuleResult;
+}
+
+export interface CecNativeBaseInferenceRuleResult {
+  status: CecNativeProofResult;
+  rule: string;
+  pythonRuleName: CecNativeBasePythonRuleName;
+  premises: readonly CecExpression[];
+  conclusions: readonly CecExpression[];
+  proofStep?: CecNativePythonProofStepMetadata;
+  error?: string;
+  metadata?: {
+    sourcePythonModule: 'logic/CEC/native/inference_rules/base.py';
+    browserNative: true;
+    pythonRuntime: false;
+  };
 }
 
 type CecNativePythonRuleSpec = {
@@ -1655,6 +1685,21 @@ export function getCecNativeInferenceRuleTables(): Record<
   };
 }
 
+export function getCecNativeBaseInferenceRuleContracts(): readonly CecNativeBaseInferenceRuleContract[] {
+  return CEC_NATIVE_PYTHON_RULE_SPECS.filter(isCecNativeBaseRuleSpec).map((spec) =>
+    toCecNativeBaseInferenceRuleContract(spec),
+  );
+}
+
+export function applyCecNativeBaseInferenceRule(
+  pythonRuleName: CecNativeBasePythonRuleName,
+  premises: readonly CecExpression[],
+): CecNativeBaseInferenceRuleResult {
+  return getCecNativeBaseInferenceRuleContracts()
+    .find((candidate) => candidate.pythonRuleName === pythonRuleName)!
+    .apply(premises);
+}
+
 export function applyCecNativePythonParityRules(
   expressions: CecExpression[],
   ruleGroups: readonly CecNativeInferenceRuleGroup[] = ['base', 'cognitive', 'modal'],
@@ -1895,6 +1940,83 @@ function ruleNamesForGroup(
   return CEC_NATIVE_PYTHON_RULE_SPECS.filter((spec) => spec.ruleGroup === ruleGroup).map(
     (spec) => spec.pythonRuleName,
   );
+}
+
+function isCecNativeBaseRuleSpec(
+  spec: CecNativePythonRuleSpec,
+): spec is CecNativePythonRuleSpec & { pythonRuleName: CecNativeBasePythonRuleName } {
+  return spec.ruleGroup === 'base';
+}
+
+function toCecNativeBaseInferenceRuleContract(
+  spec: CecNativePythonRuleSpec & { pythonRuleName: CecNativeBasePythonRuleName },
+): CecNativeBaseInferenceRuleContract {
+  const runtime = CEC_NATIVE_INFERENCE_RUNTIMES.base;
+  return {
+    name: spec.rule.name,
+    pythonRuleName: spec.pythonRuleName,
+    description: spec.rule.description,
+    arity: spec.rule.arity,
+    sourcePythonModule: runtime.sourcePythonModule,
+    browserNative: runtime.browserNative,
+    pythonRuntime: runtime.pythonRuntime,
+    canApply: (premises) => premises.length === spec.rule.arity && spec.rule.canApply(...premises),
+    apply: (premises) => {
+      if (premises.length !== spec.rule.arity) {
+        return failedCecNativeBaseInferenceRule(
+          spec.rule.name,
+          spec.pythonRuleName,
+          premises,
+          `Expected ${spec.rule.arity} premise(s), received ${premises.length}`,
+        );
+      }
+      if (!spec.rule.canApply(...premises)) {
+        return failedCecNativeBaseInferenceRule(
+          spec.rule.name,
+          spec.pythonRuleName,
+          premises,
+          `CEC native base rule ${spec.pythonRuleName} cannot be applied to supplied premises`,
+        );
+      }
+      const conclusion = spec.rule.apply(...premises);
+      return {
+        status: CecNativeProofResult.SUCCESS,
+        rule: spec.rule.name,
+        pythonRuleName: spec.pythonRuleName,
+        premises,
+        conclusions: [conclusion],
+        proofStep: {
+          stepId: 1,
+          rule: spec.rule.name,
+          pythonRuleName: spec.pythonRuleName,
+          ruleGroup: 'base',
+          sourcePythonModule: runtime.sourcePythonModule,
+          premiseCount: premises.length,
+          conclusionCount: 1,
+          status: 'SUCCESS',
+          browserNative: runtime.browserNative,
+          pythonRuntime: runtime.pythonRuntime,
+        },
+      };
+    },
+  };
+}
+
+function failedCecNativeBaseInferenceRule(
+  rule: string,
+  pythonRuleName: CecNativeBasePythonRuleName,
+  premises: readonly CecExpression[],
+  error: string,
+): CecNativeBaseInferenceRuleResult {
+  return {
+    status: CecNativeProofResult.FAILURE,
+    rule,
+    pythonRuleName,
+    premises,
+    conclusions: [],
+    error,
+    metadata: CEC_NATIVE_INFERENCE_RUNTIMES.base,
+  };
 }
 
 export function cecExpressionEquals(left: CecExpression, right: CecExpression): boolean {
