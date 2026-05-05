@@ -2,6 +2,7 @@ import {
   axiomsCommitmentHex,
   canonicalizeAxioms,
   canonicalizeTheorem,
+  normalizeProofText,
   parseTdfolV1Axiom,
   tdfolV1AxiomsCommitmentHexV2,
   theoremHashHex,
@@ -17,7 +18,12 @@ export interface CircuitGate {
 }
 
 export interface R1csConstraint {
-  type: 'multiplication' | 'or_composition' | 'not_composition' | 'implies_composition' | 'xor_composition';
+  type:
+    | 'multiplication'
+    | 'or_composition'
+    | 'not_composition'
+    | 'implies_composition'
+    | 'xor_composition';
   A?: number;
   B?: number;
   C?: number;
@@ -262,7 +268,8 @@ export class TDFOLv1DerivationCircuit {
 
   compile(): Record<string, string | number> {
     return {
-      description: 'Prove theorem holds under TDFOL_v1 Horn-fragment semantics using a derivation trace',
+      description:
+        'Prove theorem holds under TDFOL_v1 Horn-fragment semantics using a derivation trace',
       num_inputs: this.numInputs(),
       type: this.circuitType,
       version: this.circuitVersion,
@@ -291,7 +298,9 @@ export class TDFOLv1DerivationCircuit {
       if (intermediateSteps.length === 0) return false;
 
       const parsedAxioms = canonicalAxioms.map(parseTdfolV1Axiom);
-      const known = new Set(parsedAxioms.filter((axiom) => !axiom.antecedent).map((axiom) => axiom.consequent));
+      const known = new Set(
+        parsedAxioms.filter((axiom) => !axiom.antecedent).map((axiom) => axiom.consequent),
+      );
       const implications = parsedAxioms.filter((axiom) => axiom.antecedent);
       const seen = new Set<string>();
 
@@ -302,7 +311,10 @@ export class TDFOLv1DerivationCircuit {
 
         if (!known.has(step)) {
           const justified = implications.some(
-            (axiom) => axiom.consequent === step && axiom.antecedent !== undefined && known.has(axiom.antecedent),
+            (axiom) =>
+              axiom.consequent === step &&
+              axiom.antecedent !== undefined &&
+              known.has(axiom.antecedent),
           );
           if (!justified) return false;
           known.add(step);
@@ -310,6 +322,76 @@ export class TDFOLv1DerivationCircuit {
       }
 
       return known.has(theoremAtom);
+    } catch {
+      return false;
+    }
+  }
+
+  verify_constraints(witness: ZkpWitness, statement: ZkpStatement): Promise<boolean> {
+    return this.verifyConstraints(witness, statement);
+  }
+}
+
+export class FormCircuit {
+  constructor(
+    public readonly circuitVersion = 3,
+    public readonly circuitType = 'tdfol_v1_form',
+  ) {}
+
+  numInputs(): number {
+    return 4;
+  }
+
+  num_inputs(): number {
+    return this.numInputs();
+  }
+
+  numConstraints(): number {
+    return 4;
+  }
+
+  num_constraints(): number {
+    return this.numConstraints();
+  }
+
+  compile(): Record<string, string | number | string[]> {
+    return {
+      description:
+        'Prove a TDFOL_v1 theorem/axiom bundle is locally well formed and bound to public inputs',
+      constraints: [
+        'ruleset_version',
+        'canonical_axiom_order',
+        'tdfol_v1_axiom_form',
+        'public_input_binding',
+      ],
+      num_constraints: this.numConstraints(),
+      num_inputs: this.numInputs(),
+      type: this.circuitType,
+      version: this.circuitVersion,
+    };
+  }
+
+  async verifyConstraints(witness: ZkpWitness, statement: ZkpStatement): Promise<boolean> {
+    try {
+      if (statement.circuitVersion !== this.circuitVersion) return false;
+      if ((witness.circuitVersion ?? this.circuitVersion) !== statement.circuitVersion)
+        return false;
+      if (statement.rulesetId !== 'TDFOL_v1') return false;
+      if ((witness.rulesetId ?? 'TDFOL_v1') !== statement.rulesetId) return false;
+      if (!witness.theorem || !isTdfolV1Atom(witness.theorem)) return false;
+
+      const theoremAtom = canonicalizeTheorem(witness.theorem);
+      if (statement.theoremHash !== (await theoremHashHex(theoremAtom))) return false;
+
+      const canonicalAxioms = canonicalizeAxioms(witness.axioms);
+      if (!sameStringList(witness.axioms, canonicalAxioms)) return false;
+      if (!canonicalAxioms.every(isTdfolV1Formula)) return false;
+
+      const expectedCommitmentHex = await tdfolV1AxiomsCommitmentHexV2(canonicalAxioms);
+      return (
+        statement.axiomsCommitment === expectedCommitmentHex &&
+        witness.axiomsCommitmentHex === expectedCommitmentHex
+      );
     } catch {
       return false;
     }
@@ -334,7 +416,9 @@ export function createImplicationCircuit(numPremises: number): ZKPCircuit {
   }
 
   const circuit = new ZKPCircuit();
-  const premiseWires = Array.from({ length: numPremises }, (_, index) => circuit.addInput(`P${index}`));
+  const premiseWires = Array.from({ length: numPremises }, (_, index) =>
+    circuit.addInput(`P${index}`),
+  );
   const qWire = circuit.addInput('Q');
 
   let premisesWire = premiseWires[0];
@@ -351,8 +435,31 @@ export function create_implication_circuit(numPremises: number): ZKPCircuit {
   return createImplicationCircuit(numPremises);
 }
 
+export function createFormCircuit(circuitVersion = 3): FormCircuit {
+  return new FormCircuit(circuitVersion);
+}
+
+export function create_form_circuit(circuitVersion = 3): FormCircuit {
+  return createFormCircuit(circuitVersion);
+}
+
 function sameStringList(left: string[], right: string[]): boolean {
   return left.length === right.length && left.every((value, index) => value === right[index]);
+}
+
+function isTdfolV1Formula(value: string): boolean {
+  const normalized = normalizeProofText(value);
+  if (!normalized) return false;
+  if ((normalized.match(/(?:->|→)/g) ?? []).length > 1) return false;
+
+  const parsed = parseTdfolV1Axiom(normalized);
+  if (!isTdfolV1Atom(parsed.consequent)) return false;
+  return parsed.antecedent === undefined || isTdfolV1Atom(parsed.antecedent);
+}
+
+function isTdfolV1Atom(value: string): boolean {
+  const normalized = normalizeProofText(value);
+  return /^[A-Za-z][A-Za-z0-9_]*(?:\([A-Za-z0-9_, ]+\))?$/.test(normalized);
 }
 
 function stableJsonStringify(value: unknown): string {

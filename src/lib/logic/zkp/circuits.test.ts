@@ -1,11 +1,17 @@
 import { webcrypto } from 'node:crypto';
 import { TextEncoder } from 'node:util';
 
-import { axiomsCommitmentHex, tdfolV1AxiomsCommitmentHexV2, theoremHashHex } from './canonicalization';
 import {
+  axiomsCommitmentHex,
+  tdfolV1AxiomsCommitmentHexV2,
+  theoremHashHex,
+} from './canonicalization';
+import {
+  FormCircuit,
   MVPCircuit,
   TDFOLv1DerivationCircuit,
   ZKPCircuit,
+  createFormCircuit,
   createImplicationCircuit,
   createKnowledgeOfAxiomsCircuit,
 } from './circuits';
@@ -82,7 +88,9 @@ describe('ZKP circuit helpers', () => {
       version: 1,
     });
     await expect(circuit.verifyConstraints(witness, statement)).resolves.toBe(true);
-    await expect(circuit.verifyConstraints({ ...witness, axioms: ['P -> Q', 'P'] }, statement)).resolves.toBe(false);
+    await expect(
+      circuit.verifyConstraints({ ...witness, axioms: ['P -> Q', 'P'] }, statement),
+    ).resolves.toBe(false);
   });
 
   it('evaluates TDFOL_v1 Horn derivation constraints without a cryptographic backend', async () => {
@@ -105,15 +113,87 @@ describe('ZKP circuit helpers', () => {
     };
 
     expect(circuit.compile()).toEqual({
-      description: 'Prove theorem holds under TDFOL_v1 Horn-fragment semantics using a derivation trace',
+      description:
+        'Prove theorem holds under TDFOL_v1 Horn-fragment semantics using a derivation trace',
       num_inputs: 4,
       type: 'tdfol_v1_horn_derivation',
       version: 2,
     });
     await expect(circuit.verifyConstraints(witness, statement)).resolves.toBe(true);
-    await expect(circuit.verifyConstraints({ ...witness, intermediateSteps: ['R'] }, statement)).resolves.toBe(false);
-    await expect(circuit.verifyConstraints({ ...witness, intermediateSteps: ['P', 'P', 'Q'] }, statement)).resolves.toBe(
-      false,
-    );
+    await expect(
+      circuit.verifyConstraints({ ...witness, intermediateSteps: ['R'] }, statement),
+    ).resolves.toBe(false);
+    await expect(
+      circuit.verifyConstraints({ ...witness, intermediateSteps: ['P', 'P', 'Q'] }, statement),
+    ).resolves.toBe(false);
+  });
+
+  it('ports form_circuit.py as a local TDFOL_v1 form validator bound to public inputs', async () => {
+    const circuit = createFormCircuit();
+    const axioms = ['P', 'P -> Q'];
+    const commitment = await tdfolV1AxiomsCommitmentHexV2(axioms);
+    const statement: ZkpStatement = {
+      theoremHash: await theoremHashHex('Q'),
+      axiomsCommitment: commitment,
+      circuitVersion: 3,
+      rulesetId: 'TDFOL_v1',
+    };
+    const witness: ZkpWitness = {
+      axioms,
+      theorem: 'Q',
+      axiomsCommitmentHex: commitment,
+      circuitVersion: 3,
+      rulesetId: 'TDFOL_v1',
+    };
+
+    expect(circuit).toBeInstanceOf(FormCircuit);
+    expect(circuit.compile()).toEqual({
+      constraints: [
+        'ruleset_version',
+        'canonical_axiom_order',
+        'tdfol_v1_axiom_form',
+        'public_input_binding',
+      ],
+      description:
+        'Prove a TDFOL_v1 theorem/axiom bundle is locally well formed and bound to public inputs',
+      num_constraints: 4,
+      num_inputs: 4,
+      type: 'tdfol_v1_form',
+      version: 3,
+    });
+    await expect(circuit.verifyConstraints(witness, statement)).resolves.toBe(true);
+    await expect(circuit.verify_constraints(witness, statement)).resolves.toBe(true);
+  });
+
+  it('fails closed for malformed or noncanonical form circuit witnesses', async () => {
+    const circuit = createFormCircuit();
+    const axioms = ['P', 'P -> Q'];
+    const commitment = await tdfolV1AxiomsCommitmentHexV2(axioms);
+    const statement: ZkpStatement = {
+      theoremHash: await theoremHashHex('Q'),
+      axiomsCommitment: commitment,
+      circuitVersion: 3,
+      rulesetId: 'TDFOL_v1',
+    };
+    const witness: ZkpWitness = {
+      axioms,
+      theorem: 'Q',
+      axiomsCommitmentHex: commitment,
+      circuitVersion: 3,
+      rulesetId: 'TDFOL_v1',
+    };
+
+    await expect(
+      circuit.verifyConstraints({ ...witness, axioms: ['P -> Q', 'P'] }, statement),
+    ).resolves.toBe(false);
+    await expect(
+      circuit.verifyConstraints({ ...witness, axioms: ['P ->'] }, statement),
+    ).resolves.toBe(false);
+    await expect(
+      circuit.verifyConstraints({ ...witness, theorem: 'P -> Q' }, statement),
+    ).resolves.toBe(false);
+    await expect(
+      circuit.verifyConstraints(witness, { ...statement, theoremHash: await theoremHashHex('R') }),
+    ).resolves.toBe(false);
   });
 });
