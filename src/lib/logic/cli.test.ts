@@ -1,4 +1,4 @@
-import { runLogicCli } from './cli';
+import { createLogicDevtoolsCommandAdapter, runLogicCli, runLogicDevtoolsCommand } from './cli';
 
 describe('browser-native logic CLI adapter', () => {
   it('runs health and conversion commands locally', () => {
@@ -47,6 +47,40 @@ describe('browser-native logic CLI adapter', () => {
       data: { success: true, serverRuntime: false },
     });
     expect(policy.stdout).toContain('P[tenants:Agent]');
+  });
+
+  it('runs validation and structured devtools commands without Python or server fallbacks', () => {
+    const adapter = createLogicDevtoolsCommandAdapter();
+    const converted = adapter.run({
+      command: 'convert',
+      flags: {
+        source: 'All auditors are reviewers',
+        from: 'natural_language',
+        to: 'fol',
+      },
+    });
+    const validation = runLogicDevtoolsCommand({
+      command: 'validate',
+      flags: { 'fol-text': 'All tenants are protected.' },
+    });
+
+    expect(adapter).toMatchObject({
+      browserNative: true,
+      pythonRuntime: false,
+      serverRuntime: false,
+      commands: expect.arrayContaining(['health', 'convert', 'prove', 'policy', 'validate']),
+    });
+    expect(converted).toMatchObject({
+      ok: true,
+      command: 'convert',
+      data: { target_formula: '∀x (Auditors(x) → Reviewers(x))', pythonRuntime: false },
+    });
+    expect(validation).toMatchObject({
+      ok: true,
+      command: 'validate',
+      stdout: 'browser-native logic runtime valid',
+      data: { valid: true, serverCallsAllowed: false, pythonRuntime: false },
+    });
   });
 
   it('fails closed for legacy runtimes and malformed commands', () => {

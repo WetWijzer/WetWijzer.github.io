@@ -2450,3 +2450,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T060225Z-added-browser-native-developer-panel-inspection-snapshots-for-parse-proof-proof-.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T060225Z-added-browser-native-developer-panel-inspection-snapshots-for-parse-proof-proof-.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T060225Z-added-browser-native-developer-panel-inspection-snapshots-for-parse-proof-proof-.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 06:05:08 UTC
+
+- Target: `Task checkbox-462: Manual unblock: add CLI/devtools command adapter parity for `logic/cli.py` as browser/devtools-safe TypeScript entry points.`
+- Summary: Added browser-safe CLI/devtools command adapter parity for logic CLI commands.
+- Impact: src/lib/logic/cli.ts now exposes structured devtools-safe command entry points, snake-case aliases, and a validate command backed by browser-native runtime validation. src/lib/logic/cli.test.ts exercises object-based devtools invocation, conversion, validation, and no Python/server fallback guarantees. The TypeScript port ledger marks the selected manual unblock task complete.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cli.test.ts`, `src/lib/logic/cli.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T060508Z-added-browser-safe-cli-devtools-command-adapter-parity-for-logic-cli-commands..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T060508Z-added-browser-safe-cli-devtools-command-adapter-parity-for-logic-cli-commands..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T060508Z-added-browser-safe-cli-devtools-command-adapter-parity-for-logic-cli-commands..stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

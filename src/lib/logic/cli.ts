@@ -1,7 +1,8 @@
 import { createLogicApi, type LogicApiOptions } from './api';
+import { validateBrowserNativeLogicRuntime } from './browserNativeValidation';
 import type { BridgeProofRequest, LogicBridgeFormat } from './integration/bridge';
 
-export type LogicCliCommand = 'health' | 'convert' | 'prove' | 'policy';
+export type LogicCliCommand = 'health' | 'convert' | 'prove' | 'policy' | 'validate';
 export interface LogicCliResult {
   ok: boolean;
   exitCode: 0 | 1 | 2;
@@ -10,6 +11,19 @@ export interface LogicCliResult {
   stderr: string;
   data?: Record<string, unknown>;
   runtime: Runtime;
+}
+export type LogicDevtoolsFlagValue = string | number | boolean | readonly string[];
+export interface LogicDevtoolsCommandInvocation {
+  command?: LogicCliCommand;
+  argv?: readonly string[];
+  flags?: Record<string, LogicDevtoolsFlagValue | undefined>;
+}
+export interface LogicDevtoolsCommandAdapter {
+  readonly browserNative: true;
+  readonly pythonRuntime: false;
+  readonly serverRuntime: false;
+  readonly commands: readonly LogicCliCommand[];
+  run(invocation: LogicDevtoolsCommandInvocation): LogicCliResult;
 }
 type Runtime = {
   browserNative: true;
@@ -24,6 +38,7 @@ const runtime: Runtime = {
   serverRuntime: false,
   serverCallsAllowed: false,
 };
+const commands: readonly LogicCliCommand[] = ['health', 'convert', 'prove', 'policy', 'validate'];
 const formats: readonly LogicBridgeFormat[] = [
   'natural_language',
   'legal_text',
@@ -46,8 +61,8 @@ export function runLogicCli(
 ): LogicCliResult {
   const args = [...argv];
   if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
-    return pass('health', 'logic commands: health, convert, prove, policy', {
-      commands: ['health', 'convert', 'prove', 'policy'],
+    return pass('health', `logic commands: ${commands.join(', ')}`, {
+      commands: [...commands],
     });
   }
   if (blockedRuntime.test(args.join(' '))) {
@@ -109,10 +124,71 @@ export function runLogicCli(
       ? pass(command, result.policyFormula, data)
       : fail(command, 1, result.warnings.join('; ') || 'policy compilation failed', data);
   }
+  if (command === 'validate') {
+    const data: Record<string, unknown> = {
+      ...validateBrowserNativeLogicRuntime({
+        folText: first(flags, 'fol-text', 'fol_text'),
+        deonticText: first(flags, 'deontic-text', 'deontic_text'),
+      }),
+      command,
+      ...runtime,
+    };
+    return data.valid === true
+      ? pass(command, 'browser-native logic runtime valid', data)
+      : fail(command, 1, 'browser-native logic runtime validation failed', data);
+  }
   return fail(undefined, 2, `Unknown logic CLI command: ${String(command)}`);
 }
 
 export const run_logic_cli = runLogicCli;
+
+export function createLogicDevtoolsCommandAdapter(
+  options: LogicApiOptions = {},
+): LogicDevtoolsCommandAdapter {
+  return {
+    browserNative: true,
+    pythonRuntime: false,
+    serverRuntime: false,
+    commands,
+    run(invocation: LogicDevtoolsCommandInvocation): LogicCliResult {
+      return runLogicCli(toArgv(invocation), options);
+    },
+  };
+}
+
+export function runLogicDevtoolsCommand(
+  invocation: LogicDevtoolsCommandInvocation,
+  options: LogicApiOptions = {},
+): LogicCliResult {
+  return createLogicDevtoolsCommandAdapter(options).run(invocation);
+}
+
+export const create_logic_devtools_command_adapter = createLogicDevtoolsCommandAdapter;
+export const run_logic_devtools_command = runLogicDevtoolsCommand;
+
+function toArgv(invocation: LogicDevtoolsCommandInvocation): readonly string[] {
+  if (invocation.argv !== undefined) {
+    return [...invocation.argv];
+  }
+  const argv: Array<string> = [];
+  if (invocation.command !== undefined) {
+    argv.push(invocation.command);
+  }
+  const flags = invocation.flags ?? {};
+  for (const [key, value] of Object.entries(flags)) {
+    if (value === undefined || value === false) {
+      continue;
+    }
+    const flagValues = Array.isArray(value) ? value : [String(value)];
+    for (const item of flagValues) {
+      argv.push(`--${key}`);
+      if (item !== 'true') {
+        argv.push(item);
+      }
+    }
+  }
+  return argv;
+}
 
 function parseFlags(args: readonly string[]): Map<string, Array<string>> {
   const flags = new Map<string, Array<string>>();
