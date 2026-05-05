@@ -1024,7 +1024,7 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 08:35:22 UTC
+Last updated: 2026-05-05 08:50:30 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
@@ -1521,25 +1521,25 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - Result: `needs follow-up`
 - Summary: Worktree direct-edit proposal.
 - Impact: Git harvested the isolated-worktree edits for validation.
-- Accepted changed files: `src/lib/logic/cec/prover.test.ts`, `src/lib/logic/cec/prover.ts`
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/prover.test.ts`, `src/lib/logic/cec/prover.ts`
 - Errors: Rejected proposal because TypeScript replacement preflight found parser or generic/type-quality errors before touching the worktree:
-../../..src/lib/logic/cec/prover.ts(104,11): error TS2322: Type '{ id: string; rule: any; ruleGroup: CecNativeRuleGroupName; ruleDescription: any; premises: any; conclusion: any; explanation: string; derivedExpressionCount: number; }' is not assignable to type 'CecProofTraceStep'.
-../../..src/lib/logic/cec/prover.ts(189,7): error TS2322: Type '{ status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; error: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; summary: { status: ProofStatus; theorem: any; ... 9 more ...; serverDelegation: boolean; }; diagnostics: Record<...>; }' is not assignable to type 'CecProofResult'.
+../../..src/lib/logic/cec/prover.ts(142,11): error TS2322: Type '{ id: string; rule: any; premises: any; conclusion: any; explanation: string; derivedExpressionCount: number; }' is not assignable to type 'CecProofTraceStep'.
+../../..src/lib/logic/cec/prover.ts(227,7): error TS2322: Type '{ status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; summary: CecProofSummary; diagnostics: CecProofDiagnostics; }' is not assignable to type 'CecProofResult'.
 
 Replacement diagnostic context:
-src/lib/logic/cec/prover.ts:104:11 TS2322: Type '{ id: string; rule: any; ruleGroup: CecNativeRuleGroupName; ruleDescription: any; premises: any; conclusion: any; explanation: string; derivedExpressionCount: number; }' is not assignable to type 'CecProofTraceStep'.
-  102:         const rule = this.rules.find((candidate) => candidate.name === application.rule);
-  103:         const step: CecProofTraceStep = {
-> 104:           id: `cec-step-${steps.length + 1}`,
-  105:           rule: application.rule,
-  106:           ruleGroup: this.ruleGroupByRuleName.get(application.rule),
+src/lib/logic/cec/prover.ts:142:11 TS2322: Type '{ id: string; rule: any; premises: any; conclusion: any; explanation: string; derivedExpressionCount: number; }' is not assignable to type 'CecProofTraceStep'.
+  140:         const rule = this.rules.find((candidate) => candidate.name === application.rule);
+  141:         const step: CecProofTraceStep = {
+> 142:           id: `cec-step-${steps.length + 1}`,
+  143:           rule: application.rule,
+  144:           premises: application.premises.map(formatCecExpression),
 
-src/lib/logic/cec/prover.ts:189:7 TS2322: Type '{ status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; error: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; summary: { status: ProofStatus; theorem: any; ... 9 more ...; serverDelegation: boolean; }; diagnostics: Record<...>; }' is not assignable to type 'CecProofResult'.
-  187:     };
-  188:     return {
-> 189:       status,
-  190:       theorem: theoremText,
-  191:       steps,
+src/lib/logic/cec/prover.ts:227:7 TS2322: Type '{ status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; summary: CecProofSummary; diagnostics: CecProofDiagnostics; }' is not assignable to type 'CecProofResult'.
+  225:     }
+  226:     const result: CecProofResult = {
+> 227:       status,
+  228:       theorem: theoremText,
+  229:       steps,
 - Failure kind: `typescript_quality`
 
 ### Blocked Backlog
