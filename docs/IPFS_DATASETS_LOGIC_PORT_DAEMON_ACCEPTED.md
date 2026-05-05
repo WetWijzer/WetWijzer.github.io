@@ -2351,3 +2351,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T044236Z-added-a-browser-native-public-api-export-comparison-helper-for-selected-python-l.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T044236Z-added-a-browser-native-public-api-export-comparison-helper-for-selected-python-l.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T044236Z-added-a-browser-native-public-api-export-comparison-helper-for-selected-python-l.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 04:45:29 UTC
+
+- Target: `Task checkbox-219: Port remaining Python logic module `logic/CEC/native/inference_rules/deontic.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported the CEC native deontic.py rule-class surface onto the existing browser-native TypeScript CEC inference rules.
+- Impact: The TypeScript CEC inference module now exposes deterministic browser-native metadata and a batch adapter for the seven Python deontic.py rule classes, and the focused Jest test validates rule names, conclusions, and absence of Python runtime dependency.
+- Changed files: `src/lib/logic/cec/inferenceRules.test.ts`, `src/lib/logic/cec/inferenceRules.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T044529Z-ported-the-cec-native-deontic.py-rule-class-surface-onto-the-existing-browser-na.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T044529Z-ported-the-cec-native-deontic.py-rule-class-surface-onto-the-existing-browser-na.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T044529Z-ported-the-cec-native-deontic.py-rule-class-surface-onto-the-existing-browser-na.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

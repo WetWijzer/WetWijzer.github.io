@@ -1,4 +1,10 @@
-import type { CecApplication, CecBinaryExpression, CecExpression, CecQuantifiedExpression, CecUnaryExpression } from './ast';
+import type {
+  CecApplication,
+  CecBinaryExpression,
+  CecExpression,
+  CecQuantifiedExpression,
+  CecUnaryExpression,
+} from './ast';
 import { formatCecExpression } from './formatter';
 
 export interface CecInferenceRule {
@@ -13,6 +19,28 @@ export interface CecRuleApplication {
   rule: string;
   premises: CecExpression[];
   conclusion: CecExpression;
+}
+
+export type CecDeonticPythonRuleName =
+  | 'ObligationDistribution'
+  | 'ObligationImplication'
+  | 'PermissionFromNonObligation'
+  | 'ObligationConjunction'
+  | 'PermissionDistribution'
+  | 'ObligationConsistency'
+  | 'ProhibitionEquivalence';
+
+export interface CecDeonticPythonRuleApplication {
+  rule: string;
+  pythonRuleName: CecDeonticPythonRuleName;
+  premises: CecExpression[];
+  conclusions: CecExpression[];
+  status: 'SUCCESS';
+  metadata: {
+    sourcePythonModule: 'logic/CEC/native/inference_rules/deontic.py';
+    browserNative: true;
+    pythonRuntime: false;
+  };
 }
 
 type CecRuleSpec = {
@@ -103,7 +131,9 @@ export const CecDoubleNegationEliminationRule = new CecRule({
   description: 'From (not (not phi)), infer phi',
   arity: 1,
   canApply: (expression) =>
-    isUnary(expression, 'not') && expression.expression.kind === 'unary' && expression.expression.operator === 'not',
+    isUnary(expression, 'not') &&
+    expression.expression.kind === 'unary' &&
+    expression.expression.operator === 'not',
   apply: (expression) => {
     if (!isUnary(expression, 'not') || !isUnary(expression.expression, 'not')) {
       throw new Error('Invalid CEC double negation premise');
@@ -165,7 +195,8 @@ export const CecAlwaysTransitiveRule = new CecRule({
   name: 'CecAlwaysTransitive',
   description: 'From (always (always phi)), infer (always phi)',
   arity: 1,
-  canApply: (expression) => isUnary(expression, 'always') && isUnary(expression.expression, 'always'),
+  canApply: (expression) =>
+    isUnary(expression, 'always') && isUnary(expression.expression, 'always'),
   apply: (expression) => {
     if (!isUnary(expression, 'always') || !isUnary(expression.expression, 'always')) {
       throw new Error('Invalid CEC always transitive premise');
@@ -203,7 +234,8 @@ export const CecEventuallyFromAlwaysRule = new CecRule({
   arity: 1,
   canApply: (expression) => isUnary(expression, 'always'),
   apply: (expression) => {
-    if (!isUnary(expression, 'always')) throw new Error('Invalid CEC eventually-from-always premise');
+    if (!isUnary(expression, 'always'))
+      throw new Error('Invalid CEC eventually-from-always premise');
     return { kind: 'unary', operator: 'eventually', expression: expression.expression };
   },
 });
@@ -212,7 +244,8 @@ export const CecEventuallyDistributionRule = new CecRule({
   name: 'CecEventuallyDistribution',
   description: 'From (eventually (or phi psi)), infer (or (eventually phi) (eventually psi))',
   arity: 1,
-  canApply: (expression) => isUnary(expression, 'eventually') && isBinary(expression.expression, 'or'),
+  canApply: (expression) =>
+    isUnary(expression, 'eventually') && isBinary(expression.expression, 'or'),
   apply: (expression) => {
     if (!isUnary(expression, 'eventually') || !isBinary(expression.expression, 'or')) {
       throw new Error('Invalid CEC eventually distribution premise');
@@ -230,7 +263,8 @@ export const CecEventuallyTransitiveRule = new CecRule({
   name: 'CecEventuallyTransitive',
   description: 'From (eventually (eventually phi)), infer (eventually phi)',
   arity: 1,
-  canApply: (expression) => isUnary(expression, 'eventually') && isUnary(expression.expression, 'eventually'),
+  canApply: (expression) =>
+    isUnary(expression, 'eventually') && isUnary(expression.expression, 'eventually'),
   apply: (expression) => {
     if (!isUnary(expression, 'eventually') || !isUnary(expression.expression, 'eventually')) {
       throw new Error('Invalid CEC eventually transitive premise');
@@ -243,11 +277,16 @@ export const CecEventuallyImplicationRule = new CecRule({
   name: 'CecEventuallyImplication',
   description: 'From (eventually phi) and (always (implies phi psi)), infer (eventually psi)',
   arity: 2,
-  canApply: (eventual, alwaysImplication) => findEventuallyImplicationPremises(eventual, alwaysImplication) !== undefined,
+  canApply: (eventual, alwaysImplication) =>
+    findEventuallyImplicationPremises(eventual, alwaysImplication) !== undefined,
   apply: (eventual, alwaysImplication) => {
     const premises = findEventuallyImplicationPremises(eventual, alwaysImplication);
     if (!premises) throw new Error('Invalid CEC eventually implication premises');
-    return { kind: 'unary', operator: 'eventually', expression: premises.implication.expression.right };
+    return {
+      kind: 'unary',
+      operator: 'eventually',
+      expression: premises.implication.expression.right,
+    };
   },
 });
 
@@ -307,7 +346,8 @@ export const CecTemporalUntilEliminationRule = new CecRule({
   name: 'CecTemporalUntilElimination',
   description: 'From (until phi psi) and psi, infer psi',
   arity: 2,
-  canApply: (untilExpression, current) => isBinary(untilExpression, 'until') && cecExpressionEquals(untilExpression.right, current),
+  canApply: (untilExpression, current) =>
+    isBinary(untilExpression, 'until') && cecExpressionEquals(untilExpression.right, current),
   apply: (_untilExpression, current) => current,
 });
 
@@ -334,14 +374,16 @@ export const CecNecessityEliminationRule = new CecRule({
   arity: 1,
   canApply: (expression) => isUnary(expression, 'always'),
   apply: (expression) => {
-    if (!isUnary(expression, 'always')) throw new Error('Invalid CEC necessity elimination premise');
+    if (!isUnary(expression, 'always'))
+      throw new Error('Invalid CEC necessity elimination premise');
     return expression.expression;
   },
 });
 
 export const CecPossibilityIntroductionRule = new CecRule({
   name: 'CecPossibilityIntroduction',
-  description: 'From phi, infer possible phi, represented as (eventually phi); kept opt-in because it generates modal formulas',
+  description:
+    'From phi, infer possible phi, represented as (eventually phi); kept opt-in because it generates modal formulas',
   arity: 1,
   canApply: (expression) => !isUnary(expression, 'eventually'),
   apply: (expression) => ({ kind: 'unary', operator: 'eventually', expression }),
@@ -368,16 +410,25 @@ export const CecPossibilityDualityRule = new CecRule({
     isUnary(expression.expression, 'always') &&
     isUnary(expression.expression.expression, 'not'),
   apply: (expression) => {
-    if (!isUnary(expression, 'not') || !isUnary(expression.expression, 'always') || !isUnary(expression.expression.expression, 'not')) {
+    if (
+      !isUnary(expression, 'not') ||
+      !isUnary(expression.expression, 'always') ||
+      !isUnary(expression.expression.expression, 'not')
+    ) {
       throw new Error('Invalid CEC possibility duality premise');
     }
-    return { kind: 'unary', operator: 'eventually', expression: expression.expression.expression.expression };
+    return {
+      kind: 'unary',
+      operator: 'eventually',
+      expression: expression.expression.expression.expression,
+    };
   },
 });
 
 export const CecNecessityConjunctionRule = new CecRule({
   name: 'CecNecessityConjunction',
-  description: 'From (always phi) and (always psi), infer (always (and phi psi)); kept opt-in because it generates conjunctions',
+  description:
+    'From (always phi) and (always psi), infer (always (and phi psi)); kept opt-in because it generates conjunctions',
   arity: 2,
   canApply: (left, right) =>
     isUnary(left, 'always') &&
@@ -390,7 +441,12 @@ export const CecNecessityConjunctionRule = new CecRule({
     return {
       kind: 'unary',
       operator: 'always',
-      expression: { kind: 'binary', operator: 'and', left: left.expression, right: right.expression },
+      expression: {
+        kind: 'binary',
+        operator: 'and',
+        left: left.expression,
+        right: right.expression,
+      },
     };
   },
 });
@@ -460,7 +516,9 @@ export const CecObligationImplicationRule = new CecRule({
   description: 'From (O phi) and (implies phi psi), infer (O psi)',
   arity: 2,
   canApply: (obligation, implication) =>
-    isUnary(obligation, 'O') && isBinary(implication, 'implies') && cecExpressionEquals(obligation.expression, implication.left),
+    isUnary(obligation, 'O') &&
+    isBinary(implication, 'implies') &&
+    cecExpressionEquals(obligation.expression, implication.left),
   apply: (obligation, implication) => {
     if (!isUnary(obligation, 'O') || !isBinary(implication, 'implies')) {
       throw new Error('Invalid CEC obligation implication premises');
@@ -478,27 +536,42 @@ export const CecPermissionFromNonObligationRule = new CecRule({
     isUnary(expression.expression, 'O') &&
     isUnary(expression.expression.expression, 'not'),
   apply: (expression) => {
-    if (!isUnary(expression, 'not') || !isUnary(expression.expression, 'O') || !isUnary(expression.expression.expression, 'not')) {
+    if (
+      !isUnary(expression, 'not') ||
+      !isUnary(expression.expression, 'O') ||
+      !isUnary(expression.expression.expression, 'not')
+    ) {
       throw new Error('Invalid CEC permission duality premise');
     }
-    return { kind: 'unary', operator: 'P', expression: expression.expression.expression.expression };
+    return {
+      kind: 'unary',
+      operator: 'P',
+      expression: expression.expression.expression.expression,
+    };
   },
 });
 
 export const CecObligationConjunctionRule = new CecRule({
   name: 'CecObligationConjunction',
-  description: 'From (O phi) and (O psi), infer (O (and phi psi)); kept opt-in because it generates conjunctions',
+  description:
+    'From (O phi) and (O psi), infer (O (and phi psi)); kept opt-in because it generates conjunctions',
   arity: 2,
   canApply: (left, right) =>
     isUnary(left, 'O') &&
     isUnary(right, 'O') &&
     !cecExpressionEquals(left.expression, right.expression),
   apply: (left, right) => {
-    if (!isUnary(left, 'O') || !isUnary(right, 'O')) throw new Error('Invalid CEC obligation conjunction premises');
+    if (!isUnary(left, 'O') || !isUnary(right, 'O'))
+      throw new Error('Invalid CEC obligation conjunction premises');
     return {
       kind: 'unary',
       operator: 'O',
-      expression: { kind: 'binary', operator: 'and', left: left.expression, right: right.expression },
+      expression: {
+        kind: 'binary',
+        operator: 'and',
+        left: left.expression,
+        right: right.expression,
+      },
     };
   },
 });
@@ -528,7 +601,8 @@ export const CecObligationConsistencyRule = new CecRule({
   canApply: (left, right) =>
     isUnary(left, 'O') &&
     isUnary(right, 'O') &&
-    (isNegationOf(left.expression, right.expression) || isNegationOf(right.expression, left.expression)),
+    (isNegationOf(left.expression, right.expression) ||
+      isNegationOf(right.expression, left.expression)),
   apply: () => ({ kind: 'atom', name: 'contradiction' }),
 });
 
@@ -540,13 +614,20 @@ export const CecUniversalModusPonensRule = new CecRule({
     if (!isQuantified(universal, 'forall') || !isBinary(universal.expression, 'implies')) {
       return false;
     }
-    return matchCecExpressionForVariable(universal.expression.left, premise, universal.variable) !== undefined;
+    return (
+      matchCecExpressionForVariable(universal.expression.left, premise, universal.variable) !==
+      undefined
+    );
   },
   apply: (universal, premise) => {
     if (!isQuantified(universal, 'forall') || !isBinary(universal.expression, 'implies')) {
       throw new Error('Invalid CEC universal premise');
     }
-    const binding = matchCecExpressionForVariable(universal.expression.left, premise, universal.variable);
+    const binding = matchCecExpressionForVariable(
+      universal.expression.left,
+      premise,
+      universal.variable,
+    );
     if (!binding) throw new Error('CEC universal premise does not match supplied fact');
     return substituteCecAtom(universal.expression.right, universal.variable, binding);
   },
@@ -559,7 +640,11 @@ export const CecExistentialInstantiationRule = new CecRule({
   canApply: (expression) => isQuantified(expression, 'exists'),
   apply: (expression) => {
     if (!isQuantified(expression, 'exists')) throw new Error('Invalid CEC existential premise');
-    return substituteCecAtom(expression.expression, expression.variable, `skolem_${expression.variable}`);
+    return substituteCecAtom(
+      expression.expression,
+      expression.variable,
+      `skolem_${expression.variable}`,
+    );
   },
 });
 
@@ -587,7 +672,8 @@ export const CecUniversalGeneralizationRule = new CecRule({
   canApply: (expression) => findFirstVariableLikeAtom(expression) !== undefined,
   apply: (expression) => {
     const variable = findFirstVariableLikeAtom(expression);
-    if (!variable) throw new Error('No CEC variable-like atom available for universal generalization');
+    if (!variable)
+      throw new Error('No CEC variable-like atom available for universal generalization');
     return {
       kind: 'quantified',
       quantifier: 'forall',
@@ -604,7 +690,8 @@ export const CecBeliefDistributionRule = new CecRule({
   canApply: (expression) => isCognitive(expression, 'B') && isBinary(expression.args[1], 'and'),
   apply: (expression) => {
     const belief = requireCognitive(expression, 'B');
-    if (!isBinary(belief.args[1], 'and')) throw new Error('Invalid CEC belief distribution premise');
+    if (!isBinary(belief.args[1], 'and'))
+      throw new Error('Invalid CEC belief distribution premise');
     return {
       kind: 'binary',
       operator: 'and',
@@ -630,10 +717,13 @@ export const CecBeliefMonotonicityRule = new CecRule({
   description: 'From (B agent phi) and (implies phi psi), infer (B agent psi)',
   arity: 2,
   canApply: (belief, implication) =>
-    isCognitive(belief, 'B') && isBinary(implication, 'implies') && cecExpressionEquals(belief.args[1], implication.left),
+    isCognitive(belief, 'B') &&
+    isBinary(implication, 'implies') &&
+    cecExpressionEquals(belief.args[1], implication.left),
   apply: (belief, implication) => {
     const premise = requireCognitive(belief, 'B');
-    if (!isBinary(implication, 'implies')) throw new Error('Invalid CEC belief monotonicity implication');
+    if (!isBinary(implication, 'implies'))
+      throw new Error('Invalid CEC belief monotonicity implication');
     return cognitiveApplication('B', premise.args[0], implication.right);
   },
 });
@@ -651,7 +741,8 @@ export const CecIntentionCommitmentRule = new CecRule({
   apply: (intention, belief) => {
     const intent = requireCognitive(intention, 'I');
     const believed = requireCognitive(belief, 'B');
-    if (!isBinary(believed.args[1], 'implies')) throw new Error('Invalid CEC intention commitment premise');
+    if (!isBinary(believed.args[1], 'implies'))
+      throw new Error('Invalid CEC intention commitment premise');
     return cognitiveApplication('I', intent.args[0], believed.args[1].right);
   },
 });
@@ -684,7 +775,8 @@ export const CecKnowledgeDistributionRule = new CecRule({
   canApply: (expression) => isCognitive(expression, 'K') && isBinary(expression.args[1], 'and'),
   apply: (expression) => {
     const knowledge = requireCognitive(expression, 'K');
-    if (!isBinary(knowledge.args[1], 'and')) throw new Error('Invalid CEC knowledge distribution premise');
+    if (!isBinary(knowledge.args[1], 'and'))
+      throw new Error('Invalid CEC knowledge distribution premise');
     return {
       kind: 'binary',
       operator: 'and',
@@ -707,7 +799,8 @@ export const CecIntentionMeansEndRule = new CecRule({
   apply: (intention, belief) => {
     const intent = requireCognitive(intention, 'I');
     const believed = requireCognitive(belief, 'B');
-    if (!isBinary(believed.args[1], 'implies')) throw new Error('Invalid CEC intention means-end premise');
+    if (!isBinary(believed.args[1], 'implies'))
+      throw new Error('Invalid CEC intention means-end premise');
     return cognitiveApplication('I', intent.args[0], believed.args[1].left);
   },
 });
@@ -716,7 +809,8 @@ export const CecPerceptionImpliesKnowledgeRule = new CecRule({
   name: 'CecPerceptionImpliesKnowledge',
   description: 'From (Perceives agent phi), infer (K agent phi)',
   arity: 1,
-  canApply: (expression) => isCognitive(expression, 'Perceives') || isCognitive(expression, 'Perception'),
+  canApply: (expression) =>
+    isCognitive(expression, 'Perceives') || isCognitive(expression, 'Perception'),
   apply: (expression) => {
     const perception = requireAnyCognitive(expression, ['Perceives', 'Perception']);
     return cognitiveApplication('K', perception.args[0], perception.args[1]);
@@ -731,7 +825,11 @@ export const CecBeliefNegationRule = new CecRule({
   apply: (expression) => {
     const belief = requireCognitive(expression, 'B');
     if (!isUnary(belief.args[1], 'not')) throw new Error('Invalid CEC belief negation premise');
-    return { kind: 'unary', operator: 'not', expression: cognitiveApplication('B', belief.args[0], belief.args[1].expression) };
+    return {
+      kind: 'unary',
+      operator: 'not',
+      expression: cognitiveApplication('B', belief.args[0], belief.args[1].expression),
+    };
   },
 });
 
@@ -791,10 +889,13 @@ export const CecKnowledgeMonotonicityRule = new CecRule({
   description: 'From (K agent phi) and (implies phi psi), infer (K agent psi)',
   arity: 2,
   canApply: (knowledge, implication) =>
-    isCognitive(knowledge, 'K') && isBinary(implication, 'implies') && cecExpressionEquals(knowledge.args[1], implication.left),
+    isCognitive(knowledge, 'K') &&
+    isBinary(implication, 'implies') &&
+    cecExpressionEquals(knowledge.args[1], implication.left),
   apply: (knowledge, implication) => {
     const premise = requireCognitive(knowledge, 'K');
-    if (!isBinary(implication, 'implies')) throw new Error('Invalid CEC knowledge monotonicity implication');
+    if (!isBinary(implication, 'implies'))
+      throw new Error('Invalid CEC knowledge monotonicity implication');
     return cognitiveApplication('K', premise.args[0], implication.right);
   },
 });
@@ -811,7 +912,8 @@ export const CecCommonKnowledgeIntroductionRule = new CecRule({
   apply: (left, right) => {
     const first = requireCognitive(left, 'K');
     const second = requireCognitive(right, 'K');
-    if (!cecExpressionEquals(first.args[1], second.args[1])) throw new Error('Invalid CEC common knowledge premises');
+    if (!cecExpressionEquals(first.args[1], second.args[1]))
+      throw new Error('Invalid CEC common knowledge premises');
     return cognitiveApplication('C', atom('all'), first.args[1]);
   },
 });
@@ -828,7 +930,8 @@ export const CecCommonBeliefIntroductionRule = new CecRule({
   apply: (left, right) => {
     const first = requireCognitive(left, 'B');
     const second = requireCognitive(right, 'B');
-    if (!cecExpressionEquals(first.args[1], second.args[1])) throw new Error('Invalid CEC common belief premises');
+    if (!cecExpressionEquals(first.args[1], second.args[1]))
+      throw new Error('Invalid CEC common belief premises');
     return cognitiveApplication('CB', atom('all'), first.args[1]);
   },
 });
@@ -840,7 +943,8 @@ export const CecCommonKnowledgeDistributionRule = new CecRule({
   canApply: (expression) => isCognitive(expression, 'C') && isBinary(expression.args[1], 'and'),
   apply: (expression) => {
     const common = requireCognitive(expression, 'C');
-    if (!isBinary(common.args[1], 'and')) throw new Error('Invalid CEC common knowledge distribution premise');
+    if (!isBinary(common.args[1], 'and'))
+      throw new Error('Invalid CEC common knowledge distribution premise');
     return {
       kind: 'binary',
       operator: 'and',
@@ -866,10 +970,13 @@ export const CecCommonKnowledgeMonotonicityRule = new CecRule({
   description: 'From (C agent phi) and (implies phi psi), infer (C agent psi)',
   arity: 2,
   canApply: (common, implication) =>
-    isCognitive(common, 'C') && isBinary(implication, 'implies') && cecExpressionEquals(common.args[1], implication.left),
+    isCognitive(common, 'C') &&
+    isBinary(implication, 'implies') &&
+    cecExpressionEquals(common.args[1], implication.left),
   apply: (common, implication) => {
     const premise = requireCognitive(common, 'C');
-    if (!isBinary(implication, 'implies')) throw new Error('Invalid CEC common knowledge monotonicity implication');
+    if (!isBinary(implication, 'implies'))
+      throw new Error('Invalid CEC common knowledge monotonicity implication');
     return cognitiveApplication('C', premise.args[0], implication.right);
   },
 });
@@ -881,8 +988,13 @@ export const CecCommonKnowledgeNegationRule = new CecRule({
   canApply: (expression) => isCognitive(expression, 'C') && isUnary(expression.args[1], 'not'),
   apply: (expression) => {
     const common = requireCognitive(expression, 'C');
-    if (!isUnary(common.args[1], 'not')) throw new Error('Invalid CEC common knowledge negation premise');
-    return { kind: 'unary', operator: 'not', expression: cognitiveApplication('C', common.args[0], common.args[1].expression) };
+    if (!isUnary(common.args[1], 'not'))
+      throw new Error('Invalid CEC common knowledge negation premise');
+    return {
+      kind: 'unary',
+      operator: 'not',
+      expression: cognitiveApplication('C', common.args[0], common.args[1].expression),
+    };
   },
 });
 
@@ -919,7 +1031,8 @@ export const CecTemporallyInducedCommonKnowledgeRule = new CecRule({
   name: 'CecTemporallyInducedCommonKnowledge',
   description: 'From (always (K all phi)), infer (C all phi)',
   arity: 1,
-  canApply: (expression) => isUnary(expression, 'always') && isCognitive(expression.expression, 'K'),
+  canApply: (expression) =>
+    isUnary(expression, 'always') && isCognitive(expression.expression, 'K'),
   apply: (expression) => {
     if (!isUnary(expression, 'always') || !isCognitive(expression.expression, 'K')) {
       throw new Error('Invalid CEC temporally induced common knowledge premise');
@@ -934,7 +1047,8 @@ export const CecModalNecessitationIntroductionRule = new CecRule({
   arity: 1,
   canApply: (expression) =>
     isBinary(expression, 'or') &&
-    (isNegationOf(expression.left, expression.right) || isNegationOf(expression.right, expression.left)),
+    (isNegationOf(expression.left, expression.right) ||
+      isNegationOf(expression.right, expression.left)),
   apply: (expression) => {
     if (!isBinary(expression, 'or')) throw new Error('Invalid CEC modal necessitation premise');
     return { kind: 'unary', operator: 'always', expression };
@@ -975,7 +1089,9 @@ export const CecFactoringRule = new CecRule({
   name: 'CecFactoring',
   description: 'From a disjunction with duplicate literals, infer the deduplicated clause',
   arity: 1,
-  canApply: (expression) => isBinary(expression, 'or') && uniqueExpressions(getDisjuncts(expression)).length < getDisjuncts(expression).length,
+  canApply: (expression) =>
+    isBinary(expression, 'or') &&
+    uniqueExpressions(getDisjuncts(expression)).length < getDisjuncts(expression).length,
   apply: (expression) => {
     if (!isBinary(expression, 'or')) throw new Error('Invalid CEC factoring clause');
     return buildDisjunction(uniqueExpressions(getDisjuncts(expression)));
@@ -999,15 +1115,23 @@ export const CecCaseAnalysisRule = new CecRule({
   description: 'From (or phi psi), (implies phi chi), and (implies psi chi), infer chi',
   arity: 3,
   canApply: (disjunction, leftImplication, rightImplication) => {
-    if (!isBinary(disjunction, 'or') || !isBinary(leftImplication, 'implies') || !isBinary(rightImplication, 'implies')) return false;
+    if (
+      !isBinary(disjunction, 'or') ||
+      !isBinary(leftImplication, 'implies') ||
+      !isBinary(rightImplication, 'implies')
+    )
+      return false;
     const [leftCase, rightCase] = getDisjuncts(disjunction);
-    return Boolean(leftCase && rightCase) &&
+    return (
+      Boolean(leftCase && rightCase) &&
       cecExpressionEquals(leftImplication.left, leftCase) &&
       cecExpressionEquals(rightImplication.left, rightCase) &&
-      cecExpressionEquals(leftImplication.right, rightImplication.right);
+      cecExpressionEquals(leftImplication.right, rightImplication.right)
+    );
   },
   apply: (_disjunction, leftImplication) => {
-    if (!isBinary(leftImplication, 'implies')) throw new Error('Invalid CEC case analysis implication');
+    if (!isBinary(leftImplication, 'implies'))
+      throw new Error('Invalid CEC case analysis implication');
     return leftImplication.right;
   },
 });
@@ -1030,7 +1154,8 @@ export const CecBiconditionalIntroductionRule = new CecRule({
     cecExpressionEquals(left.left, right.right) &&
     cecExpressionEquals(left.right, right.left),
   apply: (left) => {
-    if (!isBinary(left, 'implies')) throw new Error('Invalid CEC biconditional introduction premise');
+    if (!isBinary(left, 'implies'))
+      throw new Error('Invalid CEC biconditional introduction premise');
     return { kind: 'binary', operator: 'iff', left: left.left, right: left.right };
   },
 });
@@ -1041,19 +1166,26 @@ export const CecBiconditionalEliminationRule = new CecRule({
   arity: 1,
   canApply: (expression) => isBinary(expression, 'iff'),
   apply: (expression) => {
-    if (!isBinary(expression, 'iff')) throw new Error('Invalid CEC biconditional elimination premise');
+    if (!isBinary(expression, 'iff'))
+      throw new Error('Invalid CEC biconditional elimination premise');
     return {
       kind: 'binary',
       operator: 'and',
       left: { kind: 'binary', operator: 'implies', left: expression.left, right: expression.right },
-      right: { kind: 'binary', operator: 'implies', left: expression.right, right: expression.left },
+      right: {
+        kind: 'binary',
+        operator: 'implies',
+        left: expression.right,
+        right: expression.left,
+      },
     };
   },
 });
 
 export const CecConstructiveDilemmaRule = new CecRule({
   name: 'CecConstructiveDilemma',
-  description: 'From (implies phi psi), (implies chi omega), and (or phi chi), infer (or psi omega)',
+  description:
+    'From (implies phi psi), (implies chi omega), and (or phi chi), infer (or psi omega)',
   arity: 3,
   canApply: (...expressions) => findDilemmaPremises(expressions, false) !== undefined,
   apply: (...expressions) => {
@@ -1065,7 +1197,8 @@ export const CecConstructiveDilemmaRule = new CecRule({
 
 export const CecDestructiveDilemmaRule = new CecRule({
   name: 'CecDestructiveDilemma',
-  description: 'From (implies phi psi), (implies chi omega), and (or (not psi) (not omega)), infer (or (not phi) (not chi))',
+  description:
+    'From (implies phi psi), (implies chi omega), and (or (not psi) (not omega)), infer (or (not phi) (not chi))',
   arity: 3,
   canApply: (...expressions) => findDilemmaPremises(expressions, true) !== undefined,
   apply: (...expressions) => {
@@ -1091,7 +1224,12 @@ export const CecExportationRule = new CecRule({
       kind: 'binary',
       operator: 'implies',
       left: expression.left.left,
-      right: { kind: 'binary', operator: 'implies', left: expression.left.right, right: expression.right },
+      right: {
+        kind: 'binary',
+        operator: 'implies',
+        left: expression.left.right,
+        right: expression.right,
+      },
     };
   },
 });
@@ -1114,7 +1252,8 @@ export const CecAbsorptionRule = new CecRule({
 
 export const CecAdditionRule = new CecRule({
   name: 'CecAddition',
-  description: 'From phi and psi, infer (or phi psi); kept opt-in because it generates new disjunctions',
+  description:
+    'From phi and psi, infer (or phi psi); kept opt-in because it generates new disjunctions',
   arity: 2,
   canApply: (left, right) => !cecExpressionEquals(left, right),
   apply: (left, right) => buildDisjunction([left, right]),
@@ -1138,9 +1277,11 @@ export const CecCommutativityConjunctionRule = new CecRule({
   name: 'CecCommutativityConjunction',
   description: 'From (and phi psi), infer (and psi phi)',
   arity: 1,
-  canApply: (expression) => isBinary(expression, 'and') && !cecExpressionEquals(expression.left, expression.right),
+  canApply: (expression) =>
+    isBinary(expression, 'and') && !cecExpressionEquals(expression.left, expression.right),
   apply: (expression) => {
-    if (!isBinary(expression, 'and')) throw new Error('Invalid CEC conjunction commutativity premise');
+    if (!isBinary(expression, 'and'))
+      throw new Error('Invalid CEC conjunction commutativity premise');
     return { kind: 'binary', operator: 'and', left: expression.right, right: expression.left };
   },
 });
@@ -1149,9 +1290,11 @@ export const CecCommutativityDisjunctionRule = new CecRule({
   name: 'CecCommutativityDisjunction',
   description: 'From (or phi psi), infer (or psi phi)',
   arity: 1,
-  canApply: (expression) => isBinary(expression, 'or') && !cecExpressionEquals(expression.left, expression.right),
+  canApply: (expression) =>
+    isBinary(expression, 'or') && !cecExpressionEquals(expression.left, expression.right),
   apply: (expression) => {
-    if (!isBinary(expression, 'or')) throw new Error('Invalid CEC disjunction commutativity premise');
+    if (!isBinary(expression, 'or'))
+      throw new Error('Invalid CEC disjunction commutativity premise');
     return { kind: 'binary', operator: 'or', left: expression.right, right: expression.left };
   },
 });
@@ -1161,12 +1304,18 @@ export const CecDistributionRule = new CecRule({
   description: 'Distribute disjunction over conjunction, or conjunction over disjunction',
   arity: 1,
   canApply: (expression) =>
-    (isBinary(expression, 'or') && (isBinary(expression.left, 'and') || isBinary(expression.right, 'and'))) ||
-    (isBinary(expression, 'and') && (isBinary(expression.left, 'or') || isBinary(expression.right, 'or'))),
+    (isBinary(expression, 'or') &&
+      (isBinary(expression.left, 'and') || isBinary(expression.right, 'and'))) ||
+    (isBinary(expression, 'and') &&
+      (isBinary(expression.left, 'or') || isBinary(expression.right, 'or'))),
   apply: (expression) => {
     if (isBinary(expression, 'or')) {
       const disjunction = expression as CecBinaryExpression;
-      const conjunct = isBinary(disjunction.left, 'and') ? disjunction.left : isBinary(disjunction.right, 'and') ? disjunction.right : undefined;
+      const conjunct = isBinary(disjunction.left, 'and')
+        ? disjunction.left
+        : isBinary(disjunction.right, 'and')
+          ? disjunction.right
+          : undefined;
       const other = conjunct === disjunction.left ? disjunction.right : disjunction.left;
       if (!conjunct) throw new Error('Invalid CEC OR distribution premise');
       return buildConjunction([
@@ -1176,7 +1325,11 @@ export const CecDistributionRule = new CecRule({
     }
     if (isBinary(expression, 'and')) {
       const conjunction = expression as CecBinaryExpression;
-      const disjunct = isBinary(conjunction.left, 'or') ? conjunction.left : isBinary(conjunction.right, 'or') ? conjunction.right : undefined;
+      const disjunct = isBinary(conjunction.left, 'or')
+        ? conjunction.left
+        : isBinary(conjunction.right, 'or')
+          ? conjunction.right
+          : undefined;
       const other = disjunct === conjunction.left ? conjunction.right : conjunction.left;
       if (!disjunct) throw new Error('Invalid CEC AND distribution premise');
       return buildDisjunction([
@@ -1193,8 +1346,10 @@ export const CecAssociationRule = new CecRule({
   description: 'Re-associate nested conjunctions or disjunctions with the same connective',
   arity: 1,
   canApply: (expression) =>
-    (isBinary(expression, 'and') && (isBinary(expression.left, 'and') || isBinary(expression.right, 'and'))) ||
-    (isBinary(expression, 'or') && (isBinary(expression.left, 'or') || isBinary(expression.right, 'or'))),
+    (isBinary(expression, 'and') &&
+      (isBinary(expression.left, 'and') || isBinary(expression.right, 'and'))) ||
+    (isBinary(expression, 'or') &&
+      (isBinary(expression.left, 'or') || isBinary(expression.right, 'or'))),
   apply: (expression) => {
     if (isBinary(expression, 'and')) return associateSameOperator(expression, 'and');
     if (isBinary(expression, 'or')) return associateSameOperator(expression, 'or');
@@ -1222,9 +1377,7 @@ export const CecMaterialImplicationRule = new CecRule({
   name: 'CecMaterialImplication',
   description: 'Convert between (implies phi psi) and (or (not phi) psi)',
   arity: 1,
-  canApply: (expression) =>
-    isBinary(expression, 'implies') ||
-    isMaterialDisjunction(expression),
+  canApply: (expression) => isBinary(expression, 'implies') || isMaterialDisjunction(expression),
   apply: (expression) => {
     if (isBinary(expression, 'implies')) {
       const implication = expression as CecBinaryExpression;
@@ -1269,7 +1422,10 @@ export const CecIdempotenceRule = new CecRule({
   description: 'From (and phi phi) or (or phi phi), infer phi',
   arity: 1,
   canApply: (expression) =>
-    isAndOrBinary(expression) && idempotentParts(expression).every((part) => cecExpressionEquals(part, idempotentParts(expression)[0])),
+    isAndOrBinary(expression) &&
+    idempotentParts(expression).every((part) =>
+      cecExpressionEquals(part, idempotentParts(expression)[0]),
+    ),
   apply: (expression) => {
     if (!isAndOrBinary(expression)) {
       throw new Error('Invalid CEC idempotence premise');
@@ -1339,12 +1495,52 @@ export function getDeonticCecRules(): CecInferenceRule[] {
   ];
 }
 
+export const CEC_DEONTIC_INFERENCE_RUNTIME = {
+  sourcePythonModule: 'logic/CEC/native/inference_rules/deontic.py',
+  browserNative: true,
+  pythonRuntime: false,
+} as const;
+
+const CEC_DEONTIC_PYTHON_RULE_SPECS: readonly {
+  pythonRuleName: CecDeonticPythonRuleName;
+  rule: CecInferenceRule;
+}[] = [
+  { pythonRuleName: 'ObligationDistribution', rule: CecObligationDistributionRule },
+  { pythonRuleName: 'ObligationImplication', rule: CecObligationImplicationRule },
+  { pythonRuleName: 'PermissionFromNonObligation', rule: CecPermissionFromNonObligationRule },
+  { pythonRuleName: 'ObligationConjunction', rule: CecObligationConjunctionRule },
+  { pythonRuleName: 'PermissionDistribution', rule: CecPermissionDistributionRule },
+  { pythonRuleName: 'ObligationConsistency', rule: CecObligationConsistencyRule },
+  { pythonRuleName: 'ProhibitionEquivalence', rule: CecProhibitionEquivalenceRule },
+];
+
+export function getCecDeonticPythonParityRuleNames(): readonly CecDeonticPythonRuleName[] {
+  return CEC_DEONTIC_PYTHON_RULE_SPECS.map((spec) => spec.pythonRuleName);
+}
+
+export function applyCecDeonticPythonParityRules(
+  expressions: CecExpression[],
+): CecDeonticPythonRuleApplication[] {
+  const applications: CecDeonticPythonRuleApplication[] = [];
+
+  for (const spec of CEC_DEONTIC_PYTHON_RULE_SPECS) {
+    const application = applyFirstCecRuleMatch(expressions, spec.rule);
+    if (!application) continue;
+    applications.push({
+      rule: spec.rule.name,
+      pythonRuleName: spec.pythonRuleName,
+      premises: application.premises,
+      conclusions: [application.conclusion],
+      status: 'SUCCESS',
+      metadata: CEC_DEONTIC_INFERENCE_RUNTIME,
+    });
+  }
+
+  return applications;
+}
+
 export function getModalCecRules(): CecInferenceRule[] {
-  return [
-    CecNecessityEliminationRule,
-    CecNecessityDistributionRule,
-    CecPossibilityDualityRule,
-  ];
+  return [CecNecessityEliminationRule, CecNecessityDistributionRule, CecPossibilityDualityRule];
 }
 
 export function getSpecializedCecRules(): CecInferenceRule[] {
@@ -1417,14 +1613,22 @@ export function applyCecRules(
     if (rule.arity === 1) {
       for (const expression of expressions) {
         if (rule.canApply(expression)) {
-          applications.push({ rule: rule.name, premises: [expression], conclusion: rule.apply(expression) });
+          applications.push({
+            rule: rule.name,
+            premises: [expression],
+            conclusion: rule.apply(expression),
+          });
         }
       }
     } else if (rule.arity === 2) {
       for (const left of expressions) {
         for (const right of expressions) {
           if (rule.canApply(left, right)) {
-            applications.push({ rule: rule.name, premises: [left, right], conclusion: rule.apply(left, right) });
+            applications.push({
+              rule: rule.name,
+              premises: [left, right],
+              conclusion: rule.apply(left, right),
+            });
           }
         }
       }
@@ -1433,7 +1637,11 @@ export function applyCecRules(
         for (const second of expressions) {
           for (const third of expressions) {
             if (rule.canApply(first, second, third)) {
-              applications.push({ rule: rule.name, premises: [first, second, third], conclusion: rule.apply(first, second, third) });
+              applications.push({
+                rule: rule.name,
+                premises: [first, second, third],
+                conclusion: rule.apply(first, second, third),
+              });
             }
           }
         }
@@ -1441,6 +1649,46 @@ export function applyCecRules(
     }
   }
   return applications;
+}
+
+function applyFirstCecRuleMatch(
+  expressions: CecExpression[],
+  rule: CecInferenceRule,
+): CecRuleApplication | undefined {
+  if (rule.arity === 1) {
+    for (const expression of expressions) {
+      if (rule.canApply(expression)) {
+        return { rule: rule.name, premises: [expression], conclusion: rule.apply(expression) };
+      }
+    }
+    return undefined;
+  }
+
+  if (rule.arity === 2) {
+    for (const left of expressions) {
+      for (const right of expressions) {
+        if (rule.canApply(left, right)) {
+          return { rule: rule.name, premises: [left, right], conclusion: rule.apply(left, right) };
+        }
+      }
+    }
+    return undefined;
+  }
+
+  for (const first of expressions) {
+    for (const second of expressions) {
+      for (const third of expressions) {
+        if (rule.canApply(first, second, third)) {
+          return {
+            rule: rule.name,
+            premises: [first, second, third],
+            conclusion: rule.apply(first, second, third),
+          };
+        }
+      }
+    }
+  }
+  return undefined;
 }
 
 export function cecExpressionEquals(left: CecExpression, right: CecExpression): boolean {
@@ -1451,19 +1699,29 @@ export function cecExpressionKey(expression: CecExpression): string {
   return formatCecExpression(expression);
 }
 
-function isBinary(expression: CecExpression, operator: CecBinaryExpression['operator']): expression is CecBinaryExpression {
+function isBinary(
+  expression: CecExpression,
+  operator: CecBinaryExpression['operator'],
+): expression is CecBinaryExpression {
   return expression.kind === 'binary' && expression.operator === operator;
 }
 
-function isAndOrBinary(expression: CecExpression): expression is CecBinaryExpression & { operator: 'and' | 'or' } {
+function isAndOrBinary(
+  expression: CecExpression,
+): expression is CecBinaryExpression & { operator: 'and' | 'or' } {
   return isBinary(expression, 'and') || isBinary(expression, 'or');
 }
 
-function isMaterialDisjunction(expression: CecExpression): expression is CecBinaryExpression & { operator: 'or'; left: CecUnaryExpression } {
+function isMaterialDisjunction(
+  expression: CecExpression,
+): expression is CecBinaryExpression & { operator: 'or'; left: CecUnaryExpression } {
   return isBinary(expression, 'or') && isUnary((expression as CecBinaryExpression).left, 'not');
 }
 
-function isUnary(expression: CecExpression, operator: CecUnaryExpression['operator']): expression is CecUnaryExpression {
+function isUnary(
+  expression: CecExpression,
+  operator: CecUnaryExpression['operator'],
+): expression is CecUnaryExpression {
   return expression.kind === 'unary' && expression.operator === operator;
 }
 
@@ -1475,20 +1733,34 @@ function isQuantified(
 }
 
 function isCognitive(expression: CecExpression, operator: string): expression is CecApplication {
-  return expression.kind === 'application' && expression.name === operator && expression.args.length === 2;
+  return (
+    expression.kind === 'application' &&
+    expression.name === operator &&
+    expression.args.length === 2
+  );
 }
 
 function requireCognitive(expression: CecExpression, operator: string): CecApplication {
-  if (!isCognitive(expression, operator)) throw new Error(`Invalid CEC cognitive ${operator} premise`);
+  if (!isCognitive(expression, operator))
+    throw new Error(`Invalid CEC cognitive ${operator} premise`);
   return expression;
 }
 
 function requireAnyCognitive(expression: CecExpression, operators: string[]): CecApplication {
-  if (expression.kind === 'application' && operators.includes(expression.name) && expression.args.length === 2) return expression;
+  if (
+    expression.kind === 'application' &&
+    operators.includes(expression.name) &&
+    expression.args.length === 2
+  )
+    return expression;
   throw new Error(`Invalid CEC cognitive premise; expected one of ${operators.join(', ')}`);
 }
 
-function cognitiveApplication(operator: string, agent: CecExpression, body: CecExpression): CecApplication {
+function cognitiveApplication(
+  operator: string,
+  agent: CecExpression,
+  body: CecExpression,
+): CecApplication {
   return { kind: 'application', name: operator, args: [agent, body] };
 }
 
@@ -1503,15 +1775,28 @@ function getDisjuncts(expression: CecExpression): CecExpression[] {
 
 function buildDisjunction(expressions: CecExpression[]): CecExpression {
   if (expressions.length === 0) return { kind: 'atom', name: 'contradiction' };
-  return expressions.slice(1).reduce<CecExpression>((left, right) => ({ kind: 'binary', operator: 'or', left, right }), expressions[0]);
+  return expressions
+    .slice(1)
+    .reduce<CecExpression>(
+      (left, right) => ({ kind: 'binary', operator: 'or', left, right }),
+      expressions[0],
+    );
 }
 
 function buildConjunction(expressions: CecExpression[]): CecExpression {
   if (expressions.length === 0) return { kind: 'atom', name: 'truth' };
-  return expressions.slice(1).reduce<CecExpression>((left, right) => ({ kind: 'binary', operator: 'and', left, right }), expressions[0]);
+  return expressions
+    .slice(1)
+    .reduce<CecExpression>(
+      (left, right) => ({ kind: 'binary', operator: 'and', left, right }),
+      expressions[0],
+    );
 }
 
-function associateSameOperator(expression: CecBinaryExpression, operator: Extract<CecBinaryExpression['operator'], 'and' | 'or'>): CecExpression {
+function associateSameOperator(
+  expression: CecBinaryExpression,
+  operator: Extract<CecBinaryExpression['operator'], 'and' | 'or'>,
+): CecExpression {
   const parts = flattenSameOperator(expression, operator);
   if (parts.length < 3) return expression;
   const builder = operator === 'and' ? buildConjunction : buildDisjunction;
@@ -1523,12 +1808,20 @@ function associateSameOperator(expression: CecBinaryExpression, operator: Extrac
   };
 }
 
-function flattenSameOperator(expression: CecExpression, operator: Extract<CecBinaryExpression['operator'], 'and' | 'or'>): CecExpression[] {
+function flattenSameOperator(
+  expression: CecExpression,
+  operator: Extract<CecBinaryExpression['operator'], 'and' | 'or'>,
+): CecExpression[] {
   if (!isBinary(expression, operator)) return [expression];
-  return [...flattenSameOperator(expression.left, operator), ...flattenSameOperator(expression.right, operator)];
+  return [
+    ...flattenSameOperator(expression.left, operator),
+    ...flattenSameOperator(expression.right, operator),
+  ];
 }
 
-function idempotentParts(expression: CecBinaryExpression & { operator: 'and' | 'or' }): CecExpression[] {
+function idempotentParts(
+  expression: CecBinaryExpression & { operator: 'and' | 'or' },
+): CecExpression[] {
   return flattenSameOperator(expression, expression.operator);
 }
 
@@ -1540,7 +1833,12 @@ function findUnaryImplicationPremises(
   operator: Extract<CecUnaryExpression['operator'], 'always' | 'next'>,
   left: CecExpression,
   right: CecExpression,
-): { fact: CecUnaryExpression; implication: CecUnaryExpression & { expression: CecBinaryExpression } } | undefined {
+):
+  | {
+      fact: CecUnaryExpression;
+      implication: CecUnaryExpression & { expression: CecBinaryExpression };
+    }
+  | undefined {
   const candidates = [
     [left, right],
     [right, left],
@@ -1552,7 +1850,10 @@ function findUnaryImplicationPremises(
       isBinary(implication.expression, 'implies') &&
       cecExpressionEquals(fact.expression, implication.expression.left)
     ) {
-      return { fact, implication: implication as CecUnaryExpression & { expression: CecBinaryExpression } };
+      return {
+        fact,
+        implication: implication as CecUnaryExpression & { expression: CecBinaryExpression },
+      };
     }
   }
   return undefined;
@@ -1561,7 +1862,12 @@ function findUnaryImplicationPremises(
 function findEventuallyImplicationPremises(
   eventual: CecExpression,
   alwaysImplication: CecExpression,
-): { eventual: CecUnaryExpression; implication: CecUnaryExpression & { expression: CecBinaryExpression } } | undefined {
+):
+  | {
+      eventual: CecUnaryExpression;
+      implication: CecUnaryExpression & { expression: CecBinaryExpression };
+    }
+  | undefined {
   const candidates = [
     [eventual, alwaysImplication],
     [alwaysImplication, eventual],
@@ -1575,14 +1881,19 @@ function findEventuallyImplicationPremises(
     ) {
       return {
         eventual: eventualCandidate,
-        implication: implicationCandidate as CecUnaryExpression & { expression: CecBinaryExpression },
+        implication: implicationCandidate as CecUnaryExpression & {
+          expression: CecBinaryExpression;
+        },
       };
     }
   }
   return undefined;
 }
 
-function findAlwaysInductionPremises(left: CecExpression, right: CecExpression): CecExpression | undefined {
+function findAlwaysInductionPremises(
+  left: CecExpression,
+  right: CecExpression,
+): CecExpression | undefined {
   const candidates = [
     [left, right],
     [right, left],
@@ -1604,21 +1915,39 @@ function findAlwaysInductionPremises(left: CecExpression, right: CecExpression):
 function findDilemmaPremises(
   expressions: CecExpression[],
   destructive: boolean,
-): { first: CecBinaryExpression; second: CecBinaryExpression; disjunction: CecBinaryExpression } | undefined {
-  const implications = expressions.filter((expression): expression is CecBinaryExpression => isBinary(expression, 'implies'));
-  const disjunction = expressions.find((expression): expression is CecBinaryExpression => isBinary(expression, 'or'));
+):
+  | { first: CecBinaryExpression; second: CecBinaryExpression; disjunction: CecBinaryExpression }
+  | undefined {
+  const implications = expressions.filter((expression): expression is CecBinaryExpression =>
+    isBinary(expression, 'implies'),
+  );
+  const disjunction = expressions.find((expression): expression is CecBinaryExpression =>
+    isBinary(expression, 'or'),
+  );
   if (implications.length !== 2 || !disjunction) return undefined;
 
   const disjuncts = getDisjuncts(disjunction);
   const [first, second] = implications;
-  const firstTarget = destructive ? { kind: 'unary' as const, operator: 'not' as const, expression: first.right } : first.left;
-  const secondTarget = destructive ? { kind: 'unary' as const, operator: 'not' as const, expression: second.right } : second.left;
-  const matchesForward = hasExpression(disjuncts, firstTarget) && hasExpression(disjuncts, secondTarget);
+  const firstTarget = destructive
+    ? { kind: 'unary' as const, operator: 'not' as const, expression: first.right }
+    : first.left;
+  const secondTarget = destructive
+    ? { kind: 'unary' as const, operator: 'not' as const, expression: second.right }
+    : second.left;
+  const matchesForward =
+    hasExpression(disjuncts, firstTarget) && hasExpression(disjuncts, secondTarget);
   if (matchesForward) return { first, second, disjunction };
 
-  const swappedFirstTarget = destructive ? { kind: 'unary' as const, operator: 'not' as const, expression: second.right } : second.left;
-  const swappedSecondTarget = destructive ? { kind: 'unary' as const, operator: 'not' as const, expression: first.right } : first.left;
-  if (hasExpression(disjuncts, swappedFirstTarget) && hasExpression(disjuncts, swappedSecondTarget)) {
+  const swappedFirstTarget = destructive
+    ? { kind: 'unary' as const, operator: 'not' as const, expression: second.right }
+    : second.left;
+  const swappedSecondTarget = destructive
+    ? { kind: 'unary' as const, operator: 'not' as const, expression: first.right }
+    : first.left;
+  if (
+    hasExpression(disjuncts, swappedFirstTarget) &&
+    hasExpression(disjuncts, swappedSecondTarget)
+  ) {
     return { first: second, second: first, disjunction };
   }
   return undefined;
@@ -1637,7 +1966,10 @@ function findComplementaryDisjunctPair(
   const rightDisjuncts = getDisjuncts(right);
   for (let leftIndex = 0; leftIndex < leftDisjuncts.length; leftIndex += 1) {
     for (let rightIndex = 0; rightIndex < rightDisjuncts.length; rightIndex += 1) {
-      if (isNegationOf(leftDisjuncts[leftIndex], rightDisjuncts[rightIndex]) || isNegationOf(rightDisjuncts[rightIndex], leftDisjuncts[leftIndex])) {
+      if (
+        isNegationOf(leftDisjuncts[leftIndex], rightDisjuncts[rightIndex]) ||
+        isNegationOf(rightDisjuncts[rightIndex], leftDisjuncts[leftIndex])
+      ) {
         return { leftIndex, rightIndex };
       }
     }
@@ -1667,7 +1999,9 @@ function matchCecExpressionForVariable(
   variableName: string,
 ): string | undefined {
   const bindings = new Map<string, string>();
-  return matchCecExpression(pattern, target, variableName, bindings) ? bindings.get(variableName) : undefined;
+  return matchCecExpression(pattern, target, variableName, bindings)
+    ? bindings.get(variableName)
+    : undefined;
 }
 
 function matchCecExpression(
@@ -1690,27 +2024,41 @@ function matchCecExpression(
     case 'atom':
       return target.kind === 'atom' && pattern.name === target.name;
     case 'application':
-      return target.kind === 'application' &&
+      return (
+        target.kind === 'application' &&
         pattern.name === target.name &&
         pattern.args.length === target.args.length &&
-        pattern.args.every((arg, index) => matchCecExpression(arg, target.args[index], variableName, bindings));
+        pattern.args.every((arg, index) =>
+          matchCecExpression(arg, target.args[index], variableName, bindings),
+        )
+      );
     case 'quantified':
-      return target.kind === 'quantified' &&
+      return (
+        target.kind === 'quantified' &&
         pattern.quantifier === target.quantifier &&
-        matchCecExpression(pattern.expression, target.expression, variableName, bindings);
+        matchCecExpression(pattern.expression, target.expression, variableName, bindings)
+      );
     case 'unary':
-      return target.kind === 'unary' &&
+      return (
+        target.kind === 'unary' &&
         pattern.operator === target.operator &&
-        matchCecExpression(pattern.expression, target.expression, variableName, bindings);
+        matchCecExpression(pattern.expression, target.expression, variableName, bindings)
+      );
     case 'binary':
-      return target.kind === 'binary' &&
+      return (
+        target.kind === 'binary' &&
         pattern.operator === target.operator &&
         matchCecExpression(pattern.left, target.left, variableName, bindings) &&
-        matchCecExpression(pattern.right, target.right, variableName, bindings);
+        matchCecExpression(pattern.right, target.right, variableName, bindings)
+      );
   }
 }
 
-function substituteCecAtom(expression: CecExpression, atomName: string, replacementName: string): CecExpression {
+function substituteCecAtom(
+  expression: CecExpression,
+  atomName: string,
+  replacementName: string,
+): CecExpression {
   switch (expression.kind) {
     case 'atom':
       return expression.name === atomName ? { kind: 'atom', name: replacementName } : expression;
@@ -1722,12 +2070,16 @@ function substituteCecAtom(expression: CecExpression, atomName: string, replacem
     case 'quantified':
       return {
         ...expression,
-        expression: expression.variable === atomName
-          ? expression.expression
-          : substituteCecAtom(expression.expression, atomName, replacementName),
+        expression:
+          expression.variable === atomName
+            ? expression.expression
+            : substituteCecAtom(expression.expression, atomName, replacementName),
       };
     case 'unary':
-      return { ...expression, expression: substituteCecAtom(expression.expression, atomName, replacementName) };
+      return {
+        ...expression,
+        expression: substituteCecAtom(expression.expression, atomName, replacementName),
+      };
     case 'binary':
       return {
         ...expression,
@@ -1739,7 +2091,9 @@ function substituteCecAtom(expression: CecExpression, atomName: string, replacem
 
 function findFirstSubstitutableAtom(expression: CecExpression): string | undefined {
   if (expression.kind === 'application') {
-    const atomArg = expression.args.find((arg) => arg.kind === 'atom' && !isVariableLikeAtom(arg.name));
+    const atomArg = expression.args.find(
+      (arg) => arg.kind === 'atom' && !isVariableLikeAtom(arg.name),
+    );
     if (atomArg?.kind === 'atom') return atomArg.name;
   }
   return findFirstNestedAtom(expression, (name) => !isVariableLikeAtom(name));
@@ -1749,7 +2103,10 @@ function findFirstVariableLikeAtom(expression: CecExpression): string | undefine
   return findFirstNestedAtom(expression, isVariableLikeAtom);
 }
 
-function findFirstNestedAtom(expression: CecExpression, predicate: (name: string) => boolean): string | undefined {
+function findFirstNestedAtom(
+  expression: CecExpression,
+  predicate: (name: string) => boolean,
+): string | undefined {
   switch (expression.kind) {
     case 'atom':
       return predicate(expression.name) ? expression.name : undefined;
@@ -1759,7 +2116,10 @@ function findFirstNestedAtom(expression: CecExpression, predicate: (name: string
     case 'unary':
       return findFirstNestedAtom(expression.expression, predicate);
     case 'binary':
-      return findFirstNestedAtom(expression.left, predicate) ?? findFirstNestedAtom(expression.right, predicate);
+      return (
+        findFirstNestedAtom(expression.left, predicate) ??
+        findFirstNestedAtom(expression.right, predicate)
+      );
   }
 }
 
