@@ -202,6 +202,7 @@ class Config:
     readme: Path = Path("ppd/README.md")
     status_file: Path = Path("ppd/daemon/status.json")
     progress_file: Path = Path("ppd/daemon/progress.json")
+    deterministic_progress_file: Path = Path("ppd/daemon/deterministic-progress.json")
     result_log: Path = Path("ppd/daemon/ppd-daemon.jsonl")
     accepted_dir: Path = Path("ppd/daemon/accepted-work")
     failed_dir: Path = Path("ppd/daemon/failed-patches")
