@@ -21,6 +21,7 @@ import {
   DcecDeonticDistribution,
   DcecDeonticPermissionObligation,
   DcecFrameAxiom,
+  deriveDcecAdvancedInferences,
   getDcecAdvancedInferenceRegistry,
   DcecKnowledgeObligation,
   DcecModalKAxiom,
@@ -192,5 +193,63 @@ describe('DCEC advanced inference parity rules', () => {
     expect(
       selectDcecAdvancedInferenceRules([temporalObligation, obligation]).map((entry) => entry.id),
     ).toEqual(['deontic_d_axiom', 'permission_obligation_duality', 'temporal_deontic_interaction']);
+  });
+
+  it('derives a bounded browser-native closure with Python-compatible proof metadata', () => {
+    const implication = new DcecCognitiveFormula(
+      DcecCognitiveOperator.KNOWLEDGE,
+      agent,
+      dcecImplication(p, q),
+    );
+
+    const result = deriveDcecAdvancedInferences([implication], { maxRounds: 1 });
+
+    expect(result.assumptions.map(String)).toEqual(['K(agent:Agent, (p() → q()))']);
+    expect(result.derived.map(String)).toEqual([
+      '(K(agent:Agent, p()) → K(agent:Agent, q()))',
+      '(p() → q())',
+      'K(agent:Agent, K(agent:Agent, (p() → q())))',
+    ]);
+    expect(result.closure.map(String)).toEqual([
+      'K(agent:Agent, (p() → q()))',
+      '(K(agent:Agent, p()) → K(agent:Agent, q()))',
+      '(p() → q())',
+      'K(agent:Agent, K(agent:Agent, (p() → q())))',
+    ]);
+    expect(result.steps.map((step) => step.ruleId)).toEqual([
+      'modal_k_axiom',
+      'modal_t_axiom',
+      'modal_s4_axiom',
+    ]);
+    expect(
+      result.steps.every(
+        (step) =>
+          step.sourcePythonModule === 'logic/CEC/native/advanced_inference.py' &&
+          step.browserNative === true &&
+          step.pythonRuntime === false &&
+          step.status === 'SUCCESS',
+      ),
+    ).toBe(true);
+    expect(result.saturated).toBe(true);
+  });
+
+  it('fail-closes advanced inference derivation at the configured local bound', () => {
+    const implication = new DcecCognitiveFormula(
+      DcecCognitiveOperator.KNOWLEDGE,
+      agent,
+      dcecImplication(p, q),
+    );
+
+    const result = deriveDcecAdvancedInferences([implication], {
+      maxRounds: 2,
+      maxDerivedFormulas: 2,
+    });
+
+    expect(result.derived.map(String)).toEqual([
+      '(K(agent:Agent, p()) → K(agent:Agent, q()))',
+      '(p() → q())',
+    ]);
+    expect(result.closure).toHaveLength(3);
+    expect(result.saturated).toBe(false);
   });
 });

@@ -2657,3 +2657,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T092716Z-added-browser-native-ipld-blockstore-semantics-for-tdfol-proof-storage..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T092716Z-added-browser-native-ipld-blockstore-semantics-for-tdfol-proof-storage..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T092716Z-added-browser-native-ipld-blockstore-semantics-for-tdfol-proof-storage..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 09:30:41 UTC
+
+- Target: `Task checkbox-200: Port remaining Python logic module `logic/CEC/native/advanced_inference.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported the advanced_inference.py surface with a bounded browser-native DCEC derivation API and validation coverage.
+- Impact: src/lib/logic/cec/advancedInference.ts now exposes deriveDcecAdvancedInferences for deterministic local closure generation with Python-compatible step metadata and explicit no-Python/no-runtime-bridge flags. src/lib/logic/cec/advancedInference.test.ts validates modal derivations, metadata, and fail-closed local bounds; the port ledger marks the selected advanced_inference.py task complete.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/advancedInference.test.ts`, `src/lib/logic/cec/advancedInference.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T093041Z-ported-the-advanced_inference.py-surface-with-a-bounded-browser-native-dcec-deri.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T093041Z-ported-the-advanced_inference.py-surface-with-a-bounded-browser-native-dcec-deri.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T093041Z-ported-the-advanced_inference.py-surface-with-a-bounded-browser-native-dcec-deri.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

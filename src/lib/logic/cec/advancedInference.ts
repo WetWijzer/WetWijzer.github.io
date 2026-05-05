@@ -38,6 +38,33 @@ export interface DcecFormulaClassification {
   readonly deontic: boolean;
 }
 
+export interface DcecAdvancedInferenceOptions {
+  readonly maxRounds?: number;
+  readonly maxDerivedFormulas?: number;
+}
+
+export interface DcecAdvancedInferenceStep {
+  readonly stepId: number;
+  readonly ruleId: string;
+  readonly ruleName: string;
+  readonly pythonName: string;
+  readonly group: DcecAdvancedRuleGroup;
+  readonly sourcePythonModule: 'logic/CEC/native/advanced_inference.py';
+  readonly premiseIndexes: number[];
+  readonly conclusions: DcecFormula[];
+  readonly status: 'SUCCESS';
+  readonly browserNative: true;
+  readonly pythonRuntime: false;
+}
+
+export interface DcecAdvancedInferenceResult {
+  readonly assumptions: DcecFormula[];
+  readonly derived: DcecFormula[];
+  readonly closure: DcecFormula[];
+  readonly steps: DcecAdvancedInferenceStep[];
+  readonly saturated: boolean;
+}
+
 export class DcecModalKAxiom implements DcecAdvancedInferenceRule {
   name(): string {
     return 'Modal K Axiom';
@@ -433,6 +460,74 @@ export function selectDcecAdvancedInferenceRules(
   return getDcecAdvancedInferenceRegistry().filter(
     (entry) => selectedGroups.has(entry.group) && entry.rule.canApply(formulas),
   );
+}
+
+export function deriveDcecAdvancedInferences(
+  assumptions: DcecFormula[],
+  options: DcecAdvancedInferenceOptions = {},
+): DcecAdvancedInferenceResult {
+  const maxRounds = options.maxRounds ?? 2;
+  const maxDerivedFormulas = options.maxDerivedFormulas ?? 25;
+  const closure = [...assumptions];
+  const derived: DcecFormula[] = [];
+  const steps: DcecAdvancedInferenceStep[] = [];
+  const seen = new Set(closure.map((formula) => formula.toString()));
+  let saturated = true;
+
+  for (let round = 0; round < maxRounds; round += 1) {
+    let roundChanged = false;
+    for (const descriptor of selectDcecAdvancedInferenceRules(closure)) {
+      const conclusions = descriptor.rule
+        .apply(closure)
+        .filter((formula) => !seen.has(formula.toString()));
+      if (conclusions.length === 0) continue;
+
+      const accepted: DcecFormula[] = [];
+      for (const conclusion of conclusions) {
+        if (seen.has(conclusion.toString())) continue;
+        if (derived.length + accepted.length >= maxDerivedFormulas) {
+          saturated = false;
+          break;
+        }
+        seen.add(conclusion.toString());
+        accepted.push(conclusion);
+      }
+      if (accepted.length === 0) break;
+
+      const premiseIndexes = closure
+        .map((formula, index) => (descriptor.rule.canApply([formula]) ? index : -1))
+        .filter((index) => index >= 0);
+      closure.push(...accepted);
+      derived.push(...accepted);
+      steps.push({
+        stepId: steps.length + 1,
+        ruleId: descriptor.id,
+        ruleName: descriptor.rule.name(),
+        pythonName: descriptor.pythonName,
+        group: descriptor.group,
+        sourcePythonModule: descriptor.sourcePythonModule,
+        premiseIndexes,
+        conclusions: accepted,
+        status: 'SUCCESS',
+        browserNative: true,
+        pythonRuntime: false,
+      });
+      roundChanged = true;
+      if (derived.length >= maxDerivedFormulas) {
+        saturated = false;
+        break;
+      }
+    }
+    if (!roundChanged || derived.length >= maxDerivedFormulas) break;
+  }
+
+  return {
+    assumptions: [...assumptions],
+    derived,
+    closure,
+    steps,
+    saturated,
+  };
 }
 
 function getNestedFormulaClassifications(formula: DcecFormula): DcecFormulaClassification[] {
