@@ -2,6 +2,7 @@ export * from './baseProverBridge';
 export * from './bridge';
 export * from './cecBridge';
 export * from './converters/deonticLogicConverter';
+export * from './coqProverBridge';
 export * from './deonticLogicCore';
 export * from './deonticLogicConverter';
 export * from './converters/logicTranslationCore';

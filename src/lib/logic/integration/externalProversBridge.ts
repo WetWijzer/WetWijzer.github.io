@@ -1,5 +1,6 @@
 import { LogicBridgeError } from '../errors';
 import type { ProofResult } from '../types';
+import { createBrowserNativeCoqProverBridge } from './coqProverBridge';
 import { createBrowserNativeCvc5ProverBridge } from './cvc5ProverBridge';
 import { createBrowserNativeLeanProverBridge } from './leanProverBridge';
 import {
@@ -88,6 +89,7 @@ export class BrowserNativeExternalProversBridge {
       ['cvc5', createBrowserNativeCvc5ProverBridge()],
       ['z3', createBrowserNativeZ3ProverBridge()],
       ['lean', createBrowserNativeLeanProverBridge()],
+      ['coq', createBrowserNativeCoqProverBridge()],
       ['symbolicai', createBrowserNativeSymbolicAiProverBridge()],
       ...Object.entries(adapters).filter(
         (entry): entry is [ExternalProverBridgeName, BrowserNativeProofAdapter] =>

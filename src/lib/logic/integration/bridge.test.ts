@@ -4,6 +4,7 @@ import {
   createBrowserNativeBaseProverBridge,
   createBrowserNativeIntegrationBridgesBaseProverBridge,
 } from './baseProverBridge';
+import type { BrowserNativeCoqProofResult } from './coqProverBridge';
 import {
   createBrowserNativeCvc5ProverBridge,
   type BrowserNativeCvc5ProofResult,
@@ -1032,20 +1033,34 @@ describe('BrowserNativeLogicBridge', () => {
     expect(bridge.supports('lean', 'cec')).toBe(false);
   });
 
-  it('fails closed for external_provers.py bridge names without local WASM adapters', () => {
+  it('routes coq through its local adapter and fails closed for bridge names without local WASM adapters', () => {
     const bridge = createBrowserNativeExternalProversBridge();
+    const result = bridge.prove({
+      logic: 'tdfol',
+      theorem: 'Resident(Ada)',
+      axioms: ['Resident(Ada)'],
+      prover: 'coq',
+    }) as BrowserNativeCoqProofResult;
 
     expect(bridge.getProverInfo('coq')).toMatchObject({
       name: 'coq',
-      available: false,
+      available: true,
       requiresExternalProver: false,
+      supportedLogics: ['tdfol'],
     });
+    expect(result.method).toBe(
+      'integration-external-provers:coq:coq-compatible:tdfol-forward-chaining',
+    );
+    expect(result.coq.serverCallsAllowed).toBe(false);
+    expect(result.coq.wasmRuntime).toBe('not-bundled');
+    expect(result.coq.coqWasmAvailable).toBe(false);
+    expect(bridge.supports('coq', 'cec')).toBe(false);
     expect(() =>
       bridge.prove({
         logic: 'tdfol',
         theorem: 'Resident(Ada)',
         axioms: ['Resident(Ada)'],
-        prover: 'coq',
+        prover: 'vampire',
       }),
     ).toThrow('no Python, subprocess, RPC, or server fallback is available');
   });

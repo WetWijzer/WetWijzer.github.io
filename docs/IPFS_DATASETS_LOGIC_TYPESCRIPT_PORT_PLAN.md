@@ -1019,16 +1019,16 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 - [x] Manual unblock: port `logic/CEC/native/grammar_engine.py` and `grammar_loader.py` by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.
 - [x] Manual unblock: port `logic/CEC/native/inference_rules/base.py`, `cognitive.py`, and `modal.py` by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.
 - [!] Manual unblock: port `logic/CEC/native/prover_core.py` by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.
-- [ ] Manual unblock: port `logic/external_provers/interactive/coq_prover_bridge.py` by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.
+- [x] Manual unblock: port `logic/external_provers/interactive/coq_prover_bridge.py` by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.
 
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 09:04:50 UTC
+Last updated: 2026-05-05 09:09:48 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-480: Manual unblock: port 'logic/external_provers/interactive/coq_prover_bridge.py' by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.`
+Current target: `Task checkbox-112: Complete TDFOL security validator parity.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1512,35 +1512,16 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-476: Manual unblock: port 'logic/CEC/native/event_calculus.py' by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.` - complete
 - [x] `Task checkbox-477: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.` - complete
 - [x] `Task checkbox-478: Manual unblock: port 'logic/CEC/native/inference_rules/base.py', 'cognitive.py', and 'modal.py' by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.` - complete
-- [!] `Task checkbox-479: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.` - latest daemon round failed validation or preflight
-- [ ] `Task checkbox-480: Manual unblock: port 'logic/external_provers/interactive/coq_prover_bridge.py' by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.` - needed
+- [!] `Task checkbox-479: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.` - blocked
+- [x] `Task checkbox-480: Manual unblock: port 'logic/external_provers/interactive/coq_prover_bridge.py' by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.` - validated by latest daemon round
 
 ### Latest Round
 
-- Target: `Task checkbox-479: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.`
-- Result: `needs follow-up`
-- Summary: Added a browser-native CEC prover_core facade with runtime metadata, deterministic proof summaries, bounded-search diagnostics, and focused Jest coverage.
-- Impact: The TypeScript CEC forward prover now exposes local prover_core.py parity metadata and returns proof summaries plus failure diagnostics directly used by src/lib/logic/cec/prover.test.ts, with no Python, server, RPC, subprocess, filesystem, or Node-only browser-runtime fallback.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/prover.test.ts`, `src/lib/logic/cec/prover.ts`
-- Errors: Rejected proposal because TypeScript replacement preflight found parser or generic/type-quality errors before touching the worktree:
-../../..src/lib/logic/cec/prover.ts(111,11): error TS2322: Type '{ id: string; rule: any; premises: any; conclusion: any; explanation: string; derivedExpressionCount: number; }' is not assignable to type 'CecProofTraceStep'.
-../../..src/lib/logic/cec/prover.ts(169,7): error TS2322: Type '{ status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; summary: { status: ProofStatus; theorem: any; proved: boolean; ... 8 more ...; serverDelegation: false; }; diagnostics: CecProofDiagnostics; }' is not assignable to type 'CecProofResult'.
-
-Replacement diagnostic context:
-src/lib/logic/cec/prover.ts:111:11 TS2322: Type '{ id: string; rule: any; premises: any; conclusion: any; explanation: string; derivedExpressionCount: number; }' is not assignable to type 'CecProofTraceStep'.
-  109:         const rule = this.rules.find((candidate) => candidate.name === application.rule);
-  110:         const step: CecProofTraceStep = {
-> 111:           id: `cec-step-${steps.length + 1}`,
-  112:           rule: application.rule,
-  113:           premises: application.premises.map(formatCecExpression),
-
-src/lib/logic/cec/prover.ts:169:7 TS2322: Type '{ status: ProofStatus; theorem: any; steps: CecProofTraceStep[]; method: string; ruleGroups: CecNativeRuleGroupName[]; trace: CecProofTraceStep[]; summary: { status: ProofStatus; theorem: any; proved: boolean; ... 8 more ...; serverDelegation: false; }; diagnostics: CecProofDiagnostics; }' is not assignable to type 'CecProofResult'.
-  167:     }
-  168:     const result: CecProofResult = {
-> 169:       status,
-  170:       theorem: theoremText,
-  171:       steps,
-- Failure kind: `typescript_quality`
+- Target: `Task checkbox-480: Manual unblock: port 'logic/external_provers/interactive/coq_prover_bridge.py' by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.`
+- Result: `valid`
+- Summary: Added a browser-native Coq prover bridge adapter and wired it into the external prover facade.
+- Impact: The TypeScript logic port can now route coq prover requests through a local TDFOL-backed adapter that emits Coq compatibility metadata, reports WASM availability through the adapter contract, and keeps unsupported prover names fail-closed without Python, subprocess, RPC, filesystem, or server fallbacks.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/integration/bridge.test.ts`, `src/lib/logic/integration/coqProverBridge.ts`, `src/lib/logic/integration/externalProversBridge.ts`, `src/lib/logic/integration/index.ts`
 
 ### Blocked Backlog
 
