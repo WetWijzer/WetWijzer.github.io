@@ -1,12 +1,17 @@
 {
-  "createdAt": "2026-05-05T04:37:16.631269Z",
+  "createdAt": "2026-05-05T15:25:11Z",
   "decision": {
-    "action": "recover_termination_storm_and_restart",
-    "reason": "termination storm circuit breaker has quarantined generated work; append vetted non-generated recovery tasks and restart the daemon instead of refreshing the breaker",
-    "severity": "critical"
+    "action": "plan_next_tasks",
+    "reason": "generated blocked-cascade repair budget is exhausted but all generated repair tasks are already parked; review the original PP&D goal and append source-backed deterministic continuation work instead of opening another circuit breaker",
+    "severity": "warning"
   },
-  "operatorAction": "The supervisor converted the termination-storm pause into vetted non-generated recovery work. The daemon may resume on those tasks, while generated blocked-cascade tasks remain blocked.",
-  "recoveryTaskLabels": [],
+  "operatorAction": "The supervisor found generated blocked-cascade work already parked and converted the old circuit-breaker state into source-backed deterministic continuation tasks.",
+  "recoveryTaskLabels": [
+    "checkbox-458",
+    "checkbox-459",
+    "checkbox-460",
+    "checkbox-461"
+  ],
   "repairKind": "termination_storm_recovered",
   "schemaVersion": 1
 }

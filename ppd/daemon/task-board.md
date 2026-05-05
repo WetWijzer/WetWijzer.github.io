@@ -94,12 +94,12 @@ This board is the controlling backlog for the isolated PP&D daemon. The daemon s
 <!-- ppd-daemon-task-board:start -->
 ## Generated Status
 
-Last updated: 2026-05-05T15:09:00Z
+Last updated: 2026-05-05T15:21:39.179730Z
 
-- Latest target: `Task checkbox-452: Add accepted-work ledger-only migration coverage proving new accepted rounds append one JSONL ledger row by default and leave legacy sidecar artifacts ignored unless explicitly enabled.`
-- Latest result: `manual_recovery_accepted`
-- Latest summary: Added ledger-only migration coverage proving default accepted rounds append JSONL without creating new sidecars.
-- Counts: `{"blocked": 198, "complete": 80, "in_progress": 0, "needed": 1}`
+- Latest target: `Task checkbox-461: Add supervisor idle-recovery validation for tranche 2 proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.`
+- Latest result: `accepted`
+- Latest summary: Complete supervisor idle recovery with deterministic PP&D fallback.
+- Counts: `{"blocked": 202, "complete": 85, "in_progress": 0, "needed": 0}`
 
 <!-- ppd-daemon-task-board:end -->
 ## Built-In Supervisor Repair Notes
@@ -1278,10 +1278,6 @@ Last updated: 2026-05-05T15:09:00Z
 
 - Parked repeated LLM parse/runtime loop for `Add generated blocked-cascade daemon-repair coverage for tranche 50 item 1 proving blocked PP&D work stays parked until a fresh daemon repair task validates.` so the daemon can continue with the next independent selectable task. Resume only after prompt, parser, or retry policy has been updated.
 
-## Built-In Generated Blocked-Cascade Quarantine Notes
-
-- Parked open generated blocked-cascade daemon-repair tasks after a systemic termination storm. The supervisor will not grow generated fallback tranches again until the resource policy is hardened or a vetted human-authored task is reopened.
-
 ## Built-In Circuit Breaker Recovery Tranche
 
 - [!] Task checkbox-446: Add supervisor circuit-breaker recovery coverage proving expired termination storms append vetted non-generated recovery tasks and restart without reopening generated blocked-cascade work.
@@ -1301,7 +1297,33 @@ Last updated: 2026-05-05T15:09:00Z
 - [x] Task checkbox-450: Add supervisor blocked-cascade compaction coverage proving repeated generated repair tranches collapse into one quarantine note and never create more accepted-work sidecar panels.
 - [x] Task checkbox-451: Add daemon promotion-mismatch coverage proving temporary-worktree files are byte-checked after promotion and failed promotions are persisted without marking tasks complete.
 - [x] Task checkbox-452: Add accepted-work ledger-only migration coverage proving new accepted rounds append one JSONL ledger row by default and leave legacy sidecar artifacts ignored unless explicitly enabled.
-- [ ] Task checkbox-453: Add source-backed recovery continuation coverage proving all closed circuit-breaker recovery tasks synthesize this vetted non-generated tranche before restarting the daemon.
+- [x] Task checkbox-453: Add source-backed recovery continuation coverage proving all closed circuit-breaker recovery tasks synthesize this vetted non-generated tranche before restarting the daemon.
 ## Built-In Circuit Breaker Recovery Notes
 
 - Appended vetted non-generated recovery tasks after generated blocked-cascade work was quarantined. These tasks keep recovery inside PP&D daemon/supervisor fixtures, lifecycle handling, and documentation; they do not authorize live DevHub actions, uploads, submissions, payments, or real PDF filling.
+
+## Built-In Generated Blocked-Cascade Quarantine Notes
+
+- Parked open generated blocked-cascade daemon-repair tasks after a systemic termination storm. The supervisor will not grow generated fallback tranches again until the resource policy is hardened or a vetted human-authored task is reopened.
+
+## Built-In Source-Backed Execution Continuation Tranche
+
+- [!] Task checkbox-454: Add autonomous platform continuation coverage for tranche 1 proving whole-site archival, Playwright draft automation, PDF field filling, and formal-logic outputs stay connected through source evidence IDs.
+- [!] Task checkbox-455: Add processor-suite integration planning for tranche 1 proving PP&D public documents flow through archive manifests, normalized document records, PDF metadata, and requirement batches before agents use them.
+- [!] Task checkbox-456: Add Playwright/PDF handoff validation for tranche 1 proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.
+- [!] Task checkbox-457: Add supervisor idle-recovery validation for tranche 1 proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.
+## Built-In Supervisor Planning Notes
+
+- The supervisor found no selectable work after generated blocked-cascade tasks were already parked. It appended source-backed deterministic continuation tasks instead of opening another generated repair tranche or sleeping on a historical circuit breaker.
+- Slice policy: `source_backed_execution_continuation_1`. These tasks are matched by deterministic daemon fallbacks and keep progress inside public archival, processor handoff, attended Playwright/PDF planning, formal-logic, and idle-recovery contracts.
+
+## Built-In Source-Backed Execution Continuation Tranche 2
+
+- [x] Task checkbox-458: Add autonomous platform continuation coverage for tranche 2 proving whole-site archival, Playwright draft automation, PDF field filling, and formal-logic outputs stay connected through source evidence IDs.
+- [x] Task checkbox-459: Add processor-suite integration planning for tranche 2 proving PP&D public documents flow through archive manifests, normalized document records, PDF metadata, and requirement batches before agents use them.
+- [x] Task checkbox-460: Add Playwright/PDF handoff validation for tranche 2 proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.
+- [x] Task checkbox-461: Add supervisor idle-recovery validation for tranche 2 proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.
+## Built-In Supervisor Planning Notes
+
+- The supervisor found no selectable work after generated blocked-cascade tasks were already parked. It appended source-backed deterministic continuation tasks instead of opening another generated repair tranche or sleeping on a historical circuit breaker.
+- Slice policy: `source_backed_execution_continuation_2`. These tasks are matched by deterministic daemon fallbacks and keep progress inside public archival, processor handoff, attended Playwright/PDF planning, formal-logic, and idle-recovery contracts.

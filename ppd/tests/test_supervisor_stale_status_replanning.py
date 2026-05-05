@@ -728,6 +728,134 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
             self.assertIn(title, repaired)
         self.assertNotIn("generated blocked-cascade daemon-repair", "\n".join(CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES))
 
+    def test_closed_recovery_tasks_synthesize_source_backed_continuation_before_restart(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            board = (
+                "\n".join(
+                    f"- [x] Task checkbox-{446 + offset}: {title}"
+                    for offset, title in enumerate(CIRCUIT_BREAKER_RECOVERY_TITLES)
+                )
+                + "\n"
+            )
+            (daemon_dir / "task-board.md").write_text(board, encoding="utf-8")
+            atomic_write_json(
+                daemon_dir / "status.json",
+                {
+                    "updated_at": "2026-05-04T12:00:00Z",
+                    "active_state": "paused_by_supervisor_circuit_breaker",
+                    "state": "paused_by_supervisor_circuit_breaker",
+                },
+            )
+            atomic_write_json(
+                daemon_dir / "supervisor-circuit-breaker.json",
+                {
+                    "schemaVersion": 1,
+                    "createdAt": "2026-05-04T12:00:00Z",
+                    "repairKind": "termination_storm_circuit_breaker",
+                },
+            )
+            for _ in range(4):
+                append_jsonl(
+                    daemon_dir / "ppd-daemon.jsonl",
+                    {
+                        "stage": "before_validation",
+                        "diagnostic": {
+                            "failure_kind": "llm",
+                            "target_task": "Task checkbox-446: Closed circuit-breaker task.",
+                            "errors": ["llm_router child exited with code -15:"],
+                        },
+                    },
+                )
+
+            decision = diagnose(
+                SupervisorConfig(
+                    repo_root=repo,
+                    pid_file=Path("ppd/daemon/missing.pid"),
+                    termination_storm_threshold=4,
+                    termination_storm_backoff_seconds=900,
+                ),
+                now=datetime(2026, 5, 4, 12, 30, tzinfo=timezone.utc),
+            )
+            repaired, labels = append_circuit_breaker_recovery_tasks(board)
+
+        self.assertEqual("recover_termination_storm_and_restart", decision.action)
+        self.assertTrue(decision.should_restart_daemon)
+        self.assertEqual(tuple(f"checkbox-{450 + offset}" for offset in range(4)), labels)
+        for title in CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES:
+            self.assertIn(title, repaired)
+        self.assertIn("source-backed recovery continuation coverage", repaired)
+        self.assertNotIn("generated blocked-cascade daemon-repair", repaired)
+
+    def test_parked_generated_budget_replans_to_source_backed_continuation_without_new_breaker(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            generated_repairs = "\n".join(
+                "- [!] Task checkbox-{}: Add generated blocked-cascade daemon-repair coverage for tranche {} "
+                "item {} proving blocked PP&D work stays parked until a fresh daemon repair task validates.".format(
+                    430 + offset,
+                    1 + offset // 4,
+                    1 + offset % 4,
+                )
+                for offset in range(16)
+            )
+            closed_recovery = "\n".join(
+                f"- [x] Task checkbox-{450 + offset}: {title}"
+                for offset, title in enumerate(CIRCUIT_BREAKER_RECOVERY_CONTINUATION_TITLES)
+            )
+            board = (
+                "## Built-In Autonomous PP&D Platform Tranche\n\n"
+                "- [x] Task checkbox-219: Add a side-effect-free whole-site PP&D archival plan under ppd/crawler.\n\n"
+                "## Built-In Autonomous PP&D Execution Capability Tranche\n\n"
+                "- [!] Task checkbox-241: Add a supervised live whole-site public crawl runner under ppd/crawler.\n"
+                "- [!] Task checkbox-242: Add processor-suite execution integration under ppd/crawler.\n\n"
+                "## Built-In Blocked Cascade Recovery Tranche\n\n"
+                f"{generated_repairs}\n\n"
+                "## Built-In Circuit Breaker Recovery Tranche\n\n"
+                f"{closed_recovery}\n"
+            )
+            (daemon_dir / "task-board.md").write_text(board, encoding="utf-8")
+            atomic_write_json(
+                daemon_dir / "status.json",
+                {
+                    "updated_at": "2026-05-05T15:00:00Z",
+                    "active_state": "paused_by_supervisor_circuit_breaker",
+                    "state": "paused_by_supervisor_circuit_breaker",
+                },
+            )
+            atomic_write_json(
+                daemon_dir / "supervisor-circuit-breaker.json",
+                {
+                    "schemaVersion": 1,
+                    "createdAt": "2026-05-05T15:00:00Z",
+                    "repairKind": "termination_storm_circuit_breaker",
+                },
+            )
+
+            decision = diagnose(
+                SupervisorConfig(
+                    repo_root=repo,
+                    pid_file=Path("ppd/daemon/missing.pid"),
+                    termination_storm_backoff_seconds=900,
+                ),
+                now=datetime(2026, 5, 5, 15, 5, tzinfo=timezone.utc),
+            )
+            repaired, labels = supervisor.builtin_replenish_goal_tasks(board, [])
+
+        self.assertEqual("plan_next_tasks", decision.action)
+        self.assertTrue(decision.should_invoke_codex)
+        self.assertIn("all generated repair tasks are already parked", decision.reason)
+        self.assertEqual(tuple(f"checkbox-{454 + offset}" for offset in range(4)), labels)
+        self.assertIn("## Built-In Source-Backed Execution Continuation Tranche", repaired)
+        self.assertIn("autonomous platform continuation coverage for tranche 1", repaired)
+        self.assertIn("processor-suite integration planning for tranche 1", repaired)
+        self.assertIn("Playwright/PDF handoff validation for tranche 1", repaired)
+        self.assertIn("supervisor idle-recovery validation for tranche 1", repaired)
+
     def test_open_circuit_breaker_recovery_task_restarts_daemon_despite_old_storm(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
             repo = Path(tempdir)

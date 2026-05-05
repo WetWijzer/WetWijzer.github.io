@@ -14,6 +14,7 @@ from ppd.daemon.ppd_daemon import (
     Daemon,
     Proposal,
     build_deterministic_task_fallback_proposal,
+    compact_deterministic_progress_source_payload,
     failure_block_threshold,
     has_deterministic_task_fallback,
     parse_tasks,
@@ -306,6 +307,7 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
             assert proposal is not None
             files = {item["path"]: item["content"] for item in proposal.files}
             payload = json.loads(files["ppd/daemon/deterministic-progress.json"])
+            source_payload = compact_deterministic_progress_source_payload(payload)
             record = payload["records"][0]
 
         self.assertTrue(has_deterministic_task_fallback(task))
@@ -315,10 +317,17 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
             [
                 "ppd/platform/__init__.py",
                 "ppd/platform/processor_suite_contract.py",
+                "ppd/platform/deterministic_fallback_progress.py",
                 "ppd/daemon/deterministic-progress.json",
             ],
             [item["path"] for item in proposal.files],
         )
+        self.assertIn(
+            "processor_suite_planning",
+            files["ppd/platform/deterministic_fallback_progress.py"],
+        )
+        self.assertEqual(1, source_payload["recordCount"])
+        self.assertEqual("processor_suite_planning", source_payload["recentRecords"][0]["fallbackKind"])
         self.assertIn(["python3", "ppd/tests/validate_ppd.py"], proposal.validation_commands)
         self.assertEqual(455, record["checkboxId"])
         self.assertEqual("processor_suite_planning", record["fallbackKind"])
@@ -357,6 +366,7 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
             [
                 "ppd/platform/__init__.py",
                 "ppd/platform/processor_suite_contract.py",
+                "ppd/platform/deterministic_fallback_progress.py",
                 "ppd/daemon/deterministic-progress.json",
             ],
             proposal.changed_files,

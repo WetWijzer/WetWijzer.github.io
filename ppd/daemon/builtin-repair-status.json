@@ -1,15 +1,15 @@
 {
-  "createdAt": "2026-05-05T06:28:55Z",
+  "createdAt": "2026-05-05T15:21:29.275819Z",
   "decision": {
-    "action": "manual_supervisor_recovery_continuation",
-    "reason": "repeated generated Autonomous PP&D Platform tranches and closed circuit-breaker recovery tasks left no selectable source-backed work",
+    "action": "plan_next_tasks",
+    "reason": "generated blocked-cascade repair budget is exhausted but all generated repair tasks are already parked; review the original PP&D goal and append source-backed deterministic continuation work instead of opening another circuit breaker",
     "severity": "warning"
   },
   "failedAgenticRepair": {
     "changedFiles": [],
     "errors": [],
-    "failureKind": "generated_recovery_exhausted",
-    "summary": "Repeated generated platform and blocked-cascade recovery work was compacted and replaced with vetted continuation tasks.",
+    "failureKind": "no_eligible_tasks",
+    "summary": "All currently planned PP&D tasks are complete.",
     "validationResults": []
   },
   "fallbackActions": [
@@ -19,7 +19,7 @@
     "keep future retry scope narrow and fixture-first"
   ],
   "llmBackend": "llm_router",
-  "repairKind": "manual_supervisor_recovery_continuation",
+  "repairKind": "builtin_supervisor_fallback",
   "safetyBoundaries": [
     "no private DevHub session artifacts",
     "no raw crawl output",
@@ -31,10 +31,10 @@
   "taskBoardRepair": {
     "parkedRepeatedSyntaxLoopTasks": [],
     "replenishedGoalTaskLabels": [
-      "checkbox-450",
-      "checkbox-451",
-      "checkbox-452",
-      "checkbox-453"
+      "checkbox-458",
+      "checkbox-459",
+      "checkbox-460",
+      "checkbox-461"
     ],
     "supersededTaskBoardOnlyLabels": [],
     "taskBoardUpdated": true

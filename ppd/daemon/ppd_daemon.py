@@ -487,6 +487,7 @@ DETERMINISTIC_TASK_SOURCE_EVIDENCE_IDS = (
     "evidence:devhub-faq:2026-05-01",
     "evidence:single-pdf-process:2026-05-01",
 )
+DETERMINISTIC_PROGRESS_SOURCE_PATH = "ppd/platform/deterministic_fallback_progress.py"
 
 DETERMINISTIC_PLATFORM_INIT = '''"""Source-backed PP&D autonomous platform contracts.
 
@@ -606,6 +607,54 @@ def supervisor_idle_policy() -> dict[str, object]:
 }
 
 
+def compact_deterministic_progress_source_payload(
+    manifest: dict[str, Any],
+    *,
+    recent_limit: int = 8,
+) -> dict[str, Any]:
+    """Return a reviewable source payload without embedding the full runtime ledger."""
+
+    records = [record for record in manifest.get("records", []) if isinstance(record, dict)]
+    fallback_counts: dict[str, int] = {}
+    for record in records:
+        fallback_kind = str(record.get("fallbackKind") or "unknown")
+        fallback_counts[fallback_kind] = fallback_counts.get(fallback_kind, 0) + 1
+    recent_records = sorted(records, key=lambda record: str(record.get("completedAt") or ""))[-recent_limit:]
+    return {
+        "schemaVersion": manifest.get("schemaVersion", 1),
+        "strategy": manifest.get("strategy", "deterministic_task_fallback_when_llm_unavailable"),
+        "updatedAt": manifest.get("updatedAt", ""),
+        "recordCount": len(records),
+        "fallbackCounts": dict(sorted(fallback_counts.items())),
+        "recentRecords": recent_records,
+    }
+
+
+def deterministic_progress_source_content(manifest: dict[str, Any]) -> str:
+    """Return a commit-visible source mirror for deterministic fallback progress."""
+
+    payload = json.dumps(compact_deterministic_progress_source_payload(manifest), indent=2, sort_keys=True)
+    return f'''"""Commit-visible PP&D deterministic fallback progress.
+
+The daemon also writes a runtime JSON manifest, but accepted autonomous work must
+promote a visible source or fixture change. This module mirrors the same records
+so deterministic continuation tasks leave reviewable source-backed evidence.
+"""
+
+from __future__ import annotations
+
+import json
+from typing import Any
+
+
+DETERMINISTIC_FALLBACK_PROGRESS_JSON = {payload!r}
+
+
+def deterministic_fallback_progress() -> dict[str, Any]:
+    return json.loads(DETERMINISTIC_FALLBACK_PROGRESS_JSON)
+'''
+
+
 def deterministic_task_fallback_kind(task: Task) -> str:
     return fallback_kind_for_task(task, DETERMINISTIC_TASK_FALLBACK_TITLES)
 
@@ -645,6 +694,7 @@ def build_deterministic_task_fallback_proposal(config: Config, selected: Task) -
         source_files=[
             ("ppd/platform/__init__.py", DETERMINISTIC_PLATFORM_INIT),
             (source_path, source_content),
+            (DETERMINISTIC_PROGRESS_SOURCE_PATH, deterministic_progress_source_content(manifest)),
         ],
         summary=f"Complete {fallback_kind.replace('_', ' ')} with deterministic PP&D fallback.",
         impact=(
@@ -883,7 +933,7 @@ def temporary_validation_worktree(config: Config) -> Iterator[Path]:
         marker_name="ppd-worktree.json",
         copy_paths=copy_paths,
         root_files=("package.json", "package-lock.json", "tsconfig.json"),
-        external_reference_paths=(Path("ipfs_datasets_py/ipfs_datasets_py/processors"),),
+        external_reference_paths=(Path("ipfs_datasets_py/ipfs_datasets_py"),),
         ignore=_ignore_validation_tree_entries,
         stale_seconds=config.worktree_stale_seconds,
     )

@@ -201,14 +201,28 @@ class DaemonTemporaryWorktreeTransportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tempdir:
             repo = Path(tempdir)
             make_minimal_repo(repo)
-            processor_metadata = repo / "ipfs_datasets_py" / "ipfs_datasets_py" / "processors"
+            package_root = repo / "ipfs_datasets_py" / "ipfs_datasets_py"
+            processor_metadata = package_root / "processors"
+            todo_daemon_metadata = package_root / "optimizers" / "todo_daemon"
             processor_metadata.mkdir(parents=True)
+            todo_daemon_metadata.mkdir(parents=True)
             (processor_metadata / "web_archiving").write_text("metadata placeholder\n", encoding="utf-8")
+            (todo_daemon_metadata / "__init__.py").write_text("TODO_DAEMON_AVAILABLE = True\n", encoding="utf-8")
 
             with temporary_validation_worktree(Config(repo_root=repo)) as worktree:
                 copied = worktree / "ipfs_datasets_py" / "ipfs_datasets_py" / "processors" / "web_archiving"
+                reusable_daemon = (
+                    worktree
+                    / "ipfs_datasets_py"
+                    / "ipfs_datasets_py"
+                    / "optimizers"
+                    / "todo_daemon"
+                    / "__init__.py"
+                )
                 self.assertTrue(copied.exists())
                 self.assertEqual("metadata placeholder\n", copied.read_text(encoding="utf-8"))
+                self.assertTrue(reusable_daemon.exists())
+                self.assertIn("TODO_DAEMON_AVAILABLE", reusable_daemon.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

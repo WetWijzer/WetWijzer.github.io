@@ -84,6 +84,9 @@ CHECKBOX_ID_RE = re.compile(r"checkbox-(\d+)")
 REPLENISHMENT_HEADING_RE = re.compile(r"^## Built-In Goal Replenishment Tranche(?:\s+(\d+))?\s*$")
 AUTONOMOUS_PLATFORM_HEADING_RE = re.compile(r"^## Built-In Autonomous PP&D Platform Tranche(?:\s+(\d+))?\s*$")
 AUTONOMOUS_EXECUTION_HEADING_RE = re.compile(r"^## Built-In Autonomous PP&D Execution Capability Tranche(?:\s+(\d+))?\s*$")
+SOURCE_BACKED_EXECUTION_CONTINUATION_HEADING_RE = re.compile(
+    r"^## Built-In Source-Backed Execution Continuation Tranche(?:\s+(\d+))?\s*$"
+)
 BLOCKED_CASCADE_HEADING_RE = re.compile(r"^## Built-In Blocked Cascade Recovery Tranche(?:\s+(\d+))?\s*$")
 TASK_LINE_RE = re.compile(r"^(?P<prefix>- \[[ xX~!]\] Task checkbox-\d+: )(?P<title>.+)$")
 GENERATED_BLOCKED_CASCADE_TITLE_RE = re.compile(
@@ -480,6 +483,10 @@ def is_circuit_breaker_recovery_task(task: Task) -> bool:
 
 def has_open_circuit_breaker_recovery_task(tasks: list[Task]) -> bool:
     return any(is_circuit_breaker_recovery_task(task) and task.status in {"needed", "in-progress"} for task in tasks)
+
+
+def has_closed_circuit_breaker_recovery_task(tasks: list[Task]) -> bool:
+    return any(is_circuit_breaker_recovery_task(task) and task.status in {"complete", "blocked"} for task in tasks)
 
 
 def active_termination_storm_circuit_breaker(
@@ -1020,6 +1027,26 @@ def next_autonomous_execution_heading(markdown: str) -> str:
     return f"## Built-In Autonomous PP&D Execution Capability Tranche {max(numbers) + 1}"
 
 
+def source_backed_execution_continuation_heading_number(line: str) -> Optional[int]:
+    match = SOURCE_BACKED_EXECUTION_CONTINUATION_HEADING_RE.match(line.strip())
+    if not match:
+        return None
+    if match.group(1) is None:
+        return 1
+    return int(match.group(1))
+
+
+def next_source_backed_execution_continuation_heading(markdown: str) -> str:
+    numbers = [
+        source_backed_execution_continuation_heading_number(line)
+        for line in markdown.splitlines()
+        if source_backed_execution_continuation_heading_number(line) is not None
+    ]
+    if not numbers:
+        return "## Built-In Source-Backed Execution Continuation Tranche"
+    return f"## Built-In Source-Backed Execution Continuation Tranche {max(numbers) + 1}"
+
+
 def should_append_autonomous_platform_tranche(markdown: str) -> bool:
     """Return True when completed recovery work should advance to platform work."""
 
@@ -1103,6 +1130,39 @@ def generated_autonomous_platform_templates(markdown: str, tranche_number: int) 
         f"Add Playwright/PDF handoff validation for tranche {tranche_number} proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.",
         f"Add supervisor idle-recovery validation for tranche {tranche_number} proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.",
     ]
+
+
+def next_source_backed_execution_continuation_templates(markdown: str) -> tuple[list[str], int]:
+    """Return non-duplicate deterministic continuation titles for the next tranche."""
+
+    heading = next_source_backed_execution_continuation_heading(markdown)
+    start_number = source_backed_execution_continuation_heading_number(heading) or 1
+    titles = existing_task_titles(markdown)
+    for tranche_number in range(start_number, start_number + 50):
+        templates = generated_autonomous_platform_templates(markdown, tranche_number)
+        if all(not task_title_already_covered(title, titles) for title in templates):
+            return templates, tranche_number
+    tranche_number = start_number + 50
+    return generated_autonomous_platform_templates(markdown, tranche_number), tranche_number
+
+
+def builtin_source_backed_execution_continuation_task_board(markdown: str) -> tuple[str, tuple[str, ...]]:
+    """Append deterministic source-backed continuation when historical repair work is parked."""
+
+    templates, tranche_number = next_source_backed_execution_continuation_templates(markdown)
+    start = next_checkbox_number(markdown)
+    labels = tuple(f"checkbox-{start + offset}" for offset in range(len(templates)))
+    lines = ["", next_source_backed_execution_continuation_heading(markdown), ""]
+    for offset, text in enumerate(templates):
+        lines.append(f"- [ ] Task checkbox-{start + offset}: {text}")
+    note = (
+        "\n"
+        "## Built-In Supervisor Planning Notes\n\n"
+        "- The supervisor found no selectable work after generated blocked-cascade tasks were already parked. "
+        "It appended source-backed deterministic continuation tasks instead of opening another generated repair tranche or sleeping on a historical circuit breaker.\n"
+        f"- Slice policy: `source_backed_execution_continuation_{tranche_number}`. These tasks are matched by deterministic daemon fallbacks and keep progress inside public archival, processor handoff, attended Playwright/PDF planning, formal-logic, and idle-recovery contracts.\n"
+    )
+    return markdown.rstrip() + "\n" + "\n".join(lines) + note, labels
 
 
 def should_escalate_stale_platform_slice(markdown: str, target_task: str) -> bool:
@@ -1246,7 +1306,7 @@ def builtin_replenish_goal_tasks(markdown: str, rows: Optional[list[dict[str, An
     if any(autonomous_platform_heading_number(line) is not None for line in markdown.splitlines()):
         if not has_autonomous_execution_tranche(markdown):
             return builtin_autonomous_execution_replenish_task_board(markdown)
-        return markdown, ()
+        return builtin_source_backed_execution_continuation_task_board(markdown)
     if should_append_autonomous_platform_tranche(markdown):
         heading = next_autonomous_platform_heading(markdown)
         heading_number = autonomous_platform_heading_number(heading) or 1
@@ -1575,7 +1635,52 @@ def diagnose(config: SupervisorConfig, *, now: Optional[datetime] = None) -> Sup
     active_breaker, breaker_remaining = active_termination_storm_circuit_breaker(config, now=now)
     generated_blocked_total, generated_blocked_open = generated_blocked_cascade_task_counts(tasks)
     has_recovery_work = has_open_circuit_breaker_recovery_task(tasks)
+    has_closed_recovery_work = has_closed_circuit_breaker_recovery_task(tasks)
     has_deterministic_work = has_open_deterministic_task_fallback(tasks)
+    has_selectable_work = any(task.status in {"needed", "in-progress"} for task in tasks)
+    generated_budget_parked = generated_blocked_total >= MAX_GENERATED_BLOCKED_CASCADE_TASKS and generated_blocked_open == 0
+    has_source_backed_continuation_context = (
+        has_closed_recovery_work
+        or has_autonomous_execution_tranche(board)
+        or any(autonomous_platform_heading_number(line) is not None for line in board.splitlines())
+    )
+
+    if (
+        not running
+        and not active_breaker
+        and not has_recovery_work
+        and has_closed_recovery_work
+        and not generated_budget_parked
+        and active_state == "paused_by_supervisor_circuit_breaker"
+    ):
+        return SupervisorDecision(
+            action="recover_termination_storm_and_restart",
+            reason=(
+                "termination storm circuit breaker has expired after vetted recovery tasks were closed; "
+                "append the next source-backed recovery continuation tranche before restarting the daemon"
+            ),
+            severity="critical",
+            should_restart_daemon=True,
+        )
+
+    if (
+        not running
+        and tasks
+        and not has_selectable_work
+        and not has_recovery_work
+        and generated_budget_parked
+        and has_source_backed_continuation_context
+    ):
+        return SupervisorDecision(
+            action="plan_next_tasks",
+            reason=(
+                "generated blocked-cascade repair budget is exhausted but all generated repair tasks are already "
+                "parked; review the original PP&D goal and append source-backed deterministic continuation work "
+                "instead of opening another circuit breaker"
+            ),
+            severity="warning",
+            should_invoke_codex=True,
+        )
 
     if tasks and all(task.status == "complete" for task in tasks) and has_autonomous_execution_tranche(board):
         return SupervisorDecision(
@@ -1606,7 +1711,7 @@ def diagnose(config: SupervisorConfig, *, now: Optional[datetime] = None) -> Sup
     if (
         latest.get("failure_kind") == "no_eligible_tasks"
         and tasks
-        and not any(task.status in {"needed", "in-progress"} for task in tasks)
+        and not has_selectable_work
         and any(task.status == "blocked" for task in tasks)
         and termination_storm_count < config.termination_storm_threshold
         and generated_blocked_total < MAX_GENERATED_BLOCKED_CASCADE_TASKS
@@ -1743,7 +1848,9 @@ def diagnose(config: SupervisorConfig, *, now: Optional[datetime] = None) -> Sup
             should_restart_daemon=False,
         )
 
-    if generated_blocked_total >= MAX_GENERATED_BLOCKED_CASCADE_TASKS:
+    if generated_blocked_total >= MAX_GENERATED_BLOCKED_CASCADE_TASKS and (
+        generated_blocked_open > 0 or not has_source_backed_continuation_context
+    ):
         return SupervisorDecision(
             action="enter_termination_storm_circuit_breaker",
             reason=(
@@ -2148,6 +2255,31 @@ def invoke_builtin_repair(
             "content": json.dumps(payload, indent=2, sort_keys=True) + "\n",
         }
     ]
+    if (
+        decision.action == "plan_next_tasks"
+        and "generated blocked-cascade repair budget is exhausted" in decision.reason
+    ):
+        breaker_payload = {
+            "schemaVersion": 1,
+            "createdAt": utc_now(),
+            "repairKind": "termination_storm_recovered",
+            "decision": {
+                "action": decision.action,
+                "reason": decision.reason,
+                "severity": decision.severity,
+            },
+            "recoveryTaskLabels": list(replenished_labels),
+            "operatorAction": (
+                "The supervisor found generated blocked-cascade work already parked and converted the "
+                "old circuit-breaker state into source-backed deterministic continuation tasks."
+            ),
+        }
+        files.append(
+            {
+                "path": "ppd/daemon/supervisor-circuit-breaker.json",
+                "content": json.dumps(breaker_payload, indent=2, sort_keys=True) + "\n",
+            }
+        )
     if repaired_board != board:
         files.append({"path": "ppd/daemon/task-board.md", "content": repaired_board})
     proposal = Proposal(
