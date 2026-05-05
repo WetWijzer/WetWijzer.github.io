@@ -2,6 +2,7 @@ import { formatCecExpression } from '../cec/formatter';
 import { parseCecExpression } from '../cec/parser';
 import { proveCec } from '../cec/prover';
 import type { CecProverOptions } from '../cec/prover';
+import type { CecBinaryOperator, CecExpression } from '../cec/ast';
 import { DeonticConverter, type DeonticConverterOptions } from '../deontic/converter';
 import { FOLConverter, type FolConverterOptions } from '../fol/converter';
 import {
@@ -76,6 +77,8 @@ const ROUTES: ConversionRoute[] = [
   { sourceFormat: 'fol', targetFormat: 'prolog', description: 'FOL formatter projection' },
   { sourceFormat: 'fol', targetFormat: 'tptp', description: 'FOL formatter projection' },
   { sourceFormat: 'fol', targetFormat: 'json', description: 'FOL structured formatter projection' },
+  { sourceFormat: 'fol', targetFormat: 'cec', description: 'FOL to CEC AST projection' },
+  { sourceFormat: 'fol', targetFormat: 'dcec', description: 'FOL to DCEC AST projection' },
   {
     sourceFormat: 'deontic',
     targetFormat: 'json',
@@ -279,6 +282,22 @@ export class BrowserNativeLogicBridge {
     }
 
     if (request.sourceFormat === 'fol') {
+      if (request.targetFormat === 'cec' || request.targetFormat === 'dcec') {
+        const expression = folToCecExpression(request.source);
+        return new LogicBridgeConversionResult(
+          'success',
+          request.source,
+          formatCecExpression(expression),
+          request.sourceFormat,
+          request.targetFormat,
+          0.95,
+          [],
+          bridgeMetadata(request, {
+            projection: 'deterministic-fol-to-cec',
+            server_calls_allowed: false,
+          }),
+        );
+      }
       const formatted = formatFol(request.source, toLogicOutputFormat(request.targetFormat));
       return new LogicBridgeConversionResult(
         'success',
@@ -382,6 +401,142 @@ function toLogicOutputFormat(format: LogicBridgeFormat): LogicOutputFormat {
   if (format === 'json' || format === 'prolog' || format === 'tptp' || format === 'defeasible')
     return format;
   throw new LogicBridgeError(`Unsupported formatter bridge target: ${format}`);
+}
+
+function folToCecExpression(formula: string): CecExpression {
+  const normalized = stripOuterParens(formula.trim());
+  if (!normalized) throw new LogicBridgeError('Cannot project empty FOL formula to CEC');
+
+  const quantifier = normalized.match(/^([∀∃])\s*([A-Za-z][A-Za-z0-9_]*)\s+(.+)$/);
+  if (quantifier) {
+    return {
+      kind: 'quantified',
+      quantifier: quantifier[1] === '∀' ? 'forall' : 'exists',
+      variable: quantifier[2],
+      expression: folToCecExpression(quantifier[3]),
+    };
+  }
+
+  const binary = findTopLevelFolBinary(normalized);
+  if (binary) {
+    return {
+      kind: 'binary',
+      operator: binary.operator,
+      left: folToCecExpression(binary.left),
+      right: folToCecExpression(binary.right),
+    };
+  }
+
+  if (normalized.startsWith('¬')) {
+    return { kind: 'unary', operator: 'not', expression: folToCecExpression(normalized.slice(1)) };
+  }
+  const notMatch = normalized.match(/^not\s+(.+)$/i);
+  if (notMatch) {
+    return { kind: 'unary', operator: 'not', expression: folToCecExpression(notMatch[1]) };
+  }
+
+  const predicate = normalized.match(/^([A-Za-z][A-Za-z0-9_]*)\((.*)\)$/);
+  if (predicate) {
+    return {
+      kind: 'application',
+      name: predicate[1],
+      args: splitTopLevelArguments(predicate[2]).map(folToCecTerm),
+    };
+  }
+
+  if (/^[A-Za-z][A-Za-z0-9_]*$/.test(normalized)) return { kind: 'atom', name: normalized };
+  throw new LogicBridgeError(`Unsupported browser-native FOL to CEC projection: ${formula}`);
+}
+
+function folToCecTerm(term: string): CecExpression {
+  const trimmed = stripOuterParens(term.trim());
+  const predicate = trimmed.match(/^([A-Za-z][A-Za-z0-9_]*)\((.*)\)$/);
+  if (predicate) {
+    return {
+      kind: 'application',
+      name: predicate[1],
+      args: splitTopLevelArguments(predicate[2]).map(folToCecTerm),
+    };
+  }
+  if (/^[A-Za-z][A-Za-z0-9_]*$/.test(trimmed)) return { kind: 'atom', name: trimmed };
+  throw new LogicBridgeError(`Unsupported FOL term for CEC projection: ${term}`);
+}
+
+function findTopLevelFolBinary(
+  formula: string,
+): { left: string; right: string; operator: CecBinaryOperator } | undefined {
+  const operators: Array<{ tokens: string[]; operator: CecBinaryOperator }> = [
+    { tokens: ['↔', '<->'], operator: 'iff' },
+    { tokens: ['→', '->', '=>'], operator: 'implies' },
+    { tokens: ['∨', '|'], operator: 'or' },
+    { tokens: ['∧', '&'], operator: 'and' },
+  ];
+  for (const entry of operators) {
+    const match = findTopLevelToken(formula, entry.tokens);
+    if (match) {
+      return {
+        left: formula.slice(0, match.index).trim(),
+        right: formula.slice(match.index + match.token.length).trim(),
+        operator: entry.operator,
+      };
+    }
+  }
+  return undefined;
+}
+
+function findTopLevelToken(
+  formula: string,
+  tokens: string[],
+): { index: number; token: string } | undefined {
+  let depth = 0;
+  for (let index = 0; index < formula.length; index += 1) {
+    const char = formula[index];
+    if (char === '(') depth += 1;
+    else if (char === ')') depth -= 1;
+    if (depth === 0) {
+      const token = tokens.find((candidate) => formula.startsWith(candidate, index));
+      if (token) return { index, token };
+    }
+  }
+  return undefined;
+}
+
+function splitTopLevelArguments(args: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let index = 0; index < args.length; index += 1) {
+    const char = args[index];
+    if (char === '(') depth += 1;
+    else if (char === ')') depth -= 1;
+    else if (char === ',' && depth === 0) {
+      parts.push(args.slice(start, index).trim());
+      start = index + 1;
+    }
+  }
+  const tail = args.slice(start).trim();
+  if (tail) parts.push(tail);
+  return parts;
+}
+
+function stripOuterParens(value: string): string {
+  let current = value.trim();
+  while (current.startsWith('(') && current.endsWith(')') && wrapsWholeExpression(current)) {
+    current = current.slice(1, -1).trim();
+  }
+  return current;
+}
+
+function wrapsWholeExpression(value: string): boolean {
+  let depth = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+    if (char === '(') depth += 1;
+    else if (char === ')') depth -= 1;
+    if (depth === 0 && index < value.length - 1) return false;
+    if (depth < 0) return false;
+  }
+  return depth === 0;
 }
 
 function stringifyFormattedOutput(output: FormattedFol | FormattedDeontic): string {

@@ -61,6 +61,7 @@ describe('BrowserNativeLogicBridge', () => {
       requires_external_prover: false,
     });
     expect(bridge.supportsConversion('legal_text', 'deontic')).toBe(true);
+    expect(bridge.supportsConversion('fol', 'cec')).toBe(true);
     expect(bridge.supportsConversion('tdfol', 'cec')).toBe(true);
     expect(bridge.listRoutes().length).toBeGreaterThan(10);
   });
@@ -96,9 +97,20 @@ describe('BrowserNativeLogicBridge', () => {
   it('routes TDFOL and CEC conversions through local parser/formatter cores', () => {
     const bridge = createBrowserNativeLogicBridge();
 
+    const folToCec = bridge.convert('∀x (Tenant(x) → Resident(x))', 'fol', 'cec');
     const tdfolToCec = bridge.convert('forall x. O(Comply(x))', 'tdfol', 'cec');
     const cecToJson = bridge.convert('(O (Comply ada))', 'cec', 'json');
 
+    expect(folToCec).toMatchObject({
+      status: 'success',
+      targetFormula: '(forall x (implies (Tenant x) (Resident x)))',
+      sourceFormat: 'fol',
+      targetFormat: 'cec',
+      metadata: {
+        projection: 'deterministic-fol-to-cec',
+        server_calls_allowed: false,
+      },
+    });
     expect(tdfolToCec).toMatchObject({
       status: 'success',
       targetFormula: '(forall x (O (Comply x)))',
@@ -1084,12 +1096,12 @@ describe('BrowserNativeLogicBridge', () => {
 
   it('returns explicit unsupported conversion results for missing local routes', () => {
     const bridge = createBrowserNativeLogicBridge();
-    const result = bridge.convert('Resident(Ada)', 'fol', 'cec');
+    const result = bridge.convert('Resident(Ada)', 'fol', 'deontic');
 
     expect(result).toMatchObject({
       status: 'unsupported',
       targetFormula: '',
-      warnings: ['Unsupported browser-native conversion route: fol -> cec'],
+      warnings: ['Unsupported browser-native conversion route: fol -> deontic'],
     });
     expect(result.metadata).toMatchObject({ server_calls_allowed: false });
   });
