@@ -14,7 +14,6 @@ import argparse
 import json
 import os
 import py_compile
-import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -53,6 +52,27 @@ from ppd.daemon.deterministic_fallback import (  # noqa: E402
     has_deterministic_task_fallback,
     has_open_deterministic_task_fallback,
 )
+from ppd.daemon.failure_policy import (  # noqa: E402
+    FORBIDDEN_ABSENCE_MARKERS,
+    LLM_TERMINATION_ERROR_MARKERS,
+    PreLlmBlockDecision,
+    effective_prompt_limit,
+    exception_diagnostic,
+    failure_block_threshold,
+    format_failure_context,
+    is_forbidden_absence_marker_validation_failure,
+    is_llm_termination_failure_record,
+    is_retryable_failure,
+    llm_termination_failure_count,
+    pre_llm_block_decision,
+    read_result_and_diagnostic_log,
+    read_result_log,
+    recent_task_failures,
+    should_block_task_before_llm,
+    should_skip_validation_for_no_file_failure,
+    should_use_compact_prompt,
+    task_failure_count,
+)
 from ppd.daemon.path_policy import (  # noqa: E402
     ALLOWED_WRITE_PREFIXES,
     DISALLOWED_WRITE_PREFIXES,
@@ -63,6 +83,21 @@ from ppd.daemon.path_policy import (  # noqa: E402
     has_visible_source_change,
     is_private_write_path,
     validate_write_path,
+)
+from ppd.daemon.prompt_builder import build_prompt  # noqa: E402
+from ppd.daemon.task_board import (  # noqa: E402
+    CHECKBOX_RE,
+    PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS,
+    TASK_BOARD_STATUS_END,
+    TASK_BOARD_STATUS_START,
+    count_unmanaged_generated_status_sections,
+    parse_tasks,
+    replace_task_mark,
+    select_task,
+    select_task_for_config,
+    should_sleep_between_watch_cycles,
+    strip_unmanaged_generated_status_sections,
+    update_generated_status,
 )
 from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     CommandResult,
@@ -79,11 +114,9 @@ from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     extract_json as todo_extract_json,
     normalized_relative_path as todo_normalized_relative_path,
     parse_json_proposal,
-    parse_markdown_tasks,
     read_text,
     run_config_validation_commands,
     run_command as todo_run_command,
-    select_task as select_todo_task,
     temporary_config_validation_worktree,
     utc_now,
     worktree_marker_payload as todo_worktree_marker_payload,
@@ -112,32 +145,6 @@ from ipfs_datasets_py.optimizers.todo_daemon.runner import (  # noqa: E402
     PreTaskBlock,
     TodoDaemonHooks,
 )
-from ipfs_datasets_py.optimizers.todo_daemon.history import (  # noqa: E402
-    read_daemon_proposal_records,
-    recent_proposal_failures,
-    should_use_compact_prompt_for_failures,
-)
-from ipfs_datasets_py.optimizers.todo_daemon.diagnostics import (  # noqa: E402
-    FailureBlockDecision,
-    FailureBlockRule,
-    count_proposal_records_with_failure_markers,
-    count_recent_proposal_failures,
-    exception_diagnostic as todo_exception_diagnostic,
-    first_failure_block_decision,
-    format_recent_failure_context,
-    is_retryable_proposal_failure,
-    prompt_limit_for_mode,
-    proposal_block_threshold,
-    proposal_record_has_failure_markers,
-    should_skip_validation_for_empty_proposal,
-)
-from ipfs_datasets_py.optimizers.todo_daemon.task_board import (  # noqa: E402
-    count_unmanaged_generated_status_sections as count_todo_unmanaged_generated_status_sections,
-    replace_task_mark as replace_todo_task_mark,
-    should_sleep_between_task_cycles as should_sleep_between_todo_task_cycles,
-    strip_unmanaged_generated_status_sections as strip_todo_unmanaged_generated_status_sections,
-    update_generated_status_block as update_todo_generated_status_block,
-)
 from ipfs_datasets_py.optimizers.todo_daemon.llm import (  # noqa: E402
     LlmRouterInvocation,
     call_llm_router,
@@ -147,20 +154,6 @@ from ipfs_datasets_py.optimizers.todo_daemon.llm import (  # noqa: E402
     terminate_process_group,
 )
 
-
-CHECKBOX_RE = re.compile(r"^(?P<prefix>\s*-\s+\[)(?P<mark>[ xX~!])(?P<suffix>\]\s+)(?P<title>.+)$")
-TASK_BOARD_STATUS_START = "<!-- ppd-daemon-task-board:start -->"
-TASK_BOARD_STATUS_END = "<!-- ppd-daemon-task-board:end -->"
-LLM_TERMINATION_ERROR_MARKERS = (
-    "143",
-    "137",
-    "code -15",
-    "code -9",
-    "signal 15",
-    "signal 9",
-    "sigterm",
-    "sigkill",
-)
 
 DEFAULT_VALIDATION_COMMANDS = (
     ("python3", "ppd/daemon/ppd_daemon.py", "--self-test"),
@@ -172,36 +165,6 @@ DEFAULT_VALIDATION_COMMANDS = (
         "test -z \"$files\" || npx tsc --noEmit --target ES2020 --module ESNext "
         "--moduleResolution node --strict --skipLibCheck --types node $files",
     ),
-)
-
-FORBIDDEN_ABSENCE_MARKERS = (
-    "cookie",
-    "cookies",
-    "screenshot",
-    "screenshots",
-    "auth-state",
-    "storage-state",
-    "trace.zip",
-    ".har",
-)
-
-PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS = frozenset(
-    {
-        178,
-        182,
-        186,
-        187,
-        191,
-        193,
-        194,
-        195,
-        197,
-        198,
-        203,
-        208,
-        209,
-        210,
-    }
 )
 
 @dataclass
@@ -244,256 +207,12 @@ class Config:
         return path if path.is_absolute() else self.repo_root / path
 
 
-PreLlmBlockDecision = FailureBlockDecision
-
-
-def parse_tasks(markdown: str) -> list[Task]:
-    return parse_markdown_tasks(markdown, checkbox_re=CHECKBOX_RE)
-
-
-def select_task(tasks: Iterable[Task], *, revisit_blocked: bool = False) -> Optional[Task]:
-    return select_todo_task(
-        tasks,
-        revisit_blocked=revisit_blocked,
-        protected_blocked_checkbox_ids=PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS,
-    )
-
-
-def select_task_for_config(tasks: Iterable[Task], config: Config) -> Optional[Task]:
-    """Select work while suppressing blocked tasks that already hit retry stop gates."""
-
-    task_list = list(tasks)
-    selected = select_task(task_list, revisit_blocked=False)
-    if selected is not None:
-        return selected
-    if not config.revisit_blocked:
-        return None
-    for task in task_list:
-        if task.status != "blocked":
-            continue
-        if task.checkbox_id in PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS:
-            continue
-        try:
-            block_decision = pre_llm_block_decision(config, task.label)
-        except Exception:
-            continue
-        if block_decision is not None:
-            continue
-        return task
-    return None
-
-
-def replace_task_mark(markdown: str, selected: Task, mark: str) -> str:
-    return replace_todo_task_mark(markdown, selected, mark, checkbox_re=CHECKBOX_RE)
-
-
-def count_unmanaged_generated_status_sections(markdown: str) -> int:
-    """Count generated-status headings outside the daemon-managed marker block."""
-
-    return count_todo_unmanaged_generated_status_sections(
-        markdown,
-        start_marker=TASK_BOARD_STATUS_START,
-        end_marker=TASK_BOARD_STATUS_END,
-    )
-
-
-def strip_unmanaged_generated_status_sections(markdown: str) -> str:
-    """Remove stale generated-status sections outside the managed marker block."""
-
-    return strip_todo_unmanaged_generated_status_sections(
-        markdown,
-        start_marker=TASK_BOARD_STATUS_START,
-        end_marker=TASK_BOARD_STATUS_END,
-    )
-
-
-def update_generated_status(markdown: str, *, latest: dict[str, Any], tasks: list[Task]) -> str:
-    return update_todo_generated_status_block(
-        markdown,
-        latest=latest,
-        tasks=tasks,
-        start_marker=TASK_BOARD_STATUS_START,
-        end_marker=TASK_BOARD_STATUS_END,
-    )
-
-
-def should_sleep_between_watch_cycles(markdown: str, *, revisit_blocked: bool = False) -> bool:
-    """Sleep only when there is no immediately selectable work on the board."""
-
-    return should_sleep_between_todo_task_cycles(
-        markdown,
-        parse_tasks_fn=parse_tasks,
-        revisit_blocked=revisit_blocked,
-        protected_blocked_checkbox_ids=PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS,
-    )
-
-
-def exception_diagnostic(exc: BaseException, *, limit: int = 5000) -> str:
-    return todo_exception_diagnostic(exc, limit=limit)
-
-
-def is_retryable_failure(proposal: Proposal) -> bool:
-    return is_retryable_proposal_failure(
-        proposal,
-        retry_error_markers=frozenset(
-            {
-                "cloudflare",
-                "403 forbidden",
-                "plugins/featured",
-                "timed out",
-                "timeout",
-                "could not generate",
-                "provider",
-            }
-        ),
-    )
-
-
-def is_llm_termination_failure_record(proposal: dict[str, Any]) -> bool:
-    return proposal_record_has_failure_markers(
-        proposal,
-        failure_kind="llm",
-        markers=frozenset(LLM_TERMINATION_ERROR_MARKERS),
-    )
-
-
-def failure_block_threshold(proposal: Proposal, config: Config) -> int:
-    """Use a tighter stop condition for parser-invalid generated patches."""
-
-    return proposal_block_threshold(
-        proposal,
-        default_threshold=config.max_task_failures_before_block,
-        capped_failure_kinds=frozenset({"syntax_preflight", "llm_termination"}),
-        capped_threshold=2,
-        exact_thresholds={"no_visible_source_change": 1},
-    )
-
-
-def should_skip_validation_for_no_file_failure(proposal: Proposal) -> bool:
-    """Avoid expensive validation when the LLM produced no candidate files."""
-
-    return should_skip_validation_for_empty_proposal(proposal)
-
-
-def read_result_log(path: Path) -> list[dict[str, Any]]:
-    return read_daemon_proposal_records(path)
-
-
-def read_result_and_diagnostic_log(path: Path) -> list[dict[str, Any]]:
-    return read_daemon_proposal_records(path, include_diagnostics=True)
-
-
-def recent_task_failures(config: Config, task_label: str, *, limit: int = 3) -> list[dict[str, Any]]:
-    return recent_proposal_failures(
-        read_result_and_diagnostic_log(config.resolve(config.result_log)),
-        task_label,
-        limit=limit,
-        normalize_task_labels=False,
-    )
-
-
-def should_use_compact_prompt(failures: list[dict[str, Any]], *, threshold: int = 2) -> bool:
-    return should_use_compact_prompt_for_failures(failures, threshold=threshold)
-
-
-def effective_prompt_limit(config: Config, *, compact_prompt: bool) -> int:
-    return prompt_limit_for_mode(
-        max_prompt_chars=config.max_prompt_chars,
-        max_compact_prompt_chars=config.max_compact_prompt_chars,
-        compact_prompt=compact_prompt,
-    )
-
-
-def task_failure_count(config: Config, task_label: str, *, kinds: Optional[set[str]] = None) -> int:
-    return count_recent_proposal_failures(
-        recent_task_failures(config, task_label, limit=100),
-        failure_kinds=kinds,
-    )
-
-
-def llm_termination_failure_count(config: Config, task_label: str) -> int:
-    return count_proposal_records_with_failure_markers(
-        recent_task_failures(config, task_label, limit=100),
-        failure_kind="llm",
-        markers=frozenset(LLM_TERMINATION_ERROR_MARKERS),
-    )
-
-
-def pre_llm_block_decision(config: Config, task_label: str) -> Optional[PreLlmBlockDecision]:
-    """Return a durable stop decision for tasks that are already known-stuck."""
-
-    syntax_probe = Proposal(failure_kind="syntax_preflight")
-    termination_probe = Proposal(failure_kind="llm_termination")
-    return first_failure_block_decision(
-        (
-            FailureBlockRule(
-                failure_kind="syntax_preflight",
-                count=task_failure_count(config, task_label, kinds={"syntax_preflight"}),
-                threshold=failure_block_threshold(syntax_probe, config),
-                summary="Task blocked before LLM after repeated syntax-preflight failures.",
-                result="syntax_preflight_blocked",
-            ),
-            FailureBlockRule(
-                failure_kind="llm_termination",
-                count=llm_termination_failure_count(config, task_label),
-                threshold=failure_block_threshold(termination_probe, config),
-                summary="Task blocked before LLM after repeated LLM termination failures.",
-                result="llm_termination_blocked",
-            ),
-        )
-    )
-
-
-def should_block_task_before_llm(config: Config, task_label: str) -> bool:
-    """Stop retrying a task that already hit a pre-LLM block threshold."""
-
-    return pre_llm_block_decision(config, task_label) is not None
-
-
 def build_deterministic_task_fallback_proposal(config: Config, selected: Task) -> Optional[Proposal]:
     return build_ppd_deterministic_task_fallback_proposal(
         config,
         selected,
         default_validation_commands=DEFAULT_VALIDATION_COMMANDS,
     )
-
-
-def format_failure_context(failures: list[dict[str, Any]]) -> str:
-    return format_recent_failure_context(
-        failures,
-        guidance=lambda recent: (
-            [
-                "Recovery guidance: a validator found a forbidden artifact marker inside the proposed fixture or test text. "
-                "Return only one JSON object on the retry, and use a small file set that fixes the self-triggering field names. "
-                "When representing absence, avoid keys or values containing banned substrings such as cookie, screenshot, "
-                "auth-state, storage-state, trace.zip, or .har. Use neutral names like `runtimeArtifactsStored`, "
-                "`visualArtifactsStored`, `authenticatedArtifactsStored`, or `forbiddenArtifactsAbsent` instead of "
-                "`containsCookies`, `screenshotsStored`, or similar self-triggering absence fields."
-            ]
-            if any(is_forbidden_absence_marker_validation_failure(dict(failure)) for failure in recent)
-            else []
-        ),
-    )
-
-
-def is_forbidden_absence_marker_validation_failure(failure: dict[str, Any]) -> bool:
-    """Detect validation failures caused by fixture/test text containing banned marker words."""
-
-    if str(failure.get("failure_kind") or "") != "validation":
-        return False
-    text_parts: list[str] = []
-    for error in failure.get("errors", []) or []:
-        text_parts.append(str(error))
-    for result in failure.get("validation_results", []) or []:
-        if not isinstance(result, dict):
-            continue
-        text_parts.append(str(result.get("stdout", "")))
-        text_parts.append(str(result.get("stderr", "")))
-    text = "\n".join(text_parts).lower()
-    if "unexpectedly found" not in text and "assertnotin" not in text:
-        return False
-    return any(marker in text for marker in FORBIDDEN_ABSENCE_MARKERS)
-
 
 extract_json = todo_extract_json
 parse_proposal = parse_json_proposal
@@ -663,91 +382,6 @@ def persist_failed_work(proposal: Proposal, config: Config, *, diff_text: str, r
         transport,
         failed_dir_field="failed_dir",
     )
-
-
-def build_prompt(config: Config, selected: Task) -> str:
-    failures = recent_task_failures(config, selected.label)
-    compact_prompt = should_use_compact_prompt(failures)
-    plan = read_text(config.resolve(config.plan_doc), limit=900 if compact_prompt else 22000)
-    board = read_text(config.resolve(config.task_board), limit=1800 if compact_prompt else 14000)
-    readme = (
-        read_text(config.resolve(config.readme), limit=1200 if compact_prompt else 8000)
-        if config.resolve(config.readme).exists()
-        else ""
-    )
-    failure_context = format_failure_context(failures)
-    context_files: list[str] = []
-    if compact_prompt:
-        context_files.append(
-            "Compact retry mode: omitted broad workspace file contents after repeated LLM parse/runtime failures. "
-            "Return a minimal JSON proposal with one fixture and one focused test when possible."
-        )
-    else:
-        for path in sorted((config.repo_root / "ppd").glob("**/*")):
-            if not path.is_file():
-                continue
-            rel = path.relative_to(config.repo_root).as_posix()
-            if rel.startswith("ppd/data/") or rel.startswith("ppd/daemon/accepted-work/") or rel.startswith("ppd/daemon/failed-patches/"):
-                continue
-            if rel.endswith((".py", ".md", ".json", ".ts", ".tsx", ".js", ".mjs")):
-                context_files.append(f"--- {rel} ---\n{read_text(path, limit=8000)}")
-            if len("\n".join(context_files)) > 18000:
-                break
-
-    prompt = f"""
-You are improving the isolated PP&D implementation workspace in a repository.
-
-Current task:
-{selected.label}
-
-Prompt mode:
-{"Compact retry mode: repeated LLM parse/runtime failures were recorded for this task. Return the smallest useful JSON file replacements and avoid broad context." if compact_prompt else "Full context mode."}
-
-Hard constraints:
-- Return ONLY one JSON object; no markdown fences and no prose outside JSON.
-- Use complete file replacements in a `files` array. Do not return shell commands.
-- Edit only files under `ppd/`, or `docs/PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md` if the task specifically requires plan updates.
-- Do not edit `src/lib/logic/`, `public/corpus/portland-or/current/`, `ipfs_datasets_py/.daemon/`, or the TypeScript logic daemon ledgers.
-- Do not create private DevHub session files, auth state, traces, raw crawl output, or downloaded documents.
-- Keep the change narrow and directly useful for the selected task.
-- Prefer deterministic fixtures and validation before any live crawl or authenticated automation.
-- Before returning JSON, ensure every Python file is syntactically valid Python and every TypeScript file is syntactically valid TypeScript. Do not mix TypeScript syntax into Python or Python typing/control-flow syntax into TypeScript.
-- Prefer adding narrow new modules and tests over rewriting stable shared contracts such as `ppd/contracts/documents.py`, unless the selected task directly requires a shared contract extension.
-- If recent failure context includes `SyntaxError`, `py_compile`, `TS1005`, `TS1109`, or `TS1128`, return a smaller proposal with only the files needed for a syntax-valid implementation or repair.
-- Put committed PP&D fixtures under `ppd/tests/fixtures/...`. Tests in `ppd/tests/` should derive fixture paths from their own file location, for example `Path(__file__).parent / "fixtures" / ...`, so they do not accidentally point at repository-root `tests/fixtures`.
-- Do not mark task-board checkboxes complete in the same proposal unless the implementation, fixtures, and validation code for the selected task are all included. The daemon will mark the selected task complete after validation passes.
-- Do not automate CAPTCHA, MFA, account creation, payment, submission, certification, cancellation, or upload actions.
-- If compact retry mode is active, do not inspect or request additional context. Return the smallest useful JSON file replacements for the current task.
-
-JSON schema:
-{{
-  "summary": "short summary",
-  "impact": "why this advances the PP&D plan",
-  "files": [
-    {{"path": "ppd/...", "content": "complete replacement file content"}}
-  ],
-  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
-}}
-
-Recent failure context for this task:
-{failure_context}
-
-PP&D plan:
-{plan}
-
-PP&D task board:
-{board}
-
-PP&D workspace context:
-{readme}
-
-Current files:
-{chr(10).join(context_files)}
-"""
-    prompt_limit = effective_prompt_limit(config, compact_prompt=compact_prompt)
-    if len(prompt) > prompt_limit:
-        prompt = prompt[:prompt_limit] + "\n\n[truncated]\n"
-    return prompt
 
 
 def call_llm(prompt: str, config: Config) -> str:
