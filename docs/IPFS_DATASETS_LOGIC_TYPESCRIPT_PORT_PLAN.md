@@ -996,7 +996,7 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 - [x] Manual unblock: implement a browser-native TDFOL ZKP acceleration scheduler slice with worker-safe proof-search queues, deterministic simulated prover fallback, and tests covering parallel-search metadata without requiring server crypto.
 - [x] Manual unblock: complete a modal tableaux countermodel export slice that turns proof search branches into serializable visualization data and validates it against existing TDFOL/CEC examples.
 - [x] Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.
-- [ ] Manual unblock: port the next deterministic `ml_confidence.py` parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.
+- [x] Manual unblock: port the next deterministic `ml_confidence.py` parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.
 - [ ] Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.
 - [ ] Manual unblock: remove the next `nlpUnavailable` or `mlUnavailable` capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.
 - [ ] Manual unblock: complete an EVM public-input and verification-key registry helper slice using browser-compatible crypto abstractions and deterministic tests.
@@ -1024,11 +1024,11 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 05:43:54 UTC
+Last updated: 2026-05-05 05:47:46 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-457: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.`
+Current target: `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1489,8 +1489,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-453: Port remaining Python logic module 'logic/zkp/form_circuit.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-454: Manual unblock: implement a browser-native TDFOL ZKP acceleration scheduler slice with worker-safe proof-search queues, deterministic simulated prover fallback, and tests covering parallel-search metadata without requiring server crypto.` - complete
 - [x] `Task checkbox-455: Manual unblock: complete a modal tableaux countermodel export slice that turns proof search branches into serializable visualization data and validates it against existing TDFOL/CEC examples.` - complete
-- [x] `Task checkbox-456: Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.` - validated by latest daemon round
-- [ ] `Task checkbox-457: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.` - needed
+- [x] `Task checkbox-456: Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.` - complete
+- [x] `Task checkbox-457: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.` - validated by latest daemon round
 - [ ] `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.` - needed
 - [ ] `Task checkbox-459: Manual unblock: remove the next 'nlpUnavailable' or 'mlUnavailable' capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.` - needed
 - [ ] `Task checkbox-460: Manual unblock: complete an EVM public-input and verification-key registry helper slice using browser-compatible crypto abstractions and deterministic tests.` - needed
@@ -1517,11 +1517,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-456: Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.`
+- Target: `Task checkbox-457: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.`
 - Result: `valid`
-- Summary: Added a browser-native TDFOL security bundle validator for fail-closed formula, proof-cache, witness, and ZKP public input checks.
-- Impact: The TypeScript TDFOL validator now exposes a single local validation surface that rejects malformed formulas, non-browser cached proof methods, unsafe witness fields, and invalid ZKP public inputs before proof or cache results are trusted. The focused Jest test exercises both accepted and rejected bundles in the existing logic validation suite.
-- Accepted changed files: `src/lib/logic/tdfol/securityValidator.test.ts`, `src/lib/logic/tdfol/securityValidator.ts`
+- Summary: Added fixture-backed calibrated ML confidence scoring metadata and validation for the browser-native ml_confidence.py parity slice.
+- Impact: src/lib/logic/mlConfidence.ts now validates deterministic artifact calibration metadata, exposes calibrated score results, and keeps server/Python runtime calls explicitly disallowed. The Jest coverage loads the existing Python parity fixture, scores it with a local calibrated artifact, and verifies the score stays within the captured Python tolerance; the logic-port ledger marks checkbox-457 complete.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/browserNativeValidation.test.ts`, `src/lib/logic/mlConfidence.test.ts`, `src/lib/logic/mlConfidence.ts`
 
 ### Blocked Backlog
 

@@ -1,6 +1,7 @@
 import {
   FeatureExtractor,
   ML_CONFIDENCE_FEATURE_NAMES,
+  MLConfidenceCalibrationMetadata,
   MLConfidenceModelArtifact,
   MLConfidenceScorer,
   getMLConfidenceModelState,
@@ -8,6 +9,39 @@ import {
   predictMLConfidence,
   unloadMLConfidenceModel,
 } from './mlConfidence';
+import fixtures from './parity/python-parity-fixtures.json';
+
+type MLConfidenceFixture = {
+  id: string;
+  kind: 'ml_confidence';
+  sentence: string;
+  fol_formula: string;
+  predicates: {
+    nouns?: string[];
+    verbs?: string[];
+    adjectives?: string[];
+    relations?: string[];
+  };
+  quantifiers: string[];
+  operators: string[];
+  python_heuristic_confidence: number;
+};
+
+const mlFixture = (fixtures as Array<{ kind: string }>).find(
+  (fixture) => fixture.kind === 'ml_confidence',
+) as MLConfidenceFixture | undefined;
+
+const calibrationMetadata = (fixture: MLConfidenceFixture): MLConfidenceCalibrationMetadata => ({
+  sourcePythonModule: 'logic/ml_confidence.py',
+  fixtureIds: [fixture.id],
+  expectedConfidence: fixture.python_heuristic_confidence,
+  tolerance: 1e-10,
+  calibratedAt: '2026-05-05T00:00:00.000Z',
+  runtime: 'browser-native-typescript',
+  serverCallsAllowed: false,
+  pythonRuntimeAllowed: false,
+  notes: 'Deterministic parity capture from Python ml_confidence.py fallback scoring.',
+});
 
 describe('browser-native ML confidence parity slice', () => {
   it('extracts the same 22 feature slots as the Python FeatureExtractor', () => {
@@ -66,11 +100,7 @@ describe('browser-native ML confidence parity slice', () => {
       featureNames: ML_CONFIDENCE_FEATURE_NAMES.slice(),
       weights: ML_CONFIDENCE_FEATURE_NAMES.map((name) => (name === 'total_predicates' ? 1.6 : 0)),
       bias: -2,
-      metadata: {
-        sourcePythonModule: 'logic/ml_confidence.py',
-        serverCallsAllowed: false,
-        pythonRuntimeAllowed: false,
-      },
+      metadata: calibrationMetadata(mlFixture as MLConfidenceFixture),
     };
 
     const scorer = new MLConfidenceScorer();
@@ -116,12 +146,14 @@ describe('browser-native ML confidence parity slice', () => {
   });
 
   it('exposes default artifact lifecycle helpers for browser callers', () => {
+    expect(mlFixture).toBeDefined();
     const artifact: MLConfidenceModelArtifact = {
       format: 'deterministic-linear-v1',
       version: 'linear-fixture',
       featureNames: ML_CONFIDENCE_FEATURE_NAMES.slice(),
       weights: ML_CONFIDENCE_FEATURE_NAMES.map((name) => (name === 'keyword_count' ? 0.2 : 0)),
       bias: 0.1,
+      metadata: calibrationMetadata(mlFixture as MLConfidenceFixture),
     };
 
     expect(loadMLConfidenceModelArtifact(artifact)).toMatchObject({
@@ -131,5 +163,42 @@ describe('browser-native ML confidence parity slice', () => {
     });
     expect(getMLConfidenceModelState()).toMatchObject({ loaded: true, source: 'artifact' });
     expect(unloadMLConfidenceModel()).toMatchObject({ loaded: false, source: 'heuristic' });
+  });
+
+  it('scores fixture-backed calibrated artifacts with local browser metadata', () => {
+    expect(mlFixture).toBeDefined();
+    const fixture = mlFixture as MLConfidenceFixture;
+    const artifact: MLConfidenceModelArtifact = {
+      format: 'deterministic-linear-v1',
+      version: 'python-ml-confidence-fixture-calibrated-v1',
+      featureNames: ML_CONFIDENCE_FEATURE_NAMES.slice(),
+      weights: ML_CONFIDENCE_FEATURE_NAMES.map(() => 0),
+      bias: fixture.python_heuristic_confidence,
+      metadata: calibrationMetadata(fixture),
+    };
+
+    const scorer = new MLConfidenceScorer();
+    scorer.loadModelArtifact(artifact);
+
+    const result = scorer.scoreWithCalibration(
+      fixture.sentence,
+      fixture.fol_formula,
+      fixture.predicates,
+      fixture.quantifiers,
+      fixture.operators,
+    );
+
+    expect(result.confidence).toBeCloseTo(fixture.python_heuristic_confidence, 10);
+    expect(result.calibration).toMatchObject({
+      expectedConfidence: fixture.python_heuristic_confidence,
+      tolerance: 1e-10,
+      withinTolerance: true,
+      fixtureIds: [fixture.id],
+    });
+    expect(result.modelState.calibration).toMatchObject({
+      runtime: 'browser-native-typescript',
+      serverCallsAllowed: false,
+      pythonRuntimeAllowed: false,
+    });
   });
 });

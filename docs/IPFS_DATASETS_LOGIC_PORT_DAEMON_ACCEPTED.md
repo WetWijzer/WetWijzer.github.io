@@ -2405,3 +2405,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T054355Z-added-a-browser-native-tdfol-security-bundle-validator-for-fail-closed-formula-p.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T054355Z-added-a-browser-native-tdfol-security-bundle-validator-for-fail-closed-formula-p.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T054355Z-added-a-browser-native-tdfol-security-bundle-validator-for-fail-closed-formula-p.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 05:47:46 UTC
+
+- Target: `Task checkbox-457: Manual unblock: port the next deterministic `ml_confidence.py` parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.`
+- Summary: Added fixture-backed calibrated ML confidence scoring metadata and validation for the browser-native ml_confidence.py parity slice.
+- Impact: src/lib/logic/mlConfidence.ts now validates deterministic artifact calibration metadata, exposes calibrated score results, and keeps server/Python runtime calls explicitly disallowed. The Jest coverage loads the existing Python parity fixture, scores it with a local calibrated artifact, and verifies the score stays within the captured Python tolerance; the logic-port ledger marks checkbox-457 complete.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/browserNativeValidation.test.ts`, `src/lib/logic/mlConfidence.test.ts`, `src/lib/logic/mlConfidence.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T054746Z-added-fixture-backed-calibrated-ml-confidence-scoring-metadata-and-validation-fo.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T054746Z-added-fixture-backed-calibrated-ml-confidence-scoring-metadata-and-validation-fo.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T054746Z-added-fixture-backed-calibrated-ml-confidence-scoring-metadata-and-validation-fo.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

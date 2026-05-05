@@ -30,7 +30,19 @@ export interface MLConfidenceModelArtifact {
   weights: Array<number>;
   bias: number;
   threshold?: number;
-  metadata?: Record<string, unknown>;
+  metadata?: MLConfidenceCalibrationMetadata;
+}
+
+export interface MLConfidenceCalibrationMetadata {
+  sourcePythonModule: 'logic/ml_confidence.py';
+  fixtureIds: Array<string>;
+  expectedConfidence: number;
+  tolerance: number;
+  calibratedAt?: string;
+  runtime: 'browser-native-typescript';
+  serverCallsAllowed: false;
+  pythonRuntimeAllowed: false;
+  notes?: string;
 }
 
 export interface MLConfidenceModelState {
@@ -41,6 +53,19 @@ export interface MLConfidenceModelState {
   featureCount: number;
   serverCallsAllowed: false;
   pythonRuntimeAllowed: false;
+  calibration?: MLConfidenceCalibrationMetadata;
+}
+
+export interface MLConfidenceScoreResult {
+  confidence: number;
+  modelState: MLConfidenceModelState;
+  calibration?: {
+    expectedConfidence: number;
+    tolerance: number;
+    delta: number;
+    withinTolerance: boolean;
+    fixtureIds: Array<string>;
+  };
 }
 
 export const ML_CONFIDENCE_FEATURE_NAMES = [
@@ -144,6 +169,7 @@ export class MLConfidenceScorer {
         featureCount: this.artifact.weights.length,
         serverCallsAllowed: false,
         pythonRuntimeAllowed: false,
+        calibration: this.artifact.metadata,
       };
     }
     return {
@@ -199,6 +225,38 @@ export class MLConfidenceScorer {
       this.trainedBias,
     );
     return clamp01(1 / (1 + Math.exp(-raw)));
+  }
+
+  scoreWithCalibration(
+    sentence: string,
+    folFormula: string,
+    predicates: ConfidencePredicates,
+    quantifiers: string[],
+    operators: string[],
+  ): MLConfidenceScoreResult {
+    const confidence = this.predictConfidence(
+      sentence,
+      folFormula,
+      predicates,
+      quantifiers,
+      operators,
+    );
+    const metadata = this.artifact?.metadata;
+    if (!metadata) {
+      return { confidence, modelState: this.modelState };
+    }
+    const delta = Math.abs(confidence - metadata.expectedConfidence);
+    return {
+      confidence,
+      modelState: this.modelState,
+      calibration: {
+        expectedConfidence: metadata.expectedConfidence,
+        tolerance: metadata.tolerance,
+        delta,
+        withinTolerance: delta <= metadata.tolerance,
+        fixtureIds: metadata.fixtureIds.slice(),
+      },
+    };
   }
 
   loadModelArtifact(artifact: MLConfidenceModelArtifact): MLConfidenceModelState {
@@ -400,11 +458,39 @@ function validateModelArtifact(artifact: MLConfidenceModelArtifact): MLConfidenc
   if (!Number.isFinite(artifact.bias)) {
     throw new Error('ML confidence artifact bias must be finite');
   }
+  const metadata = artifact.metadata ? validateCalibrationMetadata(artifact.metadata) : undefined;
   return {
     ...artifact,
     featureNames: artifact.featureNames.slice(),
     weights: artifact.weights.slice(),
-    metadata: artifact.metadata ? { ...artifact.metadata } : undefined,
+    metadata,
+  };
+}
+
+function validateCalibrationMetadata(
+  metadata: MLConfidenceCalibrationMetadata,
+): MLConfidenceCalibrationMetadata {
+  if (metadata.sourcePythonModule !== 'logic/ml_confidence.py') {
+    throw new Error('ML confidence calibration must cite logic/ml_confidence.py');
+  }
+  if (metadata.runtime !== 'browser-native-typescript') {
+    throw new Error('ML confidence calibration runtime must be browser-native-typescript');
+  }
+  if (metadata.serverCallsAllowed !== false || metadata.pythonRuntimeAllowed !== false) {
+    throw new Error('ML confidence calibration must disallow server and Python runtime calls');
+  }
+  if (metadata.fixtureIds.length === 0 || metadata.fixtureIds.some((id) => !id.trim())) {
+    throw new Error('ML confidence calibration requires at least one fixture id');
+  }
+  if (!Number.isFinite(metadata.expectedConfidence)) {
+    throw new Error('ML confidence calibration expectedConfidence must be finite');
+  }
+  if (!Number.isFinite(metadata.tolerance) || metadata.tolerance < 0) {
+    throw new Error('ML confidence calibration tolerance must be a non-negative finite number');
+  }
+  return {
+    ...metadata,
+    fixtureIds: metadata.fixtureIds.slice(),
   };
 }
 

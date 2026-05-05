@@ -58,6 +58,10 @@ describe('browser-native end-to-end logic validation', () => {
       bias: 0.25,
       metadata: {
         sourcePythonModule: 'logic/ml_confidence.py',
+        fixtureIds: ['browser-native-e2e-fixture'],
+        expectedConfidence: 0.25,
+        tolerance: 0.75,
+        runtime: 'browser-native-typescript',
         serverCallsAllowed: false,
         pythonRuntimeAllowed: false,
       },
