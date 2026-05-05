@@ -8,6 +8,8 @@ import {
   PROOF_STATUS_VALUES,
   PROOF_TYPES_PORT_METADATA,
   QUANTIFIER_SYMBOLS,
+  TRANSLATION_TYPES_PORT_METADATA,
+  abstractLogicFormulaTypeFromDict,
   complexityMetricsToDict,
   createComplexityMetrics,
   formulaProtocolComplexity,
@@ -34,6 +36,7 @@ import {
   folFormulaTypeFromDict,
   predicateExtractionTypeFromDict,
   predicateTypeFromDict,
+  isLogicTranslationTarget,
   isProofResultConclusive,
   isProofStatus,
   proofResultFromDict,
@@ -41,9 +44,11 @@ import {
   proofStepFromDict,
   proofStepToDict,
   proverRecommendationFromDict,
+  translationResultTypeFromDict,
   validateBridgeTypesPort,
   validateFolTypesPort,
   validateProofTypesPort,
+  validateTranslationTypesPort,
 } from './types';
 
 describe('logic shared type parity helpers', () => {
@@ -369,25 +374,25 @@ describe('logic shared type parity helpers', () => {
   });
 
   it('serializes translation result and abstract formula shapes', () => {
-    const translation = new TranslationResultType(
-      'z3',
-      '(assert P)',
-      false,
-      0.4,
-      ['unsupported modal'],
-      ['projection'],
-      { local: true },
-      ['prelude'],
-    );
-    const abstract = new AbstractLogicFormulaType(
-      'deontic_logic',
-      ['O', '→'],
-      [['x', 'Agent']],
-      [['∀', 'x', 'Agent']],
-      ['ComplyWith(x, code)'],
-      { root: 'obligation' },
-      'formula-1',
-    );
+    const translation = translationResultTypeFromDict({
+      target: 'z3',
+      translated_formula: '(assert P)',
+      success: false,
+      confidence: 0.4,
+      errors: ['unsupported modal'],
+      warnings: ['projection'],
+      metadata: { local: true },
+      dependencies: ['prelude'],
+    });
+    const abstract = abstractLogicFormulaTypeFromDict({
+      formula_type: 'deontic_logic',
+      operators: ['O', '→'],
+      variables: [['x', 'Agent']],
+      quantifiers: [['∀', 'x', 'Agent']],
+      propositions: ['ComplyWith(x, code)'],
+      logical_structure: { root: 'obligation' },
+      source_formula: { formula_id: 'formula-1' },
+    });
 
     expect(translation.toDict()).toEqual({
       target: 'z3',
@@ -404,5 +409,25 @@ describe('logic shared type parity helpers', () => {
       source_formula_id: 'formula-1',
       logical_structure: { root: 'obligation' },
     });
+    expect(isLogicTranslationTarget('vampire')).toBe(true);
+    expect(isLogicTranslationTarget('server-prover')).toBe(false);
+    expect(
+      validateTranslationTypesPort({
+        target: 'smt-lib',
+        translated_formula: '(assert true)',
+        success: true,
+        server_calls_allowed: false,
+        python_runtime_allowed: false,
+      }),
+    ).toMatchObject({ valid: true, metadata: TRANSLATION_TYPES_PORT_METADATA });
+    expect(
+      validateTranslationTypesPort({
+        target: 'remote-prover',
+        translated_formula: 12,
+        success: 'yes',
+        server_calls_allowed: true,
+        python_runtime_allowed: true,
+      }),
+    ).toMatchObject({ valid: false });
   });
 });

@@ -846,6 +846,28 @@ export type LogicTranslationTarget =
   | 'hol'
   | 'pvs';
 
+export const TRANSLATION_TYPES_PORT_METADATA = {
+  sourcePythonModule: 'logic/types/translation_types.py',
+  browserNative: true,
+  serverCallsAllowed: false,
+  pythonRuntimeAllowed: false,
+  runtimeDependencies: [],
+} as const;
+
+export const LOGIC_TRANSLATION_TARGET_VALUES = {
+  LEAN: 'lean',
+  COQ: 'coq',
+  ISABELLE: 'isabelle',
+  SMT_LIB: 'smt-lib',
+  TPTP: 'tptp',
+  Z3: 'z3',
+  VAMPIRE: 'vampire',
+  E_PROVER: 'eprover',
+  AGDA: 'agda',
+  HOL: 'hol',
+  PVS: 'pvs',
+} as const satisfies Record<string, LogicTranslationTarget>;
+
 export class TranslationResultType {
   constructor(
     readonly target: LogicTranslationTarget,
@@ -872,6 +894,28 @@ export class TranslationResultType {
   }
 }
 
+export function isLogicTranslationTarget(value: unknown): value is LogicTranslationTarget {
+  return (
+    typeof value === 'string' &&
+    Object.values(LOGIC_TRANSLATION_TARGET_VALUES).includes(value as LogicTranslationTarget)
+  );
+}
+
+export function translationResultTypeFromDict(value: unknown): TranslationResultType {
+  const record = isRecord(value) ? value : {};
+  const target = isLogicTranslationTarget(record.target) ? record.target : 'tptp';
+  return new TranslationResultType(
+    target,
+    stringField(record, 'translated_formula', stringField(record, 'translatedFormula')),
+    booleanField(record, 'success'),
+    numberField(record, 'confidence', 1),
+    stringArrayField(record, 'errors'),
+    stringArrayField(record, 'warnings'),
+    recordField(record, 'metadata'),
+    stringArrayField(record, 'dependencies'),
+  );
+}
+
 export class AbstractLogicFormulaType {
   constructor(
     readonly formulaType: string,
@@ -894,6 +938,57 @@ export class AbstractLogicFormulaType {
       source_formula_id: this.sourceFormulaId,
     };
   }
+}
+
+export function abstractLogicFormulaTypeFromDict(value: unknown): AbstractLogicFormulaType {
+  const record = isRecord(value) ? value : {};
+  return new AbstractLogicFormulaType(
+    stringField(record, 'formula_type', stringField(record, 'formulaType')),
+    stringArrayField(record, 'operators'),
+    arrayField(record, 'variables').map(tuple2FromUnknown),
+    arrayField(record, 'quantifiers').map(tuple3FromUnknown),
+    stringArrayField(record, 'propositions'),
+    recordField(record, 'logical_structure', recordField(record, 'logicalStructure')),
+    sourceFormulaIdFromUnknown(record),
+  );
+}
+
+export function validateTranslationTypesPort(value: unknown): LogicValidationResult & {
+  metadata: typeof TRANSLATION_TYPES_PORT_METADATA;
+} {
+  const issues: Array<LogicValidationIssue> = [];
+  const record = isRecord(value) ? value : {};
+  if (!isRecord(value)) issues.push({ severity: 'error', message: 'expected_object' });
+  if (record.server_calls_allowed === true)
+    issues.push({
+      severity: 'error',
+      field: 'server_calls_allowed',
+      message: 'server calls are forbidden',
+    });
+  if (record.python_runtime_allowed === true)
+    issues.push({
+      severity: 'error',
+      field: 'python_runtime_allowed',
+      message: 'Python runtime is forbidden',
+    });
+  if ('target' in record && !isLogicTranslationTarget(record.target)) {
+    issues.push({
+      severity: 'error',
+      field: 'target',
+      message: 'unknown translation target',
+    });
+  }
+  if ('translated_formula' in record && typeof record.translated_formula !== 'string') {
+    issues.push({
+      severity: 'error',
+      field: 'translated_formula',
+      message: 'expected string translated formula',
+    });
+  }
+  if ('success' in record && typeof record.success !== 'boolean') {
+    issues.push({ severity: 'error', field: 'success', message: 'expected boolean success' });
+  }
+  return { valid: issues.length === 0, issues, metadata: TRANSLATION_TYPES_PORT_METADATA };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -976,4 +1071,29 @@ function complexityMetricsFromUnknown(value: unknown): ComplexityMetrics | undef
     predicateCount: numberField(value, 'predicate_count', numberField(value, 'predicateCount')),
     complexityScore: numberField(value, 'complexity_score', numberField(value, 'complexityScore')),
   });
+}
+
+function tuple2FromUnknown(value: unknown): [string, string] {
+  if (!Array.isArray(value)) return ['', ''];
+  return [String(value[0] ?? ''), String(value[1] ?? '')];
+}
+
+function tuple3FromUnknown(value: unknown): [string, string, string] {
+  if (!Array.isArray(value)) return ['', '', ''];
+  return [String(value[0] ?? ''), String(value[1] ?? ''), String(value[2] ?? '')];
+}
+
+function sourceFormulaIdFromUnknown(record: Record<string, unknown>): string | undefined {
+  const direct = stringField(record, 'source_formula_id', stringField(record, 'sourceFormulaId'));
+  if (direct !== '') return direct;
+  const sourceFormula = record.source_formula ?? record.sourceFormula;
+  if (isRecord(sourceFormula)) {
+    const formulaId = stringField(
+      sourceFormula,
+      'formula_id',
+      stringField(sourceFormula, 'formulaId'),
+    );
+    return formulaId === '' ? undefined : formulaId;
+  }
+  return undefined;
 }
