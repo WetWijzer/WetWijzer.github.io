@@ -45,6 +45,7 @@ from ipfs_datasets_py.optimizers.todo_daemon.engine import (  # noqa: E402
     append_jsonl,
     atomic_write_json,
     build_validation_workspace_spec,
+    command_results_from_objects,
     compact_message,
     cleanup_stale_validation_worktrees as cleanup_todo_validation_worktrees,
     diff_for_file as todo_diff_for_file,
@@ -981,15 +982,7 @@ def validation_results_from_syntax_preflight(worktree: Path, changed: list[str],
         changed,
         timeout=config.command_timeout_seconds,
     )
-    results = [
-        CommandResult(
-            command=result.command,
-            returncode=result.returncode,
-            stdout=result.stdout,
-            stderr=result.stderr,
-        )
-        for result in syntax_preflight.validation_results
-    ]
+    results = command_results_from_objects(syntax_preflight.validation_results)
     return results, list(syntax_preflight.errors), syntax_preflight.failure_kind
 
 
