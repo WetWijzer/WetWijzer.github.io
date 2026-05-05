@@ -94,12 +94,12 @@ This board is the controlling backlog for the isolated PP&D daemon. The daemon s
 <!-- ppd-daemon-task-board:start -->
 ## Generated Status
 
-Last updated: 2026-05-05T02:29:03.632397Z
+Last updated: 2026-05-05T04:21:27.743718Z
 
-- Latest target: `Task checkbox-241: Add a supervised live whole-site public crawl runner under ppd/crawler that resumes an allowlisted PP&D frontier, delegates archival capture to the ipfs_datasets_py processor suite, records robots and content-type decisions, and persists metadata manifests instead of raw bodies or downloaded documents.`
-- Latest result: `syntax_preflight`
-- Latest summary: Adds a syntax-valid supervised PP&D public crawl runner with deterministic fixture coverage.
-- Counts: `{"blocked": 198, "complete": 81, "in_progress": 0, "needed": 0}`
+- Latest target: `Task checkbox-460: Add Playwright/PDF handoff validation for tranche 5 proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.`
+- Latest result: `llm_termination_blocked`
+- Latest summary: Task blocked before LLM after repeated LLM termination failures.
+- Counts: `{"blocked": 209, "complete": 81, "in_progress": 0, "needed": 1}`
 
 <!-- ppd-daemon-task-board:end -->
 ## Built-In Supervisor Repair Notes
@@ -1298,3 +1298,36 @@ Last updated: 2026-05-05T02:29:03.632397Z
 ## Built-In Circuit Breaker Recovery Notes
 
 - Appended vetted non-generated recovery tasks after generated blocked-cascade work was quarantined. These tasks keep recovery inside PP&D daemon/supervisor fixtures, lifecycle handling, and documentation; they do not authorize live DevHub actions, uploads, submissions, payments, or real PDF filling.
+
+## Built-In Autonomous PP&D Platform Tranche 3
+
+- [!] Task checkbox-450: Add autonomous platform continuation coverage for tranche 3 proving whole-site archival, Playwright draft automation, PDF field filling, and formal-logic outputs stay connected through source evidence IDs.
+- [!] Task checkbox-451: Add processor-suite integration planning for tranche 3 proving PP&D public documents flow through archive manifests, normalized document records, PDF metadata, and requirement batches before agents use them.
+- [!] Task checkbox-452: Add Playwright/PDF handoff validation for tranche 3 proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.
+- [!] Task checkbox-453: Add supervisor idle-recovery validation for tranche 3 proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.
+## Built-In Supervisor Planning Notes
+
+- The completed PP&D recovery board now advances into autonomous platform work. This tranche is aligned to whole-site public archival, ipfs_datasets_py processor-suite handoff, guarded Playwright draft automation, local PDF field filling, and formal-logic guardrail extraction.
+- Slice policy: `autonomous_platform_after_completed_recovery`. The supervisor uses this deterministic tranche when an all-complete PP&D board would otherwise leave the daemon with no work.
+
+## Built-In Autonomous PP&D Platform Tranche 4
+
+- [!] Task checkbox-454: Add autonomous platform continuation coverage for tranche 4 proving whole-site archival, Playwright draft automation, PDF field filling, and formal-logic outputs stay connected through source evidence IDs.
+- [!] Task checkbox-455: Add processor-suite integration planning for tranche 4 proving PP&D public documents flow through archive manifests, normalized document records, PDF metadata, and requirement batches before agents use them.
+- [!] Task checkbox-456: Add Playwright/PDF handoff validation for tranche 4 proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.
+- [!] Task checkbox-457: Add supervisor idle-recovery validation for tranche 4 proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.
+## Built-In Supervisor Planning Notes
+
+- The completed PP&D recovery board now advances into autonomous platform work. This tranche is aligned to whole-site public archival, ipfs_datasets_py processor-suite handoff, guarded Playwright draft automation, local PDF field filling, and formal-logic guardrail extraction.
+- Slice policy: `autonomous_platform_after_completed_recovery`. The supervisor uses this deterministic tranche when an all-complete PP&D board would otherwise leave the daemon with no work.
+
+## Built-In Autonomous PP&D Platform Tranche 5
+
+- [!] Task checkbox-458: Add autonomous platform continuation coverage for tranche 5 proving whole-site archival, Playwright draft automation, PDF field filling, and formal-logic outputs stay connected through source evidence IDs.
+- [!] Task checkbox-459: Add processor-suite integration planning for tranche 5 proving PP&D public documents flow through archive manifests, normalized document records, PDF metadata, and requirement batches before agents use them.
+- [!] Task checkbox-460: Add Playwright/PDF handoff validation for tranche 5 proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.
+- [~] Task checkbox-461: Add supervisor idle-recovery validation for tranche 5 proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.
+## Built-In Supervisor Planning Notes
+
+- The completed PP&D recovery board now advances into autonomous platform work. This tranche is aligned to whole-site public archival, ipfs_datasets_py processor-suite handoff, guarded Playwright draft automation, local PDF field filling, and formal-logic guardrail extraction.
+- Slice policy: `autonomous_platform_after_completed_recovery`. The supervisor uses this deterministic tranche when an all-complete PP&D board would otherwise leave the daemon with no work.

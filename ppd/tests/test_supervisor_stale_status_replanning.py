@@ -55,6 +55,68 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
         self.assertEqual("plan_next_tasks", decision.action)
         self.assertTrue(decision.should_invoke_codex)
 
+    def test_blocked_only_board_with_no_eligible_status_plans_fresh_tasks(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            board = repo / "ppd" / "daemon" / "task-board.md"
+            board.parent.mkdir(parents=True)
+            board.write_text(
+                "- [!] Task checkbox-241: Add a supervised live whole-site public crawl runner.\n",
+                encoding="utf-8",
+            )
+            atomic_write_json(
+                repo / "ppd" / "daemon" / "status.json",
+                {
+                    "updated_at": "2026-05-02T00:00:00Z",
+                    "active_state": "no_eligible_tasks",
+                    "state": "no_eligible_tasks",
+                },
+            )
+            atomic_write_json(
+                repo / "ppd" / "daemon" / "progress.json",
+                {"latest": {"failure_kind": "no_eligible_tasks"}},
+            )
+
+            decision = diagnose(SupervisorConfig(repo_root=repo))
+
+        self.assertEqual("plan_next_tasks", decision.action)
+        self.assertIn("no eligible unblocked tasks", decision.reason)
+
+    def test_blocked_only_no_eligible_status_respects_termination_storm_breaker(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            target = "Task checkbox-241: Add a supervised live whole-site public crawl runner."
+            (daemon_dir / "task-board.md").write_text(f"- [!] {target}\n", encoding="utf-8")
+            atomic_write_json(
+                daemon_dir / "status.json",
+                {
+                    "updated_at": "2026-05-02T00:00:00Z",
+                    "active_state": "no_eligible_tasks",
+                    "state": "no_eligible_tasks",
+                },
+            )
+            atomic_write_json(
+                daemon_dir / "progress.json",
+                {"latest": {"failure_kind": "no_eligible_tasks"}},
+            )
+            for _ in range(8):
+                append_jsonl(
+                    daemon_dir / "ppd-daemon.jsonl",
+                    {
+                        "proposal": {
+                            "failure_kind": "llm",
+                            "target_task": target,
+                            "errors": ["llm_router child exited with code -15:"],
+                        }
+                    },
+                )
+
+            decision = diagnose(SupervisorConfig(repo_root=repo, termination_storm_threshold=8))
+
+        self.assertEqual("enter_termination_storm_circuit_breaker", decision.action)
+
     def test_completed_board_with_stale_calling_llm_status_plans_next_tasks_first(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
             repo = Path(tempdir)

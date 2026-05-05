@@ -77,6 +77,7 @@ class DaemonControlProcessFamilyShutdownTest(unittest.TestCase):
         self.assertIn("--max-prompt-chars 20000", source)
         self.assertIn("--max-compact-prompt-chars 3600", source)
         self.assertIn("--crash-backoff 5", source)
+        self.assertNotIn("--revisit-blocked", source)
         self.assertIn("--exception-backoff 5", source)
         self.assertIn("--termination-storm-threshold 8", source)
         self.assertIn("--termination-storm-backoff 900", source)
@@ -91,6 +92,8 @@ class DaemonControlProcessFamilyShutdownTest(unittest.TestCase):
         self.assertIn("cleanup_stale_child_on_start", watchdog)
         self.assertIn("stale_child_cleanup", watchdog)
         self.assertIn("terminate_process_family", watchdog)
+        self.assertIn("payload+=", watchdog)
+        self.assertIn("printf '%s\\n' \"$payload\"", watchdog)
 
     def test_watchdog_records_child_exit_and_cleans_pid_files_in_oneshot_mode(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:

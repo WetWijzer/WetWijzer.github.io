@@ -1,0 +1,49 @@
+{
+  "artifact_kind": "accepted_ephemeral_workspace",
+  "changed_files": [
+    "ppd/daemon/builtin-repair-status.json",
+    "ppd/daemon/task-board.md"
+  ],
+  "created_at": "2026-05-05T04:02:27.623861Z",
+  "impact": "The supervisor now records the failed self-heal diagnostics, validates the daemon without accepting the invalid patch, parks repeated syntax-loop tasks when needed, and can restart the worker on the explicit llm_router path instead of waiting for manual intervention.",
+  "summary": "Apply built-in supervisor fallback after failed agentic repair.",
+  "target_task": "Built-in supervisor fallback: daemon has no eligible unblocked tasks; review blocked work against the PP&D goal and append a fresh goal-aligned tranche instead of retrying parked tasks",
+  "transport": "ephemeral_worktree",
+  "validation_results": [
+    {
+      "command": [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{ \"ok\": true, \"task_count\": 287 }"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "ppd/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "returncode": 0,
+      "stderr": ".......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................ss..................sss............................................................................................................................................................................................................................................................................................................................... ---------------------------------------------------------------------- Ran 829 tests in 4.751s OK (skipped=5)",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "bash",
+        "-lc",
+        "files=$(find ppd -name '*.ts' -not -path '*/node_modules/*' -print); test -z \"$files\" || npx tsc --noEmit --target ES2020 --module ESNext --moduleResolution node --strict --skipLibCheck --types node $files"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ]
+}

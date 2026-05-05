@@ -1483,6 +1483,23 @@ def diagnose(config: SupervisorConfig, *, now: Optional[datetime] = None) -> Sup
         )
 
     if (
+        latest.get("failure_kind") == "no_eligible_tasks"
+        and tasks
+        and not any(task.status in {"needed", "in-progress"} for task in tasks)
+        and any(task.status == "blocked" for task in tasks)
+        and termination_storm_count < config.termination_storm_threshold
+    ):
+        return SupervisorDecision(
+            action="plan_next_tasks",
+            reason=(
+                "daemon has no eligible unblocked tasks; review blocked work against the PP&D goal "
+                "and append a fresh goal-aligned tranche instead of retrying parked tasks"
+            ),
+            severity="warning",
+            should_invoke_codex=True,
+        )
+
+    if (
         "## Checkbox-108 Supersession Note" not in board
         and has_recent_checkbox_133_no_file_stall(rows, latest)
         and has_checkbox_108_supersession_prerequisites(rows)

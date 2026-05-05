@@ -1,12 +1,12 @@
 {
-  "createdAt": "2026-05-05T02:03:54.374307Z",
+  "createdAt": "2026-05-05T04:22:04.683033Z",
   "decision": {
-    "action": "recover_termination_storm_and_restart",
-    "reason": "termination storm circuit breaker has quarantined generated work; append vetted non-generated recovery tasks and restart the daemon instead of refreshing the breaker",
+    "action": "enter_termination_storm_circuit_breaker",
+    "reason": "200 generated blocked-cascade daemon-repair tasks exhausted the fallback budget; pause worker restarts and task-board growth until the generated repair pile is quarantined or a vetted task is reopened",
     "severity": "critical"
   },
-  "operatorAction": "The supervisor converted the termination-storm pause into vetted non-generated recovery work. The daemon may resume on those tasks, while generated blocked-cascade tasks remain blocked.",
-  "recoveryTaskLabels": [],
-  "repairKind": "termination_storm_recovered",
+  "operatorAction": "The supervisor paused daemon restarts because repeated llm_router terminations were systemic. Harden resource limits or deterministic task handling before resuming.",
+  "quarantinedGeneratedTaskLabels": [],
+  "repairKind": "termination_storm_circuit_breaker",
   "schemaVersion": 1
 }

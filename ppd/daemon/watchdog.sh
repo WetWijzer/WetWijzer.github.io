@@ -39,17 +39,16 @@ append_event() {
   local exit_code="${5:-0}"
   local signal_number="${6:-}"
   local message="${7:-}"
-  {
-    printf '{"event":"%s","role":"%s","updated_at":"%s"' \
-      "$(json_escape "$event")" "$(json_escape "$ROLE")" "$(utc_now)"
-    [[ -n "$started_at" ]] && printf ',"started_at":"%s"' "$(json_escape "$started_at")"
-    [[ -n "$ended_at" ]] && printf ',"ended_at":"%s"' "$(json_escape "$ended_at")"
-    [[ "$pid" =~ ^[0-9]+$ ]] && printf ',"pid":%s' "$pid"
-    [[ "$exit_code" =~ ^[0-9]+$ ]] && printf ',"exit_code":%s' "$exit_code"
-    [[ -n "$signal_number" && "$signal_number" =~ ^[0-9]+$ ]] && printf ',"signal":%s' "$signal_number"
-    [[ -n "$message" ]] && printf ',"message":"%s"' "$(json_escape "$message")"
-    printf '}\n'
-  } >> "$LIFECYCLE_LOG"
+  local payload
+  payload="{\"event\":\"$(json_escape "$event")\",\"role\":\"$(json_escape "$ROLE")\",\"updated_at\":\"$(utc_now)\""
+  [[ -n "$started_at" ]] && payload+=",\"started_at\":\"$(json_escape "$started_at")\""
+  [[ -n "$ended_at" ]] && payload+=",\"ended_at\":\"$(json_escape "$ended_at")\""
+  [[ "$pid" =~ ^[0-9]+$ ]] && payload+=",\"pid\":$pid"
+  [[ "$exit_code" =~ ^[0-9]+$ ]] && payload+=",\"exit_code\":$exit_code"
+  [[ -n "$signal_number" && "$signal_number" =~ ^[0-9]+$ ]] && payload+=",\"signal\":$signal_number"
+  [[ -n "$message" ]] && payload+=",\"message\":\"$(json_escape "$message")\""
+  payload+="}"
+  printf '%s\n' "$payload" >> "$LIFECYCLE_LOG"
 }
 
 collect_descendant_pids() {

@@ -1,0 +1,70 @@
+--- a/ppd/daemon/builtin-repair-status.json
++++ b/ppd/daemon/builtin-repair-status.json
+@@ -1,12 +1,42 @@
+ {
+-  "createdAt": "2026-05-05T04:19:02.628162Z",
++  "createdAt": "2026-05-05T04:20:30.307695Z",
+   "decision": {
+-    "action": "recover_termination_storm_and_restart",
+-    "reason": "termination storm circuit breaker has quarantined generated work; append vetted non-generated recovery tasks and restart the daemon instead of refreshing the breaker",
+-    "severity": "critical"
++    "action": "plan_next_tasks",
++    "reason": "daemon has no eligible unblocked tasks; review blocked work against the PP&D goal and append a fresh goal-aligned tranche instead of retrying parked tasks",
++    "severity": "warning"
+   },
+-  "recoveryPolicy": "append_vetted_non_generated_recovery_tasks_after_quarantine",
+-  "recoveryTaskLabels": [],
+-  "repairKind": "termination_storm_recovery_tranche",
+-  "schemaVersion": 1
++  "failedAgenticRepair": {
++    "changedFiles": [],
++    "errors": [],
++    "failureKind": "no_eligible_tasks",
++    "summary": "All currently planned PP&D tasks are complete.",
++    "validationResults": []
++  },
++  "fallbackActions": [
++    "preserve failed repair diagnostics without accepting the invalid patch",
++    "run full PP&D daemon validation before restarting unattended worker attempts",
++    "restart the worker with PPD_LLM_BACKEND=llm_router after fallback validation passes",
++    "keep future retry scope narrow and fixture-first"
++  ],
++  "llmBackend": "llm_router",
++  "repairKind": "builtin_supervisor_fallback",
++  "safetyBoundaries": [
++    "no private DevHub session artifacts",
++    "no raw crawl output",
++    "no downloaded documents",
++    "no browser traces or screenshots",
++    "no consequential DevHub actions"
++  ],
++  "schemaVersion": 1,
++  "taskBoardRepair": {
++    "parkedRepeatedSyntaxLoopTasks": [],
++    "replenishedGoalTaskLabels": [
++      "checkbox-458",
++      "checkbox-459",
++      "checkbox-460",
++      "checkbox-461"
++    ],
++    "supersededTaskBoardOnlyLabels": [],
++    "taskBoardUpdated": true
++  }
+ }
+--- a/ppd/daemon/task-board.md
++++ b/ppd/daemon/task-board.md
+@@ -1320,3 +1320,14 @@
+ 
+ - The completed PP&D recovery board now advances into autonomous platform work. This tranche is aligned to whole-site public archival, ipfs_datasets_py processor-suite handoff, guarded Playwright draft automation, local PDF field filling, and formal-logic guardrail extraction.
+ - Slice policy: `autonomous_platform_after_completed_recovery`. The supervisor uses this deterministic tranche when an all-complete PP&D board would otherwise leave the daemon with no work.
++
++## Built-In Autonomous PP&D Platform Tranche 5
++
++- [ ] Task checkbox-458: Add autonomous platform continuation coverage for tranche 5 proving whole-site archival, Playwright draft automation, PDF field filling, and formal-logic outputs stay connected through source evidence IDs.
++- [ ] Task checkbox-459: Add processor-suite integration planning for tranche 5 proving PP&D public documents flow through archive manifests, normalized document records, PDF metadata, and requirement batches before agents use them.
++- [ ] Task checkbox-460: Add Playwright/PDF handoff validation for tranche 5 proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.
++- [ ] Task checkbox-461: Add supervisor idle-recovery validation for tranche 5 proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.
++## Built-In Supervisor Planning Notes
++
++- The completed PP&D recovery board now advances into autonomous platform work. This tranche is aligned to whole-site public archival, ipfs_datasets_py processor-suite handoff, guarded Playwright draft automation, local PDF field filling, and formal-logic guardrail extraction.
++- Slice policy: `autonomous_platform_after_completed_recovery`. The supervisor uses this deterministic tranche when an all-complete PP&D board would otherwise leave the daemon with no work.

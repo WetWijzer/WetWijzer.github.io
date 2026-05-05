@@ -1,12 +1,42 @@
 {
-  "createdAt": "2026-05-05T02:03:54.374307Z",
+  "createdAt": "2026-05-05T04:20:30.307695Z",
   "decision": {
-    "action": "recover_termination_storm_and_restart",
-    "reason": "termination storm circuit breaker has quarantined generated work; append vetted non-generated recovery tasks and restart the daemon instead of refreshing the breaker",
-    "severity": "critical"
+    "action": "plan_next_tasks",
+    "reason": "daemon has no eligible unblocked tasks; review blocked work against the PP&D goal and append a fresh goal-aligned tranche instead of retrying parked tasks",
+    "severity": "warning"
   },
-  "recoveryPolicy": "append_vetted_non_generated_recovery_tasks_after_quarantine",
-  "recoveryTaskLabels": [],
-  "repairKind": "termination_storm_recovery_tranche",
-  "schemaVersion": 1
+  "failedAgenticRepair": {
+    "changedFiles": [],
+    "errors": [],
+    "failureKind": "no_eligible_tasks",
+    "summary": "All currently planned PP&D tasks are complete.",
+    "validationResults": []
+  },
+  "fallbackActions": [
+    "preserve failed repair diagnostics without accepting the invalid patch",
+    "run full PP&D daemon validation before restarting unattended worker attempts",
+    "restart the worker with PPD_LLM_BACKEND=llm_router after fallback validation passes",
+    "keep future retry scope narrow and fixture-first"
+  ],
+  "llmBackend": "llm_router",
+  "repairKind": "builtin_supervisor_fallback",
+  "safetyBoundaries": [
+    "no private DevHub session artifacts",
+    "no raw crawl output",
+    "no downloaded documents",
+    "no browser traces or screenshots",
+    "no consequential DevHub actions"
+  ],
+  "schemaVersion": 1,
+  "taskBoardRepair": {
+    "parkedRepeatedSyntaxLoopTasks": [],
+    "replenishedGoalTaskLabels": [
+      "checkbox-458",
+      "checkbox-459",
+      "checkbox-460",
+      "checkbox-461"
+    ],
+    "supersededTaskBoardOnlyLabels": [],
+    "taskBoardUpdated": true
+  }
 }

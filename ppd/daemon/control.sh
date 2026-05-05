@@ -363,9 +363,9 @@ start() {
   if systemd_available; then
     stop_systemd_unit "$DAEMON_UNIT"
     run_systemd_watchdog_unit "$DAEMON_UNIT" \
-      "exec bash '$WATCHDOG_SCRIPT' daemon '$PID_FILE' '$CHILD_PID_FILE' '$LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_daemon.py --apply --watch --iterations 0 --interval 0 --llm-timeout 300 --llm-max-new-tokens 1536 --max-prompt-chars 20000 --max-compact-prompt-chars 3600 --crash-backoff 5 --revisit-blocked --repair-validation-failures >> '$OUT_FILE' 2>&1"
+      "exec bash '$WATCHDOG_SCRIPT' daemon '$PID_FILE' '$CHILD_PID_FILE' '$LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_daemon.py --apply --watch --iterations 0 --interval 0 --llm-timeout 300 --llm-max-new-tokens 1536 --max-prompt-chars 20000 --max-compact-prompt-chars 3600 --crash-backoff 5 --repair-validation-failures >> '$OUT_FILE' 2>&1"
   else
-    setsid -f bash -c "cd '$ROOT' && exec bash '$WATCHDOG_SCRIPT' daemon '$PID_FILE' '$CHILD_PID_FILE' '$LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_daemon.py --apply --watch --iterations 0 --interval 0 --llm-timeout 300 --llm-max-new-tokens 1536 --max-prompt-chars 20000 --max-compact-prompt-chars 3600 --crash-backoff 5 --revisit-blocked --repair-validation-failures >> '$OUT_FILE' 2>&1"
+    setsid -f bash -c "cd '$ROOT' && exec bash '$WATCHDOG_SCRIPT' daemon '$PID_FILE' '$CHILD_PID_FILE' '$LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_daemon.py --apply --watch --iterations 0 --interval 0 --llm-timeout 300 --llm-max-new-tokens 1536 --max-prompt-chars 20000 --max-compact-prompt-chars 3600 --crash-backoff 5 --repair-validation-failures >> '$OUT_FILE' 2>&1"
   fi
   local pid
   if ! pid="$(wait_for_pid_file_process "$PID_FILE" 10)"; then

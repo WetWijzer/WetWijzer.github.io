@@ -300,6 +300,30 @@ def select_task(tasks: Iterable[Task], *, revisit_blocked: bool = False) -> Opti
     return None
 
 
+def select_task_for_config(tasks: Iterable[Task], config: Config) -> Optional[Task]:
+    """Select work while suppressing blocked tasks that already hit retry stop gates."""
+
+    task_list = list(tasks)
+    selected = select_task(task_list, revisit_blocked=False)
+    if selected is not None:
+        return selected
+    if not config.revisit_blocked:
+        return None
+    for task in task_list:
+        if task.status != "blocked":
+            continue
+        if task.checkbox_id in PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS:
+            continue
+        try:
+            block_decision = pre_llm_block_decision(config, task.label)
+        except Exception:
+            continue
+        if block_decision is not None:
+            continue
+        return task
+    return None
+
+
 def replace_task_mark(markdown: str, selected: Task, mark: str) -> str:
     seen = 0
     lines = markdown.splitlines(keepends=True)
@@ -1456,7 +1480,7 @@ class Daemon:
         board_path = self.config.resolve(self.config.task_board)
         board = read_text(board_path)
         tasks = parse_tasks(board)
-        selected = select_task(tasks, revisit_blocked=self.config.revisit_blocked)
+        selected = select_task_for_config(tasks, self.config)
         if selected is None:
             proposal = Proposal(summary="No eligible PP&D tasks remain.", failure_kind="no_eligible_tasks")
             proposal.dry_run = not self.config.apply

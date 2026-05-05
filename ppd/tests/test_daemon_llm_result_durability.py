@@ -14,6 +14,8 @@ from ppd.daemon.ppd_daemon import (
     Daemon,
     Proposal,
     failure_block_threshold,
+    parse_tasks,
+    select_task_for_config,
     should_block_task_before_llm,
     should_skip_validation_for_no_file_failure,
     terminate_process_group,
@@ -221,6 +223,70 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
         self.assertIn(f"- [!] {target}", board)
         self.assertIn("- [ ] Task checkbox-447: Add daemon circuit-breaker resume coverage.", board)
         self.assertEqual("llm_termination", progress["latest"]["failure_kind"])
+
+    def test_revisit_blocked_skips_task_with_repeated_llm_terminations(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            target = "Task checkbox-241: Add a supervised live whole-site public crawl runner."
+            for message in ("llm_router child exited with code -15:", "143"):
+                with (daemon_dir / "ppd-daemon.jsonl").open("a", encoding="utf-8") as handle:
+                    handle.write(
+                        json.dumps(
+                            {
+                                "proposal": {
+                                    "failure_kind": "llm",
+                                    "target_task": target,
+                                    "errors": [message],
+                                }
+                            }
+                        )
+                        + "\n"
+                    )
+            board = (
+                "- [!] Task checkbox-241: Add a supervised live whole-site public crawl runner.\n"
+                "- [!] Task checkbox-242: Add processor-suite execution integration.\n"
+            )
+
+            selected = select_task_for_config(
+                parse_tasks(board),
+                Config(repo_root=repo, revisit_blocked=True),
+            )
+
+        self.assertIsNotNone(selected)
+        assert selected is not None
+        self.assertEqual(242, selected.checkbox_id)
+
+    def test_revisit_blocked_returns_no_eligible_when_all_blocked_tasks_are_suppressed(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            target = "Task checkbox-241: Add a supervised live whole-site public crawl runner."
+            (daemon_dir / "task-board.md").write_text(
+                "- [!] Task checkbox-241: Add a supervised live whole-site public crawl runner.\n",
+                encoding="utf-8",
+            )
+            for message in ("llm_router child exited with code -15:", "143"):
+                with (daemon_dir / "ppd-daemon.jsonl").open("a", encoding="utf-8") as handle:
+                    handle.write(
+                        json.dumps(
+                            {
+                                "proposal": {
+                                    "failure_kind": "llm",
+                                    "target_task": target,
+                                    "errors": [message],
+                                }
+                            }
+                        )
+                        + "\n"
+                    )
+            daemon = Daemon(Config(repo_root=repo, apply=True, revisit_blocked=True))
+
+            proposal = daemon.run_cycle()
+
+        self.assertEqual("no_eligible_tasks", proposal.failure_kind)
 
     def test_llm_timeout_cleanup_terminates_descendant_processes(self) -> None:
         process = subprocess.Popen(
