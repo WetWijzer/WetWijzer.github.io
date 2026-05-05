@@ -2135,3 +2135,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T031552Z-ported-remaining-browser-native-eth-contract-artifact-parsing-parity-for-compile.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T031552Z-ported-remaining-browser-native-eth-contract-artifact-parsing-parity-for-compile.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T031552Z-ported-remaining-browser-native-eth-contract-artifact-parsing-parity-for-compile.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 03:21:03 UTC
+
+- Target: `Task checkbox-428: Port remaining Python logic module `logic/zkp/eth_integration.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Worktree direct-edit proposal.
+- Impact: Git harvested the isolated-worktree edits for validation.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/ethIntegration.test.ts`, `src/lib/logic/zkp/ethIntegration.ts`, `src/lib/logic/zkp/index.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T032103Z-worktree-direct-edit-proposal..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032103Z-worktree-direct-edit-proposal..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032103Z-worktree-direct-edit-proposal..stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

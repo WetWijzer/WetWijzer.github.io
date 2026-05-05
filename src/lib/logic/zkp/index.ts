@@ -2,6 +2,7 @@ export * from './backendProtocol';
 export * from './canonicalization';
 export * from './circuits';
 export * from './ethContractArtifacts';
+export * from './ethIntegration';
 export * from './ethVkRegistryPayloads';
 export * from './evmPublicInputs';
 export * from './facade';
