@@ -1006,7 +1006,7 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 - [x] Manual unblock: port `logic/CEC/native/advanced_inference.py` by adding a TypeScript advanced-inference registry, rule classification helpers, and parity tests for cognitive, modal, and deontic rule selection.
 - [x] Manual unblock: port `logic/CEC/native/cec_proof_cache.py` by adding CEC proof cache keys, TTL/LRU behavior, validation metadata, and deterministic browser storage tests.
 - [x] Manual unblock: port `logic/CEC/native/cec_zkp_integration.py` by adding an educational local ZKP integration facade with simulated backend parity and fail-closed unsupported-backend results.
-- [ ] Manual unblock: port `logic/CEC/native/context_manager.py` by adding discourse/context snapshots, entity bindings, temporal scopes, and deterministic merge/rollback tests.
+- [x] Manual unblock: port `logic/CEC/native/context_manager.py` by adding discourse/context snapshots, entity bindings, temporal scopes, and deterministic merge/rollback tests.
 - [ ] Manual unblock: port `logic/CEC/native/dcec_cleaning.py` by adding DCEC text/formula normalization, token cleanup, and fixture tests for malformed legal-text inputs.
 - [ ] Manual unblock: port `logic/CEC/native/dcec_integration.py` by adding DCEC token/formula conversion helpers, CEC bridge metadata, and round-trip validation tests.
 - [ ] Manual unblock: port `logic/CEC/native/dcec_namespace.py` by adding namespace registration, symbol statistics, validation diagnostics, and collision tests.
@@ -1024,11 +1024,11 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 07:01:03 UTC
+Last updated: 2026-05-05 07:03:16 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-467: Manual unblock: port 'logic/CEC/native/context_manager.py' by adding discourse/context snapshots, entity bindings, temporal scopes, and deterministic merge/rollback tests.`
+Current target: `Task checkbox-468: Manual unblock: port 'logic/CEC/native/dcec_cleaning.py' by adding DCEC text/formula normalization, token cleanup, and fixture tests for malformed legal-text inputs.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1499,8 +1499,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-463: Manual unblock: port IPFS/IPLD proof cache semantics to browser-native storage and content-addressed cache adapters with deterministic tests.` - complete
 - [x] `Task checkbox-464: Manual unblock: port 'logic/CEC/native/advanced_inference.py' by adding a TypeScript advanced-inference registry, rule classification helpers, and parity tests for cognitive, modal, and deontic rule selection.` - complete
 - [x] `Task checkbox-465: Manual unblock: port 'logic/CEC/native/cec_proof_cache.py' by adding CEC proof cache keys, TTL/LRU behavior, validation metadata, and deterministic browser storage tests.` - complete
-- [x] `Task checkbox-466: Manual unblock: port 'logic/CEC/native/cec_zkp_integration.py' by adding an educational local ZKP integration facade with simulated backend parity and fail-closed unsupported-backend results.` - validated by latest daemon round
-- [ ] `Task checkbox-467: Manual unblock: port 'logic/CEC/native/context_manager.py' by adding discourse/context snapshots, entity bindings, temporal scopes, and deterministic merge/rollback tests.` - needed
+- [x] `Task checkbox-466: Manual unblock: port 'logic/CEC/native/cec_zkp_integration.py' by adding an educational local ZKP integration facade with simulated backend parity and fail-closed unsupported-backend results.` - complete
+- [x] `Task checkbox-467: Manual unblock: port 'logic/CEC/native/context_manager.py' by adding discourse/context snapshots, entity bindings, temporal scopes, and deterministic merge/rollback tests.` - validated by latest daemon round
 - [ ] `Task checkbox-468: Manual unblock: port 'logic/CEC/native/dcec_cleaning.py' by adding DCEC text/formula normalization, token cleanup, and fixture tests for malformed legal-text inputs.` - needed
 - [ ] `Task checkbox-469: Manual unblock: port 'logic/CEC/native/dcec_integration.py' by adding DCEC token/formula conversion helpers, CEC bridge metadata, and round-trip validation tests.` - needed
 - [ ] `Task checkbox-470: Manual unblock: port 'logic/CEC/native/dcec_namespace.py' by adding namespace registration, symbol statistics, validation diagnostics, and collision tests.` - needed
@@ -1517,11 +1517,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-466: Manual unblock: port 'logic/CEC/native/cec_zkp_integration.py' by adding an educational local ZKP integration facade with simulated backend parity and fail-closed unsupported-backend results.`
+- Target: `Task checkbox-467: Manual unblock: port 'logic/CEC/native/context_manager.py' by adding discourse/context snapshots, entity bindings, temporal scopes, and deterministic merge/rollback tests.`
 - Result: `valid`
-- Summary: Added fail-closed unsupported-backend handling to the browser-native CEC ZKP facade while preserving deterministic simulated proof parity.
-- Impact: The TypeScript CEC ZKP integration now returns structured local error results for unavailable backends such as groth16 instead of attempting server/Python fallback or silently standard-proving, and the focused Jest test exercises the simulated facade plus fail-closed metadata.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/cecZkpIntegration.test.ts`, `src/lib/logic/cec/cecZkpIntegration.ts`
+- Summary: Ported the CEC context manager snapshot controls for bindings, temporal scopes, deterministic merge, and rollback.
+- Impact: The TypeScript CEC context manager now exposes browser-native discourse snapshots that preserve entity bindings and temporal scopes, restore prior context state, and merge branch snapshots deterministically. The focused Jest suite validates these parity behaviors directly.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/contextManager.test.ts`, `src/lib/logic/cec/contextManager.ts`
 
 ### Blocked Backlog
 

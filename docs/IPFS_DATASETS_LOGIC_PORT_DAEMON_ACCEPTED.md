@@ -2495,3 +2495,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T070103Z-added-fail-closed-unsupported-backend-handling-to-the-browser-native-cec-zkp-fac.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T070103Z-added-fail-closed-unsupported-backend-handling-to-the-browser-native-cec-zkp-fac.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T070103Z-added-fail-closed-unsupported-backend-handling-to-the-browser-native-cec-zkp-fac.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 07:03:16 UTC
+
+- Target: `Task checkbox-467: Manual unblock: port `logic/CEC/native/context_manager.py` by adding discourse/context snapshots, entity bindings, temporal scopes, and deterministic merge/rollback tests.`
+- Summary: Ported the CEC context manager snapshot controls for bindings, temporal scopes, deterministic merge, and rollback.
+- Impact: The TypeScript CEC context manager now exposes browser-native discourse snapshots that preserve entity bindings and temporal scopes, restore prior context state, and merge branch snapshots deterministically. The focused Jest suite validates these parity behaviors directly.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/contextManager.test.ts`, `src/lib/logic/cec/contextManager.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T070316Z-ported-the-cec-context-manager-snapshot-controls-for-bindings-temporal-scopes-de.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T070316Z-ported-the-cec-context-manager-snapshot-controls-for-bindings-temporal-scopes-de.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T070316Z-ported-the-cec-context-manager-snapshot-controls-for-bindings-temporal-scopes-de.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
