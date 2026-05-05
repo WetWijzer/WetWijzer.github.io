@@ -1,4 +1,5 @@
 import { axiomsCommitmentHex, normalizeProofText, theoremHashHex } from './canonicalization';
+import type { BrowserNativeZkpBackendProtocol } from './backendProtocol';
 
 const SIMULATED_MAGIC = new Uint8Array([0x53, 0x49, 0x4d, 0x5a, 0x4b, 0x50, 0x00, 0x01]);
 
@@ -31,7 +32,10 @@ export class ZKPProof {
     timestamp: number;
     sizeBytes?: number;
   }) {
-    this.proofData = input.proofData instanceof Uint8Array ? new Uint8Array(input.proofData) : new Uint8Array(input.proofData);
+    this.proofData =
+      input.proofData instanceof Uint8Array
+        ? new Uint8Array(input.proofData)
+        : new Uint8Array(input.proofData);
     this.publicInputs = { ...input.publicInputs };
     this.metadata = { ...input.metadata };
     this.timestamp = input.timestamp;
@@ -69,9 +73,13 @@ export class ZKPProof {
 
 export type SimulatedZKPProof = ZKPProof;
 
-export interface ZKBackend {
+export interface ZKBackend extends BrowserNativeZkpBackendProtocol {
   backendId: string;
-  generateProof(theorem: string, privateAxioms: string[], metadata?: Record<string, unknown>): Promise<ZKPProof>;
+  generateProof(
+    theorem: string,
+    privateAxioms: Array<string>,
+    metadata?: Record<string, unknown>,
+  ): Promise<ZKPProof>;
   verifyProof(proof: ZKPProof): Promise<boolean>;
 }
 
@@ -150,7 +158,8 @@ export class SimulatedBackend implements ZKBackend {
         ...metadata,
         num_axioms: privateAxioms.length,
         proof_system: 'Groth16 (simulated)',
-        simulated_proof_layout: metadata.simulated_proof_layout ?? this.simulatedProofLayoutMetadata(),
+        simulated_proof_layout:
+          metadata.simulated_proof_layout ?? this.simulatedProofLayoutMetadata(),
       },
       proofData,
       publicInputs: {
@@ -164,7 +173,11 @@ export class SimulatedBackend implements ZKBackend {
     });
   }
 
-  generate_proof(theorem: string, privateAxioms: string[], metadata: Record<string, unknown> = {}): Promise<ZKPProof> {
+  generate_proof(
+    theorem: string,
+    privateAxioms: string[],
+    metadata: Record<string, unknown> = {},
+  ): Promise<ZKPProof> {
     return this.generateProof(theorem, privateAxioms, metadata);
   }
 
@@ -185,7 +198,10 @@ export class SimulatedBackend implements ZKBackend {
       if (proof.proofData.byteLength < 100 || proof.proofData.byteLength > 300) {
         return false;
       }
-      if (proof.proofData.byteLength >= 8 && bytesToHex(proof.proofData.slice(0, 8)) !== bytesToHex(SIMULATED_MAGIC)) {
+      if (
+        proof.proofData.byteLength >= 8 &&
+        bytesToHex(proof.proofData.slice(0, 8)) !== bytesToHex(SIMULATED_MAGIC)
+      ) {
         return false;
       }
       if (!Object.prototype.hasOwnProperty.call(proof.metadata, 'proof_system')) {
@@ -215,7 +231,11 @@ export class SimulatedBackend implements ZKBackend {
     return sha256Bytes(stableJsonStringify(axioms.map(normalizeProofText)));
   }
 
-  private async simulateGroth16Proof(circuitHash: Uint8Array, witness: Uint8Array, theorem: string): Promise<Uint8Array> {
+  private async simulateGroth16Proof(
+    circuitHash: Uint8Array,
+    witness: Uint8Array,
+    theorem: string,
+  ): Promise<Uint8Array> {
     const theoremBytes = new TextEncoder().encode(normalizeProofText(theorem));
     const proofHash = await sha256Bytes(concatBytes(circuitHash, witness, theoremBytes));
     const padding = new Uint8Array(56);
@@ -250,7 +270,9 @@ export function getBackend(backend = 'simulated'): ZKBackend {
   if (normalized === 'groth16' || normalized === 'g16') {
     throw new ZKPError('Groth16 backend is not yet ported to browser-native WASM.');
   }
-  throw new ZKPError(`Unknown ZKP backend: ${JSON.stringify(backend)}. Available backends: 'simulated', 'groth16'`);
+  throw new ZKPError(
+    `Unknown ZKP backend: ${JSON.stringify(backend)}. Available backends: 'simulated', 'groth16'`,
+  );
 }
 
 export function get_backend(backend = 'simulated'): ZKBackend {

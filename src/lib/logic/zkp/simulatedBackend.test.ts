@@ -10,6 +10,13 @@ import {
   getBackend,
   listBackends,
 } from './simulatedBackend';
+import {
+  BACKEND_PROTOCOL_METADATA,
+  assertBackendProtocol,
+  backendSatisfiesProtocol,
+  describeBackendProtocol,
+  validateBackendProtocol,
+} from './backendProtocol';
 
 Object.defineProperty(globalThis, 'crypto', {
   value: webcrypto,
@@ -104,5 +111,33 @@ describe('browser-native simulated ZKP backend', () => {
     expect(backendIsAvailable('groth16')).toBe(false);
     expect(() => getBackend('unknown')).toThrow('Unknown ZKP backend');
     expect(() => getBackend('groth16')).toThrow('browser-native WASM');
+  });
+
+  it('ports the Python backend_protocol contract as a fail-closed browser-native validator', () => {
+    const backend = new SimulatedBackend();
+
+    expect(BACKEND_PROTOCOL_METADATA).toEqual({
+      browserNative: true,
+      pythonRuntimeAllowed: false,
+      requiredMethods: ['generateProof', 'verifyProof'],
+      serverCallsAllowed: false,
+      sourcePythonModule: 'logic/zkp/backends/backend_protocol.py',
+    });
+    expect(backendSatisfiesProtocol(backend)).toBe(true);
+    expect(validateBackendProtocol(backend)).toMatchObject({
+      backendId: 'simulated',
+      errors: [],
+      ok: true,
+    });
+    expect(
+      describeBackendProtocol({ backend_id: 'legacy', generateProof: async () => undefined }),
+    ).toMatchObject({
+      backendId: 'legacy',
+      errors: ['verifyProof must be a function'],
+      ok: false,
+    });
+    expect(() =>
+      assertBackendProtocol({ backendId: 'broken', verifyProof: async () => false }),
+    ).toThrow('generateProof must be a function');
   });
 });
