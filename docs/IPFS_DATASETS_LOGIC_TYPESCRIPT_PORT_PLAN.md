@@ -113,7 +113,7 @@ The TypeScript target should be a clean client-side domain library that preserve
 | `logic/zkp/canonicalization.py` | Port directly | Deterministic canonicalization, hashing, and field mapping are useful for verifying generated metadata consistency. Use Web Crypto or a small SHA-256 fallback. |
 | `logic/zkp/statement.py` | Port directly | Initial TypeScript parity now covers statement/witness/proof-statement JSON schemas, circuit reference parsing/formatting, field-element mapping, and Python-compatible witness defaults. |
 | `logic/zkp/circuits.py` | Port metadata and local constraint evaluators first | Initial TypeScript parity now covers high-level Boolean circuit construction, simplified R1CS export, MVP knowledge-of-axioms circuit metadata, and local TDFOL v1 Horn-derivation constraint checks without cryptographic backend claims. |
-| `logic/zkp/backends/simulated.py` and `logic/zkp/backends/__init__.py` | Port as browser-native simulated backend and registry | Initial TypeScript parity now covers simulated `ZKPProof` dictionary serialization, 160-byte `SIMZKP/1` proof layout generation, fail-closed simulated verification, backend metadata, aliases, availability checks, cache reset, and explicit unsupported Groth16 status without server fallback. |
+| `logic/zkp/backends/simulated.py` and `logic/zkp/backends/__init__.py` | Port as browser-native simulated backend and registry | TypeScript parity now covers simulated `ZKPProof` dictionary serialization and validation, 160-byte `SIMZKP/1` proof layout generation, deterministic seeded browser fixtures, segment commitment public inputs, fail-closed simulated verification, backend metadata, aliases, availability checks, cache reset, and explicit unsupported Groth16 status without server fallback. |
 | `logic/zkp/zkp_prover.py` and `logic/zkp/zkp_verifier.py` | Port simulated facades first, then real browser-native verification for supported circuits | Initial TypeScript parity now covers async browser-native prover/verifier facades, backend routing, canonicalized proof cache keys, cached theorem adaptation, `prove()` alias witness handling, public-input validation, expected-theorem checks, statistics, reset, and fail-closed unsupported-backend behavior. |
 | `logic/zkp/legal_theorem_semantics.py` and `logic/zkp/witness_manager.py` | Port directly as browser-native witness helpers | Initial TypeScript parity now covers TDFOL v1 Horn atom/axiom/theorem parsing, deterministic forward-chaining evaluation, derivation traces, witness generation, commitment validation, proof-statement creation, witness consistency checks, cache lookup, and Python-compatible aliases. |
 | `logic/zkp/evm_public_inputs.py` | Port directly as browser-native field packing | Initial TypeScript parity now covers BN254 Fr modulus export, 0x normalization, 32-byte hex-to-field reduction, SHA-256 text-to-field hashing, single public-input packing, batch packing, and Python-style validation errors without chain/RPC calls. |
@@ -936,7 +936,7 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Port remaining Python logic module `logic/zkp/backends/backend_protocol.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/backends/groth16_backup.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/backends/groth16_ffi.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
-- [ ] Port remaining Python logic module `logic/zkp/backends/simulated.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
+- [x] Port remaining Python logic module `logic/zkp/backends/simulated.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/eth_contract_artifacts.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/eth_integration.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/eth_vk_registry_payloads.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
@@ -966,11 +966,11 @@ These tasks were added automatically after the daemon found no eligible unchecke
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 03:07:55 UTC
+Last updated: 2026-05-05 03:10:55 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-426: Port remaining Python logic module 'logic/zkp/backends/simulated.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+Current target: `Task checkbox-427: Port remaining Python logic module 'logic/zkp/eth_contract_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1400,8 +1400,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-422: Port remaining Python logic module 'logic/types/translation_types.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-423: Port remaining Python logic module 'logic/zkp/backends/backend_protocol.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-424: Port remaining Python logic module 'logic/zkp/backends/groth16_backup.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [x] `Task checkbox-425: Port remaining Python logic module 'logic/zkp/backends/groth16_ffi.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
-- [ ] `Task checkbox-426: Port remaining Python logic module 'logic/zkp/backends/simulated.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
+- [x] `Task checkbox-425: Port remaining Python logic module 'logic/zkp/backends/groth16_ffi.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
+- [x] `Task checkbox-426: Port remaining Python logic module 'logic/zkp/backends/simulated.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
 - [ ] `Task checkbox-427: Port remaining Python logic module 'logic/zkp/eth_contract_artifacts.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-428: Port remaining Python logic module 'logic/zkp/eth_integration.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-429: Port remaining Python logic module 'logic/zkp/eth_vk_registry_payloads.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
@@ -1430,11 +1430,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-425: Port remaining Python logic module 'logic/zkp/backends/groth16_ffi.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Target: `Task checkbox-426: Port remaining Python logic module 'logic/zkp/backends/simulated.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 - Result: `valid`
-- Summary: Ported groth16_ffi.py as a browser-native injected WASM Groth16 backend.
-- Impact: The TypeScript logic port now exposes Groth16 FFI metadata and factories that use only injected local browser/WASM-compatible proving and verification functions, fail closed when absent, and are exercised by focused Jest coverage without Python, server calls, subprocesses, or filesystem fallbacks.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/groth16.test.ts`, `src/lib/logic/groth16.ts`, `src/lib/logic/zkp/index.ts`
+- Summary: Ported the remaining simulated ZKP backend parity slice with stricter proof dictionary validation, deterministic seeded browser proof fixtures, segment commitment public inputs, and fail-closed segment verification.
+- Impact: The TypeScript simulated backend now exposes Python-compatible proof aliases and dictionary validation while keeping proof generation and verification fully browser-native through Web Crypto. The focused Jest coverage validates SIMZKP/1 segment metadata, deterministic seeded proofs, tamper rejection, size mismatch rejection, registry behavior, and backend protocol compatibility, and the logic-port ledger marks checkbox-426 complete.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/simulatedBackend.test.ts`, `src/lib/logic/zkp/simulatedBackend.ts`
 
 ### Blocked Backlog
 

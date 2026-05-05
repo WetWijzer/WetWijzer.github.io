@@ -2117,3 +2117,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T030755Z-ported-groth16_ffi.py-as-a-browser-native-injected-wasm-groth16-backend..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T030755Z-ported-groth16_ffi.py-as-a-browser-native-injected-wasm-groth16-backend..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T030755Z-ported-groth16_ffi.py-as-a-browser-native-injected-wasm-groth16-backend..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 03:10:55 UTC
+
+- Target: `Task checkbox-426: Port remaining Python logic module `logic/zkp/backends/simulated.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported the remaining simulated ZKP backend parity slice with stricter proof dictionary validation, deterministic seeded browser proof fixtures, segment commitment public inputs, and fail-closed segment verification.
+- Impact: The TypeScript simulated backend now exposes Python-compatible proof aliases and dictionary validation while keeping proof generation and verification fully browser-native through Web Crypto. The focused Jest coverage validates SIMZKP/1 segment metadata, deterministic seeded proofs, tamper rejection, size mismatch rejection, registry behavior, and backend protocol compatibility, and the logic-port ledger marks checkbox-426 complete.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/simulatedBackend.test.ts`, `src/lib/logic/zkp/simulatedBackend.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T031055Z-ported-the-remaining-simulated-zkp-backend-parity-slice-with-stricter-proof-dict.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T031055Z-ported-the-remaining-simulated-zkp-backend-parity-slice-with-stricter-proof-dict.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T031055Z-ported-the-remaining-simulated-zkp-backend-parity-slice-with-stricter-proof-dict.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
