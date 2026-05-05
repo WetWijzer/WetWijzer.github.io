@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import ppd.daemon.ppd_daemon as daemon
 from ppd.daemon.ppd_daemon import (
     Config,
     Proposal,
@@ -132,6 +133,55 @@ class DaemonTemporaryWorktreeTransportTest(unittest.TestCase):
             self.assertEqual("ledger_only", rows[0]["artifacts"]["mode"])
             self.assertEqual(["ppd/generated/candidate.py"], rows[0]["changed_files"])
             self.assertTrue(rows[0]["promotion"]["verified"])
+
+    def test_promotion_mismatch_persists_failure_without_accepting_work(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            make_minimal_repo(repo)
+            target = repo / "ppd" / "generated" / "candidate.py"
+            proposal = Proposal(
+                summary="Add candidate with mismatched promotion",
+                files=[
+                    {
+                        "path": "ppd/generated/candidate.py",
+                        "content": "VALUE = 1\n",
+                    }
+                ],
+            )
+            config = Config(
+                repo_root=repo,
+                validation_commands=(("python3", "-c", "raise SystemExit(0)"),),
+            )
+            original_promote = daemon.promote_worktree_files
+
+            def corrupting_promote(config: Config, worktree: Path, changed) -> None:
+                original_promote(config, worktree, changed)
+                target.write_text("VALUE = 999\n", encoding="utf-8")
+
+            daemon.promote_worktree_files = corrupting_promote  # type: ignore[assignment]
+            try:
+                result = apply_files_with_validation(proposal, config)
+            finally:
+                daemon.promote_worktree_files = original_promote  # type: ignore[assignment]
+
+            failed_dir = repo / "ppd" / "daemon" / "failed-patches"
+            manifests = [
+                path
+                for path in failed_dir.glob("*promotion*.json")
+                if not path.name.endswith(".workspace.json")
+            ]
+
+            self.assertFalse(result.applied)
+            self.assertFalse(result.promotion_verified)
+            self.assertEqual("promotion", result.failure_kind)
+            self.assertTrue(result.promotion_errors)
+            self.assertIn("differs from accepted worktree", result.promotion_errors[0])
+            self.assertEqual("VALUE = 999\n", target.read_text(encoding="utf-8"))
+            self.assertEqual(1, len(manifests))
+            manifest = json.loads(manifests[0].read_text(encoding="utf-8"))
+            self.assertEqual("promotion", manifest["reason"])
+            self.assertEqual("ephemeral_worktree", manifest["transport"])
+            self.assertFalse((repo / "ppd" / "daemon" / "accepted-work" / "accepted-work.jsonl").exists())
 
     def test_stale_worktree_cleanup_removes_interrupted_validation_trees(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:

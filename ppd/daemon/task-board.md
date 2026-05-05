@@ -94,12 +94,12 @@ This board is the controlling backlog for the isolated PP&D daemon. The daemon s
 <!-- ppd-daemon-task-board:start -->
 ## Generated Status
 
-Last updated: 2026-05-05T06:28:55Z
+Last updated: 2026-05-05T15:09:00Z
 
-- Latest target: `Manual supervisor recovery continuation: exhausted generated repair backlog.`
-- Latest result: `manual_cleanup`
-- Latest summary: Compacted repeated generated platform tranches and appended vetted non-generated recovery continuation work.
-- Counts: `{"blocked": 198, "complete": 77, "in_progress": 0, "needed": 4}`
+- Latest target: `Task checkbox-452: Add accepted-work ledger-only migration coverage proving new accepted rounds append one JSONL ledger row by default and leave legacy sidecar artifacts ignored unless explicitly enabled.`
+- Latest result: `manual_recovery_accepted`
+- Latest summary: Added ledger-only migration coverage proving default accepted rounds append JSONL without creating new sidecars.
+- Counts: `{"blocked": 198, "complete": 80, "in_progress": 0, "needed": 1}`
 
 <!-- ppd-daemon-task-board:end -->
 ## Built-In Supervisor Repair Notes
@@ -1298,9 +1298,9 @@ Last updated: 2026-05-05T06:28:55Z
 
 ## Built-In Circuit Breaker Recovery Tranche
 
-- [ ] Task checkbox-450: Add supervisor blocked-cascade compaction coverage proving repeated generated repair tranches collapse into one quarantine note and never create more accepted-work sidecar panels.
-- [ ] Task checkbox-451: Add daemon promotion-mismatch coverage proving temporary-worktree files are byte-checked after promotion and failed promotions are persisted without marking tasks complete.
-- [ ] Task checkbox-452: Add accepted-work ledger-only migration coverage proving new accepted rounds append one JSONL ledger row by default and leave legacy sidecar artifacts ignored unless explicitly enabled.
+- [x] Task checkbox-450: Add supervisor blocked-cascade compaction coverage proving repeated generated repair tranches collapse into one quarantine note and never create more accepted-work sidecar panels.
+- [x] Task checkbox-451: Add daemon promotion-mismatch coverage proving temporary-worktree files are byte-checked after promotion and failed promotions are persisted without marking tasks complete.
+- [x] Task checkbox-452: Add accepted-work ledger-only migration coverage proving new accepted rounds append one JSONL ledger row by default and leave legacy sidecar artifacts ignored unless explicitly enabled.
 - [ ] Task checkbox-453: Add source-backed recovery continuation coverage proving all closed circuit-breaker recovery tasks synthesize this vetted non-generated tranche before restarting the daemon.
 ## Built-In Circuit Breaker Recovery Notes
 

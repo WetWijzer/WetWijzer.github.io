@@ -90,6 +90,12 @@ GENERATED_BLOCKED_CASCADE_TITLE_RE = re.compile(
     r"^Add generated blocked-cascade daemon-repair coverage for tranche \d+ item \d+ "
     r"proving blocked PP&D work stays parked until a fresh daemon repair task validates\.?$"
 )
+GENERATED_BLOCKED_CASCADE_QUARANTINE_HEADING = "## Built-In Generated Blocked-Cascade Quarantine Notes"
+GENERATED_BLOCKED_CASCADE_QUARANTINE_NOTE = (
+    "- Parked open generated blocked-cascade daemon-repair tasks after a systemic termination storm. "
+    "The supervisor will not grow generated fallback tranches again until the resource policy is hardened "
+    "or a vetted human-authored task is reopened."
+)
 MAX_GENERATED_BLOCKED_CASCADE_TASKS = 16
 
 SANITIZED_REPLENISHMENT_TITLES = (
@@ -545,18 +551,46 @@ def quarantine_generated_blocked_cascade_tasks(markdown: str) -> tuple[str, tupl
                 line = line.replace("- [ ]", "- [!]", 1).replace("- [~]", "- [!]", 1)
         repaired_lines.append(line)
 
-    if not changed_labels:
+    repaired, removed_existing_notes = compact_generated_blocked_cascade_quarantine_notes(
+        "".join(repaired_lines)
+    )
+    if not changed_labels and not removed_existing_notes:
         return markdown, ()
 
-    repaired = "".join(repaired_lines).rstrip()
-    if "## Built-In Generated Blocked-Cascade Quarantine Notes" not in repaired:
-        repaired += (
-            "\n\n## Built-In Generated Blocked-Cascade Quarantine Notes\n\n"
-            "- Parked open generated blocked-cascade daemon-repair tasks after a systemic termination storm. "
-            "The supervisor will not grow generated fallback tranches again until the resource policy is hardened "
-            "or a vetted human-authored task is reopened.\n"
-        )
-    return repaired + "\n", tuple(changed_labels)
+    return append_generated_blocked_cascade_quarantine_note(repaired), tuple(changed_labels)
+
+
+def compact_generated_blocked_cascade_quarantine_notes(markdown: str) -> tuple[str, bool]:
+    """Remove any existing generated blocked-cascade quarantine-note sections."""
+
+    cleaned: list[str] = []
+    removed = False
+    skipping = False
+    for line in markdown.splitlines(keepends=True):
+        stripped = line.strip()
+        if stripped == GENERATED_BLOCKED_CASCADE_QUARANTINE_HEADING:
+            removed = True
+            skipping = True
+            continue
+        if skipping and stripped.startswith("## "):
+            skipping = False
+        if skipping:
+            continue
+        cleaned.append(line)
+    return "".join(cleaned).rstrip(), removed
+
+
+def append_generated_blocked_cascade_quarantine_note(markdown: str) -> str:
+    """Append exactly one generated blocked-cascade quarantine-note section."""
+
+    return (
+        markdown.rstrip()
+        + "\n\n"
+        + GENERATED_BLOCKED_CASCADE_QUARANTINE_HEADING
+        + "\n\n"
+        + GENERATED_BLOCKED_CASCADE_QUARANTINE_NOTE
+        + "\n"
+    )
 
 
 def recent_failure_count_for_target(

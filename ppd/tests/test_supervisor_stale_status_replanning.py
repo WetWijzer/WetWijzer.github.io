@@ -506,6 +506,77 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
         self.assertEqual("paused_by_supervisor_circuit_breaker", paused["active_state"])
         self.assertEqual(["checkbox-443", "checkbox-444"], breaker["quarantinedGeneratedTaskLabels"])
 
+    def test_generated_blocked_cascade_quarantine_compacts_notes_without_sidecars(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            accepted_dir = daemon_dir / "accepted-work"
+            accepted_dir.mkdir()
+            (accepted_dir / "accepted-work.jsonl").write_text("", encoding="utf-8")
+            generated_lines = [
+                "- [!] Task checkbox-430: Add generated blocked-cascade daemon-repair coverage for tranche 47 item 1 proving blocked PP&D work stays parked until a fresh daemon repair task validates.",
+                "- [ ] Task checkbox-431: Add generated blocked-cascade daemon-repair coverage for tranche 47 item 2 proving blocked PP&D work stays parked until a fresh daemon repair task validates.",
+                "- [~] Task checkbox-432: Add generated blocked-cascade daemon-repair coverage for tranche 47 item 3 proving blocked PP&D work stays parked until a fresh daemon repair task validates.",
+            ]
+            duplicated_notes = (
+                "\n\n## Built-In Generated Blocked-Cascade Quarantine Notes\n\n"
+                "- stale quarantine note one.\n"
+                "\n## Built-In Generated Blocked-Cascade Quarantine Notes\n\n"
+                "- stale quarantine note two.\n"
+            )
+            (daemon_dir / "task-board.md").write_text(
+                "\n".join(generated_lines) + duplicated_notes,
+                encoding="utf-8",
+            )
+            atomic_write_json(
+                daemon_dir / "status.json",
+                {
+                    "updated_at": "2026-05-04T00:00:00Z",
+                    "active_state": "calling_llm",
+                    "active_target_task": (
+                        "Task checkbox-431: Add generated blocked-cascade daemon-repair coverage "
+                        "for tranche 47 item 2 proving blocked PP&D work stays parked until a fresh daemon repair task validates."
+                    ),
+                },
+            )
+            for _ in range(4):
+                append_jsonl(
+                    daemon_dir / "ppd-daemon.jsonl",
+                    {
+                        "stage": "before_validation",
+                        "diagnostic": {
+                            "failure_kind": "llm",
+                            "target_task": (
+                                "Task checkbox-431: Add generated blocked-cascade daemon-repair coverage "
+                                "for tranche 47 item 2 proving blocked PP&D work stays parked until a fresh daemon repair task validates."
+                            ),
+                            "errors": ["llm_router child exited with code -15:"],
+                        },
+                    },
+                )
+
+            decision = supervisor.run_once(
+                SupervisorConfig(
+                    repo_root=repo,
+                    pid_file=Path("ppd/daemon/missing.pid"),
+                    apply=True,
+                    termination_storm_threshold=4,
+                )
+            )
+            final_board = (daemon_dir / "task-board.md").read_text(encoding="utf-8")
+            sidecar_names = sorted(path.name for path in accepted_dir.iterdir())
+
+        self.assertEqual("enter_termination_storm_circuit_breaker", decision.action)
+        self.assertIn("- [!] Task checkbox-431", final_board)
+        self.assertIn("- [!] Task checkbox-432", final_board)
+        self.assertEqual(1, final_board.count("## Built-In Generated Blocked-Cascade Quarantine Notes"))
+        self.assertNotIn("stale quarantine note one", final_board)
+        self.assertNotIn("stale quarantine note two", final_board)
+        self.assertEqual(["accepted-work.jsonl"], sidecar_names)
+        self.assertNotIn(".workspace.json", "\n".join(sidecar_names))
+        self.assertNotIn(".diff.txt", "\n".join(sidecar_names))
+
     def test_active_circuit_breaker_observes_without_rewriting(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
             repo = Path(tempdir)
