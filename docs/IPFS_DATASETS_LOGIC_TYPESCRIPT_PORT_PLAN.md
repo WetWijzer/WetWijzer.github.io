@@ -983,16 +983,16 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Add end-to-end browser-native validation proving the converted logic runs without Python, spaCy, or server-side calls, including deterministic coverage for ML and NLP capability surfaces.
 - [x] Audit Python ML and spaCy expectations against the TypeScript/WASM implementation and add focused parity tests or local-model artifact loading tasks for unsupported browser-native behavior.
 - [x] Refresh the TypeScript port plan with a parity matrix mapping Python logic modules, TypeScript/WASM files, validation evidence, accepted work, and remaining browser-native tasks.
-- [ ] Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.
+- [x] Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.
 
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 04:37:34 UTC
+Last updated: 2026-05-05 04:42:36 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-451: Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.`
+Current target: `Task checkbox-219: Port remaining Python logic module 'logic/CEC/native/inference_rules/deontic.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1447,16 +1447,16 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-447: Review the accepted TypeScript logic changes against the original browser-native TypeScript/WASM port goal, then add or implement any missing parity tasks for Python logic behavior that lacks accepted-work evidence.` - complete
 - [x] `Task checkbox-448: Add end-to-end browser-native validation proving the converted logic runs without Python, spaCy, or server-side calls, including deterministic coverage for ML and NLP capability surfaces.` - complete
 - [x] `Task checkbox-449: Audit Python ML and spaCy expectations against the TypeScript/WASM implementation and add focused parity tests or local-model artifact loading tasks for unsupported browser-native behavior.` - complete
-- [x] `Task checkbox-450: Refresh the TypeScript port plan with a parity matrix mapping Python logic modules, TypeScript/WASM files, validation evidence, accepted work, and remaining browser-native tasks.` - validated by latest daemon round
-- [ ] `Task checkbox-451: Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.` - needed
+- [x] `Task checkbox-450: Refresh the TypeScript port plan with a parity matrix mapping Python logic modules, TypeScript/WASM files, validation evidence, accepted work, and remaining browser-native tasks.` - complete
+- [x] `Task checkbox-451: Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.` - validated by latest daemon round
 
 ### Latest Round
 
-- Target: `Task checkbox-450: Refresh the TypeScript port plan with a parity matrix mapping Python logic modules, TypeScript/WASM files, validation evidence, accepted work, and remaining browser-native tasks.`
+- Target: `Task checkbox-451: Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.`
 - Result: `valid`
-- Summary: Refreshed the TypeScript port plan with an auditable Python-to-TypeScript parity matrix.
-- Impact: The port ledger now maps Python logic module groups to browser-native TypeScript/WASM runtime files, validation evidence, accepted work, and remaining local-only tasks. The same matrix is exported by src/lib/logic/pythonLogicInventory.ts and covered by Jest so the validation suite can detect incomplete rows or non-browser-native follow-up work.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/pythonLogicInventory.test.ts`, `src/lib/logic/pythonLogicInventory.ts`
+- Summary: Added a browser-native public API export comparison helper for selected Python logic surfaces and exposed missing ML confidence snake-case adapters.
+- Impact: The TypeScript logic package now exports a deterministic comparison report that maps Python logic/api.py, logic/cli.py, and logic/ml_confidence.py public APIs to browser-native TypeScript exports, reports missing APIs fail-closed, and is directly exercised by focused Jest validation.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/index.ts`, `src/lib/logic/mlConfidence.ts`, `src/lib/logic/pythonSurfaceReplacements.test.ts`, `src/lib/logic/pythonSurfaceReplacements.ts`
 
 ### Blocked Backlog
 

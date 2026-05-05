@@ -2342,3 +2342,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T043735Z-refreshed-the-typescript-port-plan-with-an-auditable-python-to-typescript-parity.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T043735Z-refreshed-the-typescript-port-plan-with-an-auditable-python-to-typescript-parity.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T043735Z-refreshed-the-typescript-port-plan-with-an-auditable-python-to-typescript-parity.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 04:42:36 UTC
+
+- Target: `Task checkbox-451: Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.`
+- Summary: Added a browser-native public API export comparison helper for selected Python logic surfaces and exposed missing ML confidence snake-case adapters.
+- Impact: The TypeScript logic package now exports a deterministic comparison report that maps Python logic/api.py, logic/cli.py, and logic/ml_confidence.py public APIs to browser-native TypeScript exports, reports missing APIs fail-closed, and is directly exercised by focused Jest validation.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/index.ts`, `src/lib/logic/mlConfidence.ts`, `src/lib/logic/pythonSurfaceReplacements.test.ts`, `src/lib/logic/pythonSurfaceReplacements.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T044236Z-added-a-browser-native-public-api-export-comparison-helper-for-selected-python-l.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T044236Z-added-a-browser-native-public-api-export-comparison-helper-for-selected-python-l.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T044236Z-added-a-browser-native-public-api-export-comparison-helper-for-selected-python-l.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

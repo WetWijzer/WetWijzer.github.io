@@ -1,4 +1,7 @@
-import { createPythonSurfaceReplacementPlan } from './pythonSurfaceReplacements';
+import {
+  compareLogicPublicApis,
+  createPythonSurfaceReplacementPlan,
+} from './pythonSurfaceReplacements';
 
 describe('createPythonSurfaceReplacementPlan', () => {
   it('maps known Python API and CLI surfaces to browser-native replacements', () => {
@@ -63,5 +66,42 @@ describe('createPythonSurfaceReplacementPlan', () => {
       'scripts/export_logic.py',
       'python scripts/export_logic.py',
     ]);
+  });
+});
+
+describe('compareLogicPublicApis', () => {
+  it('maps default Python logic APIs to browser-native TypeScript exports', () => {
+    const report = compareLogicPublicApis();
+
+    expect(report).toMatchObject({
+      browserNative: true,
+      usesPythonRuntime: false,
+      usesServerRuntime: false,
+    });
+    expect(report.missingPythonApis).toEqual([]);
+    expect(report.adapters.map((adapter) => adapter.pythonApi)).toEqual(
+      expect.arrayContaining([
+        'convert_text_to_fol',
+        'run_logic_cli',
+        'extract_ml_confidence_features',
+      ]),
+    );
+    expect(report.adapters.every((adapter) => adapter.browserNative)).toBe(true);
+  });
+
+  it('reports missing Python public APIs without inventing server or Python fallbacks', () => {
+    const report = compareLogicPublicApis(
+      [{ pythonModule: 'logic/example.py', publicApis: ['known_api', 'missing_api'] }],
+      [{ typescriptModule: 'src/lib/logic/example.ts', publicExports: ['known_api'] }],
+    );
+
+    expect(report.adapters).toHaveLength(1);
+    expect(report.adapters[0]).toMatchObject({
+      pythonApi: 'known_api',
+      typescriptExport: 'known_api',
+      browserNative: true,
+    });
+    expect(report.missingPythonApis).toEqual(['logic/example.py:missing_api']);
+    expect(report.comparisons[0].coverageRatio).toBe(0.5);
   });
 });

@@ -46,6 +46,7 @@ export * from './normalization';
 export * from './observability';
 export * from './proofCache';
 export * from './pythonLogicInventory';
+export * from './pythonSurfaceReplacements';
 export * from './reasoning';
 export * from './runtimeCapabilities';
 export * from './security';

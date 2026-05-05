@@ -21,6 +21,45 @@ export interface PythonSurfaceReplacementPlan {
   readonly usesServerRuntime: false;
 }
 
+export interface PythonLogicPublicApiSurface {
+  readonly pythonModule: string;
+  readonly publicApis: readonly string[];
+}
+
+export interface TypeScriptLogicPublicExportSurface {
+  readonly typescriptModule: string;
+  readonly publicExports: readonly string[];
+}
+
+export interface LogicPublicApiCompatibilityAdapter {
+  readonly pythonApi: string;
+  readonly typescriptExport: string;
+  readonly adapterKind: 'direct-export' | 'snake-case-alias';
+  readonly browserNative: true;
+  readonly usesPythonRuntime: false;
+  readonly usesServerRuntime: false;
+}
+
+export interface LogicPublicApiComparison {
+  readonly pythonModule: string;
+  readonly typescriptModule: string;
+  readonly adapters: readonly LogicPublicApiCompatibilityAdapter[];
+  readonly missingPythonApis: readonly string[];
+  readonly coverageRatio: number;
+  readonly browserNative: true;
+  readonly usesPythonRuntime: false;
+  readonly usesServerRuntime: false;
+}
+
+export interface LogicPublicApiCompatibilityReport {
+  readonly comparisons: readonly LogicPublicApiComparison[];
+  readonly adapters: readonly LogicPublicApiCompatibilityAdapter[];
+  readonly missingPythonApis: readonly string[];
+  readonly browserNative: true;
+  readonly usesPythonRuntime: false;
+  readonly usesServerRuntime: false;
+}
+
 const PYTHON_RUNTIME_MARKERS = [
   'python ',
   'python3 ',
@@ -77,6 +116,70 @@ const DEFAULT_REPLACEMENTS: readonly PythonSurfaceReplacement[] = [
   },
 ];
 
+const DEFAULT_PYTHON_PUBLIC_APIS: readonly PythonLogicPublicApiSurface[] = [
+  {
+    pythonModule: 'logic/api.py',
+    publicApis: [
+      'convert_text_to_fol',
+      'convert_legal_text_to_deontic',
+      'convert_logic',
+      'prove_logic',
+      'create_logic_api',
+      'get_global_logic_api',
+      'reset_global_logic_api',
+      'compile_nl_to_policy',
+      'evaluate_nl_policy',
+      'build_signed_delegation',
+      'handle_logic_api_server_request',
+    ],
+  },
+  { pythonModule: 'logic/cli.py', publicApis: ['run_logic_cli'] },
+  {
+    pythonModule: 'logic/ml_confidence.py',
+    publicApis: ['extract_ml_confidence_features', 'predict_ml_confidence'],
+  },
+];
+
+const DEFAULT_TYPESCRIPT_PUBLIC_EXPORTS: readonly TypeScriptLogicPublicExportSurface[] = [
+  {
+    typescriptModule: 'src/lib/logic/index.ts',
+    publicExports: [
+      'build_signed_delegation',
+      'buildSignedDelegation',
+      'compile_nl_to_policy',
+      'compileNlToPolicy',
+      'convert_legal_text_to_deontic',
+      'convert_logic',
+      'convert_text_to_fol',
+      'convertLogic',
+      'convertTextToFol',
+      'createLogicApi',
+      'create_logic_api',
+      'evaluate_nl_policy',
+      'evaluateNlPolicy',
+      'getGlobalLogicApi',
+      'get_global_logic_api',
+      'handle_logic_api_server_request',
+      'handleLogicApiServerRequest',
+      'proveLogic',
+      'prove_logic',
+      'resetGlobalLogicApi',
+      'reset_global_logic_api',
+      'run_logic_cli',
+    ],
+  },
+  {
+    typescriptModule: 'src/lib/logic/mlConfidence.ts',
+    publicExports: [
+      'extract_ml_confidence_features',
+      'extractConfidenceFeatures',
+      'extractMLConfidenceFeatures',
+      'predict_ml_confidence',
+      'predictMLConfidence',
+    ],
+  },
+];
+
 function normalizeSurface(surface: string): string {
   return surface.trim().replace(/\s+/g, ' ');
 }
@@ -84,6 +187,31 @@ function normalizeSurface(surface: string): string {
 function containsRuntimeFallback(surface: string): boolean {
   const normalized = normalizeSurface(surface).toLowerCase();
   return PYTHON_RUNTIME_MARKERS.some((marker) => normalized.includes(marker));
+}
+
+function snakeToCamel(name: string): string {
+  return name.replace(/_([a-z0-9])/g, (_match, letter: string) => letter.toUpperCase());
+}
+
+function findTypeScriptExport(
+  pythonApi: string,
+  publicExports: ReadonlySet<string>,
+):
+  | {
+      readonly typescriptExport: string;
+      readonly adapterKind: 'direct-export' | 'snake-case-alias';
+    }
+  | undefined {
+  if (publicExports.has(pythonApi)) {
+    return { typescriptExport: pythonApi, adapterKind: 'direct-export' };
+  }
+
+  const camelCaseName = snakeToCamel(pythonApi);
+  if (publicExports.has(camelCaseName)) {
+    return { typescriptExport: camelCaseName, adapterKind: 'snake-case-alias' };
+  }
+
+  return undefined;
 }
 
 function inferReplacement(surface: string): PythonSurfaceReplacement | undefined {
@@ -120,7 +248,7 @@ export function createPythonSurfaceReplacementPlan(
 ): PythonSurfaceReplacementPlan {
   const replacements: PythonSurfaceReplacement[] = [];
   const rejectedSurfaces: string[] = [];
-  const seen = new Set();
+  const seen = new Set<string>();
 
   for (const surface of surfaces) {
     const normalized = normalizeSurface(surface);
@@ -141,6 +269,66 @@ export function createPythonSurfaceReplacementPlan(
   return {
     replacements,
     rejectedSurfaces,
+    browserNative: true,
+    usesPythonRuntime: false,
+    usesServerRuntime: false,
+  };
+}
+
+export function compareLogicPublicApis(
+  pythonApis: readonly PythonLogicPublicApiSurface[] = DEFAULT_PYTHON_PUBLIC_APIS,
+  typescriptExports: readonly TypeScriptLogicPublicExportSurface[] = DEFAULT_TYPESCRIPT_PUBLIC_EXPORTS,
+): LogicPublicApiCompatibilityReport {
+  const comparisons: LogicPublicApiComparison[] = [];
+  const allAdapters: LogicPublicApiCompatibilityAdapter[] = [];
+  const allMissingPythonApis: string[] = [];
+
+  for (const pythonSurface of pythonApis) {
+    const typescriptSurface =
+      typescriptExports.find((surface) =>
+        pythonSurface.publicApis.some((api) => surface.publicExports.includes(api)),
+      ) ?? typescriptExports[0];
+    const publicExports = new Set<string>(typescriptSurface.publicExports);
+    const adapters: LogicPublicApiCompatibilityAdapter[] = [];
+    const missingPythonApis: string[] = [];
+
+    for (const pythonApi of pythonSurface.publicApis) {
+      const match = findTypeScriptExport(pythonApi, publicExports);
+      if (match) {
+        adapters.push({
+          pythonApi,
+          typescriptExport: match.typescriptExport,
+          adapterKind: match.adapterKind,
+          browserNative: true,
+          usesPythonRuntime: false,
+          usesServerRuntime: false,
+        });
+      } else {
+        missingPythonApis.push(`${pythonSurface.pythonModule}:${pythonApi}`);
+      }
+    }
+
+    allAdapters.push(...adapters);
+    allMissingPythonApis.push(...missingPythonApis);
+    comparisons.push({
+      pythonModule: pythonSurface.pythonModule,
+      typescriptModule: typescriptSurface.typescriptModule,
+      adapters,
+      missingPythonApis,
+      coverageRatio:
+        pythonSurface.publicApis.length === 0
+          ? 1
+          : adapters.length / pythonSurface.publicApis.length,
+      browserNative: true,
+      usesPythonRuntime: false,
+      usesServerRuntime: false,
+    });
+  }
+
+  return {
+    comparisons,
+    adapters: allAdapters,
+    missingPythonApis: allMissingPythonApis,
     browserNative: true,
     usesPythonRuntime: false,
     usesServerRuntime: false,

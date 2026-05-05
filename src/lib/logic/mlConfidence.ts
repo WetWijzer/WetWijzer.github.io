@@ -337,6 +337,9 @@ export function predictMLConfidence(
   );
 }
 
+export const extract_ml_confidence_features = extractMLConfidenceFeatures;
+export const predict_ml_confidence = predictMLConfidence;
+
 export function loadMLConfidenceModelArtifact(
   artifact: MLConfidenceModelArtifact,
 ): MLConfidenceModelState {
