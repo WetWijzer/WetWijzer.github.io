@@ -2792,3 +2792,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T103649Z-completed-the-cec-native-cognitive.py-parity-table-for-existing-browser-native-c.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T103649Z-completed-the-cec-native-cognitive.py-parity-table-for-existing-browser-native-c.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T103649Z-completed-the-cec-native-cognitive.py-parity-table-for-existing-browser-native-c.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 10:43:16 UTC
+
+- Target: `Task checkbox-222: Port remaining Python logic module `logic/CEC/native/inference_rules/modal.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Registered the remaining CEC native modal.py NecessityConjunction rule in the browser-native Python parity table.
+- Impact: The TypeScript CEC native parity adapter now exposes NecessityConjunction as a modal.py rule and returns browser-native proof-step metadata for its deterministic application; the focused Jest coverage validates the table entry, conclusion, and no-Python-runtime metadata.
+- Changed files: `src/lib/logic/cec/inferenceRules.test.ts`, `src/lib/logic/cec/inferenceRules.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T104316Z-registered-the-remaining-cec-native-modal.py-necessityconjunction-rule-in-the-br.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T104316Z-registered-the-remaining-cec-native-modal.py-necessityconjunction-rule-in-the-br.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T104316Z-registered-the-remaining-cec-native-modal.py-necessityconjunction-rule-in-the-br.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

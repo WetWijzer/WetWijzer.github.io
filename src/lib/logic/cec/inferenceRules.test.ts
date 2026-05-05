@@ -399,6 +399,7 @@ describe('CEC inference rules', () => {
       parseCecExpression('(implies (p) (q))'),
       parseCecExpression('(B alice (and (raining) (cold)))'),
       parseCecExpression('(always (stable))'),
+      parseCecExpression('(always (audited))'),
       parseCecExpression('(always (implies (stable) (safe)))'),
       parseCecExpression('(not (always (not (possible))))'),
       parseCecExpression('(or (taut) (not (taut)))'),
@@ -433,6 +434,7 @@ describe('CEC inference rules', () => {
       'TemporallyInducedCommonKnowledge',
     ]);
     expect(tables.modal).toContain('NecessityDistribution');
+    expect(tables.modal).toContain('NecessityConjunction');
     expect(formatCecExpression(byName.get('ModusPonens')!.conclusion)).toBe('(q)');
     expect(formatCecExpression(byName.get('BeliefDistribution')!.conclusion)).toBe(
       '(and (B alice (raining)) (B alice (cold)))',
@@ -440,6 +442,18 @@ describe('CEC inference rules', () => {
     expect(formatCecExpression(byName.get('NecessityDistribution')!.conclusion)).toBe(
       '(always (safe))',
     );
+    expect(formatCecExpression(byName.get('NecessityConjunction')!.conclusion)).toBe(
+      '(always (and (stable) (audited)))',
+    );
+    expect(byName.get('NecessityConjunction')!.proofStep).toMatchObject({
+      pythonRuleName: 'NecessityConjunction',
+      ruleGroup: 'modal',
+      sourcePythonModule: 'logic/CEC/native/inference_rules/modal.py',
+      premiseCount: 2,
+      conclusionCount: 1,
+      browserNative: true,
+      pythonRuntime: false,
+    });
     expect(applications[0].proofStep).toMatchObject({
       stepId: 1,
       rule: 'CecModusPonens',

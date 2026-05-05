@@ -86,6 +86,7 @@ export type CecNativeModalPythonRuleName =
   | 'NecessityDistribution'
   | 'PossibilityIntroduction'
   | 'PossibilityDuality'
+  | 'NecessityConjunction'
   | 'NecessitationIntroduction';
 
 export type CecNativePythonRuleName =
@@ -1639,6 +1640,7 @@ const CEC_NATIVE_PYTHON_RULE_SPECS: readonly CecNativePythonRuleSpec[] = [
   nativeSpec('NecessityDistribution', 'modal', CecNecessityDistributionRule),
   nativeSpec('PossibilityIntroduction', 'modal', CecPossibilityIntroductionRule),
   nativeSpec('PossibilityDuality', 'modal', CecPossibilityDualityRule),
+  nativeSpec('NecessityConjunction', 'modal', CecNecessityConjunctionRule),
   nativeSpec('NecessitationIntroduction', 'modal', CecModalNecessitationIntroductionRule),
 ];
 
