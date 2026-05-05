@@ -69,6 +69,7 @@ from ipfs_datasets_py.optimizers.todo_daemon.file_replacement import (  # noqa: 
     FileReplacementHooks,
     FileReplacementTodoDaemonRunner,
     attempt_file_replacement_validation_repair,
+    build_config_file_replacement_hooks,
     build_file_replacement_apply_proposal,
     build_file_replacement_validation_repair_prompt,
     config_persist_accepted_file_replacement_work,
@@ -866,7 +867,6 @@ def validation_commands_for_proposal(proposal: Proposal, config: Config) -> tupl
 
 def run_validation(
     config: Config,
-    *,
     commands: Optional[tuple[tuple[str, ...], ...]] = None,
 ) -> list[CommandResult]:
     return run_config_validation_commands(
@@ -977,38 +977,25 @@ def attempt_validation_repair_pass(
         parse_repair=parse_proposal,
         validate_write_path=validate_write_path,
         syntax_preflight=validation_results_from_syntax_preflight,
-        run_validation=lambda validation_config, commands: run_validation(
-            validation_config,
-            commands=commands,
-        ),
+        run_validation=run_validation,
         validation_commands_for_proposal=validation_commands_for_proposal,
         worktree_config=validation_repair_worktree_config,
     )
 
 
 def ppd_file_replacement_hooks() -> FileReplacementHooks:
-    return FileReplacementHooks(
+    return build_config_file_replacement_hooks(
         validate_write_path=validate_write_path,
         temporary_validation_worktree=temporary_validation_worktree,
         validation_commands_for_proposal=validation_commands_for_proposal,
-        run_validation=lambda config, commands: run_validation(config, commands=commands),
+        run_validation=run_validation,
         syntax_preflight=validation_results_from_syntax_preflight,
         has_visible_source_change=has_visible_source_change,
         attempt_validation_repair=attempt_validation_repair_pass,
         promote_worktree_files=promote_worktree_files,
-        persist_failed_work=lambda proposal, config, diff_text, reason, transport: persist_failed_work(
-            proposal,
-            config,
-            diff_text=diff_text,
-            reason=reason,
-            transport=transport,
-        ),
-        persist_accepted_work=lambda proposal, config, diff_text, transport: persist_accepted_work(
-            proposal,
-            config,
-            diff_text=diff_text,
-            transport=transport,
-        ),
+        accepted_dir_field="accepted_dir",
+        failed_dir_field="failed_dir",
+        sidecars_enabled_field="write_accepted_work_sidecars",
         no_visible_source_change_message=(
             "Accepted work must promote at least one visible PP&D source or fixture file; "
             "runtime-only progress records are not sufficient."
