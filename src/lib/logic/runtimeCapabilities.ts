@@ -33,16 +33,11 @@ export interface LogicRuntimeCapabilities {
     regexParser: true;
     nlpStatus: LogicCapabilityStatus;
     browserNativeNlp: boolean;
-    nlpUnavailable: boolean;
     mlStatus: LogicCapabilityStatus;
     browserNativeMlConfidence: boolean;
     localModelArtifactLoading: boolean;
     mlConfidenceSource: LogicMlConfidenceSource;
     mlConfidenceModelLoaded: boolean;
-    /**
-     * @deprecated Use browserNativeMlConfidence/localModelArtifactLoading instead.
-     */
-    mlUnavailable: boolean;
   };
   deontic: {
     ruleExtractor: true;
@@ -51,10 +46,6 @@ export interface LogicRuntimeCapabilities {
     localModelArtifactLoading: boolean;
     mlConfidenceSource: LogicMlConfidenceSource;
     mlConfidenceModelLoaded: boolean;
-    /**
-     * @deprecated Use browserNativeMlConfidence/localModelArtifactLoading instead.
-     */
-    mlUnavailable: boolean;
   };
   proving: {
     lightweightReasoning: true;
@@ -150,13 +141,11 @@ export function getLogicRuntimeCapabilities(): LogicRuntimeCapabilities {
       regexParser: true,
       nlpStatus: 'complete',
       browserNativeNlp: true,
-      nlpUnavailable: false,
       mlStatus: 'complete',
       browserNativeMlConfidence: true,
       localModelArtifactLoading: true,
       mlConfidenceSource: mlState.source,
       mlConfidenceModelLoaded: mlState.loaded,
-      mlUnavailable: false,
     },
     deontic: {
       ruleExtractor: true,
@@ -165,7 +154,6 @@ export function getLogicRuntimeCapabilities(): LogicRuntimeCapabilities {
       localModelArtifactLoading: true,
       mlConfidenceSource: mlState.source,
       mlConfidenceModelLoaded: mlState.loaded,
-      mlUnavailable: false,
     },
     proving: {
       lightweightReasoning: true,

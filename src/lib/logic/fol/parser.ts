@@ -105,7 +105,7 @@ export function parseFolText(text: string): FolParseResult {
     validation: validateFolSyntax(formula),
     nlp,
     capabilities: {
-      nlpUnavailable: capabilities.nlpUnavailable,
+      nlpUnavailable: !(capabilities.nlpStatus === 'complete' && capabilities.browserNativeNlp),
       browserNativeMlConfidence: capabilities.browserNativeMlConfidence,
       localModelArtifactLoading: capabilities.localModelArtifactLoading,
       mlUnavailable: false,

@@ -998,7 +998,7 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 - [x] Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.
 - [x] Manual unblock: port the next deterministic `ml_confidence.py` parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.
 - [x] Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.
-- [ ] Manual unblock: remove the next `nlpUnavailable` or `mlUnavailable` capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.
+- [x] Manual unblock: remove the next `nlpUnavailable` or `mlUnavailable` capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.
 - [ ] Manual unblock: complete an EVM public-input and verification-key registry helper slice using browser-compatible crypto abstractions and deterministic tests.
 - [ ] Manual unblock: add developer-panel live inspection snapshots for logic parse, proof, cache, ML/NLP, and ZKP capability state.
 - [ ] Manual unblock: add CLI/devtools command adapter parity for `logic/cli.py` as browser/devtools-safe TypeScript entry points.
@@ -1024,11 +1024,11 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 05:51:39 UTC
+Last updated: 2026-05-05 05:53:48 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-459: Manual unblock: remove the next 'nlpUnavailable' or 'mlUnavailable' capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.`
+Current target: `Task checkbox-460: Manual unblock: complete an EVM public-input and verification-key registry helper slice using browser-compatible crypto abstractions and deterministic tests.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1491,8 +1491,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-455: Manual unblock: complete a modal tableaux countermodel export slice that turns proof search branches into serializable visualization data and validates it against existing TDFOL/CEC examples.` - complete
 - [x] `Task checkbox-456: Manual unblock: add a TDFOL security validator parity slice covering fail-closed formula, proof-cache, witness, and ZKP input checks in browser-safe TypeScript.` - complete
 - [x] `Task checkbox-457: Manual unblock: port the next deterministic 'ml_confidence.py' parity slice with fixture-backed scoring, calibration metadata, and local browser execution only.` - complete
-- [x] `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.` - validated by latest daemon round
-- [ ] `Task checkbox-459: Manual unblock: remove the next 'nlpUnavailable' or 'mlUnavailable' capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.` - needed
+- [x] `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.` - complete
+- [x] `Task checkbox-459: Manual unblock: remove the next 'nlpUnavailable' or 'mlUnavailable' capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.` - validated by latest daemon round
 - [ ] `Task checkbox-460: Manual unblock: complete an EVM public-input and verification-key registry helper slice using browser-compatible crypto abstractions and deterministic tests.` - needed
 - [ ] `Task checkbox-461: Manual unblock: add developer-panel live inspection snapshots for logic parse, proof, cache, ML/NLP, and ZKP capability state.` - needed
 - [ ] `Task checkbox-462: Manual unblock: add CLI/devtools command adapter parity for 'logic/cli.py' as browser/devtools-safe TypeScript entry points.` - needed
@@ -1517,11 +1517,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-458: Manual unblock: add local model artifact manifest, cache lifecycle, version checks, and unload controls for browser-native ML/NLP parity without server calls.`
+- Target: `Task checkbox-459: Manual unblock: remove the next 'nlpUnavailable' or 'mlUnavailable' capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.`
 - Result: `valid`
-- Summary: Added browser-native ML confidence artifact manifests with local cache lifecycle, version-checked loading, and unload cache clearing.
-- Impact: The TypeScript logic runtime can now register local ML model artifact manifests, cache validated artifacts by id, activate them with explicit version checks, and unload model/cache state without server, Python, filesystem, subprocess, or RPC fallbacks. Jest coverage exercises the lifecycle directly through src/lib/logic/mlConfidence.test.ts.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/mlConfidence.test.ts`, `src/lib/logic/mlConfidence.ts`
+- Summary: Removed deprecated runtime-level nlpUnavailable/mlUnavailable capability reporting and switched validation to positive browser-native NLP/ML status checks.
+- Impact: The TypeScript logic runtime now exposes browser-native NLP and ML parity through complete status and local artifact capability fields instead of unavailable flags. Browser-native validation directly exercises those positive fields, while FOL parser compatibility output derives its legacy nlpUnavailable value from the local TypeScript NLP status without reintroducing a runtime unavailable path.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/browserNativeValidation.test.ts`, `src/lib/logic/browserNativeValidation.ts`, `src/lib/logic/fol/parser.ts`, `src/lib/logic/runtimeCapabilities.test.ts`, `src/lib/logic/runtimeCapabilities.ts`
 
 ### Blocked Backlog
 

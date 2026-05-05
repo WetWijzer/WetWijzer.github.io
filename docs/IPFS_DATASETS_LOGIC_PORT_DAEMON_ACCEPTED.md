@@ -2423,3 +2423,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T055140Z-added-browser-native-ml-confidence-artifact-manifests-with-local-cache-lifecycle.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T055140Z-added-browser-native-ml-confidence-artifact-manifests-with-local-cache-lifecycle.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T055140Z-added-browser-native-ml-confidence-artifact-manifests-with-local-cache-lifecycle.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 05:53:49 UTC
+
+- Target: `Task checkbox-459: Manual unblock: remove the next `nlpUnavailable` or `mlUnavailable` capability path by replacing it with local TypeScript/WASM, Transformers.js, ONNX/WebGPU, or deterministic fixture parity.`
+- Summary: Removed deprecated runtime-level nlpUnavailable/mlUnavailable capability reporting and switched validation to positive browser-native NLP/ML status checks.
+- Impact: The TypeScript logic runtime now exposes browser-native NLP and ML parity through complete status and local artifact capability fields instead of unavailable flags. Browser-native validation directly exercises those positive fields, while FOL parser compatibility output derives its legacy nlpUnavailable value from the local TypeScript NLP status without reintroducing a runtime unavailable path.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/browserNativeValidation.test.ts`, `src/lib/logic/browserNativeValidation.ts`, `src/lib/logic/fol/parser.ts`, `src/lib/logic/runtimeCapabilities.test.ts`, `src/lib/logic/runtimeCapabilities.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T055349Z-removed-deprecated-runtime-level-nlpunavailable-mlunavailable-capability-reporti.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T055349Z-removed-deprecated-runtime-level-nlpunavailable-mlunavailable-capability-reporti.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T055349Z-removed-deprecated-runtime-level-nlpunavailable-mlunavailable-capability-reporti.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

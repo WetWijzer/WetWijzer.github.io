@@ -27,6 +27,9 @@ describe('browser-native end-to-end logic validation', () => {
       mlConfidenceSource: 'heuristic',
       mlConfidenceModelLoaded: false,
     });
+    expect(report.failures).not.toContain('fol_nlp_unavailable');
+    expect(report.failures).not.toContain('fol_ml_unavailable');
+    expect(report.failures).not.toContain('deontic_ml_unavailable');
     expect(report.nlp).toMatchObject({
       provider: 'deterministic-token-classifier',
       backend: 'typescript-token-classifier',

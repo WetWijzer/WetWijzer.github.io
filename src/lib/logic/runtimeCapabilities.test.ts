@@ -26,13 +26,11 @@ describe('logic runtime capabilities', () => {
         regexParser: true,
         nlpStatus: 'complete',
         browserNativeNlp: true,
-        nlpUnavailable: false,
         mlStatus: 'complete',
         browserNativeMlConfidence: true,
         localModelArtifactLoading: true,
         mlConfidenceSource: 'heuristic',
         mlConfidenceModelLoaded: false,
-        mlUnavailable: false,
       },
       deontic: {
         ruleExtractor: true,
@@ -41,7 +39,6 @@ describe('logic runtime capabilities', () => {
         localModelArtifactLoading: true,
         mlConfidenceSource: 'heuristic',
         mlConfidenceModelLoaded: false,
-        mlUnavailable: false,
       },
       proving: {
         lightweightReasoning: true,
@@ -123,16 +120,28 @@ describe('logic runtime capabilities', () => {
         localModelArtifactLoading: true,
         mlConfidenceSource: 'artifact',
         mlConfidenceModelLoaded: true,
-        mlUnavailable: false,
       },
       deontic: {
         browserNativeMlConfidence: true,
         localModelArtifactLoading: true,
         mlConfidenceSource: 'artifact',
         mlConfidenceModelLoaded: true,
-        mlUnavailable: false,
       },
     });
     unloadMLConfidenceModel();
+  });
+
+  it('omits deprecated unavailable flags from runtime capability reporting', () => {
+    const capabilities = getLogicRuntimeCapabilities();
+
+    expect(Object.prototype.hasOwnProperty.call(capabilities.fol, 'nlpUnavailable')).toBe(false);
+    expect(Object.prototype.hasOwnProperty.call(capabilities.fol, 'mlUnavailable')).toBe(false);
+    expect(Object.prototype.hasOwnProperty.call(capabilities.deontic, 'mlUnavailable')).toBe(false);
+    expect(capabilities.fol).toMatchObject({
+      nlpStatus: 'complete',
+      browserNativeNlp: true,
+      mlStatus: 'complete',
+      browserNativeMlConfidence: true,
+    });
   });
 });

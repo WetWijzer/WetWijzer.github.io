@@ -60,8 +60,12 @@ export function validateBrowserNativeLogicRuntime(
   const failures = [
     capabilities.serverCallsAllowed === false ? '' : 'runtime_server_calls_allowed',
     capabilities.mode === 'browser_native' ? '' : 'runtime_not_browser_native',
-    capabilities.fol.nlpUnavailable ? 'fol_nlp_unavailable' : '',
-    capabilities.fol.mlUnavailable ? 'fol_ml_unavailable' : '',
+    capabilities.fol.nlpStatus === 'complete' && capabilities.fol.browserNativeNlp
+      ? ''
+      : 'fol_nlp_not_browser_native',
+    capabilities.fol.mlStatus === 'complete' && capabilities.fol.browserNativeMlConfidence
+      ? ''
+      : 'fol_ml_not_browser_native',
     firstFol.nlp.pythonSpacy ? 'fol_python_spacy_enabled' : '',
     firstFol.nlp.serverCallsAllowed === false ? '' : 'fol_nlp_server_calls_allowed',
     firstFol.capabilities.serverCallsAllowed === false ? '' : 'fol_server_calls_allowed',
@@ -70,7 +74,9 @@ export function validateBrowserNativeLogicRuntime(
       : 'fol_nlp_not_deterministic',
     deterministicScore === repeatedScore ? '' : 'ml_score_not_deterministic',
     deontic.capabilities.serverCallsAllowed === false ? '' : 'deontic_server_calls_allowed',
-    deontic.capabilities.mlUnavailable ? 'deontic_ml_unavailable' : '',
+    capabilities.deontic.mlStatus === 'complete' && capabilities.deontic.browserNativeMlConfidence
+      ? ''
+      : 'deontic_ml_not_browser_native',
   ].filter(Boolean);
 
   return {
