@@ -2720,3 +2720,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T094607Z-added-browser-native-dcec-namespace-json-snapshot-round-trip-support..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T094607Z-added-browser-native-dcec-namespace-json-snapshot-round-trip-support..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T094607Z-added-browser-native-dcec-namespace-json-snapshot-round-trip-support..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 09:48:39 UTC
+
+- Target: `Task checkbox-210: Port remaining Python logic module `logic/CEC/native/dcec_parsing.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Completed browser-native dcec_parsing.py parity helpers for comments, symbol functorization, in-place synonym replacement, and parser metadata.
+- Impact: The TypeScript CEC parser now exposes the remaining standalone dcec_parsing.py utility behavior without server or Python runtime dependencies, and the focused Jest suite validates those helpers alongside existing parse token, prefixing, and form classification parity.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/dcecParsing.test.ts`, `src/lib/logic/cec/dcecParsing.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T094839Z-completed-browser-native-dcec_parsing.py-parity-helpers-for-comments-symbol-func.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T094839Z-completed-browser-native-dcec_parsing.py-parity-helpers-for-comments-symbol-func.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T094839Z-completed-browser-native-dcec_parsing.py-parity-helpers-for-comments-symbol-func.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

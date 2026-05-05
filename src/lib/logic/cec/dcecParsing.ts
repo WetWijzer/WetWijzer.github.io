@@ -72,6 +72,23 @@ export interface DcecParsedForm {
   readonly body?: DcecParseArg;
 }
 
+export const DCEC_PARSING_METADATA = {
+  sourcePythonModule: 'logic/CEC/native/dcec_parsing.py',
+  runtime: 'browser-native-typescript',
+  browserNative: true,
+  pythonRuntime: false,
+  serverRuntime: false,
+  supportedOperations: [
+    'parse-token-rendering',
+    'remove-comments',
+    'functorize-symbols',
+    'replace-synonyms',
+    'prefix-logical-functions',
+    'prefix-emdas',
+    'form-classification',
+  ],
+} as const;
+
 const DCEC_SYNONYMS: Record<string, string> = {
   ifAndOnlyIf: 'iff',
   if: 'implies',
@@ -125,9 +142,50 @@ const DEONTIC_ALIASES: Record<string, string> = {
   L: 'L',
   liberty: 'L',
 };
+const SYMBOL_REPLACEMENTS_IN_PYTHON_ORDER: Array<readonly [string, string]> = [
+  ['^', 'exponent'],
+  ['*', '*'],
+  ['/', 'divide'],
+  ['+', 'add'],
+  ['<->', 'ifAndOnlyIf'],
+  ['->', 'implies'],
+  ['-', '-'],
+  ['&', '&'],
+  ['|', '|'],
+  ['~', 'not'],
+  ['>=', 'greaterOrEqual'],
+  ['==', 'equals'],
+  ['<=', 'lessOrEqual'],
+  ['===', 'tautology'],
+  ['=', 'equals'],
+  ['>', 'greater'],
+  ['<', 'less'],
+];
 
 export function isDcecParseToken(arg: DcecParseArg): arg is DcecParseToken {
   return arg instanceof DcecParseToken;
+}
+
+export function removeDcecParsingComments(expression: string): string {
+  const index = expression.indexOf(';');
+  return index === -1 ? expression : expression.slice(0, index);
+}
+
+export function functorizeDcecParsingSymbols(expression: string): string {
+  let result = expression;
+  for (const [symbol, replacement] of SYMBOL_REPLACEMENTS_IN_PYTHON_ORDER) {
+    result = result.split(symbol).join(` ${replacement} `);
+  }
+  return result.split('( ').join('(');
+}
+
+export function replaceDcecSynonymsInPlace(args: DcecParseArg[]): void {
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (typeof arg === 'string') {
+      args[index] = DCEC_SYNONYMS[arg] ?? arg;
+    }
+  }
 }
 
 export function replaceDcecSynonyms(args: DcecParseArg[]): DcecParseArg[] {

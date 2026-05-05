@@ -1,4 +1,5 @@
 import {
+  DCEC_PARSING_METADATA,
   DcecParseToken,
   classifyDcecParseForm,
   createDcecAtom,
@@ -6,12 +7,25 @@ import {
   createDcecDeonticForm,
   createDcecModalForm,
   createDcecQuantifier,
+  functorizeDcecParsingSymbols,
   prefixDcecEmdas,
   prefixDcecLogicalFunctions,
+  removeDcecParsingComments,
   replaceDcecSynonyms,
+  replaceDcecSynonymsInPlace,
 } from './dcecParsing';
 
 describe('DCEC parsing utilities', () => {
+  it('declares browser-native dcec_parsing.py parity metadata', () => {
+    expect(DCEC_PARSING_METADATA).toMatchObject({
+      sourcePythonModule: 'logic/CEC/native/dcec_parsing.py',
+      browserNative: true,
+      pythonRuntime: false,
+      serverRuntime: false,
+    });
+    expect(DCEC_PARSING_METADATA.supportedOperations).toContain('functorize-symbols');
+  });
+
   it('creates Python-compatible parse token expressions and measurements', () => {
     const token = new DcecParseToken('and', [
       'a',
@@ -34,6 +48,19 @@ describe('DCEC parsing utilities', () => {
     expect(result[1]).toBe('exists');
     expect(result[2]).toBeInstanceOf(DcecParseToken);
     expect((result[2] as DcecParseToken).args).toEqual(['forAll', 'Moment', 'iff']);
+  });
+
+  it('supports Python-style comment removal, symbol functorization, and in-place synonyms', () => {
+    const args = ['forall', 'Time', 'ifAndOnlyIf', new DcecParseToken('nested', ['forall'])];
+
+    replaceDcecSynonymsInPlace(args);
+
+    expect(removeDcecParsingComments('(and a b) ; comment')).toBe('(and a b) ');
+    expect(removeDcecParsingComments('no comment here')).toBe('no comment here');
+    expect(functorizeDcecParsingSymbols('(a -> b) & ~c + d')).toBe(
+      '(a  implies  b)  &   not c  add  d',
+    );
+    expect(args).toEqual(['forAll', 'Moment', 'iff', new DcecParseToken('nested', ['forall'])]);
   });
 
   it('prefixes unary and infix logical functions in Python rule order', () => {
