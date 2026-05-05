@@ -1,5 +1,6 @@
 import {
   DCEC_INTEGRATION_METADATA,
+  createBrowserNativeDcecIntegrationAdapter,
   formulaToDcecToken,
   parseDcecExpressionToToken,
   parseDcecString,
@@ -87,5 +88,45 @@ describe('DCEC integration parser', () => {
 
     expect(validateDcecFormula(formula!)).toEqual({ ok: true, errors: [] });
     expect(() => parseDcecExpressionToToken('(and a b')).toThrow('Unbalanced parentheses');
+  });
+
+  it('exposes a browser-native integration adapter for Python module parity', () => {
+    const adapter = createBrowserNativeDcecIntegrationAdapter();
+    const parsed = adapter.parse('B(alice, filed)');
+    const roundTrip = adapter.invoke({ operation: 'roundTrip', source: parsed.formula! });
+
+    expect(adapter.metadata).toBe(DCEC_INTEGRATION_METADATA);
+    expect(adapter.capabilities).toEqual(['parse', 'convert', 'roundTrip', 'validate']);
+    expect(parsed).toMatchObject({
+      ok: true,
+      canonicalSExpression: '(B alice filed)',
+      canonicalFormula: 'B(alice:Agent, filed())',
+      metadata: {
+        browserNative: true,
+        pythonRuntime: false,
+        serverRuntime: false,
+      },
+    });
+    expect(roundTrip).toMatchObject({
+      ok: true,
+      roundTripFormulaText: 'B(alice:Agent, filed())',
+    });
+  });
+
+  it('fails closed for unsupported or incomplete adapter requests', () => {
+    const adapter = createBrowserNativeDcecIntegrationAdapter();
+
+    expect(adapter.invoke({ operation: 'nativePythonBridge' })).toMatchObject({
+      ok: false,
+      errors: ['Unsupported browser-native DCEC integration operation: nativePythonBridge'],
+      metadata: {
+        pythonRuntime: false,
+        serverRuntime: false,
+      },
+    });
+    expect(adapter.invoke({ operation: 'validate' })).toEqual({
+      ok: false,
+      errors: ['DCEC validate operation requires a formula.'],
+    });
   });
 });

@@ -74,6 +74,42 @@ export interface DcecRoundTripValidationResult extends DcecTokenConversionResult
   readonly roundTripFormulaText?: string;
 }
 
+export type DcecFormulaValidationResult =
+  | { ok: true; errors: [] }
+  | { ok: false; errors: string[] };
+
+export type DcecIntegrationOperation =
+  | 'parse'
+  | 'convert'
+  | 'roundTrip'
+  | 'validate'
+  | (string & {});
+
+export interface DcecIntegrationRequest {
+  readonly operation: DcecIntegrationOperation;
+  readonly source?: string | DcecParseToken | DcecFormula;
+  readonly formula?: DcecFormula;
+  readonly options?: ParseDcecStringOptions;
+}
+
+export interface DcecIntegrationAdapter {
+  readonly metadata: typeof DCEC_INTEGRATION_METADATA;
+  readonly capabilities: readonly DcecIntegrationOperation[];
+  parse(source: string, options?: ParseDcecStringOptions): DcecTokenConversionResult;
+  convert(
+    source: string | DcecParseToken | DcecFormula,
+    options?: ParseDcecStringOptions,
+  ): DcecTokenConversionResult;
+  roundTrip(
+    source: string | DcecParseToken | DcecFormula,
+    options?: ParseDcecStringOptions,
+  ): DcecRoundTripValidationResult;
+  validate(formula: DcecFormula): DcecFormulaValidationResult;
+  invoke(
+    request: DcecIntegrationRequest,
+  ): DcecTokenConversionResult | DcecRoundTripValidationResult | DcecFormulaValidationResult;
+}
+
 export function parseDcecExpressionToToken(
   expression: string,
   options: ParseDcecStringOptions = {},
@@ -345,9 +381,7 @@ export function validateDcecRoundTrip(
   };
 }
 
-export function validateDcecFormula(
-  formula: DcecFormula,
-): { ok: true; errors: [] } | { ok: false; errors: string[] } {
+export function validateDcecFormula(formula: DcecFormula): DcecFormulaValidationResult {
   try {
     // Construction already performs arity validation; this recursive pass is a browser-native guard.
     formula.getFreeVariables();
@@ -359,6 +393,65 @@ export function validateDcecFormula(
       errors: [error instanceof Error ? error.message : 'Unknown DCEC formula validation error'],
     };
   }
+}
+
+export function createBrowserNativeDcecIntegrationAdapter(): DcecIntegrationAdapter {
+  return {
+    metadata: DCEC_INTEGRATION_METADATA,
+    capabilities: ['parse', 'convert', 'roundTrip', 'validate'],
+    parse(source: string, options: ParseDcecStringOptions = {}): DcecTokenConversionResult {
+      return convertDcecInputToToken(source, options);
+    },
+    convert(
+      source: string | DcecParseToken | DcecFormula,
+      options: ParseDcecStringOptions = {},
+    ): DcecTokenConversionResult {
+      return convertDcecInputToToken(source, options);
+    },
+    roundTrip(
+      source: string | DcecParseToken | DcecFormula,
+      options: ParseDcecStringOptions = {},
+    ): DcecRoundTripValidationResult {
+      return validateDcecRoundTrip(source, options);
+    },
+    validate(formula: DcecFormula): DcecFormulaValidationResult {
+      return validateDcecFormula(formula);
+    },
+    invoke(
+      request: DcecIntegrationRequest,
+    ): DcecTokenConversionResult | DcecRoundTripValidationResult | DcecFormulaValidationResult {
+      if (request.operation === 'validate') {
+        return request.formula
+          ? validateDcecFormula(request.formula)
+          : { ok: false, errors: ['DCEC validate operation requires a formula.'] };
+      }
+      if (
+        request.operation !== 'parse' &&
+        request.operation !== 'convert' &&
+        request.operation !== 'roundTrip'
+      ) {
+        return {
+          ok: false,
+          errors: [`Unsupported browser-native DCEC integration operation: ${request.operation}`],
+          metadata: DCEC_INTEGRATION_METADATA,
+        };
+      }
+      if (request.source === undefined) {
+        return {
+          ok: false,
+          errors: [`DCEC ${request.operation} operation requires a source.`],
+          metadata: DCEC_INTEGRATION_METADATA,
+        };
+      }
+      if (request.operation === 'parse' || request.operation === 'convert') {
+        return convertDcecInputToToken(request.source, request.options);
+      }
+      if (request.operation === 'roundTrip') {
+        return validateDcecRoundTrip(request.source, request.options);
+      }
+      return convertDcecInputToToken(request.source, request.options);
+    },
+  };
 }
 
 function parseDcecCommaToken(source: string): DcecParseToken {

@@ -2702,3 +2702,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T094055Z-ported-a-fuller-browser-native-dcec-cleaning-slice-for-logic-cec-native-dcec_cle.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T094055Z-ported-a-fuller-browser-native-dcec-cleaning-slice-for-logic-cec-native-dcec_cle.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T094055Z-ported-a-fuller-browser-native-dcec-cleaning-slice-for-logic-cec-native-dcec_cle.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 09:43:49 UTC
+
+- Target: `Task checkbox-208: Port remaining Python logic module `logic/CEC/native/dcec_integration.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported the remaining DCEC integration surface by adding a browser-native adapter around existing string, token, formula, validation, and round-trip helpers.
+- Impact: The TypeScript CEC integration now exposes a Python-module-parity adapter that is directly exported through src/lib/logic/cec/dcecIntegration.ts, exercised by focused Jest tests, and fails closed for unsupported bridge-style operations without Python, server, filesystem, subprocess, RPC, or Node-only runtime dependencies.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/dcecIntegration.test.ts`, `src/lib/logic/cec/dcecIntegration.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T094349Z-ported-the-remaining-dcec-integration-surface-by-adding-a-browser-native-adapter.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T094349Z-ported-the-remaining-dcec-integration-surface-by-adding-a-browser-native-adapter.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T094349Z-ported-the-remaining-dcec-integration-surface-by-adding-a-browser-native-adapter.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
