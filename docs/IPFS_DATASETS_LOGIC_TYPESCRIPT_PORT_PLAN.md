@@ -984,15 +984,16 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Audit Python ML and spaCy expectations against the TypeScript/WASM implementation and add focused parity tests or local-model artifact loading tasks for unsupported browser-native behavior.
 - [x] Refresh the TypeScript port plan with a parity matrix mapping Python logic modules, TypeScript/WASM files, validation evidence, accepted work, and remaining browser-native tasks.
 - [x] Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.
+- [ ] Port remaining Python logic module `logic/zkp/form_circuit.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 04:45:29 UTC
+Last updated: 2026-05-05 04:45:30 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `none`
+Current target: `Task checkbox-452: Port remaining Python logic module 'logic/zkp/form_circuit.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1216,7 +1217,7 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [!] `Task checkbox-216: Port remaining Python logic module 'logic/CEC/native/grammar_loader.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - blocked
 - [!] `Task checkbox-217: Port remaining Python logic module 'logic/CEC/native/inference_rules/base.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - blocked
 - [!] `Task checkbox-218: Port remaining Python logic module 'logic/CEC/native/inference_rules/cognitive.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - blocked
-- [x] `Task checkbox-219: Port remaining Python logic module 'logic/CEC/native/inference_rules/deontic.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
+- [x] `Task checkbox-219: Port remaining Python logic module 'logic/CEC/native/inference_rules/deontic.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [!] `Task checkbox-220: Port remaining Python logic module 'logic/CEC/native/inference_rules/modal.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - blocked
 - [x] `Task checkbox-221: Port remaining Python logic module 'logic/CEC/native/inference_rules/propositional.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-222: Port remaining Python logic module 'logic/CEC/native/inference_rules/resolution.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
@@ -1449,14 +1450,13 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-449: Audit Python ML and spaCy expectations against the TypeScript/WASM implementation and add focused parity tests or local-model artifact loading tasks for unsupported browser-native behavior.` - complete
 - [x] `Task checkbox-450: Refresh the TypeScript port plan with a parity matrix mapping Python logic modules, TypeScript/WASM files, validation evidence, accepted work, and remaining browser-native tasks.` - complete
 - [x] `Task checkbox-451: Compare TypeScript logic public exports against Python logic module public APIs and add missing browser-native compatibility adapters or parity tests.` - complete
+- [~] `Task checkbox-452: Port remaining Python logic module 'logic/zkp/form_circuit.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - selected for next daemon round
 
 ### Latest Round
 
-- Target: `Task checkbox-219: Port remaining Python logic module 'logic/CEC/native/inference_rules/deontic.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
-- Result: `valid`
-- Summary: Ported the CEC native deontic.py rule-class surface onto the existing browser-native TypeScript CEC inference rules.
-- Impact: The TypeScript CEC inference module now exposes deterministic browser-native metadata and a batch adapter for the seven Python deontic.py rule classes, and the focused Jest test validates rule names, conclusions, and absence of Python runtime dependency.
-- Accepted changed files: `src/lib/logic/cec/inferenceRules.test.ts`, `src/lib/logic/cec/inferenceRules.ts`
+- Target: `Task checkbox-452: Port remaining Python logic module 'logic/zkp/form_circuit.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Result: `needs follow-up`
+- Summary: No summary
 
 ### Blocked Backlog
 
