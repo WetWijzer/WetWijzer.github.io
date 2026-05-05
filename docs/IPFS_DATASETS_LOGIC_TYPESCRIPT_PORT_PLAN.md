@@ -942,7 +942,7 @@ These tasks were added automatically after the daemon found no eligible unchecke
 - [x] Port remaining Python logic module `logic/zkp/eth_vk_registry_payloads.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/evm_harness.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [x] Port remaining Python logic module `logic/zkp/evm_public_inputs.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
-- [ ] Port remaining Python logic module `logic/zkp/examples/zkp_advanced_demo.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
+- [x] Port remaining Python logic module `logic/zkp/examples/zkp_advanced_demo.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/examples/zkp_basic_demo.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/examples/zkp_ipfs_integration.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
 - [ ] Port remaining Python logic module `logic/zkp/legal_theorem_semantics.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.
@@ -966,11 +966,11 @@ These tasks were added automatically after the daemon found no eligible unchecke
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 03:32:14 UTC
+Last updated: 2026-05-05 03:34:36 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-432: Port remaining Python logic module 'logic/zkp/examples/zkp_advanced_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+Current target: `Task checkbox-433: Port remaining Python logic module 'logic/zkp/examples/zkp_basic_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1406,8 +1406,8 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-428: Port remaining Python logic module 'logic/zkp/eth_integration.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-429: Port remaining Python logic module 'logic/zkp/eth_vk_registry_payloads.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
 - [x] `Task checkbox-430: Port remaining Python logic module 'logic/zkp/evm_harness.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
-- [x] `Task checkbox-431: Port remaining Python logic module 'logic/zkp/evm_public_inputs.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
-- [ ] `Task checkbox-432: Port remaining Python logic module 'logic/zkp/examples/zkp_advanced_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
+- [x] `Task checkbox-431: Port remaining Python logic module 'logic/zkp/evm_public_inputs.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - complete
+- [x] `Task checkbox-432: Port remaining Python logic module 'logic/zkp/examples/zkp_advanced_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - validated by latest daemon round
 - [ ] `Task checkbox-433: Port remaining Python logic module 'logic/zkp/examples/zkp_basic_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-434: Port remaining Python logic module 'logic/zkp/examples/zkp_ipfs_integration.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
 - [ ] `Task checkbox-435: Port remaining Python logic module 'logic/zkp/legal_theorem_semantics.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.` - needed
@@ -1430,11 +1430,11 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 
 ### Latest Round
 
-- Target: `Task checkbox-431: Port remaining Python logic module 'logic/zkp/evm_public_inputs.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Target: `Task checkbox-432: Port remaining Python logic module 'logic/zkp/examples/zkp_advanced_demo.py' to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
 - Result: `valid`
-- Summary: Ported the remaining evm_public_inputs Python surface for browser-native dictionary normalization and metadata.
-- Impact: The TypeScript ZKP EVM public-input helper now accepts Python-style snake_case public input records, validates required fields deterministically, exposes browser-native module metadata, and is directly exercised by focused Jest tests without Python, server, filesystem, subprocess, RPC, or Node-only runtime fallbacks.
-- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/evmPublicInputs.test.ts`, `src/lib/logic/zkp/evmPublicInputs.ts`
+- Summary: Ported the advanced ZKP demo as a browser-native TypeScript orchestrator with focused validation tests.
+- Impact: The TypeScript ZKP barrel now exports a runnable advanced demo flow that composes simulated proof generation, cache reuse, verification, tamper rejection, circuit metadata, and backend availability without Python, server, filesystem, subprocess, RPC, or Node-only browser-runtime dependencies. The focused Jest test exercises the exported runtime contract directly.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/advancedDemo.test.ts`, `src/lib/logic/zkp/advancedDemo.ts`, `src/lib/logic/zkp/index.ts`
 
 ### Blocked Backlog
 

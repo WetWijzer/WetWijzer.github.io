@@ -1,4 +1,5 @@
 export * from './backendProtocol';
+export * from './advancedDemo';
 export * from './canonicalization';
 export * from './circuits';
 export * from './ethContractArtifacts';

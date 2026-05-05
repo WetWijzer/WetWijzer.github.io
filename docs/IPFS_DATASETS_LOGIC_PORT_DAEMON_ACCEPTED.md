@@ -2171,3 +2171,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T033214Z-ported-the-remaining-evm_public_inputs-python-surface-for-browser-native-diction.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T033214Z-ported-the-remaining-evm_public_inputs-python-surface-for-browser-native-diction.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T033214Z-ported-the-remaining-evm_public_inputs-python-surface-for-browser-native-diction.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 03:34:36 UTC
+
+- Target: `Task checkbox-432: Port remaining Python logic module `logic/zkp/examples/zkp_advanced_demo.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported the advanced ZKP demo as a browser-native TypeScript orchestrator with focused validation tests.
+- Impact: The TypeScript ZKP barrel now exports a runnable advanced demo flow that composes simulated proof generation, cache reuse, verification, tamper rejection, circuit metadata, and backend availability without Python, server, filesystem, subprocess, RPC, or Node-only browser-runtime dependencies. The focused Jest test exercises the exported runtime contract directly.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/advancedDemo.test.ts`, `src/lib/logic/zkp/advancedDemo.ts`, `src/lib/logic/zkp/index.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T033436Z-ported-the-advanced-zkp-demo-as-a-browser-native-typescript-orchestrator-with-fo.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T033436Z-ported-the-advanced-zkp-demo-as-a-browser-native-typescript-orchestrator-with-fo.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T033436Z-ported-the-advanced-zkp-demo-as-a-browser-native-typescript-orchestrator-with-fo.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
