@@ -2162,3 +2162,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T032947Z-ported-a-browser-native-evm-groth16-harness-for-verifier-calldata-and-eip-1193-v.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032947Z-ported-a-browser-native-evm-groth16-harness-for-verifier-calldata-and-eip-1193-v.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032947Z-ported-a-browser-native-evm-groth16-harness-for-verifier-calldata-and-eip-1193-v.stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 03:32:14 UTC
+
+- Target: `Task checkbox-431: Port remaining Python logic module `logic/zkp/evm_public_inputs.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported the remaining evm_public_inputs Python surface for browser-native dictionary normalization and metadata.
+- Impact: The TypeScript ZKP EVM public-input helper now accepts Python-style snake_case public input records, validates required fields deterministically, exposes browser-native module metadata, and is directly exercised by focused Jest tests without Python, server, filesystem, subprocess, RPC, or Node-only runtime fallbacks.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/evmPublicInputs.test.ts`, `src/lib/logic/zkp/evmPublicInputs.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T033214Z-ported-the-remaining-evm_public_inputs-python-surface-for-browser-native-diction.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T033214Z-ported-the-remaining-evm_public_inputs-python-surface-for-browser-native-diction.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T033214Z-ported-the-remaining-evm_public_inputs-python-surface-for-browser-native-diction.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
