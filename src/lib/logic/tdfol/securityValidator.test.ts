@@ -133,6 +133,54 @@ describe('TdfolSecurityValidator', () => {
     });
   });
 
+  it('fails closed across formula, proof-cache, witness, and ZKP public input checks', () => {
+    const validator = new TdfolSecurityValidator({ now: () => 0 });
+    const validHash = 'a'.repeat(64);
+    const accepted = validator.validateSecurityBundle({
+      formula: 'P(alice)',
+      proofCacheEntry: { theorem: 'P(alice)', status: 'proved', steps: [] },
+      witness: { axioms: ['P(alice)'], theorem: 'P(alice)', intermediate_steps: [] },
+      zkpPublicInputs: {
+        theorem_hash: validHash,
+        axioms_commitment: validHash,
+        circuit_version: 1,
+        ruleset_id: 'TDFOL_v1',
+      },
+    });
+    expect(accepted).toMatchObject({
+      valid: true,
+      checks: { formula: true, proofCache: true, witness: true, zkpPublicInputs: true },
+      metadata: {
+        security_bundle_checked: true,
+        proof_cache_checked: true,
+        witness_checked: true,
+        zkp_public_inputs_checked: true,
+      },
+    });
+
+    const rejected = validator.validateSecurityBundle({
+      formula: 'forall x. Person(',
+      proofCacheEntry: { theorem: 'Person(alice)', status: 'proved', method: 'python-rpc' },
+      witness: { axioms: ['Person(alice)'], privateKey: 'leak' },
+      zkpPublicInputs: {
+        theorem_hash: 'short',
+        axioms_commitment: validHash,
+        circuit_version: 0,
+      },
+    });
+
+    expect(rejected.valid).toBe(false);
+    expect(rejected.checks).toEqual({
+      formula: false,
+      proofCache: false,
+      witness: false,
+      zkpPublicInputs: false,
+    });
+    expect(rejected.threats).toEqual(
+      expect.arrayContaining(['parse_error', 'malformed_input', 'side_channel', 'invalid_zkp']),
+    );
+  });
+
   it('records security events in reports', () => {
     const validator = new TdfolSecurityValidator({ maxRequestsPerMinute: 1, now: () => 0 });
     validator.validateFormula('P(x)', 'id');

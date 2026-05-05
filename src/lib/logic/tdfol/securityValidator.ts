@@ -43,6 +43,18 @@ export interface TdfolZkpAuditResult {
   auditTime: number;
 }
 
+export interface TdfolSecurityBundleInput {
+  formula: unknown;
+  proofCacheEntry?: unknown;
+  witness?: unknown;
+  zkpPublicInputs?: unknown;
+  identifier?: string;
+}
+
+export interface TdfolSecurityBundleResult extends TdfolSecurityValidationResult {
+  checks: { formula: boolean; proofCache: boolean; witness: boolean; zkpPublicInputs: boolean };
+}
+
 export interface TdfolSecurityEvent {
   timestamp: string;
   threatType: TdfolThreatType;
@@ -205,6 +217,36 @@ export class TdfolSecurityValidator {
     this.analyzeSideChannels(proof, result);
     result.riskLevel = calculateRiskLevel(result);
     result.auditTime = performance.now() - startedAt;
+    return result;
+  }
+
+  validateSecurityBundle(input: TdfolSecurityBundleInput): TdfolSecurityBundleResult {
+    const formulaResult = this.validateFormula(input.formula, input.identifier ?? 'bundle');
+    const result: TdfolSecurityBundleResult = {
+      ...formulaResult,
+      errors: [...formulaResult.errors],
+      warnings: [...formulaResult.warnings],
+      threats: [...formulaResult.threats],
+      metadata: { ...formulaResult.metadata },
+      checks: {
+        formula: formulaResult.valid,
+        proofCache: true,
+        witness: true,
+        zkpPublicInputs: true,
+      },
+    };
+
+    validateProofCacheEntry(input.proofCacheEntry, result);
+    validateWitnessInput(input.witness, result);
+    validateZkpPublicInputs(input.zkpPublicInputs, result);
+    result.valid = result.valid && Object.values(result.checks).every(Boolean);
+    result.metadata = {
+      ...result.metadata,
+      security_bundle_checked: true,
+      proof_cache_checked: input.proofCacheEntry !== undefined,
+      witness_checked: input.witness !== undefined,
+      zkp_public_inputs_checked: input.zkpPublicInputs !== undefined,
+    };
     return result;
   }
 
@@ -480,6 +522,128 @@ function hasExponentialPattern(formula: string): boolean {
     }
   }
   return maxQuantifierDepth > 10;
+}
+
+function validateProofCacheEntry(entry: unknown, result: TdfolSecurityBundleResult): void {
+  if (entry === undefined) return;
+  if (!isPlainRecord(entry)) {
+    failBundleCheck(result, 'proofCache', 'Proof cache entry must be an object', 'malformed_input');
+    return;
+  }
+  const status = entry.status;
+  if (
+    typeof entry.theorem !== 'string' ||
+    !['proved', 'disproved', 'unknown', 'timeout', 'error', 'unprovable'].includes(String(status))
+  ) {
+    failBundleCheck(
+      result,
+      'proofCache',
+      'Proof cache entry must include a theorem and known status',
+      'malformed_input',
+    );
+  }
+  if (!Array.isArray(entry.steps)) {
+    failBundleCheck(
+      result,
+      'proofCache',
+      'Proof cache entry steps must be an array',
+      'malformed_input',
+    );
+  }
+  if (typeof entry.method === 'string' && /python|subprocess|rpc|server|http/i.test(entry.method)) {
+    failBundleCheck(
+      result,
+      'proofCache',
+      'Proof cache entry references a non-browser proof method',
+      'side_channel',
+    );
+  }
+}
+
+function validateWitnessInput(witness: unknown, result: TdfolSecurityBundleResult): void {
+  if (witness === undefined) return;
+  if (!isPlainRecord(witness) || !Array.isArray(witness.axioms)) {
+    failBundleCheck(result, 'witness', 'Witness must include an axioms array', 'invalid_zkp');
+    return;
+  }
+  if (!witness.axioms.every((axiom) => typeof axiom === 'string' && axiom.length > 0)) {
+    failBundleCheck(result, 'witness', 'Witness axioms must be non-empty strings', 'invalid_zkp');
+  }
+  const intermediateSteps = witness.intermediate_steps ?? witness.intermediateSteps;
+  if (intermediateSteps !== undefined && !Array.isArray(intermediateSteps)) {
+    failBundleCheck(
+      result,
+      'witness',
+      'Witness intermediate steps must be an array',
+      'invalid_zkp',
+    );
+  }
+  for (const key of Object.keys(witness)) {
+    if (/secret|private[_-]?key|password/i.test(key)) {
+      failBundleCheck(
+        result,
+        'witness',
+        `Witness contains sensitive field: ${key}`,
+        'side_channel',
+      );
+    }
+  }
+}
+
+function validateZkpPublicInputs(inputs: unknown, result: TdfolSecurityBundleResult): void {
+  if (inputs === undefined) return;
+  if (!isPlainRecord(inputs)) {
+    failBundleCheck(
+      result,
+      'zkpPublicInputs',
+      'ZKP public inputs must be an object',
+      'invalid_zkp',
+    );
+    return;
+  }
+  for (const field of ['theorem_hash', 'axioms_commitment', 'circuit_version', 'ruleset_id']) {
+    if (!(field in inputs)) {
+      failBundleCheck(
+        result,
+        'zkpPublicInputs',
+        `Missing ZKP public input: ${field}`,
+        'invalid_zkp',
+      );
+    }
+  }
+  for (const field of ['theorem_hash', 'axioms_commitment']) {
+    const value = inputs[field];
+    if (typeof value !== 'string' || !/^[0-9a-f]{64}$/i.test(value)) {
+      failBundleCheck(
+        result,
+        'zkpPublicInputs',
+        `Invalid ZKP field element hash: ${field}`,
+        'invalid_zkp',
+      );
+    }
+  }
+  if (!Number.isSafeInteger(inputs.circuit_version) || Number(inputs.circuit_version) <= 0) {
+    failBundleCheck(result, 'zkpPublicInputs', 'Invalid ZKP circuit version', 'invalid_zkp');
+  }
+  if (typeof inputs.ruleset_id !== 'string' || inputs.ruleset_id.length === 0) {
+    failBundleCheck(result, 'zkpPublicInputs', 'Invalid ZKP ruleset id', 'invalid_zkp');
+  }
+}
+
+function failBundleCheck(
+  result: TdfolSecurityBundleResult,
+  check: keyof TdfolSecurityBundleResult['checks'],
+  message: string,
+  threat: TdfolThreatType,
+): void {
+  result.checks[check] = false;
+  result.valid = false;
+  result.errors.push(message);
+  result.threats.push(threat);
+}
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function calculateRiskLevel(result: TdfolZkpAuditResult): TdfolZkpAuditResult['riskLevel'] {
