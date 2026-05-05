@@ -10,15 +10,39 @@ import {
 describe('CEC grammar loader and engine', () => {
   it('loads default grammar sections and operator metadata without filesystem access', () => {
     const loader = createDefaultCecGrammarLoader();
+    const artifact = loader.getArtifact();
 
-    expect(loader.getConfig()).toMatchObject({ version: '1.0', language: 'en', caseSensitive: false });
+    expect(loader.getConfig()).toMatchObject({
+      version: '1.0',
+      language: 'en',
+      caseSensitive: false,
+    });
     expect(loader.validate()).toBe(true);
-    expect(loader.getWordsForOperator('deontic', 'obligation')).toEqual(['must', 'obligated', 'should', 'required']);
+    expect(loader.validateDetailed()).toEqual({ valid: true, issues: [] });
+    expect(artifact.source).toBe('in-memory');
+    expect(artifact.runtime).toBe('browser-native');
+    expect(artifact.externalResourcePolicy).toBe('none');
+    expect(artifact.allWords).toEqual(
+      expect.arrayContaining(['and', 'must', 'believes', 'always', 'every']),
+    );
+    expect(loader.getWordsForOperator('deontic', 'obligation')).toEqual([
+      'must',
+      'obligated',
+      'should',
+      'required',
+    ]);
     expect(loader.getWordsForOperator('connectives', 'and')).toEqual(['and']);
-    expect(loader.getSemantics('temporal', 'always')).toEqual({ type: 'temporal', operator: 'always' });
+    expect(loader.getSemantics('temporal', 'always')).toEqual({
+      type: 'temporal',
+      operator: 'always',
+    });
     expect(loader.getExamples('connectives', 'and')).toEqual(['Alice loves Bob and Carol']);
-    expect(loader.getProductionRules().compound[0].pattern).toBe('{sentence} {connective} {sentence}');
-    expect(loader.getAllWords()).toEqual(expect.arrayContaining(['and', 'must', 'believes', 'always', 'every']));
+    expect(loader.getProductionRules().compound[0].pattern).toBe(
+      '{sentence} {connective} {sentence}',
+    );
+    expect(loader.getAllWords()).toEqual(
+      expect.arrayContaining(['and', 'must', 'believes', 'always', 'every']),
+    );
   });
 
   it('accepts static browser-native grammar data and validates required sections', () => {
@@ -32,38 +56,98 @@ describe('CEC grammar loader and engine', () => {
     });
     const invalid = new CecGrammarLoader({ connectives: {} });
 
-    expect(loader.getConfig()).toMatchObject({ version: '2.0', language: 'en-GB', caseSensitive: true });
+    expect(loader.getConfig()).toMatchObject({
+      version: '2.0',
+      language: 'en-GB',
+      caseSensitive: true,
+    });
     expect(loader.validate()).toBe(true);
     expect(invalid.validate()).toBe(false);
   });
 
+  it('reports loader validation issues for malformed static artifacts without fetching fallbacks', () => {
+    const originalFetch = (globalThis as unknown as { fetch?: () => Promise<unknown> }).fetch;
+    (globalThis as unknown as { fetch?: () => Promise<unknown> }).fetch = () => {
+      throw new Error('network access is not allowed in CEC grammar tests');
+    };
+
+    try {
+      const loader = new CecGrammarLoader({
+        config: { version: '', language: '' },
+        connectives: {
+          and: { word: 'and' },
+          duplicateAnd: { word: 'and' },
+          empty: { word: '' },
+        },
+        deontic: {
+          obligation: {},
+        },
+        cognitive: {},
+        temporal: {},
+        quantifiers: {},
+        production_rules: {
+          sentence: [{ pattern: '' }],
+        },
+      });
+
+      const validation = loader.validateDetailed();
+      const artifact = loader.getArtifact();
+
+      expect(loader.validate()).toBe(false);
+      expect(validation.valid).toBe(false);
+      expect(validation.issues.map((issue) => issue.code)).toEqual([
+        'missing-config-version',
+        'missing-config-language',
+        'duplicate-operator-word',
+        'empty-operator-word',
+        'missing-operator-surface',
+        'empty-production-pattern',
+      ]);
+      expect(artifact.source).toBe('in-memory');
+      expect(artifact.externalResourcePolicy).toBe('none');
+      expect(artifact.sections.connectives.and.word).toBe('and');
+    } finally {
+      (globalThis as unknown as { fetch?: () => Promise<unknown> }).fetch = originalFetch;
+    }
+  });
+
   it('applies grammar rules and parses with bottom-up chart parsing', () => {
     const engine = new CecGrammarEngine();
-    engine.addLexicalEntry(new CecLexicalEntry({ word: 'alice', category: 'Agent', semantics: 'alice' }));
-    engine.addLexicalEntry(new CecLexicalEntry({ word: 'appeal', category: 'ActionType', semantics: 'appeal' }));
+    engine.addLexicalEntry(
+      new CecLexicalEntry({ word: 'alice', category: 'Agent', semantics: 'alice' }),
+    );
+    engine.addLexicalEntry(
+      new CecLexicalEntry({ word: 'appeal', category: 'ActionType', semantics: 'appeal' }),
+    );
     engine.addLexicalEntry(new CecLexicalEntry({ word: 'may', category: 'V', semantics: 'P' }));
-    engine.addRule(new CecGrammarRule({
-      name: 'AgentToSentence',
-      category: 'Sentence',
-      constituents: ['Agent'],
-      semanticFn: ([agent]) => agent,
-    }));
-    engine.addRule(new CecGrammarRule({
-      name: 'ModalAction',
-      category: 'VP',
-      constituents: ['V', 'ActionType'],
-      semanticFn: ([modal, action]) => ({ modal, action }),
-    }));
-    engine.addRule(new CecGrammarRule({
-      name: 'SentenceVP',
-      category: 'Utterance',
-      constituents: ['Sentence', 'VP'],
-      semanticFn: ([agent, vp]) => ({ agent, ...(vp as Record<string, unknown>) }),
-      linearizeFn: (value) => {
-        const record = value as { agent: string; modal: string; action: string };
-        return `${record.agent} ${record.modal === 'P' ? 'may' : record.modal} ${record.action}`;
-      },
-    }));
+    engine.addRule(
+      new CecGrammarRule({
+        name: 'AgentToSentence',
+        category: 'Sentence',
+        constituents: ['Agent'],
+        semanticFn: ([agent]) => agent,
+      }),
+    );
+    engine.addRule(
+      new CecGrammarRule({
+        name: 'ModalAction',
+        category: 'VP',
+        constituents: ['V', 'ActionType'],
+        semanticFn: ([modal, action]) => ({ modal, action }),
+      }),
+    );
+    engine.addRule(
+      new CecGrammarRule({
+        name: 'SentenceVP',
+        category: 'Utterance',
+        constituents: ['Sentence', 'VP'],
+        semanticFn: ([agent, vp]) => ({ agent, ...(vp as Record<string, unknown>) }),
+        linearizeFn: (value) => {
+          const record = value as { agent: string; modal: string; action: string };
+          return `${record.agent} ${record.modal === 'P' ? 'may' : record.modal} ${record.action}`;
+        },
+      }),
+    );
 
     const parses = engine.parse('Alice may appeal');
 
@@ -76,19 +160,25 @@ describe('CEC grammar loader and engine', () => {
 
   it('parses Python-style n-ary grammar productions without runtime services', () => {
     const engine = new CecGrammarEngine();
-    engine.addLexicalEntry(new CecLexicalEntry({ word: 'alice', category: 'Agent', semantics: 'alice' }));
+    engine.addLexicalEntry(
+      new CecLexicalEntry({ word: 'alice', category: 'Agent', semantics: 'alice' }),
+    );
     engine.addLexicalEntry(new CecLexicalEntry({ word: 'must', category: 'V', semantics: 'O' }));
-    engine.addLexicalEntry(new CecLexicalEntry({ word: 'appeal', category: 'ActionType', semantics: 'appeal' }));
-    engine.addRule(new CecGrammarRule({
-      name: 'ModalSentence',
-      category: 'Utterance',
-      constituents: ['Agent', 'V', 'ActionType'],
-      semanticFn: ([agent, modal, action]) => ({ agent, modal, action }),
-      linearizeFn: (value) => {
-        const record = value as { agent: string; modal: string; action: string };
-        return `${record.agent} ${record.modal === 'O' ? 'must' : record.modal} ${record.action}`;
-      },
-    }));
+    engine.addLexicalEntry(
+      new CecLexicalEntry({ word: 'appeal', category: 'ActionType', semantics: 'appeal' }),
+    );
+    engine.addRule(
+      new CecGrammarRule({
+        name: 'ModalSentence',
+        category: 'Utterance',
+        constituents: ['Agent', 'V', 'ActionType'],
+        semanticFn: ([agent, modal, action]) => ({ agent, modal, action }),
+        linearizeFn: (value) => {
+          const record = value as { agent: string; modal: string; action: string };
+          return `${record.agent} ${record.modal === 'O' ? 'must' : record.modal} ${record.action}`;
+        },
+      }),
+    );
 
     const parses = engine.parse('Alice must appeal');
 
@@ -145,7 +235,9 @@ describe('CEC grammar loader and engine', () => {
       { word: 'records', category: 'N', semantics: 'records' },
     ]);
 
-    const productionRule = engine.rules.find((rule) => rule.name === 'CecPythonProduction:sentence:0');
+    const productionRule = engine.rules.find(
+      (rule) => rule.name === 'CecPythonProduction:sentence:0',
+    );
     const parses = engine.parse('Alice appeal home');
 
     expect(productionRule?.constituents).toEqual(['Agent', 'ActionType', 'Object']);
@@ -182,20 +274,28 @@ describe('CEC grammar loader and engine', () => {
       },
     ]);
 
-    expect(engine.parse('Alice must appeal')[0].semantics).toEqual({ agent: 'Alice', modal: 'O', action: 'appeal' });
+    expect(engine.parse('Alice must appeal')[0].semantics).toEqual({
+      agent: 'Alice',
+      modal: 'O',
+      action: 'appeal',
+    });
     expect(engine.parse('alice must appeal')).toEqual([]);
     expect(engine.validateGrammar()).toEqual({ valid: true, issues: [] });
   });
 
   it('validates fail-closed grammar contracts before parsing', () => {
     const engine = new CecGrammarEngine();
-    engine.addLexicalEntry(new CecLexicalEntry({ word: 'alice', category: 'Agent', semantics: 'alice' }));
-    engine.addRule(new CecGrammarRule({
-      name: 'BrokenModalSentence',
-      category: 'Utterance',
-      constituents: ['Agent', 'V', 'ActionType'],
-      semanticFn: ([agent, modal, action]) => ({ agent, modal, action }),
-    }));
+    engine.addLexicalEntry(
+      new CecLexicalEntry({ word: 'alice', category: 'Agent', semantics: 'alice' }),
+    );
+    engine.addRule(
+      new CecGrammarRule({
+        name: 'BrokenModalSentence',
+        category: 'Utterance',
+        constituents: ['Agent', 'V', 'ActionType'],
+        semanticFn: ([agent, modal, action]) => ({ agent, modal, action }),
+      }),
+    );
 
     const validation = engine.validateGrammar();
 
@@ -209,12 +309,33 @@ describe('CEC grammar loader and engine', () => {
 
   it('resolves ambiguity by first, shortest, and most specific strategies', () => {
     const engine = new CecGrammarEngine();
-    const short = { category: 'Utterance' as const, children: [], semantics: 'short', span: [0, 1] as [number, number], isLexical: () => false, linearize: () => 'short' };
+    const short = {
+      category: 'Utterance' as const,
+      children: [],
+      semantics: 'short',
+      span: [0, 1] as [number, number],
+      isLexical: () => false,
+      linearize: () => 'short',
+    };
     const specific = {
       category: 'Utterance' as const,
       children: [
-        { category: 'Agent' as const, children: [], semantics: 'alice', span: [0, 1] as [number, number], isLexical: () => true, linearize: () => 'alice' },
-        { category: 'ActionType' as const, children: [], semantics: 'appeal', span: [1, 2] as [number, number], isLexical: () => true, linearize: () => 'appeal' },
+        {
+          category: 'Agent' as const,
+          children: [],
+          semantics: 'alice',
+          span: [0, 1] as [number, number],
+          isLexical: () => true,
+          linearize: () => 'alice',
+        },
+        {
+          category: 'ActionType' as const,
+          children: [],
+          semantics: 'appeal',
+          span: [1, 2] as [number, number],
+          isLexical: () => true,
+          linearize: () => 'appeal',
+        },
       ],
       semantics: 'specific',
       span: [0, 2] as [number, number],
@@ -224,7 +345,9 @@ describe('CEC grammar loader and engine', () => {
 
     expect(engine.resolveAmbiguity([specific as never, short as never], 'first')).toBe(specific);
     expect(engine.resolveAmbiguity([specific as never, short as never], 'shortest')).toBe(short);
-    expect(engine.resolveAmbiguity([short as never, specific as never], 'most_specific')).toBe(specific);
+    expect(engine.resolveAmbiguity([short as never, specific as never], 'most_specific')).toBe(
+      specific,
+    );
     expect(engine.resolveAmbiguity([])).toBeUndefined();
   });
 

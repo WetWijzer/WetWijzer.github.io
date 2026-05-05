@@ -2576,3 +2576,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T081456Z-added-python-style-cec-event-calculus-helper-exports-and-parity-coverage..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T081456Z-added-python-style-cec-event-calculus-helper-exports-and-parity-coverage..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T081456Z-added-python-style-cec-event-calculus-helper-exports-and-parity-coverage..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 08:18:00 UTC
+
+- Target: `Task checkbox-477: Manual unblock: port `logic/CEC/native/grammar_engine.py` and `grammar_loader.py` by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.`
+- Summary: Added browser-native CEC grammar artifacts and detailed loader validation.
+- Impact: src/lib/logic/cec/grammarEngine.ts now exposes deterministic in-memory grammar artifacts with explicit no-external-resource metadata and fail-closed validation diagnostics; src/lib/logic/cec/grammarEngine.test.ts exercises default artifacts, malformed static grammar validation, and no-network construction for the TypeScript port validation suite.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/grammarEngine.test.ts`, `src/lib/logic/cec/grammarEngine.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T081800Z-added-browser-native-cec-grammar-artifacts-and-detailed-loader-validation..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T081800Z-added-browser-native-cec-grammar-artifacts-and-detailed-loader-validation..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T081800Z-added-browser-native-cec-grammar-artifacts-and-detailed-loader-validation..stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+

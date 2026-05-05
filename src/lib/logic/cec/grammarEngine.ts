@@ -60,9 +60,24 @@ export interface CecGrammarData {
   production_rules?: Record<string, CecProductionRuleData[]>;
 }
 
+export interface CecGrammarArtifact {
+  source: 'in-memory';
+  runtime: 'browser-native';
+  externalResourcePolicy: 'none';
+  config: CecGrammarConfig;
+  sections: Record<CecGrammarOperatorSection, Record<string, CecGrammarOperatorData>>;
+  productionRules: Record<string, CecProductionRuleData[]>;
+  allWords: string[];
+}
+
 export type CecSemanticFunction = (semanticValues: unknown[]) => unknown;
 export type CecLinearizeFunction = (semanticValue: unknown) => string;
-export type CecGrammarOperatorSection = 'deontic' | 'cognitive' | 'temporal' | 'quantifiers' | 'connectives';
+export type CecGrammarOperatorSection =
+  | 'deontic'
+  | 'cognitive'
+  | 'temporal'
+  | 'quantifiers'
+  | 'connectives';
 export type CecAmbiguityStrategy = 'first' | 'shortest' | 'most_specific';
 
 export interface CecGrammarRuleOptions {
@@ -116,8 +131,10 @@ export class CecGrammarRule {
   }
 
   canApply(categories: CecGrammarCategory[]): boolean {
-    return categories.length === this.constituents.length &&
-      categories.every((category, index) => category === this.constituents[index]);
+    return (
+      categories.length === this.constituents.length &&
+      categories.every((category, index) => category === this.constituents[index])
+    );
   }
 
   applySemantics(semanticValues: unknown[]): unknown {
@@ -218,7 +235,7 @@ export class CecGrammarLoader {
     const operatorData = this.grammarData[operatorType]?.[operatorName];
     if (!operatorData) return [];
     if (operatorData.words) return [...operatorData.words];
-    if (operatorData.word) return [operatorData.word];
+    if (operatorData.word !== undefined) return [operatorData.word];
     return [];
   }
 
@@ -235,8 +252,7 @@ export class CecGrammarLoader {
   }
 
   validate(): boolean {
-    return ['connectives', 'deontic', 'cognitive', 'temporal', 'quantifiers']
-      .every((section) => section in this.grammarData);
+    return this.validateDetailed().valid;
   }
 
   getAllWords(): string[] {
@@ -245,13 +261,109 @@ export class CecGrammarLoader {
       if (connective.word) words.push(connective.word);
       if (connective.words) words.push(...connective.words);
     }
-    for (const section of [this.getDeonticRules(), this.getCognitiveRules(), this.getTemporalRules(), this.getQuantifiers()]) {
+    for (const section of [
+      this.getDeonticRules(),
+      this.getCognitiveRules(),
+      this.getTemporalRules(),
+      this.getQuantifiers(),
+    ]) {
       for (const operator of Object.values(section)) {
         if (operator.words) words.push(...operator.words);
         else if (operator.word) words.push(operator.word);
       }
     }
     return words;
+  }
+
+  getArtifact(): CecGrammarArtifact {
+    return {
+      source: 'in-memory',
+      runtime: 'browser-native',
+      externalResourcePolicy: 'none',
+      config: this.getConfig(),
+      sections: {
+        connectives: cloneOperatorSection(this.getConnectives()),
+        deontic: cloneOperatorSection(this.getDeonticRules()),
+        cognitive: cloneOperatorSection(this.getCognitiveRules()),
+        temporal: cloneOperatorSection(this.getTemporalRules()),
+        quantifiers: cloneOperatorSection(this.getQuantifiers()),
+      },
+      productionRules: cloneProductionRules(this.getProductionRules()),
+      allWords: this.getAllWords(),
+    };
+  }
+
+  validateDetailed(): CecGrammarValidationResult {
+    const issues: CecGrammarValidationIssue[] = [];
+    if (this.config.version.trim().length === 0) {
+      issues.push({
+        code: 'missing-config-version',
+        message: 'CEC grammar config must include a non-empty version.',
+      });
+    }
+    if (this.config.language.trim().length === 0) {
+      issues.push({
+        code: 'missing-config-language',
+        message: 'CEC grammar config must include a non-empty language.',
+      });
+    }
+
+    for (const section of REQUIRED_OPERATOR_SECTIONS) {
+      if (!(section in this.grammarData)) {
+        issues.push({
+          code: 'missing-section',
+          message: `CEC grammar is missing required ${section} section.`,
+          ruleName: section,
+        });
+        continue;
+      }
+      const seenWords = new Set<string>();
+      for (const [operatorName, operator] of Object.entries(this.grammarData[section] ?? {})) {
+        const words = operator.words ?? (operator.word !== undefined ? [operator.word] : []);
+        const patterns = operator.patterns ?? (operator.pattern ? [operator.pattern] : []);
+        if (words.length === 0 && patterns.length === 0) {
+          issues.push({
+            code: 'missing-operator-surface',
+            message: `Operator ${section}.${operatorName} must define words or patterns.`,
+            ruleName: `${section}.${operatorName}`,
+          });
+        }
+        for (const word of words) {
+          const normalized = this.config.caseSensitive ? word : word.toLowerCase();
+          if (word.trim().length === 0) {
+            issues.push({
+              code: 'empty-operator-word',
+              message: `Operator ${section}.${operatorName} contains an empty word.`,
+              ruleName: `${section}.${operatorName}`,
+              word,
+            });
+          } else if (seenWords.has(normalized)) {
+            issues.push({
+              code: 'duplicate-operator-word',
+              message: `Operator section ${section} contains duplicate word ${word}.`,
+              ruleName: `${section}.${operatorName}`,
+              word,
+            });
+          }
+          seenWords.add(normalized);
+        }
+      }
+    }
+
+    for (const [groupName, rules] of Object.entries(this.getProductionRules())) {
+      for (let index = 0; index < rules.length; index += 1) {
+        const production = rules[index];
+        if (production.pattern.trim().length === 0) {
+          issues.push({
+            code: 'empty-production-pattern',
+            message: `Production ${groupName}.${index} must include a non-empty pattern.`,
+            ruleName: `${groupName}.${index}`,
+          });
+        }
+      }
+    }
+
+    return { valid: issues.length === 0, issues };
   }
 }
 
@@ -277,7 +389,10 @@ export class CecGrammarEngine {
     const entries = this.lexicon.get(key) ?? [];
     entries.push(entry);
     this.lexicon.set(key, entries);
-    this.maxLexicalTokenLength = Math.max(this.maxLexicalTokenLength, key.split(/\s+/).filter(Boolean).length);
+    this.maxLexicalTokenLength = Math.max(
+      this.maxLexicalTokenLength,
+      key.split(/\s+/).filter(Boolean).length,
+    );
   }
 
   addLexicalEntries(entries: Array<CecLexicalEntry | CecLexicalEntryOptions>): void {
@@ -292,47 +407,86 @@ export class CecGrammarEngine {
     }
   }
 
-  setupFromLoader(loader: CecGrammarLoader = createDefaultCecGrammarLoader()): CecGrammarSetupResult {
+  setupFromLoader(
+    loader: CecGrammarLoader = createDefaultCecGrammarLoader(),
+  ): CecGrammarSetupResult {
     let lexicalEntriesAdded = 0;
     let rulesAdded = 0;
-    lexicalEntriesAdded += this.addOperatorEntries('connectives', loader.getConnectives(), () => 'Conj');
-    lexicalEntriesAdded += this.addOperatorEntries('deontic', loader.getDeonticRules(), () => 'V');
-    lexicalEntriesAdded += this.addOperatorEntries('cognitive', loader.getCognitiveRules(), () => 'V');
-    lexicalEntriesAdded += this.addOperatorEntries('temporal', loader.getTemporalRules(), (operator) =>
-      operator.category === 'PREPOSITION' ? 'Prep' : 'Adv',
+    lexicalEntriesAdded += this.addOperatorEntries(
+      'connectives',
+      loader.getConnectives(),
+      () => 'Conj',
     );
-    lexicalEntriesAdded += this.addOperatorEntries('quantifiers', loader.getQuantifiers(), () => 'Det');
+    lexicalEntriesAdded += this.addOperatorEntries('deontic', loader.getDeonticRules(), () => 'V');
+    lexicalEntriesAdded += this.addOperatorEntries(
+      'cognitive',
+      loader.getCognitiveRules(),
+      () => 'V',
+    );
+    lexicalEntriesAdded += this.addOperatorEntries(
+      'temporal',
+      loader.getTemporalRules(),
+      (operator) => (operator.category === 'PREPOSITION' ? 'Prep' : 'Adv'),
+    );
+    lexicalEntriesAdded += this.addOperatorEntries(
+      'quantifiers',
+      loader.getQuantifiers(),
+      () => 'Det',
+    );
 
     const defaultRules: CecGrammarRuleOptions[] = [
       {
         name: 'CecPythonDeonticUtterance',
         category: 'Utterance',
         constituents: ['Agent', 'V', 'ActionType'],
-        semanticFn: ([agent, modality, action]) => ({ type: 'deontic', agent, modality: operatorName(modality), action }),
+        semanticFn: ([agent, modality, action]) => ({
+          type: 'deontic',
+          agent,
+          modality: operatorName(modality),
+          action,
+        }),
       },
       {
         name: 'CecPythonCognitiveUtterance',
         category: 'Utterance',
         constituents: ['Agent', 'V', 'Fluent'],
-        semanticFn: ([agent, operator, proposition]) => ({ type: 'cognitive', agent, operator: operatorName(operator), proposition }),
+        semanticFn: ([agent, operator, proposition]) => ({
+          type: 'cognitive',
+          agent,
+          operator: operatorName(operator),
+          proposition,
+        }),
       },
       {
         name: 'CecPythonTemporalUtterance',
         category: 'Utterance',
         constituents: ['Adv', 'Utterance'],
-        semanticFn: ([temporal, proposition]) => ({ type: 'temporal', operator: operatorName(temporal), proposition }),
+        semanticFn: ([temporal, proposition]) => ({
+          type: 'temporal',
+          operator: operatorName(temporal),
+          proposition,
+        }),
       },
       {
         name: 'CecPythonCompoundUtterance',
         category: 'Utterance',
         constituents: ['Utterance', 'Conj', 'Utterance'],
-        semanticFn: ([left, connective, right]) => ({ type: 'compound', connective: operatorName(connective), left, right }),
+        semanticFn: ([left, connective, right]) => ({
+          type: 'compound',
+          connective: operatorName(connective),
+          left,
+          right,
+        }),
       },
       {
         name: 'CecPythonQuantifiedEntity',
         category: 'Entity',
         constituents: ['Det', 'N'],
-        semanticFn: ([quantifier, noun]) => ({ type: 'quantified_entity', quantifier: operatorName(quantifier), noun }),
+        semanticFn: ([quantifier, noun]) => ({
+          type: 'quantified_entity',
+          quantifier: operatorName(quantifier),
+          noun,
+        }),
       },
       {
         name: 'CecPythonEntityUtterance',
@@ -364,7 +518,9 @@ export class CecGrammarEngine {
 
     tokens.forEach((token, index) => {
       for (const entry of this.lexicon.get(token) ?? []) {
-        chart[index][index + 1].push(new CecParseNode(entry.category, undefined, [], entry.semantics, [index, index + 1]));
+        chart[index][index + 1].push(
+          new CecParseNode(entry.category, undefined, [], entry.semantics, [index, index + 1]),
+        );
       }
       this.closeUnaryCell(chart[index][index + 1], index, index + 1);
     });
@@ -400,7 +556,11 @@ export class CecGrammarEngine {
     for (const entries of this.lexicon.values()) {
       for (const entry of entries) {
         if (entry.word.trim().length === 0) {
-          issues.push({ code: 'empty-lexical-word', message: 'Lexical entries must have a non-empty word.', word: entry.word });
+          issues.push({
+            code: 'empty-lexical-word',
+            message: 'Lexical entries must have a non-empty word.',
+            word: entry.word,
+          });
         }
         lexicalCategories.add(entry.category);
       }
@@ -422,10 +582,17 @@ export class CecGrammarEngine {
 
     for (const rule of this.rules) {
       if (rule.name.trim().length === 0) {
-        issues.push({ code: 'empty-rule-name', message: 'Grammar rules must have a non-empty name.' });
+        issues.push({
+          code: 'empty-rule-name',
+          message: 'Grammar rules must have a non-empty name.',
+        });
       }
       if (rule.constituents.length === 0) {
-        issues.push({ code: 'empty-constituents', message: 'Grammar rules must consume at least one constituent.', ruleName: rule.name });
+        issues.push({
+          code: 'empty-constituents',
+          message: 'Grammar rules must consume at least one constituent.',
+          ruleName: rule.name,
+        });
       }
       const missing = rule.constituents.filter((category) => !reachableCategories.has(category));
       if (missing.length > 0) {
@@ -446,7 +613,10 @@ export class CecGrammarEngine {
     return { valid: issues.length === 0, issues };
   }
 
-  private addProductionRules(productions: Record<string, CecProductionRuleData[]>): { added: number; unsupported: CecGrammarValidationIssue[] } {
+  private addProductionRules(productions: Record<string, CecProductionRuleData[]>): {
+    added: number;
+    unsupported: CecGrammarValidationIssue[];
+  } {
     let added = 0;
     const unsupported: CecGrammarValidationIssue[] = [];
     for (const [groupName, rules] of Object.entries(productions)) {
@@ -463,18 +633,20 @@ export class CecGrammarEngine {
           continue;
         }
         if (this.rules.some((candidate) => candidate.name === compiled.name)) continue;
-        this.addRule(new CecGrammarRule({
-          name: compiled.name,
-          category: compiled.category,
-          constituents: compiled.constituents,
-          sourcePattern: production.pattern,
-          semanticFn: (values) => ({
-            type: 'production',
-            group: groupName,
-            pattern: production.pattern,
-            values,
+        this.addRule(
+          new CecGrammarRule({
+            name: compiled.name,
+            category: compiled.category,
+            constituents: compiled.constituents,
+            sourcePattern: production.pattern,
+            semanticFn: (values) => ({
+              type: 'production',
+              group: groupName,
+              pattern: production.pattern,
+              values,
+            }),
           }),
-        }));
+        );
         added += 1;
       }
     }
@@ -488,7 +660,7 @@ export class CecGrammarEngine {
   ): number {
     let added = 0;
     for (const [name, operator] of Object.entries(operators)) {
-      const words = operator.words ?? (operator.word ? [operator.word] : []);
+      const words = operator.words ?? (operator.word !== undefined ? [operator.word] : []);
       for (const word of words) {
         const entry = new CecLexicalEntry({
           word,
@@ -497,8 +669,10 @@ export class CecGrammarEngine {
           features: { section, name },
         });
         const key = this.normalizeToken(word);
-        const duplicate = (this.lexicon.get(key) ?? []).some((candidate) =>
-          candidate.category === entry.category && JSON.stringify(candidate.semantics) === JSON.stringify(entry.semantics),
+        const duplicate = (this.lexicon.get(key) ?? []).some(
+          (candidate) =>
+            candidate.category === entry.category &&
+            JSON.stringify(candidate.semantics) === JSON.stringify(entry.semantics),
         );
         if (duplicate) continue;
         this.addLexicalEntry(entry);
@@ -565,7 +739,10 @@ export class CecGrammarEngine {
     return String(semanticValue);
   }
 
-  resolveAmbiguity(parses: CecParseNode[], strategy: CecAmbiguityStrategy = 'first'): CecParseNode | undefined {
+  resolveAmbiguity(
+    parses: CecParseNode[],
+    strategy: CecAmbiguityStrategy = 'first',
+  ): CecParseNode | undefined {
     if (parses.length === 0) return undefined;
     if (strategy === 'shortest') return minParseNodeBy(parses, countParseNodes);
     if (strategy === 'most_specific') return maxParseNodeBy(parses, specificityScore);
@@ -573,7 +750,11 @@ export class CecGrammarEngine {
   }
 
   protected tokenize(text: string): string[] {
-    const rawTokens = text.trim().split(/\s+/).filter(Boolean).map((token) => this.normalizeToken(token));
+    const rawTokens = text
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((token) => this.normalizeToken(token));
     const tokens: string[] = [];
     let index = 0;
     while (index < rawTokens.length) {
@@ -614,11 +795,12 @@ export function createDefaultCecGrammarEngine(): CecGrammarEngine {
 }
 
 function hasEquivalentParse(nodes: CecParseNode[], candidate: CecParseNode): boolean {
-  return nodes.some((node) =>
-    node.category === candidate.category &&
-    node.span[0] === candidate.span[0] &&
-    node.span[1] === candidate.span[1] &&
-    JSON.stringify(node.semantics) === JSON.stringify(candidate.semantics),
+  return nodes.some(
+    (node) =>
+      node.category === candidate.category &&
+      node.span[0] === candidate.span[0] &&
+      node.span[1] === candidate.span[1] &&
+      JSON.stringify(node.semantics) === JSON.stringify(candidate.semantics),
   );
 }
 
@@ -650,12 +832,18 @@ function specificityScore(node: CecParseNode): number {
   return node.children.reduce((total, child) => total + specificityScore(child), 0);
 }
 
-function minParseNodeBy(items: CecParseNode[], scorer: (item: CecParseNode) => number): CecParseNode {
-  return items.reduce((best, item) => scorer(item) < scorer(best) ? item : best);
+function minParseNodeBy(
+  items: CecParseNode[],
+  scorer: (item: CecParseNode) => number,
+): CecParseNode {
+  return items.reduce((best, item) => (scorer(item) < scorer(best) ? item : best));
 }
 
-function maxParseNodeBy(items: CecParseNode[], scorer: (item: CecParseNode) => number): CecParseNode {
-  return items.reduce((best, item) => scorer(item) > scorer(best) ? item : best);
+function maxParseNodeBy(
+  items: CecParseNode[],
+  scorer: (item: CecParseNode) => number,
+): CecParseNode {
+  return items.reduce((best, item) => (scorer(item) > scorer(best) ? item : best));
 }
 
 interface CompiledProductionPattern {
@@ -679,7 +867,45 @@ const PRODUCTION_RESULT_CATEGORY: Record<string, CecGrammarCategory> = {
   compound: 'Utterance',
 };
 
-function compileProductionPattern(groupName: string, index: number, pattern: string): CompiledProductionPattern | undefined {
+const REQUIRED_OPERATOR_SECTIONS: CecGrammarOperatorSection[] = [
+  'connectives',
+  'deontic',
+  'cognitive',
+  'temporal',
+  'quantifiers',
+];
+
+function cloneOperatorSection(
+  section: Record<string, CecGrammarOperatorData>,
+): Record<string, CecGrammarOperatorData> {
+  const clone: Record<string, CecGrammarOperatorData> = {};
+  for (const [name, operator] of Object.entries(section)) {
+    clone[name] = {
+      ...operator,
+      words: operator.words ? [...operator.words] : undefined,
+      patterns: operator.patterns ? [...operator.patterns] : undefined,
+      semantics: operator.semantics ? { ...operator.semantics } : undefined,
+      examples: operator.examples ? [...operator.examples] : undefined,
+    };
+  }
+  return clone;
+}
+
+function cloneProductionRules(
+  productionRules: Record<string, CecProductionRuleData[]>,
+): Record<string, CecProductionRuleData[]> {
+  const clone: Record<string, CecProductionRuleData[]> = {};
+  for (const [groupName, rules] of Object.entries(productionRules)) {
+    clone[groupName] = rules.map((rule) => ({ ...rule }));
+  }
+  return clone;
+}
+
+function compileProductionPattern(
+  groupName: string,
+  index: number,
+  pattern: string,
+): CompiledProductionPattern | undefined {
   const matches = [...pattern.matchAll(/\{([a-z_]+)\}/g)];
   if (matches.length === 0) return undefined;
   const rebuilt = matches.map((match) => match[0]).join(' ');
@@ -701,31 +927,101 @@ function compileProductionPattern(groupName: string, index: number, pattern: str
 
 export const DEFAULT_CEC_GRAMMAR: CecGrammarData = {
   connectives: {
-    and: { word: 'and', category: 'CONJUNCTION', semantics: { type: 'and', connective: 'AND' }, examples: ['Alice loves Bob and Carol'] },
-    or: { word: 'or', category: 'CONJUNCTION', semantics: { type: 'or', connective: 'OR' }, examples: ['Alice or Bob will go'] },
-    not: { word: 'not', category: 'ADVERB', semantics: { type: 'not', connective: 'NOT' }, examples: ['It is not raining'] },
-    if_then: { patterns: ['if {P} then {Q}', '{P} implies {Q}'], semantics: { type: 'implies', connective: 'IMPLIES' } },
+    and: {
+      word: 'and',
+      category: 'CONJUNCTION',
+      semantics: { type: 'and', connective: 'AND' },
+      examples: ['Alice loves Bob and Carol'],
+    },
+    or: {
+      word: 'or',
+      category: 'CONJUNCTION',
+      semantics: { type: 'or', connective: 'OR' },
+      examples: ['Alice or Bob will go'],
+    },
+    not: {
+      word: 'not',
+      category: 'ADVERB',
+      semantics: { type: 'not', connective: 'NOT' },
+      examples: ['It is not raining'],
+    },
+    if_then: {
+      patterns: ['if {P} then {Q}', '{P} implies {Q}'],
+      semantics: { type: 'implies', connective: 'IMPLIES' },
+    },
   },
   deontic: {
-    obligation: { words: ['must', 'obligated', 'should', 'required'], category: 'VERB', semantics: { type: 'deontic', operator: 'obligated' } },
-    permission: { words: ['may', 'permitted', 'allowed', 'can'], category: 'VERB', semantics: { type: 'deontic', operator: 'permitted' } },
-    prohibition: { words: ['forbidden', 'prohibited', 'must not'], category: 'VERB', semantics: { type: 'deontic', operator: 'forbidden' } },
+    obligation: {
+      words: ['must', 'obligated', 'should', 'required'],
+      category: 'VERB',
+      semantics: { type: 'deontic', operator: 'obligated' },
+    },
+    permission: {
+      words: ['may', 'permitted', 'allowed', 'can'],
+      category: 'VERB',
+      semantics: { type: 'deontic', operator: 'permitted' },
+    },
+    prohibition: {
+      words: ['forbidden', 'prohibited', 'must not'],
+      category: 'VERB',
+      semantics: { type: 'deontic', operator: 'forbidden' },
+    },
   },
   cognitive: {
-    belief: { words: ['believes', 'think', 'assume'], category: 'VERB', semantics: { type: 'cognitive', operator: 'belief' } },
-    knowledge: { words: ['knows', 'aware'], category: 'VERB', semantics: { type: 'cognitive', operator: 'knowledge' } },
-    intention: { words: ['intends', 'plans', 'wants'], category: 'VERB', semantics: { type: 'cognitive', operator: 'intention' } },
-    desire: { words: ['desires', 'wishes', 'hopes'], category: 'VERB', semantics: { type: 'cognitive', operator: 'desire' } },
+    belief: {
+      words: ['believes', 'think', 'assume'],
+      category: 'VERB',
+      semantics: { type: 'cognitive', operator: 'belief' },
+    },
+    knowledge: {
+      words: ['knows', 'aware'],
+      category: 'VERB',
+      semantics: { type: 'cognitive', operator: 'knowledge' },
+    },
+    intention: {
+      words: ['intends', 'plans', 'wants'],
+      category: 'VERB',
+      semantics: { type: 'cognitive', operator: 'intention' },
+    },
+    desire: {
+      words: ['desires', 'wishes', 'hopes'],
+      category: 'VERB',
+      semantics: { type: 'cognitive', operator: 'desire' },
+    },
   },
   temporal: {
-    always: { words: ['always', 'necessarily', 'invariably'], category: 'ADVERB', semantics: { type: 'temporal', operator: 'always' } },
-    eventually: { words: ['eventually', 'sometime', 'ultimately'], category: 'ADVERB', semantics: { type: 'temporal', operator: 'eventually' } },
-    next: { words: ['next', 'immediately'], category: 'ADVERB', semantics: { type: 'temporal', operator: 'next' } },
-    until: { words: ['until'], category: 'PREPOSITION', semantics: { type: 'temporal', operator: 'until' } },
+    always: {
+      words: ['always', 'necessarily', 'invariably'],
+      category: 'ADVERB',
+      semantics: { type: 'temporal', operator: 'always' },
+    },
+    eventually: {
+      words: ['eventually', 'sometime', 'ultimately'],
+      category: 'ADVERB',
+      semantics: { type: 'temporal', operator: 'eventually' },
+    },
+    next: {
+      words: ['next', 'immediately'],
+      category: 'ADVERB',
+      semantics: { type: 'temporal', operator: 'next' },
+    },
+    until: {
+      words: ['until'],
+      category: 'PREPOSITION',
+      semantics: { type: 'temporal', operator: 'until' },
+    },
   },
   quantifiers: {
-    universal: { words: ['all', 'every', 'each'], category: 'DETERMINER', semantics: { type: 'quantifier', operator: 'forall' } },
-    existential: { words: ['some', 'a', 'an', 'exists'], category: 'DETERMINER', semantics: { type: 'quantifier', operator: 'exists' } },
+    universal: {
+      words: ['all', 'every', 'each'],
+      category: 'DETERMINER',
+      semantics: { type: 'quantifier', operator: 'forall' },
+    },
+    existential: {
+      words: ['some', 'a', 'an', 'exists'],
+      category: 'DETERMINER',
+      semantics: { type: 'quantifier', operator: 'exists' },
+    },
   },
   production_rules: {
     sentence: [
@@ -734,7 +1030,10 @@ export const DEFAULT_CEC_GRAMMAR: CecGrammarData = {
     ],
     compound: [
       { pattern: '{sentence} {connective} {sentence}', example: 'Alice goes and Bob stays' },
-      { pattern: 'if {condition} then {consequence}', example: 'if it rains then the ground is wet' },
+      {
+        pattern: 'if {condition} then {consequence}',
+        example: 'if it rains then the ground is wet',
+      },
     ],
   },
   config: {

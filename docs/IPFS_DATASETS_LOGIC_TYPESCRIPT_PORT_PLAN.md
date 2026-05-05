@@ -1016,7 +1016,7 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 - [x] Manual unblock: port `logic/CEC/native/enhanced_grammar_parser.py` by adding chart-parser style diagnostics, parse alternatives, and grammar fixture tests.
 - [!] Manual unblock: port `logic/CEC/native/error_handling.py` by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.
 - [x] Manual unblock: port `logic/CEC/native/event_calculus.py` by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.
-- [ ] Manual unblock: port `logic/CEC/native/grammar_engine.py` and `grammar_loader.py` by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.
+- [x] Manual unblock: port `logic/CEC/native/grammar_engine.py` and `grammar_loader.py` by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.
 - [ ] Manual unblock: port `logic/CEC/native/inference_rules/base.py`, `cognitive.py`, and `modal.py` by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.
 - [ ] Manual unblock: port `logic/CEC/native/prover_core.py` by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.
 - [ ] Manual unblock: port `logic/external_provers/interactive/coq_prover_bridge.py` by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.
@@ -1024,11 +1024,11 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 <!-- logic-port-daemon-task-board:start -->
 ## Daemon Task Board
 
-Last updated: 2026-05-05 08:14:56 UTC
+Last updated: 2026-05-05 08:18:00 UTC
 
 Selection policy: choose the first needed or in-progress port-plan checkbox; if none remain, revisit blocked checkboxes with `fewest-failures` strategy because blocked-task revisit mode is enabled.
 
-Current target: `Task checkbox-477: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.`
+Current target: `Task checkbox-478: Manual unblock: port 'logic/CEC/native/inference_rules/base.py', 'cognitive.py', and 'modal.py' by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.`
 
 Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failing.
 
@@ -1509,19 +1509,19 @@ Legend: `[ ]` needed, `[~]` in progress, `[x]` complete, `[!]` blocked or failin
 - [x] `Task checkbox-473: Manual unblock: port 'logic/CEC/native/dcec_types.py' by adding DCEC container helpers, type guards, serialization, and compatibility tests.` - complete
 - [x] `Task checkbox-474: Manual unblock: port 'logic/CEC/native/enhanced_grammar_parser.py' by adding chart-parser style diagnostics, parse alternatives, and grammar fixture tests.` - complete
 - [!] `Task checkbox-475: Manual unblock: port 'logic/CEC/native/error_handling.py' by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.` - blocked
-- [x] `Task checkbox-476: Manual unblock: port 'logic/CEC/native/event_calculus.py' by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.` - validated by latest daemon round
-- [ ] `Task checkbox-477: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.` - needed
+- [x] `Task checkbox-476: Manual unblock: port 'logic/CEC/native/event_calculus.py' by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.` - complete
+- [x] `Task checkbox-477: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.` - validated by latest daemon round
 - [ ] `Task checkbox-478: Manual unblock: port 'logic/CEC/native/inference_rules/base.py', 'cognitive.py', and 'modal.py' by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.` - needed
 - [ ] `Task checkbox-479: Manual unblock: port 'logic/CEC/native/prover_core.py' by adding a bounded browser-native proof facade, deterministic search limits, proof summaries, and failure diagnostics.` - needed
 - [ ] `Task checkbox-480: Manual unblock: port 'logic/external_provers/interactive/coq_prover_bridge.py' by adding a local adapter contract that reports WASM-capable support when available and fail-closed unsupported-local results otherwise.` - needed
 
 ### Latest Round
 
-- Target: `Task checkbox-476: Manual unblock: port 'logic/CEC/native/event_calculus.py' by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.`
+- Target: `Task checkbox-477: Manual unblock: port 'logic/CEC/native/grammar_engine.py' and 'grammar_loader.py' by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.`
 - Result: `valid`
-- Summary: Added Python-style CEC event calculus helper exports and parity coverage.
-- Impact: The TypeScript CEC module now exposes browser-native event, fluent, happens, holds, initiates, terminates, fluentsAt, and timeline helpers over the existing event calculus engine, and the Jest suite directly validates parameterized helper parity without Python or server runtime dependencies.
-- Accepted changed files: `src/lib/logic/cec/eventCalculus.test.ts`, `src/lib/logic/cec/eventCalculus.ts`
+- Summary: Added browser-native CEC grammar artifacts and detailed loader validation.
+- Impact: src/lib/logic/cec/grammarEngine.ts now exposes deterministic in-memory grammar artifacts with explicit no-external-resource metadata and fail-closed validation diagnostics; src/lib/logic/cec/grammarEngine.test.ts exercises default artifacts, malformed static grammar validation, and no-network construction for the TypeScript port validation suite.
+- Accepted changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/cec/grammarEngine.test.ts`, `src/lib/logic/cec/grammarEngine.ts`
 
 ### Blocked Backlog
 
