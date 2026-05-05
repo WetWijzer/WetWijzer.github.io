@@ -1,0 +1,50 @@
+{
+  "artifact_kind": "accepted_ephemeral_workspace",
+  "changed_files": [
+    "ppd/devhub/playwright_pdf_handoff_validation.py",
+    "ppd/tests/fixtures/devhub_pdf_handoff/tranche2_redacted_handoff.json",
+    "ppd/tests/test_playwright_pdf_handoff_validation.py"
+  ],
+  "created_at": "2026-05-05T02:06:43.683845Z",
+  "impact": "This advances tranche 2 by proving, without live DevHub access or private artifacts, that redacted user facts can populate draft browser fields and PDF preview fields while upload, submit, certify, payment, scheduling, cancellation, and similar official transitions remain blocked unless their exact checkpoint confirmation is supplied.",
+  "summary": "Add deterministic PP&D Playwright/PDF handoff validation fixtures and tests for redacted draft fills with exact-confirmation gates on official DevHub transitions.",
+  "target_task": "Task checkbox-227: Add Playwright/PDF handoff validation for tranche 2 proving redacted user facts can fill draft fields and PDF previews while official DevHub transitions stay behind exact confirmation checkpoints.",
+  "transport": "ephemeral_worktree",
+  "validation_results": [
+    {
+      "command": [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{ \"ok\": true, \"task_count\": 279 }"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "ppd/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "returncode": 0,
+      "stderr": ".....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................ss..................sss.............................................................................................................................................................................................................................................................................................................................. ---------------------------------------------------------------------- Ran 826 tests in 4.822s OK (skipped=5)",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "bash",
+        "-lc",
+        "files=$(find ppd -name '*.ts' -not -path '*/node_modules/*' -print); test -z \"$files\" || npx tsc --noEmit --target ES2020 --module ESNext --moduleResolution node --strict --skipLibCheck --types node $files"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ]
+}

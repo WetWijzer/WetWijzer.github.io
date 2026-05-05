@@ -1,0 +1,3 @@
+ppd/devhub/playwright_pdf_handoff_validation.py
+ppd/tests/fixtures/devhub_pdf_handoff/tranche2_redacted_handoff.json
+ppd/tests/test_playwright_pdf_handoff_validation.py

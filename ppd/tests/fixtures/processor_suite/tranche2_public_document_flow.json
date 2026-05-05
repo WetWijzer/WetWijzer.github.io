@@ -1,0 +1,65 @@
+{
+  "plan_id": "ppd-tranche-2-public-document-flow",
+  "purpose": "Prove public PP&D documents are archived, normalized, enriched with PDF metadata, and batched into requirements before agent use.",
+  "stages": [
+    {
+      "name": "archive_manifest",
+      "requires": [],
+      "outputs": {
+        "manifest_id": "fixture-manifest-001",
+        "source_url": "https://www.portland.gov/ppd/example-public-guidance.pdf",
+        "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+        "retrieved_at": "2026-05-05T00:00:00Z"
+      }
+    },
+    {
+      "name": "normalized_document_records",
+      "requires": ["manifest_id", "source_url", "content_hash"],
+      "outputs": {
+        "document_id": "ppd-doc-fixture-001",
+        "manifest_id": "fixture-manifest-001",
+        "title": "Example Public PP&D Guidance",
+        "public_url": "https://www.portland.gov/ppd/example-public-guidance.pdf"
+      }
+    },
+    {
+      "name": "pdf_metadata",
+      "requires": ["document_id", "public_url"],
+      "outputs": {
+        "document_id": "ppd-doc-fixture-001",
+        "page_count": 4,
+        "pdf_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000002",
+        "metadata_extracted_at": "2026-05-05T00:00:00Z"
+      }
+    },
+    {
+      "name": "requirement_batches",
+      "requires": ["document_id", "page_count", "pdf_hash"],
+      "outputs": {
+        "batch_id": "ppd-req-batch-fixture-001",
+        "document_id": "ppd-doc-fixture-001",
+        "requirements": [
+          {
+            "requirement_id": "ppd-req-fixture-001",
+            "text": "Fixture requirement derived from a public PP&D document.",
+            "source_document_id": "ppd-doc-fixture-001",
+            "source_page": 1
+          }
+        ],
+        "review_status": "pending_human_review"
+      }
+    },
+    {
+      "name": "agent_handoff",
+      "requires": ["batch_id", "requirements", "review_status"],
+      "outputs": {
+        "batch_id": "ppd-req-batch-fixture-001",
+        "allowed": false,
+        "blocking_checks": [
+          "human_review_required",
+          "no_live_devhub_action"
+        ]
+      }
+    }
+  ]
+}

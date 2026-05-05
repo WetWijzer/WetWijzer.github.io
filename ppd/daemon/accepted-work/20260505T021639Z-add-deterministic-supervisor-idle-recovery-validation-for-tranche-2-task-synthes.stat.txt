@@ -1,0 +1,3 @@
+ppd/supervisor_idle_recovery.py
+ppd/tests/test_supervisor_idle_recovery_validation.py
+ppd/tests/fixtures/supervisor_idle_recovery/tranche2_completed_board.json

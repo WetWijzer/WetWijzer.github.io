@@ -1,0 +1,128 @@
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Iterable
+
+
+@dataclass(frozen=True)
+class IdleRecoveryFinding:
+    code: str
+    message: str
+
+
+@dataclass(frozen=True)
+class IdleRecoveryReport:
+    ok: bool
+    findings: tuple[IdleRecoveryFinding, ...]
+
+
+def load_idle_recovery_board(path: str | Path) -> dict[str, Any]:
+    with Path(path).open("r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    if not isinstance(data, dict):
+        raise ValueError("idle recovery fixture must contain a JSON object")
+    return data
+
+
+def validate_tranche_2_idle_recovery(board: dict[str, Any]) -> IdleRecoveryReport:
+    findings: list[IdleRecoveryFinding] = []
+    goals = _active_goal_ids(board.get("goals", []))
+    completed_tranches = _completed_tranches(board.get("completed_boards", []))
+    blocked = _blocked_task_keys(board.get("blocked_tasks", []))
+    synthesized = board.get("synthesized_tasks", [])
+
+    if 2 not in completed_tranches:
+        findings.append(IdleRecoveryFinding("missing_completed_tranche_2", "tranche 2 must be completed before idle recovery is evaluated"))
+
+    if not isinstance(synthesized, list) or not synthesized:
+        findings.append(IdleRecoveryFinding("missing_synthesis", "idle recovery must synthesize at least one new platform task"))
+        return IdleRecoveryReport(False, tuple(findings))
+
+    seen_ids: set[str] = set()
+    for index, task in enumerate(synthesized):
+        if not isinstance(task, dict):
+            findings.append(IdleRecoveryFinding("invalid_task", f"synthesized task {index} must be an object"))
+            continue
+
+        task_id = _text(task.get("id"))
+        title = _text(task.get("title"))
+        goal_id = _text(task.get("goal_id"))
+        tranche = task.get("tranche")
+        source_tranche = task.get("source_tranche")
+        retry_of = _text(task.get("retry_of"))
+        area = _text(task.get("area"))
+        tags = {_text(tag) for tag in task.get("tags", []) if _text(tag)} if isinstance(task.get("tags", []), list) else set()
+
+        if not task_id:
+            findings.append(IdleRecoveryFinding("missing_task_id", f"synthesized task {index} needs a stable id"))
+        elif task_id in seen_ids:
+            findings.append(IdleRecoveryFinding("duplicate_synthesized_id", f"synthesized task id {task_id} is repeated"))
+        else:
+            seen_ids.add(task_id)
+
+        if _looks_idle(title) or _looks_idle(_text(task.get("intent"))):
+            findings.append(IdleRecoveryFinding("sleep_task", f"synthesized task {task_id or index} is idle/no-op work"))
+
+        if goal_id not in goals:
+            findings.append(IdleRecoveryFinding("goal_misaligned", f"synthesized task {task_id or index} is not aligned to an active goal"))
+
+        if area != "platform" and "platform" not in tags:
+            findings.append(IdleRecoveryFinding("not_platform_task", f"synthesized task {task_id or index} is not marked as platform work"))
+
+        if tranche in completed_tranches or source_tranche in completed_tranches:
+            findings.append(IdleRecoveryFinding("duplicate_tranche_reuse", f"synthesized task {task_id or index} reuses completed tranche context"))
+
+        if task_id in blocked or retry_of in blocked or title in blocked:
+            findings.append(IdleRecoveryFinding("blocked_retry_churn", f"synthesized task {task_id or index} retries blocked work instead of creating fresh work"))
+
+    return IdleRecoveryReport(not findings, tuple(findings))
+
+
+def _active_goal_ids(goals: Any) -> set[str]:
+    if not isinstance(goals, list):
+        return set()
+    active: set[str] = set()
+    for goal in goals:
+        if isinstance(goal, dict) and goal.get("status", "active") == "active":
+            goal_id = _text(goal.get("id"))
+            if goal_id:
+                active.add(goal_id)
+    return active
+
+
+def _completed_tranches(boards: Any) -> set[int]:
+    if not isinstance(boards, list):
+        return set()
+    completed: set[int] = set()
+    for board in boards:
+        if isinstance(board, dict) and board.get("status") == "completed":
+            tranche = board.get("tranche")
+            if isinstance(tranche, int):
+                completed.add(tranche)
+    return completed
+
+
+def _blocked_task_keys(tasks: Any) -> set[str]:
+    if not isinstance(tasks, list):
+        return set()
+    keys: set[str] = set()
+    for task in tasks:
+        if not isinstance(task, dict):
+            continue
+        for field in ("id", "title"):
+            value = _text(task.get(field))
+            if value:
+                keys.add(value)
+    return keys
+
+
+def _looks_idle(value: str) -> bool:
+    lowered = value.lower()
+    idle_terms = ("sleep", "wait", "idle", "noop", "no-op", "do nothing", "stand by")
+    return any(term in lowered for term in idle_terms)
+
+
+def _text(value: Any) -> str:
+    return value.strip() if isinstance(value, str) else ""

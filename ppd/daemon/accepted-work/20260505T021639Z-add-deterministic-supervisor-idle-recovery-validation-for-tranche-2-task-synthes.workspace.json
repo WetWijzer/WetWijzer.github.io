@@ -1,0 +1,38 @@
+{
+  "artifact_kind": "ephemeral-workspace",
+  "changed_files": [
+    "ppd/supervisor_idle_recovery.py",
+    "ppd/tests/test_supervisor_idle_recovery_validation.py",
+    "ppd/tests/fixtures/supervisor_idle_recovery/tranche2_completed_board.json"
+  ],
+  "created_at": "2026-05-05T02:16:39.549245Z",
+  "promoted_to_main_worktree": true,
+  "reason": "",
+  "schema_version": 1,
+  "summary": "Add deterministic supervisor idle-recovery validation for tranche 2 task synthesis.",
+  "target_task": "Task checkbox-228: Add supervisor idle-recovery validation for tranche 2 proving completed boards synthesize new goal-aligned platform tasks without sleeping, duplicate tranche reuse, or blocked-task retry churn.",
+  "transport": "ephemeral_worktree",
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ppd/tests",
+      "-p",
+      "test_*.py"
+    ],
+    [
+      "bash",
+      "-lc",
+      "files=$(find ppd -name '*.ts' -not -path '*/node_modules/*' -print); test -z \"$files\" || npx tsc --noEmit --target ES2020 --module ESNext --moduleResolution node --strict --skipLibCheck --types node $files"
+    ]
+  ],
+  "validation_passed": true
+}

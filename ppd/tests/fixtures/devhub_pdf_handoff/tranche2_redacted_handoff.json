@@ -1,0 +1,74 @@
+{
+  "fixture_id": "tranche2_redacted_playwright_pdf_handoff",
+  "source_note": "Deterministic redacted fixture; no private DevHub session, selectors, traces, screenshots, raw crawl output, or downloaded documents.",
+  "redacted_user_facts": {
+    "applicant_name": "[REDACTED_APPLICANT_NAME]",
+    "site_address": "[REDACTED_SITE_ADDRESS]",
+    "project_description": "[REDACTED_PROJECT_DESCRIPTION]",
+    "contact_email": "[REDACTED_CONTACT_EMAIL]"
+  },
+  "field_mappings": [
+    {
+      "fact_key": "applicant_name",
+      "label": "Applicant name",
+      "devhub_field": "draft.applicant.name",
+      "pdf_field": "ApplicantName",
+      "source_evidence_id": "ppd-public-devhub-application-guidance:applicant"
+    },
+    {
+      "fact_key": "site_address",
+      "label": "Project site address",
+      "devhub_field": "draft.project.site_address",
+      "pdf_field": "ProjectSiteAddress",
+      "source_evidence_id": "ppd-public-devhub-application-guidance:site-address"
+    },
+    {
+      "fact_key": "project_description",
+      "label": "Project description",
+      "devhub_field": "draft.project.description",
+      "pdf_field": "ProjectDescription",
+      "source_evidence_id": "ppd-public-single-pdf-process:separate-applications"
+    },
+    {
+      "fact_key": "contact_email",
+      "label": "Contact email",
+      "devhub_field": "draft.contact.email",
+      "pdf_field": "ContactEmail",
+      "source_evidence_id": "ppd-public-devhub-account-guidance:contact"
+    }
+  ],
+  "devhub_transitions": [
+    {
+      "name": "fill reversible DevHub draft fields",
+      "action_kind": "draft_field_fill"
+    },
+    {
+      "name": "render local PDF preview",
+      "action_kind": "pdf_preview_fill"
+    },
+    {
+      "name": "upload plans to official DevHub record",
+      "action_kind": "upload",
+      "exact_confirmation": "CONFIRM UPLOAD PLANS TO OFFICIAL DEVHUB RECORD",
+      "confirmation_provided": null
+    },
+    {
+      "name": "submit permit request",
+      "action_kind": "submit",
+      "exact_confirmation": "CONFIRM SUBMIT PERMIT REQUEST",
+      "confirmation_provided": "confirm submit permit request"
+    },
+    {
+      "name": "certify application statements",
+      "action_kind": "certify",
+      "exact_confirmation": "CONFIRM CERTIFY APPLICATION STATEMENTS",
+      "confirmation_provided": null
+    },
+    {
+      "name": "pay reviewed fees",
+      "action_kind": "fee_payment",
+      "exact_confirmation": "CONFIRM PAY REVIEWED FEES",
+      "confirmation_provided": null
+    }
+  ]
+}

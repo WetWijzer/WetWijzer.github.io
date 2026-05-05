@@ -1,0 +1,40 @@
+{
+  "goals": [
+    {
+      "id": "goal-platform-supervision",
+      "status": "active",
+      "summary": "Keep the PP&D supervisor advancing platform validation work after completed boards."
+    }
+  ],
+  "completed_boards": [
+    {
+      "id": "board-tranche-1",
+      "tranche": 1,
+      "status": "completed"
+    },
+    {
+      "id": "board-tranche-2",
+      "tranche": 2,
+      "status": "completed"
+    }
+  ],
+  "blocked_tasks": [
+    {
+      "id": "task-retry-authenticated-upload",
+      "title": "Retry authenticated upload",
+      "reason": "Blocked because authenticated upload automation is outside deterministic fixture validation."
+    }
+  ],
+  "synthesized_tasks": [
+    {
+      "id": "task-validate-supervisor-idle-recovery",
+      "title": "Validate supervisor idle recovery task synthesis",
+      "goal_id": "goal-platform-supervision",
+      "area": "platform",
+      "tags": ["platform", "supervisor", "idle-recovery"],
+      "tranche": 3,
+      "source_tranche": 3,
+      "intent": "Add deterministic validation that proves a completed tranche 2 board creates fresh platform work."
+    }
+  ]
+}
