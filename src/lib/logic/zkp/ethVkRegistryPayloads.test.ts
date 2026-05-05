@@ -3,6 +3,7 @@ import {
   buildRegisterVkPayload,
   build_register_vk_payload,
   circuitIdTextToBytes32,
+  keccak256Hex,
   normalizeBytes32Hex,
   vkHashHexToBytes32,
 } from './ethVkRegistryPayloads';
@@ -41,13 +42,31 @@ describe('EVM VK registry payload helpers', () => {
     });
   });
 
-  it('fails closed for keccak and calldata helpers until browser crypto/ABI parity lands', () => {
-    expect(() => circuitIdTextToBytes32('tdfol_v1')).toThrow('browser-native keccak');
-    expect(() =>
+  it('hashes circuit ids with browser-native Keccak-256', () => {
+    expect(keccak256Hex('')).toBe(
+      '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470',
+    );
+    expect(keccak256Hex('hello')).toBe(
+      '0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8',
+    );
+    expect(circuitIdTextToBytes32('tdfol_v1')).toMatch(/^0x[0-9a-f]{64}$/);
+  });
+
+  it('builds registerVK calldata without RPC or server dependencies', () => {
+    const selector = keccak256Hex('registerVK(bytes32,uint64,bytes32,bool)').slice(2, 10);
+    expect(
       buildRegisterVkCalldata({
         payload: { circuitIdBytes32: `0x${circuitId}`, version: 1, vkHashBytes32: vkHash },
       }),
-    ).toThrow('ABI calldata encoding');
+    ).toBe(
+      `0x${selector}${circuitId}${'1'.padStart(64, '0')}${'bb'.repeat(32)}${''.padStart(64, '0')}`,
+    );
+    expect(
+      buildRegisterVkCalldata({
+        overwrite: true,
+        payload: { circuitIdBytes32: `0x${circuitId}`, version: BigInt(2), vkHashBytes32: vkHash },
+      }).endsWith('1'.padStart(64, '0')),
+    ).toBe(true);
     expect(() =>
       buildRegisterVkCalldata({
         overwrite: 'yes' as never,
@@ -59,8 +78,8 @@ describe('EVM VK registry payload helpers', () => {
   it('validates malformed payload values', () => {
     expect(() => normalizeBytes32Hex('abc')).toThrow('32 bytes');
     expect(() => normalizeBytes32Hex('zz'.repeat(32))).toThrow('hex');
-    expect(() => buildRegisterVkPayload({ circuitIdBytes32: circuitId, version: -1, vkHashHex: vkHash })).toThrow(
-      'uint64',
-    );
+    expect(() =>
+      buildRegisterVkPayload({ circuitIdBytes32: circuitId, version: -1, vkHashHex: vkHash }),
+    ).toThrow('uint64');
   });
 });

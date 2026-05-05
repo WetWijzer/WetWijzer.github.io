@@ -2144,3 +2144,12 @@ New accepted daemon rounds append the target task, impact statement, changed fil
 - Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T032103Z-worktree-direct-edit-proposal..json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032103Z-worktree-direct-edit-proposal..diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032103Z-worktree-direct-edit-proposal..stat.txt`
 - Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
 
+## 2026-05-05 03:24:35 UTC
+
+- Target: `Task checkbox-429: Port remaining Python logic module `logic/zkp/eth_vk_registry_payloads.py` to browser-native TypeScript/WASM, including focused validation tests and no server or Python runtime dependency.`
+- Summary: Ported eth_vk_registry_payloads remaining Keccak and registerVK calldata behavior to browser-native TypeScript.
+- Impact: The TypeScript ZKP registry payload module now hashes circuit id text with local Keccak-256 and builds registerVK ABI calldata in-browser, with focused Jest coverage for hash vectors, ABI word layout, validation, and Python-compatible aliases.
+- Changed files: `docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`, `src/lib/logic/zkp/ethVkRegistryPayloads.test.ts`, `src/lib/logic/zkp/ethVkRegistryPayloads.ts`
+- Evidence: `ipfs_datasets_py/.daemon/accepted-work/20260505T032435Z-ported-eth_vk_registry_payloads-remaining-keccak-and-registervk-calldata-behavio.json`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032435Z-ported-eth_vk_registry_payloads-remaining-keccak-and-registervk-calldata-behavio.diff`, `ipfs_datasets_py/.daemon/accepted-work/20260505T032435Z-ported-eth_vk_registry_payloads-remaining-keccak-and-registervk-calldata-behavio.stat.txt`
+- Validation: `npx tsc --noEmit` -> `0`, `npm run validate:logic-port` -> `0`
+
