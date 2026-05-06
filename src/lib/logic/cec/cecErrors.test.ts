@@ -1,7 +1,6 @@
-import { jest } from '@jest/globals';
-
 import { dcecAtom } from './dcecCore';
 import {
+  adaptCecValidationResult,
   CecConversionError,
   CecError,
   CecGrammarError,
@@ -10,11 +9,14 @@ import {
   CecParsingError,
   CecProvingError,
   CecValidationError,
+  createCecRecoveryMetadata,
+  createFailClosedCecValidationResult,
   DcecError,
   DcecParsingError,
   formatCecOperationError,
   handleCecParseError,
   handleCecProofError,
+  runCecValidationAdapter,
   safeCecCall,
   validateCecNotNone,
   validateCecType,
@@ -86,15 +88,23 @@ describe('CEC native error parity helpers', () => {
     const wrapped = withCecErrorContext(() => {
       throw new Error('invalid formula');
     }, 'Formula validation');
-    const logger = { error: jest.fn(), debug: jest.fn() };
+    const logMessages: string[] = [];
+    const logger = {
+      error(message?: unknown): void {
+        logMessages.push(String(message));
+      },
+      debug(message?: unknown): void {
+        logMessages.push(String(message));
+      },
+    };
     const result = safeCecCall(() => {
       throw new Error('optional failure');
     }, [], [], logger);
 
     expect(() => wrapped()).toThrow('Formula validation');
     expect(result).toEqual([]);
-    expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('optional failure'));
-    expect(logger.debug).toHaveBeenCalled();
+    expect(logMessages.some((message) => message.includes('optional failure'))).toBe(true);
+    expect(logMessages.length).toBeGreaterThan(1);
   });
 
   it('formats operation errors and validates common input patterns', () => {
@@ -108,5 +118,56 @@ describe('CEC native error parity helpers', () => {
     expect(() => validateDcecFormulaLike(undefined)).toThrow(CecValidationError);
     expect(() => validateDcecFormulaLike(undefined, true)).not.toThrow();
     expect(() => validateDcecFormulaLike(dcecAtom('p'))).not.toThrow();
+  });
+
+  it('creates fail-closed recovery metadata for CEC validation failures', () => {
+    const error = new CecValidationError(
+      'Invalid CEC value',
+      'agent',
+      'Formula',
+      'DCEC formula-like object',
+      'Pass a parsed formula',
+    );
+    const recovery = createCecRecoveryMetadata(error, 'validateFormula', { formula: 'agent' });
+    const result = createFailClosedCecValidationResult(error, 'validateFormula', { formula: 'agent' });
+
+    expect(recovery.metadata.sourcePythonModule).toBe('logic/CEC/native/error_handling.py');
+    expect(recovery.errorKind).toBe('validation');
+    expect(recovery.failClosed).toBe(true);
+    expect(recovery.context).toMatchObject({
+      formula: 'agent',
+      value: 'agent',
+      expected_type: 'Formula',
+    });
+    expect(result).toMatchObject({
+      ok: false,
+      valid: false,
+      metadata: { recoveryPolicy: 'fail-closed' },
+    });
+    expect(result.recovery?.suggestion).toBe('Pass a parsed formula');
+    expect(result.errors[0]).toContain('validateFormula failed closed');
+  });
+
+  it('adapts validation results and catches thrown validation operations', () => {
+    expect(adaptCecValidationResult({ valid: true, warnings: ['normalized'] })).toMatchObject({
+      ok: true,
+      valid: true,
+      warnings: ['normalized'],
+    });
+
+    expect(adaptCecValidationResult({ ok: false, errors: ['bad arity'] })).toMatchObject({
+      ok: false,
+      valid: false,
+      errors: ['bad arity'],
+    });
+
+    const thrown = runCecValidationAdapter('namespace.validate', () => {
+      throw new CecNamespaceError('Duplicate symbol', 'Happens', 'register');
+    });
+
+    expect(thrown.ok).toBe(false);
+    expect(thrown.recovery?.errorKind).toBe('namespace');
+    expect(thrown.recovery?.context).toMatchObject({ symbol: 'Happens', operation: 'register' });
+    expect(thrown.errors[0]).toContain('namespace.validate failed closed');
   });
 });

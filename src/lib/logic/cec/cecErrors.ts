@@ -9,6 +9,47 @@ import {
 
 export type CecErrorContext = LogicErrorContext;
 
+export const CEC_ERROR_HANDLING_METADATA = {
+  sourcePythonModule: 'logic/CEC/native/error_handling.py',
+  runtime: 'browser-native-typescript',
+  browserNative: true,
+  pythonRuntime: false,
+  serverRuntime: false,
+  recoveryPolicy: 'fail-closed',
+} as const;
+
+export type CecErrorKind =
+  | 'cec'
+  | 'conversion'
+  | 'grammar'
+  | 'knowledge-base'
+  | 'namespace'
+  | 'parse'
+  | 'proof'
+  | 'validation'
+  | 'unknown';
+
+export interface CecRecoveryMetadata {
+  readonly metadata: typeof CEC_ERROR_HANDLING_METADATA;
+  readonly operation: string;
+  readonly errorKind: CecErrorKind;
+  readonly errorName: string;
+  readonly message: string;
+  readonly context: CecErrorContext;
+  readonly suggestion?: string;
+  readonly recovered: false;
+  readonly failClosed: true;
+}
+
+export interface CecValidationAdapterResult {
+  readonly ok: boolean;
+  readonly valid: boolean;
+  readonly errors: readonly string[];
+  readonly warnings: readonly string[];
+  readonly metadata: typeof CEC_ERROR_HANDLING_METADATA;
+  readonly recovery?: CecRecoveryMetadata;
+}
+
 export class CecError extends LogicError {
   readonly suggestion?: string;
 
@@ -207,6 +248,78 @@ export function safeCecCall<TArgs extends unknown[], TResult, TDefault = undefin
   }
 }
 
+export function createCecRecoveryMetadata(
+  error: unknown,
+  operation: string,
+  context: CecErrorContext = {},
+): CecRecoveryMetadata {
+  const logicError = error instanceof LogicError ? error : undefined;
+  const standardError = error instanceof Error ? error : undefined;
+  return {
+    metadata: CEC_ERROR_HANDLING_METADATA,
+    operation,
+    errorKind: classifyCecError(error),
+    errorName: standardError?.name ?? 'UnknownError',
+    message: standardError?.message ?? String(error),
+    context: { ...context, ...(logicError?.context ?? {}) },
+    suggestion: readCecSuggestion(error),
+    recovered: false,
+    failClosed: true,
+  };
+}
+
+export function createFailClosedCecValidationResult(
+  error: unknown,
+  operation: string,
+  context: CecErrorContext = {},
+): CecValidationAdapterResult {
+  const recovery = createCecRecoveryMetadata(error, operation, context);
+  return {
+    ok: false,
+    valid: false,
+    errors: [`${operation} failed closed: ${recovery.message}`],
+    warnings: [],
+    metadata: CEC_ERROR_HANDLING_METADATA,
+    recovery,
+  };
+}
+
+export function adaptCecValidationResult(
+  value: unknown,
+  operation = 'validate',
+): CecValidationAdapterResult {
+  if (!isRecord(value)) {
+    return createFailClosedCecValidationResult(
+      new CecValidationError('CEC validation adapter expected an object result'),
+      operation,
+    );
+  }
+  const ok = typeof value.ok === 'boolean'
+    ? value.ok
+    : typeof value.valid === 'boolean'
+      ? value.valid
+      : false;
+  const errors = toStringList(value.errors);
+  return {
+    ok,
+    valid: ok,
+    errors: ok ? errors : errors.length > 0 ? errors : ['CEC validation failed without diagnostics.'],
+    warnings: toStringList(value.warnings),
+    metadata: CEC_ERROR_HANDLING_METADATA,
+  };
+}
+
+export function runCecValidationAdapter<TResult>(
+  operation: string,
+  fn: () => TResult,
+): CecValidationAdapterResult {
+  try {
+    return adaptCecValidationResult(fn(), operation);
+  } catch (error) {
+    return createFailClosedCecValidationResult(error, operation);
+  }
+}
+
 export function formatCecOperationError(error: unknown, operation: string, details: Record<string, unknown> = {}): string {
   const message = error instanceof Error ? error.message : String(error);
   let formatted = `Error during ${operation}: ${message}`;
@@ -258,4 +371,31 @@ function formatCecErrorMessage(message: string, context: CecErrorContext, sugges
 
 function prefixContext(message: string, context?: string): string {
   return context ? `${context}: ${message}` : message;
+}
+
+function classifyCecError(error: unknown): CecErrorKind {
+  if (error instanceof CecParsingError || error instanceof LogicParseError) return 'parse';
+  if (error instanceof CecProvingError || error instanceof LogicProofError) return 'proof';
+  if (error instanceof CecConversionError || error instanceof LogicConversionError) return 'conversion';
+  if (error instanceof CecValidationError || error instanceof LogicValidationError) return 'validation';
+  if (error instanceof CecNamespaceError) return 'namespace';
+  if (error instanceof CecGrammarError) return 'grammar';
+  if (error instanceof CecKnowledgeBaseError) return 'knowledge-base';
+  if (error instanceof CecError) return 'cec';
+  return 'unknown';
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function toStringList(value: unknown): readonly string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string')
+    : [];
+}
+
+function readCecSuggestion(error: unknown): string | undefined {
+  if (!isRecord(error)) return undefined;
+  return typeof error.suggestion === 'string' ? error.suggestion : undefined;
 }

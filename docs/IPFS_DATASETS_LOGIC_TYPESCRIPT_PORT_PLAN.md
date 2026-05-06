@@ -1015,7 +1015,7 @@ The daemon completed all currently eligible TypeScript port-plan checkboxes, the
 - [x] Manual unblock: port `logic/CEC/native/dcec_prototypes.py` by adding prototype/type-conflict checks and deterministic validation fixtures.
 - [x] Manual unblock: port `logic/CEC/native/dcec_types.py` by adding DCEC container helpers, type guards, serialization, and compatibility tests.
 - [x] Manual unblock: port `logic/CEC/native/enhanced_grammar_parser.py` by adding chart-parser style diagnostics, parse alternatives, and grammar fixture tests.
-- [!] Manual unblock: port `logic/CEC/native/error_handling.py` by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.
+- [x] Manual unblock: port `logic/CEC/native/error_handling.py` by adding fail-closed CEC error facades, recovery metadata, and validation result adapters.
 - [x] Manual unblock: port `logic/CEC/native/event_calculus.py` by adding event, fluent, happens, holds, initiates, terminates, and timeline query helpers with parity tests.
 - [x] Manual unblock: port `logic/CEC/native/grammar_engine.py` and `grammar_loader.py` by adding deterministic in-memory grammar artifacts, loader validation, and no-network browser tests.
 - [x] Manual unblock: port `logic/CEC/native/inference_rules/base.py`, `cognitive.py`, and `modal.py` by adding rule tables, applicability checks, proof-step metadata, and focused parity tests.
