@@ -1,0 +1,29 @@
+[
+  {
+    "id": "public-permit-index",
+    "surface": "public"
+  },
+  {
+    "id": "devhub-account-permits",
+    "surface": "authenticated_read_only",
+    "authenticated": true,
+    "read_only": true
+  },
+  {
+    "id": "devhub-draft-application",
+    "surface": "reversible_draft",
+    "reversible": true
+  },
+  {
+    "id": "issued-permit-certification",
+    "surface": "consequential_official"
+  },
+  {
+    "id": "fee-payment",
+    "surface": "financial"
+  },
+  {
+    "id": "unknown-third-party-form",
+    "surface": "unsupported"
+  }
+]

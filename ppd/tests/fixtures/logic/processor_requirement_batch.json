@@ -1,0 +1,19 @@
+{
+  "batch_id": "fixture-permit-batch",
+  "source": "fixture://ppd/requirements",
+  "requirements": [
+    {
+      "id": "req-zoning-check",
+      "text": "Before applying, the applicant must verify the zoning designation and unknown overlay status.",
+      "missing_facts": ["zoning designation", "overlay status"]
+    },
+    {
+      "id": "req-draft-only",
+      "text": "The assistant may prepare and compare a draft permit checklist for human review."
+    },
+    {
+      "id": "req-submit-stop",
+      "text": "The applicant shall submit the signed permit application and pay required fees when all prerequisites are satisfied."
+    }
+  ]
+}

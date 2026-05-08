@@ -1,0 +1,26 @@
+[
+  {
+    "id": "ppd-intake-account",
+    "status": "reviewed",
+    "source": "fixture:ppd-review",
+    "text": "A user account is required before starting an authenticated PP&D permit workflow.",
+    "missing_facts": ["devhub_account_status"],
+    "exact_confirmation": true,
+    "refused_official_actions": ["create_account", "submit_application"]
+  },
+  {
+    "id": "ppd-property-address",
+    "status": "reviewed",
+    "source": "fixture:ppd-review",
+    "text": "The property address must be confirmed before selecting a permit path.",
+    "prerequisites": ["ppd-intake-account"],
+    "temporal_after": ["ppd-intake-account"],
+    "missing_facts": ["property_address"]
+  },
+  {
+    "id": "draft-only-node",
+    "status": "draft",
+    "source": "fixture:ppd-review",
+    "text": "Draft requirements are not compiled into formal guardrails."
+  }
+]

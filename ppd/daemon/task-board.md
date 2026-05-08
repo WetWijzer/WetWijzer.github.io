@@ -94,12 +94,12 @@ This board is the controlling backlog for the isolated PP&D daemon. The daemon s
 <!-- ppd-daemon-task-board:start -->
 ## Generated Status
 
-Last updated: 2026-05-08T23:09:09.067739Z
+Last updated: 2026-05-08T23:32:54.069504Z
 
-- Latest target: `Task checkbox-9362: Add source registry validation for public, authenticated read-only, reversible draft, consequential official, financial, and unsupported PP&D surfaces.`
+- Latest target: `Task checkbox-9367: Add attended DevHub manual-login Playwright scaffold coverage with mocked fixtures, authenticated-state detection, accessible selector capture, redaction policy, and no credential/session persistence.`
 - Latest result: `llm`
 - Latest summary: LLM proposal failed.
-- Counts: `{"blocked": 181, "complete": 9124, "in_progress": 0, "needed": 0}`
+- Counts: `{"blocked": 178, "complete": 9127, "in_progress": 0, "needed": 0}`
 
 <!-- ppd-daemon-task-board:end -->
 ## Built-In Supervisor Repair Notes
@@ -165,7 +165,7 @@ Last updated: 2026-05-08T23:09:09.067739Z
 - [x] Task checkbox-242: Add processor-suite execution integration under ppd/crawler proving public PP&D pages and PDFs flow through archive manifests, normalized document records, PDF metadata, requirement batches, and formal-logic source evidence IDs before agent reuse.
 - [!] Task checkbox-243: Add an attended Playwright DevHub worker runner under ppd/devhub that supports manual login handoff, journal replay, reversible draft field fills from redacted facts, and mandatory pauses before upload, submit, certification, cancellation, inspection, security, or payment transitions.
 - [!] Task checkbox-244: Add a local PDF draft-fill work queue under ppd/pdf that maps public PP&D form field manifests to redacted user facts, invokes the pypdf draft filler for previews, and never uploads, submits, or stores private source documents.
-- [!] Task checkbox-245: Add a formal-logic guardrail extraction pipeline under ppd/logic that converts processor-backed requirement batches into obligations, prerequisites, missing-fact questions, reversible-action predicates, exact-confirmation predicates, and refused official-action stop gates.
+- [x] Task checkbox-245: Add a formal-logic guardrail extraction pipeline under ppd/logic that converts processor-backed requirement batches into obligations, prerequisites, missing-fact questions, reversible-action predicates, exact-confirmation predicates, and refused official-action stop gates.
 - [x] Task checkbox-246: Add supervisor execution-capability recovery coverage proving stale calling_llm or applying_files status on old platform slices parks the stale tranche, appends this comprehensive execution tranche, validates the daemon, and restarts with PPD_LLM_BACKEND=llm_router.
 
 ## Built-In Supervisor Planning Notes
@@ -1448,7 +1448,7 @@ Last updated: 2026-05-08T23:09:09.067739Z
 - [x] Task checkbox-9350: Add a source-backed PP&D crawl campaign brief that groups official Portland.gov PP&D pages, public PDFs, DevHub public routes, and recrawl cadence into bounded permit-family crawl batches without widening the allowlist or storing raw bodies.
 - [!] Task checkbox-9351: Add an attended DevHub login-session contract that joins manual PortlandOregon.gov sign-in, authenticated-state detection, redacted route snapshots, and save-resume boundaries without credential capture, MFA automation, or browser-state persistence.
 - [x] Task checkbox-9352: Add a requirement-to-process review queue that turns normalized PP&D pages, forms, and PDFs into permit-family stage graphs with document rules, fee triggers, deadlines, exceptions, and source evidence IDs ready for guardrail compilation.
-- [!] Task checkbox-9353: Add a formal-logic guardrail bundle contract that compiles reviewed PP&D requirement nodes into obligations, prerequisites, temporal ordering, missing-fact prompts, exact-confirmation gates, and refused official-action predicates.
+- [x] Task checkbox-9353: Add a formal-logic guardrail bundle contract that compiles reviewed PP&D requirement nodes into obligations, prerequisites, temporal ordering, missing-fact prompts, exact-confirmation gates, and refused official-action predicates.
 - [!] Task checkbox-9354: Add a user document-store reconciliation contract that compares known user facts and files to PP&D guardrail bundles, identifies stale or conflicting evidence, and emits the smallest review packet needed before draft automation proceeds.
 - [x] Task checkbox-9355: Add a reversible draft-assistance orchestration slice that combines redacted user facts, DevHub field manifests, local PDF previews, and attended save-for-later actions while refusing upload, submit, certify, cancel, inspection, and payment execution by default.
 - [x] Task checkbox-9356: Add supervisor/daemon replenishment coverage proving this human-authored autonomy tranche is preferred over generated continuation slices when no selectable PP&D work remains and the original comprehensive goal is still incomplete.
@@ -25776,7 +25776,7 @@ Last updated: 2026-05-08T23:09:09.067739Z
 ## Manual May 8 PP&D Plan Implementation Handoff Tranche
 
 - [x] Task checkbox-9361: Add official PP&D source seed manifest coverage from the May 8 plan with crawl policy, source freshness metadata, and citations for the current Portland.gov and DevHub anchors.
-- [!] Task checkbox-9362: Add source registry validation for public, authenticated read-only, reversible draft, consequential official, financial, and unsupported PP&D surfaces.
+- [x] Task checkbox-9362: Add source registry validation for public, authenticated read-only, reversible draft, consequential official, financial, and unsupported PP&D surfaces.
 - [x] Task checkbox-9363: Add processor archival adapter contract coverage proving PP&D policy preflight delegates to the ipfs_datasets_py processor suite only after allowlist, robots, content-type, timeout, and no-raw-body decisions.
 - [x] Task checkbox-9364: Add HTML and PDF extraction fixture contracts for the May 8 official source anchors, including heading hierarchy, ordered steps, tables, PDF page anchors, and public form-field manifests.
 - [!] Task checkbox-9365: Add RequirementNode and ProcessModel schema coverage with citation spans, confidence, human-review status, and representative residential, commercial, trade, correction, inspection, and fee workflow stages.
