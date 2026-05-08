@@ -3,8 +3,9 @@ export const LLM_CONFIG = {
   // Set to 'client' for browser-based inference, 'server' for traditional API-based inference
   INFERENCE_MODE: (import.meta.env.VITE_LLM_INFERENCE_MODE as 'client' | 'server') || 'client',
   
-  // Client-side model configuration - default stays small; WebGPU devices are recommended LiquidAI models in the selector.
-  CLIENT_MODEL: import.meta.env.VITE_CLIENT_LLM_MODEL || 'Xenova/distilgpt2',
+  // Client-side model configuration. Use LiquidAI locally when WebGPU is available;
+  // the app can fall back to OpenRouter while this model downloads or when no GPU exists.
+  CLIENT_MODEL: import.meta.env.VITE_CLIENT_LLM_MODEL || 'LiquidAI/LFM2.5-1.2B-Instruct-ONNX',
   
   // Show client LLM status in UI (development only)
   SHOW_CLIENT_STATUS: !!import.meta.env.VITE_SHOW_CLIENT_LLM_STATUS || import.meta.env.NODE_ENV === 'development',

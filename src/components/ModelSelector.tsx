@@ -12,7 +12,7 @@ interface ModelSelectorProps {
 const supportedModels = SUPPORTED_MODELS;
 
 export default function ModelSelector({ className = '' }: ModelSelectorProps) {
-  const [currentModel, setCurrentModel] = useState<string>('Xenova/distilgpt2');
+  const [currentModel, setCurrentModel] = useState<string>('LiquidAI/LFM2.5-1.2B-Instruct-ONNX');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState('');
   const [recommendedModel, setRecommendedModel] = useState<string>('');

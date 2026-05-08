@@ -8,7 +8,7 @@ class ClientLLMWorkerService {
   private isInitializing = false;
   private requestCounter = 0;
   private pendingRequests = new Map<string, { resolve: Function; reject: Function }>();
-  private currentModel = 'Xenova/distilgpt2';
+  private currentModel = LLM_CONFIG.CLIENT_MODEL;
   private capabilities = { webGPU: false, simd: false };
   private backgroundWarmupPromise: Promise<void> | null = null;
 
@@ -107,7 +107,7 @@ class ClientLLMWorkerService {
     });
   }
 
-  async initialize(modelName: string = 'Xenova/distilgpt2'): Promise<void> {
+  async initialize(modelName: string = LLM_CONFIG.CLIENT_MODEL): Promise<void> {
     if (this.isInitialized && this.currentModel === modelName) {
       return;
     }

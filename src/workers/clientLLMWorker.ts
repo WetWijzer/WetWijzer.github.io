@@ -267,7 +267,7 @@ async function configureEnvironment(modelName: string) {
 }
 
 // Initialize the LLM model with optimizations
-async function initializeLLM(modelName: string = 'Xenova/distilgpt2', requestId?: string): Promise<void> {
+async function initializeLLM(modelName: string = 'LiquidAI/LFM2.5-1.2B-Instruct-ONNX', requestId?: string): Promise<void> {
   if (isInitialized && textGenerator && currentModelName === modelName) {
     return;
   }
@@ -412,6 +412,17 @@ async function initializeLLM(modelName: string = 'Xenova/distilgpt2', requestId?
     
   } catch (error) {
     console.error(`[Worker] Failed to initialize ${modelName}:`, error);
+    const modelConfig = supportedModels[modelName as keyof typeof SUPPORTED_MODELS];
+
+    // WebGPU-targeted Liquid models should fall through to the cloud fallback layer,
+    // not silently become a tiny local GPT-2 model.
+    if (modelConfig?.requiresWebGPU) {
+      emitDiagnostic('initialize:failed_no_local_fallback', {
+        modelName,
+        error: error instanceof Error ? error.message : String(error),
+      }, requestId);
+      throw error;
+    }
     
     // Fallback to smaller model if initialization fails
     if (modelName !== 'Xenova/distilgpt2') {

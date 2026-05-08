@@ -44,6 +44,12 @@ jobs:
           enablement: true
       - name: Build
         run: npx vite build
+        env:
+          VITE_OPENROUTER_ENABLED: "true"
+          VITE_OPENROUTER_BASE_URL: ${{ vars.VITE_OPENROUTER_BASE_URL }}
+          VITE_OPENROUTER_DEFAULT_MODEL: liquid/lfm-2.5-1.2b-instruct:free
+          VITE_OPENROUTER_THINKING_MODEL: liquid/lfm-2.5-1.2b-thinking:free
+          VITE_CLIENT_LLM_MODEL: LiquidAI/LFM2.5-1.2B-Instruct-ONNX
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
