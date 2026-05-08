@@ -94,12 +94,12 @@ This board is the controlling backlog for the isolated PP&D daemon. The daemon s
 <!-- ppd-daemon-task-board:start -->
 ## Generated Status
 
-Last updated: 2026-05-08T22:13:56.911964Z
+Last updated: 2026-05-08T22:33:29.751607Z
 
-- Latest target: `Task checkbox-320: Add generated blocked-cascade daemon-repair coverage for tranche 19 item 3 proving blocked PP&D work stays parked until a fresh daemon repair task validates.`
-- Latest result: `accepted`
-- Latest summary: Add deterministic tranche 19 item 3 blocked-cascade daemon-repair coverage.
-- Counts: `{"blocked": 190, "complete": 9115, "in_progress": 0, "needed": 0}`
+- Latest target: `Task checkbox-244: Add a local PDF draft-fill work queue under ppd/pdf that maps public PP&D form field manifests to redacted user facts, invokes the pypdf draft filler for previews, and never uploads, submits, or stores private source documents.`
+- Latest result: `llm`
+- Latest summary: LLM proposal failed.
+- Counts: `{"blocked": 185, "complete": 9120, "in_progress": 0, "needed": 0}`
 
 <!-- ppd-daemon-task-board:end -->
 ## Built-In Supervisor Repair Notes
@@ -166,7 +166,7 @@ Last updated: 2026-05-08T22:13:56.911964Z
 - [!] Task checkbox-243: Add an attended Playwright DevHub worker runner under ppd/devhub that supports manual login handoff, journal replay, reversible draft field fills from redacted facts, and mandatory pauses before upload, submit, certification, cancellation, inspection, security, or payment transitions.
 - [!] Task checkbox-244: Add a local PDF draft-fill work queue under ppd/pdf that maps public PP&D form field manifests to redacted user facts, invokes the pypdf draft filler for previews, and never uploads, submits, or stores private source documents.
 - [!] Task checkbox-245: Add a formal-logic guardrail extraction pipeline under ppd/logic that converts processor-backed requirement batches into obligations, prerequisites, missing-fact questions, reversible-action predicates, exact-confirmation predicates, and refused official-action stop gates.
-- [!] Task checkbox-246: Add supervisor execution-capability recovery coverage proving stale calling_llm or applying_files status on old platform slices parks the stale tranche, appends this comprehensive execution tranche, validates the daemon, and restarts with PPD_LLM_BACKEND=llm_router.
+- [x] Task checkbox-246: Add supervisor execution-capability recovery coverage proving stale calling_llm or applying_files status on old platform slices parks the stale tranche, appends this comprehensive execution tranche, validates the daemon, and restarts with PPD_LLM_BACKEND=llm_router.
 
 ## Built-In Supervisor Planning Notes
 
@@ -1270,7 +1270,7 @@ Last updated: 2026-05-08T22:13:56.911964Z
 - [!] Task checkbox-442: Add generated blocked-cascade daemon-repair coverage for tranche 50 item 1 proving blocked PP&D work stays parked until a fresh daemon repair task validates.
 - [!] Task checkbox-443: Add generated blocked-cascade daemon-repair coverage for tranche 50 item 2 proving blocked PP&D work stays parked until a fresh daemon repair task validates.
 - [!] Task checkbox-444: Add generated blocked-cascade daemon-repair coverage for tranche 50 item 3 proving blocked PP&D work stays parked until a fresh daemon repair task validates.
-- [!] Task checkbox-445: Add generated blocked-cascade daemon-repair coverage for tranche 50 item 4 proving blocked PP&D work stays parked until a fresh daemon repair task validates.
+- [x] Task checkbox-445: Add generated blocked-cascade daemon-repair coverage for tranche 50 item 4 proving blocked PP&D work stays parked until a fresh daemon repair task validates.
 ## Built-In Supervisor Repair Notes
 
 - Appended deterministic blocked-cascade recovery tasks because all selectable work was blocked. The supervisor avoided the LLM repair path and created daemon-repair tasks that can run independently before blocked domain work is retried.
@@ -1451,7 +1451,7 @@ Last updated: 2026-05-08T22:13:56.911964Z
 - [!] Task checkbox-9353: Add a formal-logic guardrail bundle contract that compiles reviewed PP&D requirement nodes into obligations, prerequisites, temporal ordering, missing-fact prompts, exact-confirmation gates, and refused official-action predicates.
 - [!] Task checkbox-9354: Add a user document-store reconciliation contract that compares known user facts and files to PP&D guardrail bundles, identifies stale or conflicting evidence, and emits the smallest review packet needed before draft automation proceeds.
 - [x] Task checkbox-9355: Add a reversible draft-assistance orchestration slice that combines redacted user facts, DevHub field manifests, local PDF previews, and attended save-for-later actions while refusing upload, submit, certify, cancel, inspection, and payment execution by default.
-- [!] Task checkbox-9356: Add supervisor/daemon replenishment coverage proving this human-authored autonomy tranche is preferred over generated continuation slices when no selectable PP&D work remains and the original comprehensive goal is still incomplete.
+- [x] Task checkbox-9356: Add supervisor/daemon replenishment coverage proving this human-authored autonomy tranche is preferred over generated continuation slices when no selectable PP&D work remains and the original comprehensive goal is still incomplete.
 
 ## Manual Portland Permitting Autonomy Expansion Notes
 
@@ -25780,11 +25780,11 @@ Last updated: 2026-05-08T22:13:56.911964Z
 - [x] Task checkbox-9363: Add processor archival adapter contract coverage proving PP&D policy preflight delegates to the ipfs_datasets_py processor suite only after allowlist, robots, content-type, timeout, and no-raw-body decisions.
 - [!] Task checkbox-9364: Add HTML and PDF extraction fixture contracts for the May 8 official source anchors, including heading hierarchy, ordered steps, tables, PDF page anchors, and public form-field manifests.
 - [!] Task checkbox-9365: Add RequirementNode and ProcessModel schema coverage with citation spans, confidence, human-review status, and representative residential, commercial, trade, correction, inspection, and fee workflow stages.
-- [!] Task checkbox-9366: Add formal GuardrailBundle compiler skeleton coverage for deterministic predicates, deontic rules, temporal rules, exact-confirmation predicates, refused-action predicates, and explanation support maps.
+- [x] Task checkbox-9366: Add formal GuardrailBundle compiler skeleton coverage for deterministic predicates, deontic rules, temporal rules, exact-confirmation predicates, refused-action predicates, and explanation support maps.
 - [!] Task checkbox-9367: Add attended DevHub manual-login Playwright scaffold coverage with mocked fixtures, authenticated-state detection, accessible selector capture, redaction policy, and no credential/session persistence.
 - [x] Task checkbox-9368: Add local PDF draft-fill queue coverage for redacted user fact mapping, user-controlled preview output, no-upload/no-submit boundaries, and commit-safe audit events.
 - [!] Task checkbox-9369: Add user document-store gap-analysis coverage for known facts, matched documents, missing facts, missing documents, stale or conflicting evidence, blocked actions, and review packets.
-- [!] Task checkbox-9370: Add action classifier and exact-confirmation checkpoint coverage for read-only, reversible draft, official upload, submission, certification, cancellation, inspection scheduling, payment review, payment execution, and unsupported handoffs.
+- [x] Task checkbox-9370: Add action classifier and exact-confirmation checkpoint coverage for read-only, reversible draft, official upload, submission, certification, cancellation, inspection scheduling, payment review, payment execution, and unsupported handoffs.
 - [x] Task checkbox-9371: Add operations playbook coverage for safe live public crawl dry-runs, attended DevHub sessions, validation commands, source recrawl cadence, privacy checks, and supervisor/daemon recovery gates.
 
 ## Built-In Source-Backed Execution Continuation Tranche 2219

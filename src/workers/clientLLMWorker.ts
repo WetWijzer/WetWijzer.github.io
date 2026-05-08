@@ -33,7 +33,7 @@ async function getTransformers() {
 // Worker message types
 interface WorkerRequest {
   id: string;
-  type: 'initialize' | 'generate' | 'getCapabilities' | 'switchModel';
+  type: 'initialize' | 'generate' | 'probe' | 'getCapabilities' | 'switchModel';
   data: any;
 }
 
@@ -527,8 +527,42 @@ async function generateText(prompt: string, maxTokens: number = 50, requestId?: 
     return newText;
   } catch (error) {
     console.error('[Worker] Text generation failed:', error);
+    emitDiagnostic('generate:failed', {
+      modelName: currentModelName,
+      promptLength: prompt.length,
+      maxTokens,
+      error: error instanceof Error ? error.message : String(error),
+    }, requestId);
     throw error;
   }
+}
+
+async function probeLocalInference(maxTokens = 8, requestId?: string): Promise<{ ok: boolean; text: string; durationMs: number }> {
+  const startedAt = performance.now();
+  emitDiagnostic('probe:start', {
+    modelName: currentModelName,
+    initialized: isInitialized,
+    webGPU: webGPUSupported,
+  }, requestId);
+
+  const text = await generateText(
+    'Answer with exactly one short sentence: local inference is working.',
+    maxTokens,
+    requestId,
+  );
+  const durationMs = Math.round(performance.now() - startedAt);
+
+  if (!text || text.trim().length < 2) {
+    throw new Error('Local inference probe returned empty output.');
+  }
+
+  emitDiagnostic('probe:success', {
+    modelName: currentModelName,
+    outputLength: text.length,
+    durationMs,
+  }, requestId);
+
+  return { ok: true, text, durationMs };
 }
 
 function extractGeneratedText(result: any, formattedPrompt: string | Array<{ role: string; content: string }>): string {
@@ -613,6 +647,10 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         
       case 'generate':
         responseData = { text: await generateText(data.prompt, data.maxTokens, id) };
+        break;
+
+      case 'probe':
+        responseData = await probeLocalInference(data.maxTokens, id);
         break;
 
       case 'switchModel':

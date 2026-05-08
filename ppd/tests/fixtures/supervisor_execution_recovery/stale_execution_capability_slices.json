@@ -1,0 +1,17 @@
+[
+  {
+    "id": "old-call",
+    "platform": "old",
+    "status": "calling_llm"
+  },
+  {
+    "id": "old-apply",
+    "platform": "old",
+    "status": "applying_files"
+  },
+  {
+    "id": "fresh",
+    "platform": "old",
+    "status": "pending"
+  }
+]

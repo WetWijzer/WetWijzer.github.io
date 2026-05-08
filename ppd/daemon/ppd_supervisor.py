@@ -2353,6 +2353,39 @@ def stop_daemon_if_running(config: SupervisorConfig) -> Optional[subprocess.Comp
     return None
 
 
+def daemon_worker_processes(config: SupervisorConfig) -> list[str]:
+    result = subprocess.run(
+        ["ps", "-eo", "pid=,ppid=,sid=,etime=,cmd="],
+        cwd=config.repo_root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if result.returncode != 0:
+        return []
+    lines: list[str] = []
+    for line in result.stdout.splitlines():
+        if "python3 ppd/daemon/ppd_daemon.py --apply --watch" in line:
+            lines.append(line.strip())
+    return lines
+
+
+def start_daemon_unless_running(config: SupervisorConfig) -> subprocess.CompletedProcess[str]:
+    """Start the daemon without interrupting a live worker/LLM attempt."""
+
+    live_workers = daemon_worker_processes(config)
+    if live_workers:
+        return subprocess.CompletedProcess(
+            args=["bash", str(config.control_script), "start"],
+            returncode=0,
+            stdout="PP&D daemon already running; start suppressed to avoid interrupting live reassessment work. "
+            + " ".join(live_workers[:2]),
+            stderr="",
+        )
+    return run_control(config, "start")
+
+
 def control_command_result(
     config: SupervisorConfig,
     command: str,
@@ -2839,7 +2872,7 @@ def invoke_codex_repair(config: SupervisorConfig, decision: SupervisorDecision) 
         proposal = invoke_builtin_repair(config, decision, proposal)
 
     if config.apply and config.restart_daemon:
-        attach_daemon_start_result(proposal, config, run_control(config, "start"))
+        attach_daemon_start_result(proposal, config, start_daemon_unless_running(config))
     return proposal
 
 
@@ -2923,7 +2956,7 @@ def run_once(config: SupervisorConfig) -> SupervisorDecision:
             stop_daemon_if_running(config)
         proposal = invoke_termination_storm_recovery(config, decision)
         if config.restart_daemon and proposal.valid:
-            attach_daemon_start_result(proposal, config, run_control(config, "start"))
+            attach_daemon_start_result(proposal, config, start_daemon_unless_running(config))
     elif decision.action == "reconcile_repeated_llm_loop_and_restart" and config.apply:
         if config.restart_daemon:
             stop_daemon_if_running(config)
@@ -2933,25 +2966,25 @@ def run_once(config: SupervisorConfig) -> SupervisorDecision:
             Proposal(summary="Repeated LLM parse/runtime diagnostic loop detected.", failure_kind="llm"),
         )
         if config.restart_daemon:
-            attach_daemon_start_result(proposal, config, run_control(config, "start"))
+            attach_daemon_start_result(proposal, config, start_daemon_unless_running(config))
     elif decision.action in {"reconcile_stalled_worker_and_restart", "reconcile_dead_worker_with_recent_failures_and_restart"} and config.apply:
         if config.restart_daemon:
             stop_daemon_if_running(config)
         proposal = invoke_stalled_worker_repair(config, decision)
         if config.restart_daemon:
-            attach_daemon_start_result(proposal, config, run_control(config, "start"))
+            attach_daemon_start_result(proposal, config, start_daemon_unless_running(config))
     elif decision.action == "reconcile_blocked_cascade_and_restart" and config.apply:
         if config.restart_daemon:
             stop_daemon_if_running(config)
         proposal = invoke_blocked_cascade_repair(config, decision)
         if config.restart_daemon:
-            attach_daemon_start_result(proposal, config, run_control(config, "start"))
+            attach_daemon_start_result(proposal, config, start_daemon_unless_running(config))
     elif decision.action == "reconcile_dead_worker_and_restart" and config.apply:
         if config.restart_daemon:
             stop_daemon_if_running(config)
         proposal = invoke_dead_worker_repair(config, decision)
         if config.restart_daemon:
-            attach_daemon_start_result(proposal, config, run_control(config, "start"))
+            attach_daemon_start_result(proposal, config, start_daemon_unless_running(config))
     elif decision.action == "reconcile_supersession_task_board" and config.apply:
         if config.restart_daemon:
             stop_daemon_if_running(config)
@@ -2961,7 +2994,7 @@ def run_once(config: SupervisorConfig) -> SupervisorDecision:
             Proposal(summary="Worker returned empty task-board truncation proposal.", failure_kind="no_change"),
         )
         if config.restart_daemon:
-            attach_daemon_start_result(proposal, config, run_control(config, "start"))
+            attach_daemon_start_result(proposal, config, start_daemon_unless_running(config))
     elif decision.action == "plan_next_tasks" and config.apply and config.self_heal:
         proposal = invoke_codex_repair(config, decision)
     elif decision.action == "plan_next_tasks" and config.apply:
@@ -2977,9 +3010,9 @@ def run_once(config: SupervisorConfig) -> SupervisorDecision:
             ),
         )
         if config.restart_daemon:
-            attach_daemon_start_result(proposal, config, run_control(config, "start"))
+            attach_daemon_start_result(proposal, config, start_daemon_unless_running(config))
     elif decision.should_restart_daemon and config.apply and config.restart_daemon and not decision.should_invoke_codex:
-        result = run_control(config, "start")
+        result = start_daemon_unless_running(config)
         proposal = Proposal(
             summary="Supervisor restarted daemon.",
             impact=compact_message(result.stdout + " " + result.stderr),

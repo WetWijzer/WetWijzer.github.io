@@ -153,6 +153,22 @@ For quick testing on an already-deployed static bundle, you can temporarily set 
 localStorage.setItem('PORTLAND_OPENROUTER_BASE_URL', 'https://<your-vercel-app>.vercel.app/api/openrouter')
 ```
 
+### Local LLM diagnostics
+
+The app does not trust local WebGPU inference merely because the model downloaded. It now marks local inference as ready only after a tiny generation probe succeeds. Until then, configured OpenRouter fallback is used for chat requests while the local model warms in the background.
+
+Useful browser console checks:
+
+```js
+__PORTLAND_LLM__.getStatus()
+await __PORTLAND_LLM__.probeLocalInference()
+[...performance.getEntriesByType('resource')]
+  .map(e => e.name)
+  .filter(n => n.includes('clientLLMWorkerService') || n.includes('clientLLMWorker') || n.includes('/assets/index-'))
+```
+
+If local generation or the probe times out, the worker is terminated and recreated so a stuck WebGPU/ORT run cannot keep blocking later requests. The status object reports `localHealth.state`, `localHealth.proven`, the last failure reason, and the cloud fallback configuration.
+
 The proxy only permits the LiquidAI OpenRouter models used by the app:
 `liquid/lfm-2.5-1.2b-instruct:free` and `liquid/lfm-2.5-1.2b-thinking:free`.
 

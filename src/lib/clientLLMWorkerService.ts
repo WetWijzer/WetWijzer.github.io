@@ -1,20 +1,58 @@
 import { LLM_CONFIG } from './llmConfig';
 import { openRouterLLMService } from './openRouterLLM';
 
+type LocalInferenceState =
+  | 'unknown'
+  | 'worker_unavailable'
+  | 'cold'
+  | 'loading'
+  | 'loaded_unprobed'
+  | 'probing'
+  | 'ready'
+  | 'unhealthy';
+
+interface PendingWorkerRequest {
+  type: string;
+  startedAt: number;
+  timeoutMs: number;
+  resolve: (value: any) => void;
+  reject: (reason?: any) => void;
+}
+
+interface LocalInferenceHealth {
+  state: LocalInferenceState;
+  proven: boolean;
+  lastProbeAt?: string;
+  lastSuccessAt?: string;
+  lastFailureAt?: string;
+  lastFailureReason?: string;
+  lastGenerationDurationMs?: number;
+  lastProbeDurationMs?: number;
+  consecutiveFailures: number;
+}
+
 // Service to manage client-side LLM processing using Web Workers with WebGPU model support
 class ClientLLMWorkerService {
   private worker: Worker | null = null;
   private isInitialized = false;
   private isInitializing = false;
   private requestCounter = 0;
-  private pendingRequests = new Map<string, { resolve: Function; reject: Function }>();
+  private pendingRequests = new Map<string, PendingWorkerRequest>();
   private currentModel = LLM_CONFIG.CLIENT_MODEL;
   private capabilities = { webGPU: false, simd: false };
   private backgroundWarmupPromise: Promise<void> | null = null;
+  private localProbePromise: Promise<boolean> | null = null;
   private localGenerationUnhealthy = false;
+  private localHealth: LocalInferenceHealth = {
+    state: 'unknown',
+    proven: false,
+    consecutiveFailures: 0,
+  };
+  private localRetryAfter = 0;
 
   constructor() {
     this.initializeWorker();
+    this.installDebugHooks();
   }
 
   private initializeWorker(): void {
@@ -27,10 +65,45 @@ class ClientLLMWorkerService {
 
       this.worker.onmessage = this.handleWorkerMessage.bind(this);
       this.worker.onerror = this.handleWorkerError.bind(this);
+      if (this.localHealth.state !== 'unhealthy') {
+        this.localHealth.state = 'cold';
+      }
       
       console.log('Enhanced Client LLM Worker created with WebGPU model support');
     } catch (error) {
       console.error('Failed to create Client LLM Worker:', error);
+      this.localHealth.state = 'worker_unavailable';
+      this.localHealth.lastFailureAt = new Date().toISOString();
+      this.localHealth.lastFailureReason = error instanceof Error ? error.message : String(error);
+    }
+  }
+
+  private installDebugHooks(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    (window as any).__PORTLAND_LLM__ = {
+      getStatus: () => this.getStatus(),
+      getCloudFallbackStatus: () => this.getCloudFallbackStatus(),
+      probeLocalInference: () => this.probeLocalInference({ force: true }),
+      warmLocalModel: () => this.warmLocalModelInBackground({ force: true }),
+      resetLocalWorker: () => this.resetLocalWorker('manual debug reset'),
+    };
+  }
+
+  private emitServiceDiagnostic(event: string, data: Record<string, unknown> = {}): void {
+    const detail = {
+      event,
+      timestamp: new Date().toISOString(),
+      modelName: this.currentModel,
+      localHealth: { ...this.localHealth },
+      cloudFallback: openRouterLLMService.getConfigurationStatus(),
+      ...data,
+    };
+    console.log(`[ClientLLMWorkerService] ${event}`, detail);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('clientLLMServiceDiagnostic', { detail }));
     }
   }
 
@@ -65,6 +138,7 @@ class ClientLLMWorkerService {
 
   private handleWorkerError(error: ErrorEvent): void {
     console.error('Client LLM Worker error:', error);
+    this.markLocalFailure(`Worker error occurred: ${error.message || 'unknown worker error'}`);
     // Reject all pending requests
     for (const [id, request] of this.pendingRequests.entries()) {
       request.reject(new Error('Worker error occurred'));
@@ -72,40 +146,109 @@ class ClientLLMWorkerService {
     }
   }
 
-  private async sendWorkerRequest(type: string, data: any): Promise<any> {
+  private async sendWorkerRequest(type: string, data: any, timeoutMs?: number): Promise<any> {
     if (!this.worker) {
       throw new Error('Worker not available');
     }
 
     return new Promise((resolve, reject) => {
       const id = `req_${++this.requestCounter}`;
-      this.pendingRequests.set(id, { resolve, reject });
+      const effectiveTimeout = timeoutMs ?? (type === 'initialize' || type === 'switchModel' ? 900000 : LLM_CONFIG.LOCAL_GENERATION_TIMEOUT_MS);
+      const startedAt = performance.now();
 
       // Extended timeout for model loading and large model inference
       const timeout = setTimeout(() => {
         if (this.pendingRequests.has(id)) {
           this.pendingRequests.delete(id);
-          reject(new Error('Worker request timeout'));
+          const message = `Worker request timeout during ${type} after ${effectiveTimeout}ms`;
+          this.emitServiceDiagnostic('worker:request_timeout', { requestId: id, requestType: type, timeoutMs: effectiveTimeout });
+          if (type === 'generate' || type === 'probe') {
+            this.resetLocalWorker(message);
+          }
+          reject(new Error(message));
         }
-      }, type === 'initialize' || type === 'switchModel' ? 900000 : 120000); // 15min for large model init, 2min for generation
+      }, effectiveTimeout);
 
       const originalResolve = resolve;
       const originalReject = reject;
 
       // Wrap resolve/reject to clear timeout
       this.pendingRequests.set(id, {
+        type,
+        startedAt,
+        timeoutMs: effectiveTimeout,
         resolve: (result: any) => {
           clearTimeout(timeout);
+          const durationMs = Math.round(performance.now() - startedAt);
+          this.emitServiceDiagnostic('worker:request_success', { requestId: id, requestType: type, durationMs });
           originalResolve(result);
         },
         reject: (error: any) => {
           clearTimeout(timeout);
+          const durationMs = Math.round(performance.now() - startedAt);
+          this.emitServiceDiagnostic('worker:request_failed', {
+            requestId: id,
+            requestType: type,
+            durationMs,
+            error: error instanceof Error ? error.message : String(error),
+          });
           originalReject(error);
         }
       });
 
       this.worker!.postMessage({ id, type, data });
     });
+  }
+
+  private markLocalFailure(reason: string): void {
+    this.localGenerationUnhealthy = true;
+    this.localHealth = {
+      ...this.localHealth,
+      state: 'unhealthy',
+      proven: false,
+      lastFailureAt: new Date().toISOString(),
+      lastFailureReason: reason,
+      consecutiveFailures: this.localHealth.consecutiveFailures + 1,
+    };
+    this.localRetryAfter = Date.now() + LLM_CONFIG.LOCAL_RETRY_COOLDOWN_MS;
+    this.emitServiceDiagnostic('local:marked_unhealthy', {
+      reason,
+      retryAfter: new Date(this.localRetryAfter).toISOString(),
+    });
+  }
+
+  private markLocalSuccess(durationMs?: number): void {
+    this.localGenerationUnhealthy = false;
+    this.localHealth = {
+      ...this.localHealth,
+      state: 'ready',
+      proven: true,
+      lastSuccessAt: new Date().toISOString(),
+      lastGenerationDurationMs: durationMs ?? this.localHealth.lastGenerationDurationMs,
+      consecutiveFailures: 0,
+    };
+    this.localRetryAfter = 0;
+    this.emitServiceDiagnostic('local:marked_ready', { durationMs });
+  }
+
+  private resetLocalWorker(reason: string): void {
+    this.markLocalFailure(reason);
+
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
+
+    for (const [id, request] of this.pendingRequests.entries()) {
+      request.reject(new Error(`Worker reset after ${request.type}: ${reason}`));
+      this.pendingRequests.delete(id);
+    }
+
+    this.isInitialized = false;
+    this.isInitializing = false;
+    this.backgroundWarmupPromise = null;
+    this.localProbePromise = null;
+    this.initializeWorker();
   }
 
   async initialize(modelName: string = LLM_CONFIG.CLIENT_MODEL): Promise<void> {
@@ -122,15 +265,20 @@ class ClientLLMWorkerService {
     }
 
     this.isInitializing = true;
+    this.localHealth.state = 'loading';
+    this.emitServiceDiagnostic('local:initialize_start', { requestedModel: modelName });
 
     try {
       const result = await this.sendWorkerRequest('initialize', { modelName });
       this.isInitialized = true;
       this.currentModel = result.modelName;
       this.capabilities = result.capabilities;
+      this.localHealth.state = 'loaded_unprobed';
       console.log(`Client LLM Worker initialized with ${result.modelName}`);
+      this.emitServiceDiagnostic('local:initialize_success', { modelName: result.modelName, capabilities: result.capabilities });
     } catch (error) {
       console.error('Failed to initialize Client LLM Worker:', error);
+      this.markLocalFailure(error instanceof Error ? error.message : String(error));
       throw error;
     } finally {
       this.isInitializing = false;
@@ -147,47 +295,67 @@ class ClientLLMWorkerService {
       this.currentModel = result.modelName;
       this.capabilities = result.capabilities;
       this.isInitialized = true;
+      this.localHealth.state = 'loaded_unprobed';
+      this.localHealth.proven = false;
+      this.localGenerationUnhealthy = false;
       console.log(`Switched to model: ${result.modelName}`);
     } catch (error) {
       console.error('Failed to switch model:', error);
+      this.markLocalFailure(error instanceof Error ? error.message : String(error));
       throw error;
     }
   }
 
   async generateText(prompt: string, maxTokens: number = 50): Promise<string> {
+    const cloudConfigured = openRouterLLMService.isConfigured();
     if (this.shouldUseOpenRouterFallback()) {
-      this.warmLocalModelInBackground();
-      return openRouterLLMService.generateText(prompt, {
+      this.emitServiceDiagnostic('route:cloud_before_local', {
+        reason: this.getCloudFirstReason(),
+        promptLength: prompt.length,
         maxTokens,
-        model: this.getOpenRouterModelForCurrentLocalModel(),
-        temperature: this.currentModel.includes('Thinking') ? 0.1 : 0.1,
-        topP: this.currentModel.includes('Thinking') ? 0.1 : undefined,
-        topK: 50,
-        repetitionPenalty: 1.05,
       });
+      this.warmLocalModelInBackground();
+      return this.generateWithOpenRouter(prompt, maxTokens);
     }
 
     if (!this.isInitialized) {
       await this.initialize();
     }
 
+    if (!this.localHealth.proven) {
+      const probeOk = await this.probeLocalInference();
+      if (!probeOk && cloudConfigured) {
+        this.emitServiceDiagnostic('route:cloud_after_probe_failed', { promptLength: prompt.length, maxTokens });
+        return this.generateWithOpenRouter(prompt, maxTokens);
+      }
+      if (!probeOk) {
+        const fallbackStatus = openRouterLLMService.getConfigurationStatus();
+        throw new Error(
+          `Local LiquidAI generation probe failed, and cloud fallback is unavailable: ${fallbackStatus.reason}`,
+        );
+      }
+    }
+
     try {
-      const result = await this.sendWorkerRequest('generate', { prompt, maxTokens });
-      this.localGenerationUnhealthy = false;
+      const startedAt = performance.now();
+      const result = await this.sendWorkerRequest(
+        'generate',
+        { prompt, maxTokens },
+        cloudConfigured ? LLM_CONFIG.LOCAL_GENERATION_FALLBACK_MS : LLM_CONFIG.LOCAL_GENERATION_TIMEOUT_MS,
+      );
+      this.markLocalSuccess(Math.round(performance.now() - startedAt));
       return result.text;
     } catch (error) {
       console.error('Text generation failed:', error);
-      this.localGenerationUnhealthy = true;
-      if (openRouterLLMService.isConfigured()) {
+      this.markLocalFailure(error instanceof Error ? error.message : String(error));
+      if (cloudConfigured) {
         console.warn('Using OpenRouter fallback after local generation failure');
-        return openRouterLLMService.generateText(prompt, {
+        this.emitServiceDiagnostic('route:cloud_after_local_failure', {
+          promptLength: prompt.length,
           maxTokens,
-          model: this.getOpenRouterModelForCurrentLocalModel(),
-          temperature: this.currentModel.includes('Thinking') ? 0.1 : 0.1,
-          topP: this.currentModel.includes('Thinking') ? 0.1 : undefined,
-          topK: 50,
-          repetitionPenalty: 1.05,
+          error: error instanceof Error ? error.message : String(error),
         });
+        return this.generateWithOpenRouter(prompt, maxTokens);
       }
       const fallbackStatus = openRouterLLMService.getConfigurationStatus();
       console.warn('OpenRouter fallback unavailable after local generation failure:', fallbackStatus);
@@ -195,6 +363,58 @@ class ClientLLMWorkerService {
         `Local LiquidAI generation failed, and cloud fallback is unavailable: ${fallbackStatus.reason}`,
       );
     }
+  }
+
+  async probeLocalInference(options: { force?: boolean } = {}): Promise<boolean> {
+    if (this.localProbePromise && !options.force) {
+      return this.localProbePromise;
+    }
+
+    this.localProbePromise = (async () => {
+      if (!this.worker) {
+        this.markLocalFailure('Worker not available for local inference probe.');
+        return false;
+      }
+
+      if (this.localHealth.state === 'unhealthy' && !options.force && Date.now() < this.localRetryAfter) {
+        this.emitServiceDiagnostic('probe:skipped_cooldown', {
+          retryAfter: new Date(this.localRetryAfter).toISOString(),
+        });
+        return false;
+      }
+
+      try {
+        if (!this.isInitialized) {
+          await this.initialize(this.currentModel || LLM_CONFIG.CLIENT_MODEL);
+        }
+
+        this.localHealth.state = 'probing';
+        this.localHealth.lastProbeAt = new Date().toISOString();
+        this.emitServiceDiagnostic('probe:start', { timeoutMs: LLM_CONFIG.LOCAL_PROBE_TIMEOUT_MS });
+        const result = await this.sendWorkerRequest(
+          'probe',
+          { maxTokens: LLM_CONFIG.LOCAL_PROBE_MAX_TOKENS },
+          LLM_CONFIG.LOCAL_PROBE_TIMEOUT_MS,
+        );
+        const durationMs = Number(result.durationMs || 0);
+        this.localHealth.lastProbeDurationMs = durationMs;
+        this.markLocalSuccess(durationMs);
+        this.emitServiceDiagnostic('probe:success', {
+          durationMs,
+          text: String(result.text || '').slice(0, 120),
+        });
+        return true;
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : String(error);
+        this.markLocalFailure(reason);
+        this.emitServiceDiagnostic('probe:failed', { reason });
+        return false;
+      } finally {
+        this.localProbePromise = null;
+      }
+    })();
+
+    return this.localProbePromise;
   }
 
   async getCapabilities(): Promise<any> {
@@ -210,13 +430,25 @@ class ClientLLMWorkerService {
     return this.currentModel;
   }
 
-  getStatus(): { isInitialized: boolean; isInitializing: boolean; hasWorker: boolean; currentModel: string; capabilities: any } {
+  getStatus(): {
+    isInitialized: boolean;
+    isInitializing: boolean;
+    hasWorker: boolean;
+    currentModel: string;
+    capabilities: any;
+    localHealth: LocalInferenceHealth;
+    cloudFallback: ReturnType<typeof openRouterLLMService.getConfigurationStatus>;
+    retryAfter?: string;
+  } {
     return {
       isInitialized: this.isInitialized,
       isInitializing: this.isInitializing,
       hasWorker: this.worker !== null,
       currentModel: this.currentModel,
       capabilities: this.capabilities,
+      localHealth: { ...this.localHealth },
+      cloudFallback: openRouterLLMService.getConfigurationStatus(),
+      retryAfter: this.localRetryAfter ? new Date(this.localRetryAfter).toISOString() : undefined,
     };
   }
 
@@ -241,6 +473,10 @@ class ClientLLMWorkerService {
       return true;
     }
 
+    if (!this.localHealth.proven) {
+      return true;
+    }
+
     if (this.capabilities.webGPU === false) {
       return true;
     }
@@ -252,12 +488,42 @@ class ClientLLMWorkerService {
     return false;
   }
 
-  private warmLocalModelInBackground(): void {
-    if (this.isInitialized || this.isInitializing || this.backgroundWarmupPromise) {
+  private getCloudFirstReason(): string {
+    if (this.isInitializing) return 'local model is still initializing';
+    if (!this.isInitialized) return 'local model is not initialized';
+    if (!this.localHealth.proven) return 'local generation has not passed a probe';
+    if (this.capabilities.webGPU === false) return 'WebGPU is unavailable';
+    if (this.localGenerationUnhealthy) return this.localHealth.lastFailureReason || 'local generation is unhealthy';
+    return 'cloud fallback is preferred by routing policy';
+  }
+
+  private generateWithOpenRouter(prompt: string, maxTokens: number): Promise<string> {
+    return openRouterLLMService.generateText(prompt, {
+      maxTokens,
+      model: this.getOpenRouterModelForCurrentLocalModel(),
+      temperature: this.currentModel.includes('Thinking') ? 0.1 : 0.1,
+      topP: this.currentModel.includes('Thinking') ? 0.1 : undefined,
+      topK: 50,
+      repetitionPenalty: 1.05,
+    });
+  }
+
+  warmLocalModelInBackground(options: { force?: boolean } = {}): void {
+    if ((!options.force && this.localHealth.state === 'unhealthy' && Date.now() < this.localRetryAfter) || this.isInitializing || this.backgroundWarmupPromise) {
+      return;
+    }
+
+    if (this.isInitialized && this.localHealth.proven && !options.force) {
       return;
     }
 
     this.backgroundWarmupPromise = this.initialize(this.currentModel || LLM_CONFIG.CLIENT_MODEL)
+      .then(() => this.probeLocalInference({ force: options.force }))
+      .then((ok) => {
+        if (!ok) {
+          throw new Error(this.localHealth.lastFailureReason || 'Local inference probe failed.');
+        }
+      })
       .catch((error) => {
         console.warn('Background local LLM warmup failed; cloud fallback remains available if configured', error);
       })

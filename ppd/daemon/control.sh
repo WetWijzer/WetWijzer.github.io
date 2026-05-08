@@ -166,10 +166,10 @@ WorkingDirectory=$ROOT
 Environment=PYTHONPATH=ipfs_datasets_py
 Environment=PPD_LLM_BACKEND=llm_router
 Environment=IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli
-Environment=PPD_WATCHDOG_HONOR_TERM=1
+Environment=PPD_WATCHDOG_HONOR_TERM=0
 Environment=IPFS_DATASETS_PY_CODEX_SANDBOX=read-only
 ExecStartPre=/usr/bin/bash -lc "'$ROOT/ppd/daemon/control.sh' supervisor-cleanup-for-start"
-ExecStart=/usr/bin/bash -lc "PPD_WATCHDOG_HONOR_TERM=1 exec bash '$WATCHDOG_SCRIPT' supervisor '$SUPERVISOR_PID_FILE' '$SUPERVISOR_CHILD_PID_FILE' '$SUPERVISOR_LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_supervisor.py --watch --interval 120 --exception-backoff 5 --termination-storm-threshold 8 --termination-storm-backoff 900 --apply --self-heal --restart-daemon --revisit-blocked-tasks --reassess-blocked-llm-termination-gates --llm-timeout 300 >> '$SUPERVISOR_OUT_FILE' 2>&1"
+ExecStart=/usr/bin/bash -lc "PPD_WATCHDOG_HONOR_TERM=0 exec bash '$WATCHDOG_SCRIPT' supervisor '$SUPERVISOR_PID_FILE' '$SUPERVISOR_CHILD_PID_FILE' '$SUPERVISOR_LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_supervisor.py --watch --interval 120 --exception-backoff 5 --termination-storm-threshold 8 --termination-storm-backoff 900 --apply --self-heal --restart-daemon --revisit-blocked-tasks --reassess-blocked-llm-termination-gates --llm-timeout 300 >> '$SUPERVISOR_OUT_FILE' 2>&1"
 Restart=always
 RestartSec=5
 TimeoutStopSec=20
@@ -386,9 +386,6 @@ supervisor_cleanup_for_start() {
 }
 
 start() {
-  sweep_unwatched_ppd_daemon_children
-  sweep_orphaned_ppd_llm_children
-
   if [[ -f "$PID_FILE" ]]; then
     local old_pid
     old_pid="$(cat "$PID_FILE" 2>/dev/null || true)"
@@ -399,13 +396,25 @@ start() {
     rm -f "$PID_FILE" "$CHILD_PID_FILE" "$PID_FILE.stop"
   fi
 
+  if systemd_available && systemd_unit_active "$DAEMON_UNIT"; then
+    local unit_pid
+    unit_pid="$(systemd_unit_main_pid "$DAEMON_UNIT")"
+    if [[ "$unit_pid" =~ ^[0-9]+$ ]] && [[ "$unit_pid" != "0" ]] && process_running "$unit_pid"; then
+      echo "PP&D daemon systemd unit already running: $unit_pid"
+      return 0
+    fi
+  fi
+
+  sweep_unwatched_ppd_daemon_children
+  sweep_orphaned_ppd_llm_children
+
   if systemd_available; then
     stop_systemd_unit "$DAEMON_UNIT"
     run_systemd_watchdog_unit "$DAEMON_UNIT" \
-      "PPD_WATCHDOG_HONOR_TERM=1 exec bash '$WATCHDOG_SCRIPT' daemon '$PID_FILE' '$CHILD_PID_FILE' '$LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_daemon.py --apply --watch --iterations 0 --interval 0 --llm-timeout 300 --llm-max-new-tokens 1536 --max-prompt-chars 20000 --max-compact-prompt-chars 3600 --crash-backoff 5 --repair-validation-failures --revisit-blocked --revisit-blocked-ignore-failure-gates --revisit-blocked-reassess-llm-termination-gates >> '$OUT_FILE' 2>&1" \
+      "PPD_WATCHDOG_HONOR_TERM=0 exec bash '$WATCHDOG_SCRIPT' daemon '$PID_FILE' '$CHILD_PID_FILE' '$LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_daemon.py --apply --watch --iterations 0 --interval 0 --llm-timeout 300 --llm-max-new-tokens 1536 --max-prompt-chars 20000 --max-compact-prompt-chars 3600 --crash-backoff 5 --repair-validation-failures --revisit-blocked --revisit-blocked-ignore-failure-gates --revisit-blocked-reassess-llm-termination-gates >> '$OUT_FILE' 2>&1" \
       "on-failure"
   else
-    setsid -f bash -c "cd '$ROOT' && PPD_WATCHDOG_HONOR_TERM=1 exec bash '$WATCHDOG_SCRIPT' daemon '$PID_FILE' '$CHILD_PID_FILE' '$LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_daemon.py --apply --watch --iterations 0 --interval 0 --llm-timeout 300 --llm-max-new-tokens 1536 --max-prompt-chars 20000 --max-compact-prompt-chars 3600 --crash-backoff 5 --repair-validation-failures --revisit-blocked --revisit-blocked-ignore-failure-gates --revisit-blocked-reassess-llm-termination-gates >> '$OUT_FILE' 2>&1"
+    setsid -f bash -c "cd '$ROOT' && PPD_WATCHDOG_HONOR_TERM=0 exec bash '$WATCHDOG_SCRIPT' daemon '$PID_FILE' '$CHILD_PID_FILE' '$LIFECYCLE_LOG' 5 env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_daemon.py --apply --watch --iterations 0 --interval 0 --llm-timeout 300 --llm-max-new-tokens 1536 --max-prompt-chars 20000 --max-compact-prompt-chars 3600 --crash-backoff 5 --repair-validation-failures --revisit-blocked --revisit-blocked-ignore-failure-gates --revisit-blocked-reassess-llm-termination-gates >> '$OUT_FILE' 2>&1"
   fi
   local pid
   if ! pid="$(wait_for_pid_file_process "$PID_FILE" 10)"; then
@@ -496,7 +505,7 @@ supervisor_start() {
     if systemd_available; then
       stop_systemd_unit "$SUPERVISOR_UNIT"
     fi
-    setsid -f bash -c "cd '$ROOT'; rm -f '$SUPERVISOR_PID_FILE.stop' '$SUPERVISOR_CHILD_PID_FILE'; echo \$\$ > '$SUPERVISOR_PID_FILE'; exec env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli PPD_WATCHDOG_HONOR_TERM=1 IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_supervisor.py --watch --interval 120 --exception-backoff 5 --termination-storm-threshold 8 --termination-storm-backoff 900 --apply --self-heal --restart-daemon --revisit-blocked-tasks --reassess-blocked-llm-termination-gates --llm-timeout 300 >> '$SUPERVISOR_OUT_FILE' 2>&1"
+    setsid -f bash -c "cd '$ROOT'; rm -f '$SUPERVISOR_PID_FILE.stop' '$SUPERVISOR_CHILD_PID_FILE'; echo \$\$ > '$SUPERVISOR_PID_FILE'; exec env PYTHONPATH=ipfs_datasets_py PPD_LLM_BACKEND=llm_router IPFS_DATASETS_PY_LLM_PROVIDER=codex_cli PPD_WATCHDOG_HONOR_TERM=0 IPFS_DATASETS_PY_CODEX_SANDBOX=read-only python3 ppd/daemon/ppd_supervisor.py --watch --interval 120 --exception-backoff 5 --termination-storm-threshold 8 --termination-storm-backoff 900 --apply --self-heal --restart-daemon --revisit-blocked-tasks --reassess-blocked-llm-termination-gates --llm-timeout 300 >> '$SUPERVISOR_OUT_FILE' 2>&1"
     local pid
     if ! pid="$(wait_for_pid_file_process "$SUPERVISOR_PID_FILE" 10)"; then
       echo "PP&D supervisor did not start; see $SUPERVISOR_OUT_FILE" >&2

@@ -1,0 +1,41 @@
+{
+  "case": "tranche50_item4_blocked_cascade_daemon_repair",
+  "blocked_work": {
+    "id": "ppd-tranche-50-item-4-blocked-work",
+    "status": "parked",
+    "blocked_at": "2026-05-08T10:00:00Z",
+    "repair_gate": {
+      "requires": "fresh_daemon_repair_validation",
+      "validates_task_id": "ppd-tranche-50-item-4-blocked-work"
+    }
+  },
+  "repair_tasks": [
+    {
+      "id": "stale-daemon-repair",
+      "kind": "daemon_repair",
+      "generated_at": "2026-05-08T09:59:59Z",
+      "validation": {
+        "status": "passed",
+        "validates_task_ids": ["ppd-tranche-50-item-4-blocked-work"]
+      }
+    },
+    {
+      "id": "unrelated-fresh-daemon-repair",
+      "kind": "daemon_repair",
+      "generated_at": "2026-05-08T10:05:00Z",
+      "validation": {
+        "status": "passed",
+        "validates_task_ids": ["some-other-ppd-work"]
+      }
+    },
+    {
+      "id": "fresh-daemon-repair",
+      "kind": "daemon_repair",
+      "generated_at": "2026-05-08T10:10:00Z",
+      "validation": {
+        "status": "passed",
+        "validates_task_ids": ["ppd-tranche-50-item-4-blocked-work"]
+      }
+    }
+  ]
+}

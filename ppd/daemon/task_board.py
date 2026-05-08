@@ -50,6 +50,11 @@ PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS = frozenset(
     }
 )
 
+GENERATED_BLOCKED_CASCADE_TITLE_RE = re.compile(
+    r"^Add generated blocked-cascade daemon-repair coverage for tranche \d+ item \d+ "
+    r"proving blocked PP&D work stays parked until a fresh daemon repair task validates\.?$"
+)
+
 
 def parse_tasks(markdown: str) -> list[Task]:
     return parse_markdown_tasks(markdown, checkbox_re=CHECKBOX_RE)
@@ -73,23 +78,27 @@ def select_task_for_config(tasks: Iterable[Task], config: Any) -> Optional[Task]
     if not config.revisit_blocked:
         return None
     records = read_result_and_diagnostic_log(config.resolve(config.result_log))
+    blocked_revisit_tasks = [
+        task
+        for task in task_list
+        if task.status == "blocked" and task.checkbox_id not in PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS
+    ]
+    source_backed_blocked_tasks = [
+        task for task in blocked_revisit_tasks if not is_generated_blocked_cascade_task(task)
+    ]
+    # Generated blocked-cascade repair tasks are fallback scaffolding. Once the
+    # user asks to work the blocked backlog, prefer the human/source-backed PP&D
+    # tasks so the daemon does not churn through hundreds of generated slices.
+    candidate_pool = source_backed_blocked_tasks or blocked_revisit_tasks
     if getattr(config, "revisit_blocked_reassess_llm_termination_gates", False):
         reassessment_candidates = []
-        for task in task_list:
-            if task.status != "blocked":
-                continue
-            if task.checkbox_id in PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS:
-                continue
+        for task in candidate_pool:
             failures = recent_task_failures_from_records(records, task.label, limit=100)
             llm_termination_count = llm_termination_failure_count_from_failures(failures)
             reassessment_candidates.append((llm_termination_count, task.checkbox_id, task))
         if reassessment_candidates:
             return min(reassessment_candidates, key=lambda item: (item[0], item[1]))[2]
-    for task in task_list:
-        if task.status != "blocked":
-            continue
-        if task.checkbox_id in PROTECTED_BLOCKED_REVISIT_CHECKBOX_IDS:
-            continue
+    for task in candidate_pool:
         try:
             failures = recent_task_failures_from_records(records, task.label, limit=100)
             if (
@@ -113,6 +122,10 @@ def select_task_for_config(tasks: Iterable[Task], config: Any) -> Optional[Task]
             continue
         return task
     return None
+
+
+def is_generated_blocked_cascade_task(task: Task) -> bool:
+    return bool(GENERATED_BLOCKED_CASCADE_TITLE_RE.match(task.title.strip()))
 
 
 def replace_task_mark(markdown: str, selected: Task, mark: str) -> str:

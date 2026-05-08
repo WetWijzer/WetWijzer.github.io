@@ -31,6 +31,16 @@ export const LLM_CONFIG = {
   // Model download timeout for initial loading
   MODEL_DOWNLOAD_TIMEOUT: parseInt(import.meta.env.VITE_MODEL_DOWNLOAD_TIMEOUT || '120000'),
 
+  // How long to wait for local generation before using OpenRouter when cloud fallback is configured.
+  LOCAL_GENERATION_FALLBACK_MS: parseInt(import.meta.env.VITE_LOCAL_GENERATION_FALLBACK_MS || '15000'),
+
+  // Hard caps for local inference health checks. These keep WebGPU/ORT hangs from
+  // becoming user-visible chat hangs.
+  LOCAL_GENERATION_TIMEOUT_MS: parseInt(import.meta.env.VITE_LOCAL_GENERATION_TIMEOUT_MS || '45000'),
+  LOCAL_PROBE_TIMEOUT_MS: parseInt(import.meta.env.VITE_LOCAL_PROBE_TIMEOUT_MS || '30000'),
+  LOCAL_PROBE_MAX_TOKENS: parseInt(import.meta.env.VITE_LOCAL_PROBE_MAX_TOKENS || '8'),
+  LOCAL_RETRY_COOLDOWN_MS: parseInt(import.meta.env.VITE_LOCAL_RETRY_COOLDOWN_MS || '600000'),
+
   // Enable WebGPU acceleration when available
   ENABLE_WEBGPU: import.meta.env.VITE_ENABLE_WEBGPU !== 'false',
 

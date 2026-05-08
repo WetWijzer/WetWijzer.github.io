@@ -1,0 +1,16 @@
+{
+  "selectable_ppd_work_remaining": false,
+  "original_goal_complete": false,
+  "candidates": [
+    {
+      "task_id": "generated-continuation-001",
+      "source": "generated-continuation-slice",
+      "selectable": true
+    },
+    {
+      "task_id": "checkbox-9356-human-authored-autonomy",
+      "source": "human-authored-autonomy-tranche",
+      "selectable": true
+    }
+  ]
+}

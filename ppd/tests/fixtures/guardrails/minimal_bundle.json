@@ -1,0 +1,42 @@
+{
+  "deterministic_predicates": [
+    {
+      "id": "predicate.has_permit_record",
+      "source": "fixture",
+      "predicate": "permit_record_present"
+    }
+  ],
+  "deontic_rules": [
+    {
+      "id": "deontic.must_not_submit_application",
+      "modality": "prohibited",
+      "action": "submit_application"
+    }
+  ],
+  "temporal_rules": [
+    {
+      "id": "temporal.after_public_notice",
+      "relation": "after",
+      "anchor": "public_notice_date"
+    }
+  ],
+  "exact_confirmation_predicates": [
+    {
+      "id": "predicate.exact_confirmation_text",
+      "expected_text": "I understand this is not a permit submission."
+    }
+  ],
+  "refused_action_predicates": [
+    {
+      "id": "predicate.refuses_payment",
+      "action": "payment"
+    }
+  ],
+  "explanation_support_maps": {
+    "predicate.has_permit_record": ["source.fixture.record"],
+    "deontic.must_not_submit_application": ["source.fixture.policy"],
+    "temporal.after_public_notice": ["source.fixture.notice"],
+    "predicate.exact_confirmation_text": ["source.fixture.confirmation"],
+    "predicate.refuses_payment": ["source.fixture.refusal"]
+  }
+}
