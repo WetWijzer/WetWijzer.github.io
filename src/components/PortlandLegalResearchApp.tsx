@@ -114,6 +114,7 @@ export default function PortlandLegalResearchApp() {
   const [chatEvidence, setChatEvidence] = useState<GraphRagEvidence | null>(null);
   const [chatError, setChatError] = useState<string | null>(null);
   const [chatUsedLocalModel, setChatUsedLocalModel] = useState(false);
+  const [chatGenerationWarning, setChatGenerationWarning] = useState<string | null>(null);
   const [isAnswering, setIsAnswering] = useState(false);
 
   useEffect(() => {
@@ -301,11 +302,13 @@ export default function PortlandLegalResearchApp() {
       setChatAnswer(response.answer);
       setChatEvidence(response.evidence);
       setChatUsedLocalModel(response.usedLocalModel);
+      setChatGenerationWarning(response.generationWarning || null);
     } catch (err) {
       setChatError(err instanceof Error ? err.message : 'Unable to answer that question.');
       setChatAnswer('');
       setChatEvidence(null);
       setChatUsedLocalModel(false);
+      setChatGenerationWarning(null);
     } finally {
       setIsAnswering(false);
     }
@@ -446,6 +449,7 @@ export default function PortlandLegalResearchApp() {
           chatEvidence={chatEvidence}
           chatError={chatError}
           chatUsedLocalModel={chatUsedLocalModel}
+          chatGenerationWarning={chatGenerationWarning}
           isAnswering={isAnswering}
           onQuestionChange={setChatQuestion}
           onAskQuestion={onAskSelectedQuestion}
@@ -1119,6 +1123,7 @@ function WorkspacePanel({
   chatEvidence,
   chatError,
   chatUsedLocalModel,
+  chatGenerationWarning,
   isAnswering,
   onQuestionChange,
   onAskQuestion,
@@ -1136,6 +1141,7 @@ function WorkspacePanel({
   chatEvidence: GraphRagEvidence | null;
   chatError: string | null;
   chatUsedLocalModel: boolean;
+  chatGenerationWarning: string | null;
   isAnswering: boolean;
   onQuestionChange: (question: string) => void;
   onAskQuestion: (event: FormEvent<HTMLFormElement>) => void;
@@ -1234,13 +1240,14 @@ function WorkspacePanel({
         )}
         {selected && activeTab === 'chat' && (
           <div id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" tabIndex={0}>
-            <GraphRagChat
-              question={chatQuestion}
-              answer={chatAnswer}
-              evidence={chatEvidence}
-              error={chatError}
-              usedLocalModel={chatUsedLocalModel}
-              isAnswering={isAnswering}
+          <GraphRagChat
+            question={chatQuestion}
+            answer={chatAnswer}
+            evidence={chatEvidence}
+            error={chatError}
+            generationWarning={chatGenerationWarning}
+            usedLocalModel={chatUsedLocalModel}
+            isAnswering={isAnswering}
               onQuestionChange={onQuestionChange}
               onSubmit={onAskQuestion}
             />
@@ -1544,6 +1551,7 @@ function GraphRagChat({
   answer,
   evidence,
   error,
+  generationWarning,
   usedLocalModel,
   isAnswering,
   onQuestionChange,
@@ -1553,6 +1561,7 @@ function GraphRagChat({
   answer: string;
   evidence: GraphRagEvidence | null;
   error: string | null;
+  generationWarning: string | null;
   usedLocalModel: boolean;
   isAnswering: boolean;
   onQuestionChange: (question: string) => void;
@@ -1593,6 +1602,11 @@ function GraphRagChat({
       {error && (
         <div role="alert" className="mt-4 rounded-md border border-[#d89b82] bg-[#fff4ef] px-3 py-2 text-sm text-[#8a3b22]">
           {error}
+        </div>
+      )}
+      {generationWarning && (
+        <div role="status" className="mt-4 rounded-md border border-[#d8c27a] bg-[#fff9df] px-3 py-2 text-sm text-[#71551b]">
+          {generationWarning}
         </div>
       )}
       {answer && (

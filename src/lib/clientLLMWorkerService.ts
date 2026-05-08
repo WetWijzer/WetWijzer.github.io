@@ -186,7 +186,11 @@ class ClientLLMWorkerService {
           repetitionPenalty: 1.05,
         });
       }
-      throw error;
+      const fallbackStatus = openRouterLLMService.getConfigurationStatus();
+      console.warn('OpenRouter fallback unavailable after local generation failure:', fallbackStatus);
+      throw new Error(
+        `Local LiquidAI generation failed, and cloud fallback is unavailable: ${fallbackStatus.reason}`,
+      );
     }
   }
 
@@ -215,6 +219,10 @@ class ClientLLMWorkerService {
 
   isCloudFallbackAvailable(): boolean {
     return openRouterLLMService.isConfigured();
+  }
+
+  getCloudFallbackStatus(): { configured: boolean; reason: string; baseUrl: string; directOpenRouter: boolean } {
+    return openRouterLLMService.getConfigurationStatus();
   }
 
   private shouldUseOpenRouterFallback(): boolean {

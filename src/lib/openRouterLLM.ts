@@ -18,14 +18,32 @@ export interface OpenRouterGenerateOptions {
 }
 
 export class OpenRouterLLMService {
-  isConfigured(): boolean {
+  getConfigurationStatus(): { configured: boolean; reason: string; baseUrl: string; directOpenRouter: boolean } {
     const baseUrl = LLM_CONFIG.OPENROUTER_BASE_URL;
     const directOpenRouter = baseUrl.includes('openrouter.ai');
-    return Boolean(
-      LLM_CONFIG.OPENROUTER_ENABLED &&
-      baseUrl &&
-      (LLM_CONFIG.OPENROUTER_API_KEY || !directOpenRouter),
-    );
+
+    if (!LLM_CONFIG.OPENROUTER_ENABLED) {
+      return { configured: false, reason: 'OpenRouter fallback is disabled by VITE_OPENROUTER_ENABLED=false.', baseUrl, directOpenRouter };
+    }
+
+    if (!baseUrl) {
+      return { configured: false, reason: 'VITE_OPENROUTER_BASE_URL is empty.', baseUrl, directOpenRouter };
+    }
+
+    if (directOpenRouter && !LLM_CONFIG.OPENROUTER_API_KEY) {
+      return {
+        configured: false,
+        reason: 'VITE_OPENROUTER_BASE_URL points directly at OpenRouter, but VITE_OPENROUTER_API_KEY is not set. For GitHub Pages, set VITE_OPENROUTER_BASE_URL to your proxy URL instead.',
+        baseUrl,
+        directOpenRouter,
+      };
+    }
+
+    return { configured: true, reason: 'OpenRouter fallback is configured.', baseUrl, directOpenRouter };
+  }
+
+  isConfigured(): boolean {
+    return this.getConfigurationStatus().configured;
   }
 
   getDefaultModel(preferThinking = false): string {
@@ -52,7 +70,7 @@ export class OpenRouterLLMService {
     options: OpenRouterGenerateOptions = {},
   ): Promise<string> {
     if (!this.isConfigured()) {
-      throw new Error('OpenRouter fallback is not configured. Set VITE_OPENROUTER_API_KEY for direct OpenRouter calls, or route through a non-OpenRouter VITE_OPENROUTER_BASE_URL proxy.');
+      throw new Error(this.getConfigurationStatus().reason);
     }
 
     const response = await fetch(`${LLM_CONFIG.OPENROUTER_BASE_URL.replace(/\/$/, '')}/chat/completions`, {

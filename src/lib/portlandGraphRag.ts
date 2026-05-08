@@ -18,6 +18,7 @@ export interface GraphRagAnswer {
   evidence: GraphRagEvidence;
   logicEvidence: LogicEvidenceItem[];
   usedLocalModel: boolean;
+  generationWarning?: string;
 }
 
 export async function answerWithGraphRag(
@@ -48,6 +49,7 @@ export async function answerWithGraphRag(
       evidence,
       logicEvidence,
       usedLocalModel: false,
+      generationWarning: 'No relevant local corpus evidence was found, so no generation was attempted.',
     };
   }
 
@@ -61,6 +63,7 @@ export async function answerWithGraphRag(
         evidence,
         logicEvidence,
         usedLocalModel: false,
+        generationWarning: 'Local LLM generation was disabled for this browser session.',
       };
     }
 
@@ -76,15 +79,20 @@ export async function answerWithGraphRag(
       evidence,
       logicEvidence,
       usedLocalModel: answer === candidateAnswer,
+      generationWarning: answer === candidateAnswer
+        ? undefined
+        : 'The model response was not sufficiently citation-grounded, so the app returned retrieved evidence instead.',
     };
   } catch (error) {
-    console.warn('Local GraphRAG generation failed, using evidence summary', error);
+    const generationWarning = error instanceof Error ? error.message : String(error);
+    console.warn('GraphRAG generation failed, using evidence summary', error);
     return {
       question: trimmedQuestion,
-      answer: buildEvidenceSummary(evidence.sections),
+      answer: `${buildEvidenceSummary(evidence.sections)}\n\nGeneration status: ${generationWarning}`,
       evidence,
       logicEvidence,
       usedLocalModel: false,
+      generationWarning,
     };
   }
 }
