@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "fixture_purpose": "offline_source_anchor_validation",
+  "generated_for_task": "supervisor-20260509-002",
+  "live_fetch_required": false,
+  "authenticated_session_required": false,
+  "anchors": [
+    {
+      "id": "ppd-bureau-landing-page",
+      "title": "Portland Permitting & Development",
+      "url": "https://www.portland.gov/ppd",
+      "required_anchor_text": "Portland Permitting & Development",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "online-permitting-tools-overview",
+      "title": "Online permitting tools",
+      "url": "https://www.portland.gov/ppd/online-permitting-tools",
+      "required_anchor_text": "Online permitting tools",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "devhub-faq",
+      "title": "DevHub frequently asked questions",
+      "url": "https://www.portland.gov/ppd/devhub-faq",
+      "required_anchor_text": "DevHub",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "devhub-sign-in-guide",
+      "title": "Sign in to DevHub",
+      "url": "https://www.portland.gov/ppd/devhub/sign-in",
+      "required_anchor_text": "Sign in",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "apply-for-permits-page",
+      "title": "Apply for permits",
+      "url": "https://www.portland.gov/ppd/permits/apply-permits",
+      "required_anchor_text": "Apply for permits",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "devhub-permit-application-guide",
+      "title": "Apply for a permit in DevHub",
+      "url": "https://www.portland.gov/ppd/devhub/apply-permit",
+      "required_anchor_text": "Apply for a permit",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "submit-plans-online-page",
+      "title": "Submit plans online",
+      "url": "https://www.portland.gov/ppd/submit-plans-online",
+      "required_anchor_text": "Submit plans online",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "forms-index",
+      "title": "Forms, handouts, applications and sample documents",
+      "url": "https://www.portland.gov/ppd/forms",
+      "required_anchor_text": "Forms",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "file-naming-standards-page",
+      "title": "File naming standards for permit applications",
+      "url": "https://www.portland.gov/ppd/file-naming-standards",
+      "required_anchor_text": "File naming standards",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "fee-payment-guide",
+      "title": "Pay permit fees",
+      "url": "https://www.portland.gov/ppd/pay-permit-fees",
+      "required_anchor_text": "Pay permit fees",
+      "source_type": "public_web_page"
+    },
+    {
+      "id": "devhub-portal",
+      "title": "DevHub permit portal",
+      "url": "https://devhub.portlandoregon.gov/",
+      "required_anchor_text": "DevHub",
+      "source_type": "public_portal_entry"
+    },
+    {
+      "id": "portland-maps-public-reference",
+      "title": "Portland Maps",
+      "url": "https://www.portlandmaps.com/",
+      "required_anchor_text": "Portland Maps",
+      "source_type": "public_reference_anchor"
+    }
+  ]
+}

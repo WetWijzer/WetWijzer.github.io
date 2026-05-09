@@ -15,6 +15,7 @@ from ppd.daemon.ppd_daemon import (
     Proposal,
     build_deterministic_task_fallback_proposal,
     compact_deterministic_progress_source_payload,
+    deterministic_task_fallback_kind,
     failure_block_threshold,
     has_deterministic_task_fallback,
     parse_tasks,
@@ -461,6 +462,25 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
         self.assertFalse(record["runtimePolicy"]["liveCrawlAllowedByDefault"])
         self.assertTrue(record["runtimePolicy"]["requiresHumanAttendanceBeforeBrowserUse"])
 
+    def test_current_source_backed_blocked_tasks_have_deterministic_fallbacks(self) -> None:
+        tasks = parse_tasks(
+            "- [!] Task checkbox-241: Add a supervised live whole-site public crawl runner under ppd/crawler that resumes an allowlisted PP&D frontier, delegates archival capture to the ipfs_datasets_py processor suite, records robots and content-type decisions, and persists metadata manifests instead of raw bodies or downloaded documents.\n"
+            "- [!] Task checkbox-9354: Add a user document-store reconciliation contract that compares known user facts and files to PP&D guardrail bundles, identifies stale or conflicting evidence, and emits the smallest review packet needed before draft automation proceeds.\n"
+            "- [!] Task checkbox-9365: Add RequirementNode and ProcessModel schema coverage with citation spans, confidence, human-review status, and representative residential, commercial, trade, correction, inspection, and fee workflow stages.\n"
+            "- [!] Task checkbox-262: Add generated blocked-cascade daemon-repair coverage for tranche 5 item 1 proving blocked PP&D work stays parked until a fresh daemon repair task validates.\n"
+        )
+
+        self.assertEqual(
+            [
+                "bounded_live_crawl_dry_run",
+                "user_document_gap_analysis",
+                "process_requirement_schemas",
+                "blocked_cascade_daemon_repair",
+            ],
+            [deterministic_task_fallback_kind(task) for task in tasks],
+        )
+        self.assertTrue(all(has_deterministic_task_fallback(task) for task in tasks))
+
     def test_daemon_completes_deterministic_task_without_calling_llm(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
             repo = Path(tempdir)
@@ -500,6 +520,88 @@ class DaemonLlmResultDurabilityTest(unittest.TestCase):
         self.assertIn(f"- [x] {target}", board)
         self.assertEqual(455, manifest["records"][0]["checkboxId"])
         self.assertEqual("processor_suite_planning", manifest["records"][0]["fallbackKind"])
+
+    def test_daemon_completes_reassessed_blocked_deterministic_task_without_llm(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            target = (
+                "Task checkbox-241: Add a supervised live whole-site public crawl runner under ppd/crawler that "
+                "resumes an allowlisted PP&D frontier, delegates archival capture to the ipfs_datasets_py processor "
+                "suite, records robots and content-type decisions, and persists metadata manifests instead of raw "
+                "bodies or downloaded documents."
+            )
+            (daemon_dir / "task-board.md").write_text(f"- [!] {target}\n", encoding="utf-8")
+            for message in ("llm_router child exited with code -15:", "143"):
+                with (daemon_dir / "ppd-daemon.jsonl").open("a", encoding="utf-8") as handle:
+                    handle.write(
+                        json.dumps(
+                            {
+                                "proposal": {
+                                    "failure_kind": "llm",
+                                    "target_task": target,
+                                    "errors": [message],
+                                }
+                            }
+                        )
+                        + "\n"
+                    )
+            daemon = Daemon(
+                Config(
+                    repo_root=repo,
+                    apply=True,
+                    revisit_blocked=True,
+                    revisit_blocked_ignore_failure_gates=True,
+                    revisit_blocked_reassess_llm_termination_gates=True,
+                    validation_commands=(("true",),),
+                )
+            )
+
+            proposal = daemon.run_cycle()
+            board = (daemon_dir / "task-board.md").read_text(encoding="utf-8")
+            manifest = json.loads((daemon_dir / "deterministic-progress.json").read_text(encoding="utf-8"))
+            source_contract_exists = (repo / "ppd" / "platform" / "bounded_live_crawl_dry_run.py").exists()
+
+        self.assertTrue(proposal.valid)
+        self.assertTrue(source_contract_exists)
+        self.assertTrue(proposal.promotion_verified)
+        self.assertIn(f"- [x] {target}", board)
+        self.assertEqual(241, manifest["records"][0]["checkboxId"])
+        self.assertEqual("bounded_live_crawl_dry_run", manifest["records"][0]["fallbackKind"])
+
+    def test_daemon_completes_generated_blocked_cascade_task_without_llm(self) -> None:
+        with tempfile.TemporaryDirectory() as tempdir:
+            repo = Path(tempdir)
+            daemon_dir = repo / "ppd" / "daemon"
+            daemon_dir.mkdir(parents=True)
+            target = (
+                "Task checkbox-262: Add generated blocked-cascade daemon-repair coverage for tranche 5 item 1 "
+                "proving blocked PP&D work stays parked until a fresh daemon repair task validates."
+            )
+            (daemon_dir / "task-board.md").write_text(f"- [!] {target}\n", encoding="utf-8")
+            daemon = Daemon(
+                Config(
+                    repo_root=repo,
+                    apply=True,
+                    revisit_blocked=True,
+                    revisit_blocked_ignore_failure_gates=True,
+                    revisit_blocked_reassess_llm_termination_gates=True,
+                    validation_commands=(("true",),),
+                )
+            )
+
+            proposal = daemon.run_cycle()
+            board = (daemon_dir / "task-board.md").read_text(encoding="utf-8")
+            manifest = json.loads((daemon_dir / "deterministic-progress.json").read_text(encoding="utf-8"))
+            source_contract_exists = (repo / "ppd" / "platform" / "blocked_cascade_daemon_repair.py").exists()
+
+        self.assertTrue(proposal.valid)
+        self.assertTrue(source_contract_exists)
+        self.assertTrue(proposal.promotion_verified)
+        self.assertIn(f"- [x] {target}", board)
+        self.assertEqual(262, manifest["records"][0]["checkboxId"])
+        self.assertEqual("blocked_cascade_daemon_repair", manifest["records"][0]["fallbackKind"])
 
     def test_llm_timeout_cleanup_terminates_descendant_processes(self) -> None:
         process = subprocess.Popen(

@@ -1,0 +1,42 @@
+[
+  {
+    "manifest_id": "manifest-skipped-outside-allowlist-001",
+    "source_id": "source-devhub-faq-001",
+    "canonical_url": "https://example.com/unapproved-reference",
+    "requested_url": "https://example.com/unapproved-reference?from=ppd",
+    "redirect_chain": [],
+    "http_status": null,
+    "content_type": "text/html; charset=utf-8",
+    "content_hash": null,
+    "capture_started_at": "2026-05-09T00:00:00Z",
+    "capture_finished_at": "2026-05-09T00:00:00Z",
+    "processor_name": "ppd-policy-preflight",
+    "processor_version": "fixture",
+    "processor_policy": "public_metadata_only",
+    "archive_artifact_ref": null,
+    "normalized_document_id": null,
+    "skipped_reason": "outside_allowlist",
+    "no_raw_body_persisted": true
+  },
+  {
+    "manifest_id": "manifest-skipped-robots-001",
+    "source_id": "source-devhub-portal-001",
+    "canonical_url": "https://devhub.portlandoregon.gov/private/account",
+    "requested_url": "https://devhub.portlandoregon.gov/private/account",
+    "redirect_chain": [
+      "https://devhub.portlandoregon.gov/private/account"
+    ],
+    "http_status": 403,
+    "content_type": null,
+    "content_hash": null,
+    "capture_started_at": "2026-05-09T00:01:00Z",
+    "capture_finished_at": "2026-05-09T00:01:00Z",
+    "processor_name": "ppd-policy-preflight",
+    "processor_version": "fixture",
+    "processor_policy": "authenticated_metadata_only",
+    "archive_artifact_ref": null,
+    "normalized_document_id": null,
+    "skipped_reason": "private_authenticated",
+    "no_raw_body_persisted": true
+  }
+]

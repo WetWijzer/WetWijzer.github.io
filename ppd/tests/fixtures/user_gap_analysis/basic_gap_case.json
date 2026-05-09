@@ -1,0 +1,36 @@
+{
+  "local_user_facts": {
+    "project_address": "1120 SW 5th Ave",
+    "property_owner_name": "",
+    "work_description": null
+  },
+  "required_facts": [
+    {
+      "fact_id": "project_address",
+      "label": "Project address",
+      "source_evidence_ids": ["ppd-devhub-application-required-fields"]
+    },
+    {
+      "fact_id": "property_owner_name",
+      "label": "Property owner name",
+      "source_evidence_ids": ["ppd-devhub-application-required-fields"]
+    },
+    {
+      "fact_id": "work_description",
+      "label": "Description of proposed work",
+      "source_evidence_ids": ["ppd-devhub-application-required-fields", "ppd-permit-application-guide"]
+    }
+  ],
+  "expected_gaps": [
+    {
+      "fact_id": "property_owner_name",
+      "label": "Property owner name",
+      "source_evidence_ids": ["ppd-devhub-application-required-fields"]
+    },
+    {
+      "fact_id": "work_description",
+      "label": "Description of proposed work",
+      "source_evidence_ids": ["ppd-devhub-application-required-fields", "ppd-permit-application-guide"]
+    }
+  ]
+}

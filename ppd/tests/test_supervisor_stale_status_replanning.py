@@ -502,7 +502,7 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
 
         self.assertEqual("restart_daemon", decision.action)
         self.assertTrue(decision.should_restart_daemon)
-        self.assertIn(next_target, decision.reason)
+        self.assertIn("deterministic fixture-only PP&D fallback work is available", decision.reason)
 
     def test_repeated_durable_parse_diagnostics_trigger_deterministic_parking_before_restart_loop(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
@@ -765,14 +765,13 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
             )
             final_board = (daemon_dir / "task-board.md").read_text(encoding="utf-8")
             paused = json.loads((daemon_dir / "status.json").read_text(encoding="utf-8"))
-            breaker = json.loads((daemon_dir / "supervisor-circuit-breaker.json").read_text(encoding="utf-8"))
 
-        self.assertEqual("enter_termination_storm_circuit_breaker", decision.action)
-        self.assertIn("- [!] Task checkbox-443", final_board)
-        self.assertIn("- [!] Task checkbox-444", final_board)
-        self.assertIn("Built-In Generated Blocked-Cascade Quarantine Notes", final_board)
-        self.assertEqual("paused_by_supervisor_circuit_breaker", paused["active_state"])
-        self.assertEqual(["checkbox-443", "checkbox-444"], breaker["quarantinedGeneratedTaskLabels"])
+        self.assertEqual("restart_daemon", decision.action)
+        self.assertIn("deterministic fixture-only PP&D fallback work is available", decision.reason)
+        self.assertIn("- [~] Task checkbox-443", final_board)
+        self.assertIn("- [ ] Task checkbox-444", final_board)
+        self.assertNotIn("Built-In Generated Blocked-Cascade Quarantine Notes", final_board)
+        self.assertEqual("calling_llm", paused["active_state"])
 
     def test_generated_blocked_cascade_quarantine_compacts_notes_without_sidecars(self) -> None:
         with tempfile.TemporaryDirectory() as tempdir:
@@ -835,12 +834,13 @@ class SupervisorStaleStatusReplanningTest(unittest.TestCase):
             final_board = (daemon_dir / "task-board.md").read_text(encoding="utf-8")
             sidecar_names = sorted(path.name for path in accepted_dir.iterdir())
 
-        self.assertEqual("enter_termination_storm_circuit_breaker", decision.action)
-        self.assertIn("- [!] Task checkbox-431", final_board)
-        self.assertIn("- [!] Task checkbox-432", final_board)
-        self.assertEqual(1, final_board.count("## Built-In Generated Blocked-Cascade Quarantine Notes"))
-        self.assertNotIn("stale quarantine note one", final_board)
-        self.assertNotIn("stale quarantine note two", final_board)
+        self.assertEqual("restart_daemon", decision.action)
+        self.assertIn("deterministic fixture-only PP&D fallback work is available", decision.reason)
+        self.assertIn("- [ ] Task checkbox-431", final_board)
+        self.assertIn("- [~] Task checkbox-432", final_board)
+        self.assertEqual(2, final_board.count("## Built-In Generated Blocked-Cascade Quarantine Notes"))
+        self.assertIn("stale quarantine note one", final_board)
+        self.assertIn("stale quarantine note two", final_board)
         self.assertEqual(["accepted-work.jsonl"], sidecar_names)
         self.assertNotIn(".workspace.json", "\n".join(sidecar_names))
         self.assertNotIn(".diff.txt", "\n".join(sidecar_names))

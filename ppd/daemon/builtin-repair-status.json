@@ -1,11 +1,22 @@
 {
-  "createdAt": "2026-05-09T01:48:51.794436Z",
+  "createdAt": "2026-05-09T04:52:35.754381Z",
   "decision": {
-    "action": "reconcile_blocked_cascade_and_restart",
-    "reason": "all selectable PP&D tasks are blocked after repeated daemon recovery attempts; append deterministic daemon-repair tasks before retrying blocked domain work",
+    "action": "reconcile_dead_worker_and_restart",
+    "reason": "daemon process is not running but status is still calling_llm on Task checkbox-20: Task supervisor-20260509-020: Implement the smallest daemon or supervisor task-selection diagnostic change needed for Task supervisor-20260509-019, keeping retries bounded and validation-first.; reset the in-progress task before restart",
     "severity": "warning"
   },
-  "repairKind": "blocked_cascade_replenishment",
-  "replenishedTaskLabels": [],
-  "schemaVersion": 1
+  "repairKind": "dead_worker_task_reset",
+  "resetInProgressTaskLabels": [
+    "Task supervisor-20260509-020: Implement the smallest daemon or supervisor task-selection diagnostic change needed for Task supervisor-20260509-019, keeping retries bounded and validation-first."
+  ],
+  "schemaVersion": 1,
+  "statusBeforeRepair": {
+    "active_state": "calling_llm",
+    "active_state_started_at": "2026-05-09T04:52:23.427614Z",
+    "active_target_task": "Task checkbox-20: Task supervisor-20260509-020: Implement the smallest daemon or supervisor task-selection diagnostic change needed for Task supervisor-20260509-019, keeping retries bounded and validation-first.",
+    "pid": 2532657,
+    "state": "calling_llm",
+    "target_task": "Task checkbox-20: Task supervisor-20260509-020: Implement the smallest daemon or supervisor task-selection diagnostic change needed for Task supervisor-20260509-019, keeping retries bounded and validation-first.",
+    "updated_at": "2026-05-09T04:52:23.427614Z"
+  }
 }

@@ -1,0 +1,9 @@
+[E1] The applicant must maintain erosion control measures during all site work.
+[E2] The applicant must not begin excavation in the public right-of-way before approval.
+[E3] A property owner may request an administrative adjustment for listed development standards.
+[E4] Before permit issuance, zoning review must confirm the site plan matches the approved land use decision.
+[E5] The applicant must schedule final inspection within 180 days after permit expiration notice.
+[E6] A reinspection fee is due when work is not ready at the scheduled inspection time.
+[E7] Electrical work must be performed by a licensed electrical contractor.
+[E8] The applicant must submit a stormwater management plan document with the permit application.
+[E9] Construction may not start until the permit is approved and issued.

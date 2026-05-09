@@ -59,8 +59,12 @@ DETERMINISTIC_TASK_FALLBACK_TITLES: tuple[tuple[str, str], ...] = (
     ("agent-facing apis", "agent_facing_apis"),
     ("privacy and security validation", "privacy_security_validation"),
     ("bounded live public crawl dry-run harness", "bounded_live_crawl_dry_run"),
+    ("supervised live whole-site public crawl runner", "bounded_live_crawl_dry_run"),
     ("authenticated devhub dry-run fixtures", "authenticated_devhub_dry_run"),
     ("autonomous-assistance operations documentation", "autonomous_assistance_ops"),
+    ("user document-store reconciliation contract", "user_document_gap_analysis"),
+    ("requirementnode and processmodel schema coverage", "process_requirement_schemas"),
+    ("generated blocked-cascade daemon-repair coverage", "blocked_cascade_daemon_repair"),
 )
 
 DETERMINISTIC_TASK_SOURCE_EVIDENCE_IDS = (
@@ -308,6 +312,11 @@ MANUAL_GOAL_FALLBACK_METADATA: dict[str, tuple[str, tuple[str, ...], tuple[str, 
         "autonomous_assistance_ops",
         ("daemon_handoff", "source_recrawl_cadence", "attended_runbooks", "readiness_gates"),
         ("operations_runbook", "repair_escalation", "production_readiness_gate"),
+    ),
+    "blocked_cascade_daemon_repair": (
+        "blocked_cascade_daemon_repair",
+        ("blocked_domain_backlog", "generated_repair_tranche", "supervisor_retry_policy"),
+        ("blocked_task_quarantine", "fresh_repair_validation", "llm_termination_storm_guard"),
     ),
 }
 

@@ -1,0 +1,84 @@
+[
+  {
+    "name": "allowlisted_www_portland_gov",
+    "url": "https://www.portland.gov/bds/permits",
+    "content_type": "text/html; charset=utf-8",
+    "expected_allowed": true,
+    "expected_reason": "public-html-allowed"
+  },
+  {
+    "name": "allowlisted_devhub_portlandoregon_gov",
+    "url": "https://devhub.portlandoregon.gov/city-projects",
+    "content_type": "text/html",
+    "expected_allowed": true,
+    "expected_reason": "public-html-allowed"
+  },
+  {
+    "name": "allowlisted_www_portlandoregon_gov",
+    "url": "https://www.portlandoregon.gov/bds/article/93024",
+    "content_type": "text/html",
+    "expected_allowed": true,
+    "expected_reason": "public-html-allowed"
+  },
+  {
+    "name": "linked_public_www_portlandmaps_com",
+    "url": "https://www.portlandmaps.com/detail/permit/2024-000000-000-00-CO/000000_did/",
+    "content_type": "text/html",
+    "linked_from_allowlisted_public_page": true,
+    "expected_allowed": true,
+    "expected_reason": "public-html-allowed"
+  },
+  {
+    "name": "skip_outside_allowlist",
+    "url": "https://example.com/permits",
+    "content_type": "text/html",
+    "expected_allowed": false,
+    "expected_reason": "outside-allowlist"
+  },
+  {
+    "name": "skip_unsupported_scheme",
+    "url": "ftp://www.portland.gov/bds/permits",
+    "content_type": "text/html",
+    "expected_allowed": false,
+    "expected_reason": "unsupported-scheme"
+  },
+  {
+    "name": "skip_private_authenticated_path",
+    "url": "https://www.portland.gov/user/login",
+    "content_type": "text/html",
+    "expected_allowed": false,
+    "expected_reason": "private-authenticated"
+  },
+  {
+    "name": "skip_private_authenticated_query",
+    "url": "https://devhub.portlandoregon.gov/projects?token=secret",
+    "content_type": "text/html",
+    "expected_allowed": false,
+    "expected_reason": "private-authenticated"
+  },
+  {
+    "name": "skip_raw_download_flag",
+    "url": "https://www.portlandoregon.gov/bds/index.cfm?a=93024",
+    "content_type": "application/pdf",
+    "raw_download": true,
+    "expected_allowed": false,
+    "expected_reason": "raw-download-not-permitted"
+  },
+  {
+    "name": "skip_raw_download_attachment_header",
+    "url": "https://www.portland.gov/bds/documents/sample",
+    "content_type": "text/html",
+    "headers": {
+      "Content-Disposition": "attachment; filename=sample.html"
+    },
+    "expected_allowed": false,
+    "expected_reason": "raw-download-not-permitted"
+  },
+  {
+    "name": "skip_unsupported_content_type",
+    "url": "https://www.portland.gov/bds/documents/sample.pdf",
+    "content_type": "application/pdf",
+    "expected_allowed": false,
+    "expected_reason": "unsupported-content-type"
+  }
+]
