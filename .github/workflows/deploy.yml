@@ -43,6 +43,7 @@ jobs:
         with:
           enablement: true
       - name: Validate OpenRouter proxy config
+        if: ${{ vars.VITE_OPENROUTER_ENABLED == 'true' }}
         run: |
           if [ -z "$VITE_OPENROUTER_BASE_URL" ]; then
             echo "::error::Missing GitHub Actions repository variable VITE_OPENROUTER_BASE_URL. Set it to https://<your-vercel-app>.vercel.app/api/openrouter before deploying GitHub Pages."
@@ -59,7 +60,7 @@ jobs:
       - name: Build
         run: npx vite build
         env:
-          VITE_OPENROUTER_ENABLED: "true"
+          VITE_OPENROUTER_ENABLED: ${{ vars.VITE_OPENROUTER_ENABLED || 'false' }}
           VITE_OPENROUTER_BASE_URL: ${{ vars.VITE_OPENROUTER_BASE_URL }}
           VITE_OPENROUTER_DEFAULT_MODEL: liquid/lfm-2.5-1.2b-instruct:free
           VITE_OPENROUTER_THINKING_MODEL: liquid/lfm-2.5-1.2b-thinking:free
