@@ -63,7 +63,9 @@ fi
 
 echo "Installing npm dependencies in ${REPO_DIR}..."
 cd "${REPO_DIR}"
-npm ci --omit=dev
+# The proxy does not use optional native packages such as onnxruntime-node,
+# so skip them to avoid network fetches on constrained hosts.
+npm ci --omit=dev --omit=optional
 
 echo "Writing ${ENV_FILE}..."
 cat > "${ENV_FILE}" <<EOF
