@@ -80,18 +80,30 @@ export class OpenRouterLLMService {
     messages: OpenRouterMessage[],
     options: OpenRouterGenerateOptions = {},
   ): Promise<string> {
-    if (!this.isConfigured()) {
-      throw new Error(this.getConfigurationStatus().reason);
+    const configuration = this.getConfigurationStatus();
+    if (!configuration.configured) {
+      throw new Error(configuration.reason);
+    }
+
+    const proxyHeaders: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (configuration.directOpenRouter) {
+      if (LLM_CONFIG.OPENROUTER_API_KEY) {
+        proxyHeaders.Authorization = `Bearer ${LLM_CONFIG.OPENROUTER_API_KEY}`;
+      }
+      if (LLM_CONFIG.OPENROUTER_SITE_URL) {
+        proxyHeaders['HTTP-Referer'] = LLM_CONFIG.OPENROUTER_SITE_URL;
+      }
+      if (LLM_CONFIG.OPENROUTER_SITE_NAME) {
+        proxyHeaders['X-OpenRouter-Title'] = LLM_CONFIG.OPENROUTER_SITE_NAME;
+      }
     }
 
     const response = await fetch(`${this.getBaseUrl().replace(/\/$/, '')}/chat/completions`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(LLM_CONFIG.OPENROUTER_API_KEY ? { Authorization: `Bearer ${LLM_CONFIG.OPENROUTER_API_KEY}` } : {}),
-        ...(LLM_CONFIG.OPENROUTER_SITE_URL ? { 'HTTP-Referer': LLM_CONFIG.OPENROUTER_SITE_URL } : {}),
-        ...(LLM_CONFIG.OPENROUTER_SITE_NAME ? { 'X-OpenRouter-Title': LLM_CONFIG.OPENROUTER_SITE_NAME } : {}),
-      },
+      headers: proxyHeaders,
       body: JSON.stringify({
         model: options.model || this.getDefaultModel(),
         messages,

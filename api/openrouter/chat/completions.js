@@ -15,11 +15,13 @@ function setCorsHeaders(req, res) {
   const origin = req.headers.origin || '';
   const allowedOrigins = parseAllowedOrigins();
   const allowedOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  const requestedHeaders = req.headers['access-control-request-headers'];
+  const allowHeaders = requestedHeaders || 'Content-Type, Authorization, HTTP-Referer, X-OpenRouter-Title';
 
   res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', allowHeaders);
   res.setHeader('Access-Control-Max-Age', '86400');
 }
 
