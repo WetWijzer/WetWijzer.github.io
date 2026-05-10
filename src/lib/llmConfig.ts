@@ -4,7 +4,15 @@ function getRuntimeOpenRouterBaseUrl(): string {
   }
 
   if (typeof window !== 'undefined') {
-    return window.localStorage.getItem('PORTLAND_OPENROUTER_BASE_URL') || '';
+    const localOverride = window.localStorage.getItem('PORTLAND_OPENROUTER_BASE_URL');
+    if (localOverride) {
+      return localOverride;
+    }
+
+    // Production safety net for GitHub Pages builds that missed env injection.
+    if (window.location.hostname === 'portland-laws.github.io') {
+      return 'https://animegf.chat/api/openrouter';
+    }
   }
 
   return '';

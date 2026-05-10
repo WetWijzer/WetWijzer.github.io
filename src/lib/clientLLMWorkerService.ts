@@ -352,10 +352,28 @@ class ClientLLMWorkerService {
 
     try {
       const startedAt = performance.now();
+      const localTimeoutMs = cloudConfigured
+        ? Math.max(
+            1,
+            Math.min(
+              LLM_CONFIG.LOCAL_GENERATION_TIMEOUT_MS,
+              LLM_CONFIG.LOCAL_GENERATION_FALLBACK_MS,
+            ),
+          )
+        : LLM_CONFIG.LOCAL_GENERATION_TIMEOUT_MS;
+
+      if (cloudConfigured && localTimeoutMs < LLM_CONFIG.LOCAL_GENERATION_TIMEOUT_MS) {
+        this.emitServiceDiagnostic('local:soft_timeout_enabled', {
+          localTimeoutMs,
+          hardTimeoutMs: LLM_CONFIG.LOCAL_GENERATION_TIMEOUT_MS,
+          promptLength: prompt.length,
+        });
+      }
+
       const result = await this.sendWorkerRequest(
         'generate',
         { prompt, maxTokens: boundedMaxTokens },
-        LLM_CONFIG.LOCAL_GENERATION_TIMEOUT_MS,
+        localTimeoutMs,
       );
       this.markLocalSuccess(Math.round(performance.now() - startedAt));
       return result.text;
