@@ -11,7 +11,7 @@ function getRuntimeOpenRouterBaseUrl(): string {
 
     // Production safety net for GitHub Pages builds that missed env injection.
     if (window.location.hostname === 'portland-laws.github.io') {
-      return 'https://animegf.chat/api/openrouter';
+      return 'https://animegf.chat:8787/api/openrouter';
     }
   }
 
