@@ -11,6 +11,8 @@ type LocalInferenceState =
   | 'ready'
   | 'unhealthy';
 
+type GenerationSource = 'none' | 'local' | 'cloud';
+
 interface PendingWorkerRequest {
   type: string;
   startedAt: number;
@@ -52,6 +54,7 @@ class ClientLLMWorkerService {
     consecutiveFailures: 0,
   };
   private localRetryAfter = 0;
+  private lastGenerationSource: GenerationSource = 'none';
 
   constructor() {
     this.initializeWorker();
@@ -321,6 +324,7 @@ class ClientLLMWorkerService {
     this.isInitializing = false;
     this.backgroundWarmupPromise = null;
     this.localProbePromise = null;
+    this.lastGenerationSource = 'none';
     this.initializeWorker();
   }
 
@@ -466,6 +470,7 @@ class ClientLLMWorkerService {
       const durationMs = Math.round(performance.now() - startedAt);
       this.markLocalSuccess(durationMs);
       this.recordThroughputSample(String(result?.text || ''), durationMs, 'generate');
+      this.lastGenerationSource = 'local';
       return result.text;
     } catch (error) {
       console.error('Text generation failed:', error);
@@ -560,6 +565,7 @@ class ClientLLMWorkerService {
     currentModel: string;
     capabilities: any;
     localHealth: LocalInferenceHealth;
+    lastGenerationSource: GenerationSource;
     cloudFallback: ReturnType<typeof openRouterLLMService.getConfigurationStatus>;
     retryAfter?: string;
   } {
@@ -570,9 +576,14 @@ class ClientLLMWorkerService {
       currentModel: this.currentModel,
       capabilities: this.capabilities,
       localHealth: { ...this.localHealth },
+      lastGenerationSource: this.lastGenerationSource,
       cloudFallback: openRouterLLMService.getConfigurationStatus(),
       retryAfter: this.localRetryAfter ? new Date(this.localRetryAfter).toISOString() : undefined,
     };
+  }
+
+  getLastGenerationSource(): GenerationSource {
+    return this.lastGenerationSource;
   }
 
   isCloudFallbackAvailable(): boolean {
@@ -584,6 +595,7 @@ class ClientLLMWorkerService {
   }
 
   private generateWithOpenRouter(prompt: string, maxTokens: number): Promise<string> {
+    this.lastGenerationSource = 'cloud';
     return openRouterLLMService.generateText(prompt, {
       maxTokens,
       model: this.getOpenRouterModelForCurrentLocalModel(),

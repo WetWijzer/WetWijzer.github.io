@@ -19,6 +19,7 @@ export interface GraphRagAnswer {
   evidence: GraphRagEvidence;
   logicEvidence: LogicEvidenceItem[];
   usedLocalModel: boolean;
+  generationSource: 'local' | 'cloud' | 'retrieved';
   generationWarning?: string;
 }
 
@@ -50,6 +51,7 @@ export async function answerWithGraphRag(
       evidence,
       logicEvidence,
       usedLocalModel: false,
+      generationSource: 'retrieved',
       generationWarning: 'No relevant local corpus evidence was found, so no generation was attempted.',
     };
   }
@@ -64,23 +66,32 @@ export async function answerWithGraphRag(
         evidence,
         logicEvidence,
         usedLocalModel: false,
+        generationSource: 'retrieved',
         generationWarning: 'Local LLM generation was disabled for this browser session.',
       };
     }
 
     const { clientLLMWorkerService } = await import('./clientLLMWorkerService');
     const rawAnswer = await clientLLMWorkerService.generateText(prompt, 96);
+    const modelSource = clientLLMWorkerService.getLastGenerationSource();
     const candidateAnswer = cleanModelAnswer(rawAnswer);
-    const answer = isGroundedAnswer(candidateAnswer)
+    const answerIsGrounded = isGroundedAnswer(candidateAnswer);
+    const answer = answerIsGrounded
       ? candidateAnswer
       : buildEvidenceSummary(evidence.sections);
+
+    const generationSource: 'local' | 'cloud' | 'retrieved' = answerIsGrounded
+      ? (modelSource === 'cloud' ? 'cloud' : 'local')
+      : 'retrieved';
+
     return {
       question: trimmedQuestion,
       answer,
       evidence,
       logicEvidence,
-      usedLocalModel: answer === candidateAnswer,
-      generationWarning: answer === candidateAnswer
+      usedLocalModel: generationSource === 'local',
+      generationSource,
+      generationWarning: answerIsGrounded
         ? undefined
         : 'The model response was not sufficiently citation-grounded, so the app returned retrieved evidence instead.',
     };
@@ -93,6 +104,7 @@ export async function answerWithGraphRag(
       evidence,
       logicEvidence,
       usedLocalModel: false,
+      generationSource: 'retrieved',
       generationWarning,
     };
   }

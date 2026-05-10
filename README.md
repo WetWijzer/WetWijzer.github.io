@@ -159,6 +159,14 @@ localStorage.setItem('PORTLAND_OPENROUTER_BASE_URL', 'https://<your-vercel-app>.
 
 The app does not trust local WebGPU inference merely because the model downloaded. It now marks local inference as ready only after a tiny generation probe succeeds. Legal GraphRAG prompts are compacted for the browser model, local generation is attempted first, and OpenRouter is used only as a last-resort fallback after local probe/generation failure, timeout, or an oversized prompt outside the configured local budget.
 
+To keep chat responsive for first-time visitors, the app can run cloud-first until local inference proves acceptable throughput. Tune these optional variables in your build environment:
+
+- `VITE_LOCAL_MIN_TOKENS_PER_SECOND` (default `4`)
+- `VITE_LOCAL_PERF_SAMPLE_MIN_TOKENS` (default `10`)
+- `VITE_LOCAL_PERF_BENCH_MAX_TOKENS` (default `40`)
+- `VITE_LOCAL_PERF_BENCH_TIMEOUT_MS` (default `20000`)
+- `VITE_LOCAL_GENERATION_FALLBACK_MS` (default `15000`)
+
 Useful browser console checks:
 
 ```js
