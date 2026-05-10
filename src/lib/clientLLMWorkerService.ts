@@ -22,12 +22,14 @@ interface PendingWorkerRequest {
 interface LocalInferenceHealth {
   state: LocalInferenceState;
   proven: boolean;
+  performanceProven: boolean;
   lastProbeAt?: string;
   lastSuccessAt?: string;
   lastFailureAt?: string;
   lastFailureReason?: string;
   lastGenerationDurationMs?: number;
   lastProbeDurationMs?: number;
+  lastMeasuredTokensPerSecond?: number;
   consecutiveFailures: number;
 }
 
@@ -46,6 +48,7 @@ class ClientLLMWorkerService {
   private localHealth: LocalInferenceHealth = {
     state: 'unknown',
     proven: false,
+    performanceProven: false,
     consecutiveFailures: 0,
   };
   private localRetryAfter = 0;
@@ -206,6 +209,7 @@ class ClientLLMWorkerService {
       ...this.localHealth,
       state: 'unhealthy',
       proven: false,
+      performanceProven: false,
       lastFailureAt: new Date().toISOString(),
       lastFailureReason: reason,
       consecutiveFailures: this.localHealth.consecutiveFailures + 1,
@@ -229,6 +233,75 @@ class ClientLLMWorkerService {
     };
     this.localRetryAfter = 0;
     this.emitServiceDiagnostic('local:marked_ready', { durationMs });
+  }
+
+  private estimateGeneratedTokens(text: string): number {
+    const trimmed = text.trim();
+    if (!trimmed) {
+      return 1;
+    }
+    const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
+    // Keep token estimate conservative to avoid over-crediting local performance.
+    return Math.max(1, Math.round(wordCount * 1.1));
+  }
+
+  private recordThroughputSample(text: string, durationMs: number, source: 'probe' | 'generate' | 'benchmark'): void {
+    if (!Number.isFinite(durationMs) || durationMs <= 0) {
+      return;
+    }
+
+    const estimatedTokens = this.estimateGeneratedTokens(text);
+    const tokensPerSecond = Number(((estimatedTokens * 1000) / durationMs).toFixed(2));
+    const sampleBigEnough = estimatedTokens >= LLM_CONFIG.LOCAL_PERF_SAMPLE_MIN_TOKENS;
+    const fastEnough = tokensPerSecond >= LLM_CONFIG.LOCAL_MIN_TOKENS_PER_SECOND;
+
+    this.localHealth = {
+      ...this.localHealth,
+      lastMeasuredTokensPerSecond: tokensPerSecond,
+      performanceProven: sampleBigEnough && fastEnough,
+    };
+
+    this.emitServiceDiagnostic('local:throughput_sample', {
+      source,
+      durationMs,
+      estimatedTokens,
+      tokensPerSecond,
+      threshold: LLM_CONFIG.LOCAL_MIN_TOKENS_PER_SECOND,
+      sampleMinTokens: LLM_CONFIG.LOCAL_PERF_SAMPLE_MIN_TOKENS,
+      performanceProven: this.localHealth.performanceProven,
+    });
+  }
+
+  private shouldPreferCloudUntilLocalReady(cloudConfigured: boolean): boolean {
+    if (!cloudConfigured) {
+      return false;
+    }
+    return !this.localHealth.proven || !this.localHealth.performanceProven;
+  }
+
+  private async benchmarkLocalThroughput(): Promise<void> {
+    if (!this.worker || !this.isInitialized) {
+      return;
+    }
+
+    const prompt = 'Provide two concise sentences describing how local inference is running right now.';
+    try {
+      const startedAt = performance.now();
+      const result = await this.sendWorkerRequest(
+        'generate',
+        {
+          prompt,
+          maxTokens: Math.min(LLM_CONFIG.LOCAL_MAX_NEW_TOKENS, LLM_CONFIG.LOCAL_PERF_BENCH_MAX_TOKENS),
+        },
+        Math.min(LLM_CONFIG.LOCAL_GENERATION_TIMEOUT_MS, LLM_CONFIG.LOCAL_PERF_BENCH_TIMEOUT_MS),
+      );
+      const durationMs = Math.round(performance.now() - startedAt);
+      this.recordThroughputSample(String(result?.text || ''), durationMs, 'benchmark');
+    } catch (error) {
+      this.emitServiceDiagnostic('local:throughput_benchmark_failed', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
 
   private resetLocalWorker(reason: string): void {
@@ -297,6 +370,7 @@ class ClientLLMWorkerService {
       this.isInitialized = true;
       this.localHealth.state = 'loaded_unprobed';
       this.localHealth.proven = false;
+      this.localHealth.performanceProven = false;
       this.localGenerationUnhealthy = false;
       console.log(`Switched to model: ${result.modelName}`);
     } catch (error) {
@@ -330,6 +404,20 @@ class ClientLLMWorkerService {
         return this.generateWithOpenRouter(prompt, boundedMaxTokens);
       }
       throw new Error(`${reason} Compact the GraphRAG context or configure OpenRouter as last-resort fallback.`);
+    }
+
+    if (this.shouldPreferCloudUntilLocalReady(cloudConfigured)) {
+      this.emitServiceDiagnostic('route:cloud_until_local_ready', {
+        reason: !this.localHealth.proven
+          ? 'local model not yet proven by probe'
+          : 'local throughput not yet proven for responsive UX',
+        promptLength: prompt.length,
+        maxTokens: boundedMaxTokens,
+        performanceProven: this.localHealth.performanceProven,
+        measuredTokensPerSecond: this.localHealth.lastMeasuredTokensPerSecond,
+      });
+      this.warmLocalModelInBackground();
+      return this.generateWithOpenRouter(prompt, boundedMaxTokens);
     }
 
     if (!this.isInitialized) {
@@ -375,7 +463,9 @@ class ClientLLMWorkerService {
         { prompt, maxTokens: boundedMaxTokens },
         localTimeoutMs,
       );
-      this.markLocalSuccess(Math.round(performance.now() - startedAt));
+      const durationMs = Math.round(performance.now() - startedAt);
+      this.markLocalSuccess(durationMs);
+      this.recordThroughputSample(String(result?.text || ''), durationMs, 'generate');
       return result.text;
     } catch (error) {
       console.error('Text generation failed:', error);
@@ -431,6 +521,7 @@ class ClientLLMWorkerService {
         const durationMs = Number(result.durationMs || 0);
         this.localHealth.lastProbeDurationMs = durationMs;
         this.markLocalSuccess(durationMs);
+        this.recordThroughputSample(String(result?.text || ''), durationMs, 'probe');
         this.emitServiceDiagnostic('probe:success', {
           durationMs,
           text: String(result.text || '').slice(0, 120),
@@ -508,7 +599,7 @@ class ClientLLMWorkerService {
       return;
     }
 
-    if (this.isInitialized && this.localHealth.proven && !options.force) {
+    if (this.isInitialized && this.localHealth.proven && this.localHealth.performanceProven && !options.force) {
       return;
     }
 
@@ -518,6 +609,7 @@ class ClientLLMWorkerService {
         if (!ok) {
           throw new Error(this.localHealth.lastFailureReason || 'Local inference probe failed.');
         }
+        return this.benchmarkLocalThroughput();
       })
       .catch((error) => {
         console.warn('Background local LLM warmup failed; cloud fallback remains available if configured', error);

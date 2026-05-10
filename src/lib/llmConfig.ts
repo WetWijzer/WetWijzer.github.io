@@ -50,6 +50,12 @@ export const LLM_CONFIG = {
   LOCAL_RETRY_COOLDOWN_MS: parseInt(import.meta.env.VITE_LOCAL_RETRY_COOLDOWN_MS || '600000'),
   LOCAL_MAX_PROMPT_CHARS: parseInt(import.meta.env.VITE_LOCAL_MAX_PROMPT_CHARS || '2400'),
   LOCAL_MAX_NEW_TOKENS: parseInt(import.meta.env.VITE_LOCAL_MAX_NEW_TOKENS || '96'),
+  // Require local inference to prove a minimum throughput before it becomes
+  // the default route for chat responses.
+  LOCAL_MIN_TOKENS_PER_SECOND: parseFloat(import.meta.env.VITE_LOCAL_MIN_TOKENS_PER_SECOND || '4'),
+  LOCAL_PERF_SAMPLE_MIN_TOKENS: parseInt(import.meta.env.VITE_LOCAL_PERF_SAMPLE_MIN_TOKENS || '10'),
+  LOCAL_PERF_BENCH_MAX_TOKENS: parseInt(import.meta.env.VITE_LOCAL_PERF_BENCH_MAX_TOKENS || '40'),
+  LOCAL_PERF_BENCH_TIMEOUT_MS: parseInt(import.meta.env.VITE_LOCAL_PERF_BENCH_TIMEOUT_MS || '20000'),
 
   // Enable WebGPU acceleration when available
   ENABLE_WEBGPU: import.meta.env.VITE_ENABLE_WEBGPU !== 'false',
