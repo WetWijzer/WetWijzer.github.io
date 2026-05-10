@@ -4,7 +4,7 @@ import { Player, SelectElement } from './Player.tsx';
 import { useEffect, useRef, useState } from 'react';
 import { PixiStaticMap } from './PixiStaticMap.tsx';
 import PixiViewport from './PixiViewport.tsx';
-import { Viewport } from 'pixi-viewport';
+import type { ViewportLike } from './PixiViewport.tsx';
 import { useQuery, api, Id } from '../lib/staticConvexReplaceSimple.tsx';
 import { useSendInput } from '../hooks/sendInputSimple.ts';
 import { toastOnError } from '../toasts.ts';
@@ -24,7 +24,7 @@ export const PixiGame = (props: {
 }) => {
   // PIXI setup.
   const pixiApp = useApp();
-  const viewportRef = useRef<Viewport | undefined>();
+  const viewportRef = useRef<ViewportLike | undefined>();
 
   const humanTokenIdentifier = useQuery(api.world.userStatus, { worldId: props.worldId }) ?? null;
   const humanPlayerId = [...props.game.world.players.values()].find(

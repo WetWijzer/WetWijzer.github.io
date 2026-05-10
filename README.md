@@ -184,10 +184,30 @@ OPENROUTER_API_KEY=sk-or-... sudo -E bash scripts/setup-openrouter-proxy-digital
 The script installs dependencies, writes `/etc/portland-openrouter-proxy.env`, and starts a systemd service on port `8787`. Point the frontend at:
 
 ```bash
-VITE_OPENROUTER_BASE_URL=http://YOUR_DROPLET_IP:8787/api/openrouter
+VITE_OPENROUTER_BASE_URL=https://animegf.chat:8787/api/openrouter
 ```
 
-For production, put a TLS reverse proxy in front of the droplet service and use an `https://.../api/openrouter` URL.
+Because the GitHub Pages app is served over HTTPS, the proxy URL used by the browser must also be HTTPS. If you use `https://animegf.chat:8787`, make sure your droplet terminates TLS on port `8787`. Otherwise, put Caddy or Nginx on standard HTTPS port `443` and use `https://animegf.chat/api/openrouter`.
+
+To add or rotate the OpenRouter API key on the DigitalOcean VPS after setup:
+
+```bash
+sudo nano /etc/portland-openrouter-proxy.env
+```
+
+Set or replace this line:
+
+```bash
+OPENROUTER_API_KEY=sk-or-your-key-here
+```
+
+Then restart and verify the service:
+
+```bash
+sudo systemctl restart portland-openrouter-proxy
+sudo systemctl status portland-openrouter-proxy
+curl -fsS http://127.0.0.1:8787/health
+```
 
 ### Configure GitHub Pages to use the proxy
 
@@ -197,7 +217,7 @@ After the proxy is reachable from the browser, configure the GitHub Pages build 
 2. Go to **Settings → Secrets and variables → Actions → Variables**.
 3. Add or update this repository variable:
    - Name: `VITE_OPENROUTER_BASE_URL`
-   - Value: `https://YOUR_PROXY_DOMAIN/api/openrouter`
+   - Value: `https://animegf.chat:8787/api/openrouter`
 4. Confirm `VITE_OPENROUTER_ENABLED` is not set to `false`. The deploy workflow already builds with fallback enabled.
 5. Rerun the GitHub Pages deploy workflow from **Actions**, or push a new commit to `main`.
 6. Hard refresh the live page after deployment.
@@ -209,7 +229,7 @@ For a quick browser-only test before rebuilding GitHub Pages, open DevTools on t
 ```js
 localStorage.setItem(
   'PORTLAND_OPENROUTER_BASE_URL',
-  'https://YOUR_PROXY_DOMAIN/api/openrouter'
+  'https://animegf.chat:8787/api/openrouter'
 )
 location.reload()
 ```

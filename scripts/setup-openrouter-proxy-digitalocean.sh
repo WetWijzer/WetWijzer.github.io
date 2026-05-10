@@ -14,10 +14,12 @@ Optional environment variables:
   SERVICE_NAME=portland-openrouter-proxy
 
 After setup, point the frontend at:
-  VITE_OPENROUTER_BASE_URL=http://YOUR_DROPLET_IP:8787/api/openrouter
+  VITE_OPENROUTER_BASE_URL=https://animegf.chat:8787/api/openrouter
 
-For production, put Caddy/Nginx/TLS in front of this service and use:
-  VITE_OPENROUTER_BASE_URL=https://YOUR_DOMAIN/api/openrouter
+For GitHub Pages, the proxy URL must be HTTPS. If you use port 8787
+from the browser, terminate TLS on that port. Otherwise put Caddy/Nginx
+on 443 and use:
+  VITE_OPENROUTER_BASE_URL=https://animegf.chat/api/openrouter
 USAGE
 }
 
@@ -121,7 +123,11 @@ Local endpoint:
   http://127.0.0.1:${PORT}/api/openrouter/chat/completions
 
 Frontend base URL value:
-  VITE_OPENROUTER_BASE_URL=http://YOUR_DROPLET_IP:${PORT}/api/openrouter
+  VITE_OPENROUTER_BASE_URL=https://animegf.chat:${PORT}/api/openrouter
+
+GitHub Pages is HTTPS, so this URL must also be HTTPS. The Node service
+started by this script is plain HTTP; expose it through a TLS reverse proxy
+before using it from the live github.io page.
 
 Useful commands:
   sudo systemctl status ${SERVICE_NAME}
