@@ -9,6 +9,8 @@ Usage:
 Optional environment variables:
   OPENROUTER_PROXY_PORT=8787
   OPENROUTER_PROXY_ALLOWED_ORIGINS=https://portland-laws.github.io,http://localhost:5173
+  OPENROUTER_PROXY_PUBLIC_IP=178.128.128.216
+  OPENROUTER_PROXY_OPEN_FIREWALL=1
   OPENROUTER_SITE_URL=https://portland-laws.github.io
   OPENROUTER_SITE_NAME="Portland Laws"
   SERVICE_NAME=portland-openrouter-proxy
@@ -45,8 +47,19 @@ SERVICE_NAME="${SERVICE_NAME:-portland-openrouter-proxy}"
 SERVICE_USER="${SUDO_USER:-${USER:-root}}"
 SERVICE_GROUP="$(id -gn "${SERVICE_USER}" 2>/dev/null || echo "${SERVICE_USER}")"
 PORT="${OPENROUTER_PROXY_PORT:-8787}"
+PUBLIC_IP="${OPENROUTER_PROXY_PUBLIC_IP:-}"
 ENV_FILE="/etc/${SERVICE_NAME}.env"
 SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
+
+if [[ -z "${PUBLIC_IP}" ]]; then
+  PUBLIC_IP="$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{for (i=1;i<=NF;i++) if ($i=="src") {print $(i+1); exit}}')"
+fi
+
+DEFAULT_ALLOWED_ORIGINS="https://portland-laws.github.io,http://localhost:5173,http://127.0.0.1:5173"
+if [[ -n "${PUBLIC_IP}" ]]; then
+  DEFAULT_ALLOWED_ORIGINS+=",http://${PUBLIC_IP}:${PORT}"
+fi
+ALLOWED_ORIGINS="${OPENROUTER_PROXY_ALLOWED_ORIGINS:-${DEFAULT_ALLOWED_ORIGINS}}"
 
 if ! command -v node >/dev/null 2>&1; then
   echo "Installing Node.js from the Ubuntu/Debian package repositories..."
@@ -67,12 +80,17 @@ cd "${REPO_DIR}"
 # so skip them to avoid network fetches on constrained hosts.
 npm ci --omit=dev --omit=optional
 
+if command -v ufw >/dev/null 2>&1 && [[ "${OPENROUTER_PROXY_OPEN_FIREWALL:-1}" == "1" ]]; then
+  echo "Opening TCP port ${PORT} in UFW..."
+  ufw allow "${PORT}/tcp" || true
+fi
+
 echo "Writing ${ENV_FILE}..."
 cat > "${ENV_FILE}" <<EOF
 OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
 OPENROUTER_PROXY_PORT=${PORT}
 OPENROUTER_PROXY_HOST=0.0.0.0
-OPENROUTER_PROXY_ALLOWED_ORIGINS=${OPENROUTER_PROXY_ALLOWED_ORIGINS:-https://portland-laws.github.io,http://localhost:5173,http://127.0.0.1:5173}
+OPENROUTER_PROXY_ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
 OPENROUTER_SITE_URL=${OPENROUTER_SITE_URL:-https://portland-laws.github.io}
 OPENROUTER_SITE_NAME=${OPENROUTER_SITE_NAME:-Portland Laws}
 EOF
@@ -123,6 +141,9 @@ OpenRouter proxy setup complete.
 
 Local endpoint:
   http://127.0.0.1:${PORT}/api/openrouter/chat/completions
+
+Public endpoint (HTTP):
+  http://${PUBLIC_IP:-<your-server-ip>}:${PORT}/api/openrouter/chat/completions
 
 Frontend base URL value:
   VITE_OPENROUTER_BASE_URL=https://animegf.chat:${PORT}/api/openrouter
