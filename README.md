@@ -143,9 +143,11 @@ Recommended setup:
    - `VITE_OPENROUTER_BASE_URL=https://<your-vercel-app>.vercel.app/api/openrouter`
    - `VITE_OPENROUTER_ENABLED=true`
 
-For the GitHub Pages workflow, add `VITE_OPENROUTER_BASE_URL` as a GitHub repository variable under
-**Settings → Secrets and variables → Actions → Variables**. The deploy workflow injects that value at build time.
-If this variable is missing, the deploy workflow fails rather than publishing a bundle that cannot use cloud fallback.
+The GitHub Pages deploy workflow now defaults to this proxy URL at build time:
+`https://animegf.chat/api/openrouter`
+
+You can override it by adding `VITE_OPENROUTER_BASE_URL` as a GitHub repository variable under
+**Settings → Secrets and variables → Actions → Variables**.
 
 For quick testing on an already-deployed static bundle, you can temporarily set the proxy URL in browser devtools and reload:
 
@@ -215,9 +217,9 @@ After the proxy is reachable from the browser, configure the GitHub Pages build 
 
 1. Open the GitHub repository.
 2. Go to **Settings → Secrets and variables → Actions → Variables**.
-3. Add or update this repository variable:
+3. Optionally add or update this repository variable to override the workflow default:
    - Name: `VITE_OPENROUTER_BASE_URL`
-   - Value: `https://animegf.chat:8787/api/openrouter`
+   - Value: `https://animegf.chat/api/openrouter`
 4. Confirm `VITE_OPENROUTER_ENABLED` is not set to `false`. The deploy workflow already builds with fallback enabled.
 5. Rerun the GitHub Pages deploy workflow from **Actions**, or push a new commit to `main`.
 6. Hard refresh the live page after deployment.
@@ -229,7 +231,7 @@ For a quick browser-only test before rebuilding GitHub Pages, open DevTools on t
 ```js
 localStorage.setItem(
   'PORTLAND_OPENROUTER_BASE_URL',
-  'https://animegf.chat:8787/api/openrouter'
+   'https://animegf.chat/api/openrouter'
 )
 location.reload()
 ```
