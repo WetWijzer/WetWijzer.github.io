@@ -197,7 +197,17 @@ The script installs dependencies, writes `/etc/portland-openrouter-proxy.env`, a
 VITE_OPENROUTER_BASE_URL=https://animegf.chat:8787/api/openrouter
 ```
 
-Because the GitHub Pages app is served over HTTPS, the proxy URL used by the browser must also be HTTPS. If you use `https://animegf.chat:8787`, make sure your droplet terminates TLS on port `8787`. Otherwise, put Caddy or Nginx on standard HTTPS port `443` and use `https://animegf.chat/api/openrouter`.
+Because the GitHub Pages app is served over HTTPS, the proxy URL used by the browser must also be HTTPS. If OpenVPN owns port `443`, keep the Node service on `127.0.0.1:8787` and terminate TLS on public port `8787` with Caddy or Nginx.
+
+Example Caddyfile for direct HTTPS on `:8787` while OpenVPN keeps `:443`:
+
+```caddy
+https://animegf.chat:8787 {
+   reverse_proxy 127.0.0.1:8787
+}
+```
+
+If you also serve pages from `https://animegf.chat`, add that origin to `OPENROUTER_PROXY_ALLOWED_ORIGINS` before restarting the service.
 
 To add or rotate the OpenRouter API key on the DigitalOcean VPS after setup:
 
@@ -227,7 +237,7 @@ After the proxy is reachable from the browser, configure the GitHub Pages build 
 2. Go to **Settings → Secrets and variables → Actions → Variables**.
 3. Optionally add or update this repository variable to override the workflow default:
    - Name: `VITE_OPENROUTER_BASE_URL`
-   - Value: `https://animegf.chat/api/openrouter`
+   - Value: `https://animegf.chat:8787/api/openrouter`
 4. Confirm `VITE_OPENROUTER_ENABLED` is not set to `false`. The deploy workflow already builds with fallback enabled.
 5. Rerun the GitHub Pages deploy workflow from **Actions**, or push a new commit to `main`.
 6. Hard refresh the live page after deployment.

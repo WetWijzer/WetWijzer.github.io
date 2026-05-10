@@ -62,6 +62,10 @@ jobs:
         env:
           VITE_OPENROUTER_ENABLED: ${{ vars.VITE_OPENROUTER_ENABLED || 'true' }}
           VITE_OPENROUTER_BASE_URL: ${{ vars.VITE_OPENROUTER_BASE_URL || 'https://animegf.chat:8787/api/openrouter' }}
+          VITE_LOCAL_GENERATION_FALLBACK_MS: ${{ vars.VITE_LOCAL_GENERATION_FALLBACK_MS || '5000' }}
+          VITE_LOCAL_GENERATION_TIMEOUT_MS: ${{ vars.VITE_LOCAL_GENERATION_TIMEOUT_MS || '12000' }}
+          VITE_LOCAL_PROBE_TIMEOUT_MS: ${{ vars.VITE_LOCAL_PROBE_TIMEOUT_MS || '10000' }}
+          VITE_LOCAL_PERF_BENCH_TIMEOUT_MS: ${{ vars.VITE_LOCAL_PERF_BENCH_TIMEOUT_MS || '8000' }}
           VITE_OPENROUTER_DEFAULT_MODEL: liquid/lfm-2.5-1.2b-instruct:free
           VITE_OPENROUTER_THINKING_MODEL: liquid/lfm-2.5-1.2b-thinking:free
           VITE_CLIENT_LLM_MODEL: LiquidAI/LFM2.5-1.2B-Instruct-ONNX

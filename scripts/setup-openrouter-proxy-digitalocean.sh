@@ -8,8 +8,10 @@ Usage:
 
 Optional environment variables:
   OPENROUTER_PROXY_PORT=8787
+  OPENROUTER_PROXY_HOST=127.0.0.1
   OPENROUTER_PROXY_ALLOWED_ORIGINS=https://portland-laws.github.io,http://localhost:5173
   OPENROUTER_PROXY_PUBLIC_IP=178.128.128.216
+  OPENROUTER_PROXY_PUBLIC_ORIGIN=https://animegf.chat
   OPENROUTER_PROXY_OPEN_FIREWALL=1
   OPENROUTER_SITE_URL=https://portland-laws.github.io
   OPENROUTER_SITE_NAME="Portland Laws"
@@ -47,7 +49,9 @@ SERVICE_NAME="${SERVICE_NAME:-portland-openrouter-proxy}"
 SERVICE_USER="${SUDO_USER:-${USER:-root}}"
 SERVICE_GROUP="$(id -gn "${SERVICE_USER}" 2>/dev/null || echo "${SERVICE_USER}")"
 PORT="${OPENROUTER_PROXY_PORT:-8787}"
+HOST="${OPENROUTER_PROXY_HOST:-127.0.0.1}"
 PUBLIC_IP="${OPENROUTER_PROXY_PUBLIC_IP:-}"
+PUBLIC_ORIGIN="${OPENROUTER_PROXY_PUBLIC_ORIGIN:-https://animegf.chat}"
 ENV_FILE="/etc/${SERVICE_NAME}.env"
 SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
 
@@ -56,6 +60,9 @@ if [[ -z "${PUBLIC_IP}" ]]; then
 fi
 
 DEFAULT_ALLOWED_ORIGINS="https://portland-laws.github.io,http://localhost:5173,http://127.0.0.1:5173"
+if [[ -n "${PUBLIC_ORIGIN}" ]]; then
+  DEFAULT_ALLOWED_ORIGINS+=",${PUBLIC_ORIGIN}"
+fi
 if [[ -n "${PUBLIC_IP}" ]]; then
   DEFAULT_ALLOWED_ORIGINS+=",http://${PUBLIC_IP}:${PORT}"
 fi
@@ -89,7 +96,7 @@ echo "Writing ${ENV_FILE}..."
 cat > "${ENV_FILE}" <<EOF
 OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
 OPENROUTER_PROXY_PORT=${PORT}
-OPENROUTER_PROXY_HOST=0.0.0.0
+OPENROUTER_PROXY_HOST=${HOST}
 OPENROUTER_PROXY_ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
 OPENROUTER_SITE_URL=${OPENROUTER_SITE_URL:-https://portland-laws.github.io}
 OPENROUTER_SITE_NAME=${OPENROUTER_SITE_NAME:-Portland Laws}
@@ -149,8 +156,9 @@ Frontend base URL value:
   VITE_OPENROUTER_BASE_URL=https://animegf.chat:${PORT}/api/openrouter
 
 GitHub Pages is HTTPS, so this URL must also be HTTPS. The Node service
-started by this script is plain HTTP; expose it through a TLS reverse proxy
-before using it from the live github.io page.
+started by this script is plain HTTP. For a direct `:8787` browser URL,
+terminate TLS on port ${PORT} and reverse proxy to http://${HOST}:${PORT}.
+If OpenVPN owns 443, do not move the proxy there.
 
 Useful commands:
   sudo systemctl status ${SERVICE_NAME}
