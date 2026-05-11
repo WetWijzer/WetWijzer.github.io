@@ -2,7 +2,12 @@
 
 [Live Site](https://portland-laws.github.io)
 
-A static, browser-only research tool for exploring and querying the **Portland, Oregon City Code**. All computation runs directly in your browser — no backend server, no API keys, no accounts required.
+This repository has two active workstreams:
+
+1. A static, browser-only research tool for exploring and querying the **Portland, Oregon City Code**.
+2. An isolated **PP&D automation workspace** (`ppd/`) with a local daemon/supervisor stack for Portland Permitting & Development process extraction, guarded DevHub login automation, and permit-filing workflow support.
+
+The legal-research app runs fully in the browser (no backend server required for core corpus search), while PP&D automation is intentionally constrained to the `ppd/` workspace and deterministic validation.
 
 ## What This Is
 
@@ -14,6 +19,24 @@ This repository is a static Vite/React/TypeScript application that provides:
 - **Knowledge Graph Explorer**: Visualize entities and relationships extracted from the legal corpus
 - **Logic Proof Explorer**: Inspect formal logic artifacts (obligations, permissions, prohibitions, temporal operators, ZKP certificates) derived from each section
 - **Browser Logic Engine**: A growing TypeScript/WASM port of the Python `ipfs_datasets_py` logic module, enabling deterministic browser-native theorem proving, TDFOL/CEC/DCEC parsing, deontic analysis, F-logic rendering, and ZKP metadata verification
+
+## PP&D Agent Daemon Workspace
+
+The `ppd/` workspace contains automation code for Portland Permitting & Development operations. It includes:
+
+- **Daemon worker** (`ppd/daemon/ppd_daemon.py`) that advances one task-board item at a time using JSON file-replacement proposals.
+- **Watchdog + control wrapper** (`ppd/daemon/control.sh`) for `start`, `stop`, `status`, `logs`, and supervisor controls.
+- **Supervisor** (`ppd/daemon/ppd_supervisor.py`) that can restart/recover the daemon and run narrow repair cycles.
+- **DevHub automation scaffolding** (`ppd/devhub/`) for authenticated portal login/session flows and guarded permit-related action support.
+- **Fixture-first validation** (`python3 ppd/tests/validate_ppd.py`) that must remain deterministic and avoid live submission/payment actions.
+
+Start/inspect locally from repository root:
+
+```bash
+bash ppd/daemon/control.sh start
+bash ppd/daemon/control.sh status
+bash ppd/daemon/control.sh supervisor-status
+```
 
 ## Corpus
 
@@ -144,7 +167,8 @@ Recommended setup:
    - `VITE_OPENROUTER_ENABLED=true`
 
 The GitHub Pages deploy workflow now defaults to this proxy URL at build time:
-`https://animegf.chat/api/openrouter`
+`https://animegf.chat:8787/api/openrouter`
+This default targets the currently documented DigitalOcean/Caddy TLS setup where the OpenRouter proxy is exposed on `:8787` instead of `:443`.
 
 You can override it by adding `VITE_OPENROUTER_BASE_URL` as a GitHub repository variable under
 **Settings → Secrets and variables → Actions → Variables**.
@@ -308,14 +332,16 @@ It should report `configured: true` and a `baseUrl` pointing at your proxy, not 
 
 | Document | Description |
 |---|---|
-| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | System architecture, component overview, and data flow |
+| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Current architecture for the legal-research frontend and the PP&D daemon workspace |
 | [`docs/PORTLAND_LEGAL_CORPUS_IMPLEMENTATION_PLAN.md`](./docs/PORTLAND_LEGAL_CORPUS_IMPLEMENTATION_PLAN.md) | Full implementation plan for the Portland corpus research UI |
 | [`docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md`](./docs/IPFS_DATASETS_LOGIC_TYPESCRIPT_PORT_PLAN.md) | Roadmap for porting the Python logic module to TypeScript/WASM |
 | [`docs/LOGIC_PORT_PARITY.md`](./docs/LOGIC_PORT_PARITY.md) | Parity tracker comparing TypeScript behavior to Python targets |
 | [`docs/LOGIC_WASM_RESEARCH.md`](./docs/LOGIC_WASM_RESEARCH.md) | Research notes on browser-native theorem-prover options |
-| [`TESTING.md`](./TESTING.md) | Testing strategy, test structure, and how to run the test suite |
+| [`TESTING.md`](./TESTING.md) | Current lint/build/test and PP&D validation commands |
 | [`CLIENT_LLM_IMPLEMENTATION.md`](./CLIENT_LLM_IMPLEMENTATION.md) | Browser inference architecture (Transformers.js, Web Workers) |
 | [`MODEL_GUIDE.md`](./MODEL_GUIDE.md) | Guidance on supported browser-inference models and hardware requirements |
+| [`ppd/README.md`](./ppd/README.md) | PP&D workspace boundaries, validation, and daemon control commands |
+| [`ppd/daemon/OPERATIONS.md`](./ppd/daemon/OPERATIONS.md) | PP&D daemon/supervisor operations, runtime files, and safety constraints |
 
 ## Legal Disclaimer
 
