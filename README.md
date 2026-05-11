@@ -168,6 +168,7 @@ Recommended setup:
 
 The GitHub Pages deploy workflow now defaults to this proxy URL at build time:
 `https://animegf.chat:8787/api/openrouter`
+This default targets the currently documented DigitalOcean/Caddy TLS setup where the OpenRouter proxy is exposed on `:8787` instead of `:443`.
 
 You can override it by adding `VITE_OPENROUTER_BASE_URL` as a GitHub repository variable under
 **Settings → Secrets and variables → Actions → Variables**.
