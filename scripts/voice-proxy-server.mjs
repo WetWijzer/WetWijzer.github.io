@@ -68,8 +68,30 @@ const server = http.createServer(async (req, res) => {
       configured: true,
       requiresApiKey: Boolean(process.env.VOICE_PROXY_API_KEY),
       upstream: process.env.VOICE_PROXY_UPSTREAM_URL || 'http://10.8.0.99:8000/infer',
+      routes: {
+        infer: {
+          paths: ['/api/voice/infer', '/infer'],
+          expectedContentType: 'any upstream-supported content-type',
+        },
+        tts: {
+          paths: ['/api/voice/tts', '/tts'],
+          expectedContentType: 'application/x-www-form-urlencoded',
+        },
+        stt: {
+          paths: ['/api/voice/stt', '/stt'],
+          expectedContentType: 'multipart/form-data',
+        },
+      },
     }));
     return;
+  }
+
+  if (pathname === '/api/voice/tts' || pathname === '/tts') {
+    req.voiceProxyRouteIntent = 'tts';
+  } else if (pathname === '/api/voice/stt' || pathname === '/stt') {
+    req.voiceProxyRouteIntent = 'stt';
+  } else if (pathname === '/api/voice/infer' || pathname === '/infer') {
+    req.voiceProxyRouteIntent = 'infer';
   }
 
   if (
@@ -81,7 +103,10 @@ const server = http.createServer(async (req, res) => {
     pathname !== '/stt'
   ) {
     res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify({ error: 'Not found' }));
+    res.end(JSON.stringify({
+      error: 'Not found',
+      message: 'Supported voice routes are /api/voice/infer, /api/voice/tts, and /api/voice/stt.',
+    }));
     return;
   }
 

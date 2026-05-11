@@ -5,6 +5,20 @@ const DEFAULT_ALLOWED_ORIGINS = [
   'http://127.0.0.1:5173',
 ];
 
+const ROUTE_RULES = {
+  infer: {
+    description: 'Generic upstream infer passthrough. Supports whichever content types the upstream /infer endpoint accepts.',
+  },
+  tts: {
+    expectedContentType: 'application/x-www-form-urlencoded',
+    description: 'Text-to-speech style request. Send form-urlencoded fields such as text and voice_description.',
+  },
+  stt: {
+    expectedContentType: 'multipart/form-data',
+    description: 'Speech-to-text or audio inference style request. Send multipart form data with an audio field.',
+  },
+};
+
 function parseAllowedOrigins() {
   return (process.env.VOICE_PROXY_ALLOWED_ORIGINS || process.env.OPENROUTER_PROXY_ALLOWED_ORIGINS || DEFAULT_ALLOWED_ORIGINS.join(','))
     .split(',')
@@ -45,6 +59,29 @@ function readRawBody(req) {
   });
 }
 
+function getRouteIntent(req) {
+  return req.voiceProxyRouteIntent || 'infer';
+}
+
+function matchesExpectedContentType(contentType, expectedContentType) {
+  if (!contentType || !expectedContentType) {
+    return true;
+  }
+  return contentType.toLowerCase().startsWith(expectedContentType.toLowerCase());
+}
+
+function buildRouteDiagnostic(req, contentType) {
+  const routeIntent = getRouteIntent(req);
+  const routeRule = ROUTE_RULES[routeIntent] || ROUTE_RULES.infer;
+  return {
+    route: routeIntent,
+    requestContentType: contentType || null,
+    expectedContentType: routeRule.expectedContentType || null,
+    routeDescription: routeRule.description,
+    upstream: process.env.VOICE_PROXY_UPSTREAM_URL || 'http://10.8.0.99:8000/infer',
+  };
+}
+
 export default async function handler(req, res) {
   setCorsHeaders(req, res);
 
@@ -60,6 +97,7 @@ export default async function handler(req, res) {
 
   const upstreamUrl = process.env.VOICE_PROXY_UPSTREAM_URL || 'http://10.8.0.99:8000/infer';
   const apiKey = process.env.VOICE_PROXY_API_KEY;
+  const routeIntent = getRouteIntent(req);
 
   try {
     const body = await readRawBody(req);
@@ -67,6 +105,16 @@ export default async function handler(req, res) {
 
     if (!contentType) {
       res.status(400).json({ error: 'Content-Type is required' });
+      return;
+    }
+
+    const routeRule = ROUTE_RULES[routeIntent] || ROUTE_RULES.infer;
+    if (!matchesExpectedContentType(contentType, routeRule.expectedContentType)) {
+      res.status(400).json({
+        error: 'Request shape does not match route intent',
+        message: `The /${routeIntent} route expects ${routeRule.expectedContentType}, but received ${contentType}.`,
+        diagnostic: buildRouteDiagnostic(req, contentType),
+      });
       return;
     }
 
@@ -83,8 +131,29 @@ export default async function handler(req, res) {
       body,
     });
 
+    const upstreamContentType = upstream.headers.get('content-type') || 'application/octet-stream';
+    res.setHeader('X-Voice-Proxy-Route', routeIntent);
+    res.setHeader('X-Voice-Proxy-Upstream', upstreamUrl);
+    res.setHeader('X-Voice-Proxy-Upstream-Status', String(upstream.status));
+    res.setHeader('X-Voice-Proxy-Upstream-Content-Type', upstreamContentType);
+
+    if (!upstream.ok) {
+      const upstreamBody = await upstream.text().catch(() => '');
+      res.status(upstream.status).json({
+        error: 'Voice upstream request failed',
+        message: `Upstream returned ${upstream.status} for route ${routeIntent}.`,
+        diagnostic: {
+          ...buildRouteDiagnostic(req, contentType),
+          upstreamStatus: upstream.status,
+          upstreamContentType,
+          upstreamBodyPreview: upstreamBody.slice(0, 1000),
+        },
+      });
+      return;
+    }
+
     res.status(upstream.status);
-    res.setHeader('Content-Type', upstream.headers.get('content-type') || 'application/octet-stream');
+    res.setHeader('Content-Type', upstreamContentType);
     const disposition = upstream.headers.get('content-disposition');
     if (disposition) {
       res.setHeader('Content-Disposition', disposition);
