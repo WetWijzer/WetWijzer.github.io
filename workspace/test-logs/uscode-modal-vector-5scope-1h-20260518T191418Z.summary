@@ -389,7 +389,7 @@
   "codex_stderr_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser.orchestrator.stderr.log",
   "codex_stdout_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser.orchestrator.stdout.log",
   "duration_seconds": 3600.0,
-  "elapsed_seconds": 220.026,
+  "elapsed_seconds": 260.03,
   "final": false,
   "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z.jsonl",
   "loop_role": "paired",
@@ -398,5 +398,5 @@
   "queue_run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder",
   "run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z",
   "started_at": "2026-05-18T19:14:19+00:00",
-  "updated_at": "2026-05-18T19:17:59+00:00"
+  "updated_at": "2026-05-18T19:18:39+00:00"
 }
