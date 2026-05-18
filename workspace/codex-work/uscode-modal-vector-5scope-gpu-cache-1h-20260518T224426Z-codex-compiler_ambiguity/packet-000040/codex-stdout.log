@@ -1,0 +1,18 @@
+Implemented a policy expansion for compiler ambiguity coverage, aligned to the packet’s family-pair evidence.
+
+- Added new signal-free adaptive ambiguity pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000040-20260518_230502/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33):
+  - `conditional_normative -> deontic`
+  - `epistemic -> deontic`
+  - `frame -> epistemic`
+- Updated directional/ordering registry tests in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000040-20260518_230502/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:69).
+- Added focused compiler ambiguity tests in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000040-20260518_230502/tests/unit_tests/logic/modal/test_modal_codec.py:2764) to verify explicit ambiguity emission for:
+  - `conditional_normative -> deontic` (outvoted)
+  - `frame -> epistemic` (outvoted)
+  - `epistemic -> deontic` (contested at zero margin)
+
+Validation run:
+
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` passed (`9 passed`).
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "conditional_deontic or frame_epistemic or epistemic_deontic_contested"` passed (`3 passed`).
+3. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for"` passed (`13 passed`).
+4. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` passed (`120 passed`).

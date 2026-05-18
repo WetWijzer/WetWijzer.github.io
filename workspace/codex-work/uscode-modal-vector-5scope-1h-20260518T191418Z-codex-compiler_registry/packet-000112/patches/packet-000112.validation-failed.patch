@@ -1,0 +1,332 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 8e2660a2..403a9d90 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -196,7 +196,20 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+         system=ModalSystem.LTL,
+         operators=(
+             _op("G", ("always",), ("always", "throughout", "until"), (ModalSystem.LTL, ModalSystem.CTL)),
+-            _op("F", ("eventually",), ("eventually", "within", "by"), (ModalSystem.LTL, ModalSystem.CTL)),
++            _op(
++                "F",
++                ("eventually",),
++                (
++                    "eventually",
++                    "within",
++                    "by",
++                    "effective date",
++                    "effective on",
++                    "fiscal year",
++                    "calendar year",
++                ),
++                (ModalSystem.LTL, ModalSystem.CTL),
++            ),
+             _op("X", ("next",), ("next", "after", "following"), (ModalSystem.LTL, ModalSystem.CTL)),
+         ),
+         semantics=ModalSemanticsSpec(tree_time=True),
+@@ -264,6 +277,12 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "in the event that",
+                     "provided, however, that",
+                     "only if",
++                    "only when",
++                    "if and only if",
++                    "except when",
++                    "except where",
++                    "conditioned on",
++                    "contingent on",
+                     "in accordance with",
+                     "pursuant to",
+                 ),
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 69dd3cda..ad583ea3 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -221,6 +221,43 @@ _TEMPORAL_BY_PHRASE_RE = re.compile(
+ _NON_TEMPORAL_FOLLOWING_PREFIX_TOKENS = frozenset(
+     {"the", "these", "those", "such"}
+ )
++_NON_TEMPORAL_WITHIN_TARGET_TOKENS = frozenset(
++    {
++        "agency",
++        "chapter",
++        "court",
++        "department",
++        "division",
++        "jurisdiction",
++        "office",
++        "paragraph",
++        "part",
++        "section",
++        "subchapter",
++        "subparagraph",
++        "subsection",
++        "title",
++    }
++)
++_FRAME_EDITORIAL_CUE_TERMS = (
++    "editorially reclassified",
++    "formerly classified",
++    "renumbered",
++    "omitted",
++    "repealed",
++    "reserved",
++    "terminated",
++    "transferred",
++    "vacant",
++)
++_FRAME_EDITORIAL_CONTEXT_PHRASES = (
++    "editorial notes",
++    "codification",
++    "reclassified as",
++    "from the u.s. government publishing office",
++    "historical and revision notes",
++    "prior to editorial reclassification",
++)
+ _FRAME_CONTEXT_TOKENS = frozenset(
+     {
+         "administrator",
+@@ -495,6 +532,16 @@ class SpaCyLegalEncoder:
+                                 )
+                             ):
+                                 continue
++                            if (
++                                lowered_cue == "within"
++                                and not self._is_temporal_within_cue(
++                                    normalized_text=normalized,
++                                    tokens=tokens,
++                                    start_char=match.start(),
++                                    end_char=match.end(),
++                                )
++                            ):
++                                continue
+                             if (
+                                 lowered_cue == "following"
+                                 and self._is_non_temporal_following_cue(
+@@ -519,6 +566,12 @@ class SpaCyLegalEncoder:
+                             match.end(),
+                             token_indices,
+                         )
++        self._inject_editorial_frame_cues(
++            normalized_text=normalized,
++            tokens=tokens,
++            token_spans=token_spans,
++            found=found,
++        )
+         return sorted(
+             found.values(),
+             key=lambda cue: (cue.start_char, cue.end_char, cue.family, cue.symbol, cue.cue),
+@@ -572,6 +625,114 @@ class SpaCyLegalEncoder:
+                 return True
+         return False
+ 
++    def _is_temporal_within_cue(
++        self,
++        *,
++        normalized_text: str,
++        tokens: Sequence[SpaCyTokenFeature],
++        start_char: int,
++        end_char: int,
++    ) -> bool:
++        """Treat temporal `within` as time-scoped, not structural or jurisdictional."""
++        trailing = normalized_text[end_char : end_char + 96]
++        if _CALENDAR_DATE_RE.search(trailing):
++            return True
++        if re.match(r"^\s+\d{1,4}\b", trailing):
++            return True
++        lookahead: List[SpaCyTokenFeature] = []
++        for token in tokens:
++            if token.start_char >= end_char:
++                lookahead.append(token)
++                if len(lookahead) >= 6:
++                    break
++        if not lookahead:
++            return False
++        head_terms = [token.normalized().lower() for token in lookahead[:2]]
++        if head_terms:
++            first = head_terms[0]
++            if first in _NON_TEMPORAL_WITHIN_TARGET_TOKENS:
++                return False
++            if first in {"the", "this", "that", "these", "those", "such"}:
++                if len(head_terms) > 1 and head_terms[1] in _NON_TEMPORAL_WITHIN_TARGET_TOKENS:
++                    return False
++        for token in lookahead:
++            normalized = token.normalized().lower()
++            if normalized in _TEMPORAL_SCOPE_TOKENS:
++                return True
++            if normalized in _TEMPORAL_BY_CONTEXT_TOKENS:
++                return True
++            if normalized in _MONTH_NAME_TOKENS:
++                return True
++            if re.fullmatch(r"\d{1,4}", token.text):
++                return True
++        return False
++
++    def _inject_editorial_frame_cues(
++        self,
++        *,
++        normalized_text: str,
++        tokens: Sequence[SpaCyTokenFeature],
++        token_spans: Sequence[tuple[int, int, int]],
++        found: Dict[tuple[int, int, str, str], SpaCyModalCueFeature],
++    ) -> None:
++        """Add high-precision frame cues for U.S. Code editorial/codification notes."""
++        profile = self.registry.get_profile(ModalLogicFamily.FRAME)
++        if not profile.operators:
++            return
++        operator = profile.operators[0]
++        lowered_text = normalized_text.lower()
++        for cue in _FRAME_EDITORIAL_CUE_TERMS:
++            pattern = re.compile(rf"(?<!\w){re.escape(cue)}(?!\w)", re.IGNORECASE)
++            for match in pattern.finditer(normalized_text):
++                if not self._is_editorial_frame_cue_context(
++                    lowered_text=lowered_text,
++                    cue=cue,
++                    start_char=match.start(),
++                    end_char=match.end(),
++                ):
++                    continue
++                token_indices = [
++                    index
++                    for index, start, end in token_spans
++                    if start < match.end() and end > match.start()
++                ]
++                key = (match.start(), match.end(), profile.family.value, operator.symbol)
++                found[key] = self._cue_feature(
++                    profile,
++                    operator,
++                    cue,
++                    match.start(),
++                    match.end(),
++                    token_indices,
++                )
++
++    def _is_editorial_frame_cue_context(
++        self,
++        *,
++        lowered_text: str,
++        cue: str,
++        start_char: int,
++        end_char: int,
++    ) -> bool:
++        if cue in {"editorially reclassified", "formerly classified"}:
++            return True
++        window_start = max(0, start_char - 160)
++        window_end = min(len(lowered_text), end_char + 160)
++        window = lowered_text[window_start:window_end]
++        if any(phrase in window for phrase in _FRAME_EDITORIAL_CONTEXT_PHRASES):
++            return True
++        if cue in {"transferred", "repealed", "reserved", "omitted", "vacant"}:
++            head_window = lowered_text[:220]
++            if re.search(r"\bsec\.?\s*[0-9a-z.\-–—]+\s*[-–—]\s*$", lowered_text[:start_char]):
++                return True
++            if re.search(
++                r"^\s*(?:§\s*[0-9a-z.\-–—]+\s*)?(?:transferred|repealed|reserved|omitted|vacant)\b",
++                head_window,
++                re.IGNORECASE,
++            ):
++                return True
++        return False
++
+     def _is_non_temporal_following_cue(
+         self,
+         *,
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index 4029bfb2..5e0a204f 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -30,6 +30,29 @@ def test_deontic_profile_has_expected_operators_and_serial_semantics() -> None:
+     assert {"shall", "must", "may", "prohibited"}.issubset(cue_terms)
+ 
+ 
++def test_temporal_profile_includes_effective_date_and_fiscal_year_cues() -> None:
++    profile = DEFAULT_MODAL_REGISTRY.get_profile(ModalLogicFamily.TEMPORAL)
++    cue_terms = {cue for operator in profile.operators for cue in operator.cue_terms}
++
++    assert {"effective date", "effective on", "fiscal year", "calendar year"}.issubset(
++        cue_terms
++    )
++
++
++def test_conditional_profile_includes_contingency_and_only_when_cues() -> None:
++    profile = DEFAULT_MODAL_REGISTRY.get_profile(ModalLogicFamily.CONDITIONAL_NORMATIVE)
++    cue_terms = {cue for operator in profile.operators for cue in operator.cue_terms}
++
++    assert {
++        "conditioned on",
++        "contingent on",
++        "except when",
++        "except where",
++        "if and only if",
++        "only when",
++    }.issubset(cue_terms)
++
++
+ def test_frame_profile_is_bm25_ontology_grounded() -> None:
+     profile = DEFAULT_MODAL_REGISTRY.get_profile("frame", "FRAME_BM25")
+ 
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index cf1e2388..e743253b 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -553,6 +553,61 @@ def test_modal_codec_encodes_all_modal_families_with_frame_logic() -> None:
+     assert semantic_slot_texts == {"modal_source_span": [result.normalized_text]}
+ 
+ 
++def test_modal_codec_treats_within_department_as_non_temporal_cue() -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(parser_backend="regex")
++    )
++    compiled = compiler.compile(
++        _USCODE_7_7656_SYMBOLIC_VALIDITY_TEXT,
++        document_id="us-code-7-7656-ba2dced7f1b0e6ea",
++        citation="7 U.S.C. 7656",
++        source="us_code",
++    )
++
++    temporal_within_cues = [
++        cue
++        for cue in compiled.encoding.cues
++        if cue.family == "temporal" and cue.cue.lower() == "within"
++    ]
++    assert temporal_within_cues == []
++
++
++def test_modal_codec_keeps_temporal_within_for_deadline_context() -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(parser_backend="regex")
++    )
++    compiled = compiler.compile(
++        "The agency shall provide written notice within 30 days after review."
++    )
++
++    temporal_within_cues = [
++        cue
++        for cue in compiled.encoding.cues
++        if cue.family == "temporal" and cue.cue.lower() == "within"
++    ]
++    assert temporal_within_cues
++
++
++def test_modal_codec_adds_frame_editorial_cues_for_uscode_codification_notes() -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(parser_backend="regex")
++    )
++    compiled = compiler.compile(
++        _USCODE_2_31A_2B_TEXT,
++        document_id="us-code-2-31a-2b-5a3d3b6e8882bebb",
++        citation="2 U.S.C. 31a-2b",
++        source="us_code",
++    )
++
++    frame_cues = {
++        cue.cue.lower()
++        for cue in compiled.encoding.cues
++        if cue.family == "frame"
++    }
++    assert "transferred" in frame_cues
++    assert "editorially reclassified" in frame_cues
++
++
+ def test_modal_compiler_decompiler_are_explainable_and_deterministic() -> None:
+     frame_selector = BM25FrameSelector(
+         (

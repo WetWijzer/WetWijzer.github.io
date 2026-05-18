@@ -1,0 +1,194 @@
+{
+  "claimed_at": "2026-05-18T19:20:55+00:00",
+  "codex_apply_mode": "apply_to_main",
+  "codex_exec": {
+    "command": [
+      "codex",
+      "exec",
+      "--cd",
+      "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000077-20260518_192054",
+      "--sandbox",
+      "danger-full-access",
+      "--output-last-message",
+      "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/codex-last-message.md",
+      "--model",
+      "gpt-5.3-codex",
+      "-"
+    ],
+    "duration_seconds": 760.074,
+    "exit_code": 0,
+    "last_message_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/codex-last-message.md",
+    "prompt_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/CODEX_PROMPT.md",
+    "sandbox": "danger-full-access",
+    "status": "succeeded",
+    "stderr_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/codex-stderr.log",
+    "stdout_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/codex-stdout.log"
+  },
+  "main_apply_check": {
+    "exit_code": 0,
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "main_apply_ignored_artifact_paths": [],
+  "main_apply_result": {
+    "exit_code": 0,
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "main_apply_status": "applied",
+  "main_apply_target_files": [
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py",
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py",
+    "tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py"
+  ],
+  "main_apply_target_repo_root": "/home/barberb/portland-laws.github.io/ipfs_datasets_py",
+  "main_apply_untracked_paths": [],
+  "main_apply_validation": {
+    "commands": [
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py",
+          "tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py",
+          "tests/unit_tests/logic/modal/test_modal_codec.py"
+        ],
+        "duration_seconds": 12.295,
+        "exit_code": 0,
+        "status": "passed",
+        "stderr_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/main-apply-validation-1.stderr.log",
+        "stdout_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/main-apply-validation-1.stdout.log"
+      }
+    ],
+    "status": "passed"
+  },
+  "main_commit": {
+    "exit_code": 0,
+    "status": "committed",
+    "stderr_tail": "",
+    "stdout_tail": "[main 796a7029] Apply Codex legal IR packet packet-000077\n 3 files changed, 143 insertions(+), 1 deletion(-)\n"
+  },
+  "packet_id": "packet-000077",
+  "packet_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/packet.json",
+  "patch_error": null,
+  "patch_path": null,
+  "patch_status": "applied_to_main",
+  "program_synthesis_scopes": [
+    "compiler_registry"
+  ],
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder",
+  "repo_root": "/home/barberb/portland-laws.github.io",
+  "run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry",
+  "semantic_bundle_keys": [
+    "{\"action\":\"refine_modal_family_cue_rules\",\"family_pairs\":[\"deontic->conditional_normative\",\"temporal->conditional_normative\",\"temporal->deontic\"],\"program_synthesis_scope\":\"compiler_registry\",\"target_component\":\"modal.compiler.registry\"}"
+  ],
+  "source_repo_root": "/home/barberb/portland-laws.github.io/ipfs_datasets_py",
+  "suggested_target_files": [
+    "ipfs_datasets_py/logic/modal/compiler.py",
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py",
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py"
+  ],
+  "task_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/CODEX_TASK.md",
+  "task_source": "autoencoder_supervisor_program_synthesis_queue",
+  "todo_list_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/TODO_LIST.jsonl",
+  "todo_markdown_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/packet-000077/TODO_LIST.md",
+  "todos": [
+    {
+      "action": "refine_modal_family_cue_rules",
+      "citations": [
+        "12 U.S.C. 59",
+        "46 U.S.C. 30525.",
+        "48 U.S.C. 1422b."
+      ],
+      "claimed_at": "2026-05-18T19:20:54+00:00",
+      "claimed_by": "codex-compiler_registry",
+      "completed_at": null,
+      "created_at": "2026-05-18T19:16:04+00:00",
+      "loss_name": "autoencoder_residual_cluster",
+      "loss_value": 0.697482547169,
+      "metadata": {
+        "dedupe_signature": "{\"action\":\"refine_modal_family_cue_rules\",\"sample_ids\":[\"us-code-12-59-693f71484c6a9a7a\",\"us-code-46-30525.-99a6422ab828fa0c\",\"us-code-48-1422b.-1024d577005506f9\"],\"target_component\":\"modal.compiler.registry\"}",
+        "execution_target": "codex_program_repair",
+        "hint_evidence": [
+          {
+            "family_margin": 0.0,
+            "hint_id": "modal-synthesis-1c426d7a29641fc9",
+            "predicted_family": "temporal",
+            "priority": 0.500067677137,
+            "sample_id": "us-code-48-1422b.-1024d577005506f9",
+            "target_family": "deontic",
+            "target_probability": 0.499932322863
+          },
+          {
+            "family_margin": -0.730997206769,
+            "hint_id": "modal-synthesis-94656daa1a588eb7",
+            "predicted_family": "temporal",
+            "priority": 0.999966811271,
+            "sample_id": "us-code-12-59-693f71484c6a9a7a",
+            "target_family": "conditional_normative",
+            "target_probability": 3.3188729e-05
+          },
+          {
+            "family_margin": 0.0,
+            "hint_id": "modal-synthesis-d3c203521f582ef4",
+            "predicted_family": "deontic",
+            "priority": 0.5924131531,
+            "sample_id": "us-code-46-30525.-99a6422ab828fa0c",
+            "target_family": "conditional_normative",
+            "target_probability": 0.4075868469
+          }
+        ],
+        "hint_ids": [
+          "modal-synthesis-1c426d7a29641fc9",
+          "modal-synthesis-94656daa1a588eb7",
+          "modal-synthesis-d3c203521f582ef4"
+        ],
+        "optimizer_role": "program_synthesis",
+        "optimizer_stage": "typed_program_synthesis",
+        "program_synthesis_scope": "compiler_registry",
+        "semantic_bundle_key": "{\"action\":\"refine_modal_family_cue_rules\",\"family_pairs\":[\"deontic->conditional_normative\",\"temporal->conditional_normative\",\"temporal->deontic\"],\"program_synthesis_scope\":\"compiler_registry\",\"target_component\":\"modal.compiler.registry\"}",
+        "source": "modal_program_synthesis_todo_generator_v1",
+        "support_count": 3,
+        "target_component": "modal.compiler.registry",
+        "vector_bundle_anchor_id": "program-1e25cb7a9e68ae56",
+        "vector_bundle_backend": "embeddings_router",
+        "vector_bundle_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder.codex-task-vectors.json",
+        "vector_bundle_similarity": 1.0
+      },
+      "objective": "Adaptive family evidence disagrees with, or is weak for, the typed modal family.",
+      "priority": 72.748255,
+      "sample_ids": [
+        "us-code-12-59-693f71484c6a9a7a",
+        "us-code-46-30525.-99a6422ab828fa0c",
+        "us-code-48-1422b.-1024d577005506f9"
+      ],
+      "status": "claimed",
+      "todo_id": "program-1e25cb7a9e68ae56"
+    }
+  ],
+  "vector_bundle_anchor_ids": [
+    "program-1e25cb7a9e68ae56"
+  ],
+  "vector_claim_report": {
+    "anchor_id": "program-1e25cb7a9e68ae56",
+    "backend": "embeddings_router",
+    "candidate_count": 1,
+    "fallback_reason": "",
+    "indexed_count": 4,
+    "min_similarity": 0.65,
+    "mode": "vector",
+    "path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder.codex-task-vectors.json",
+    "provider": "local_adapter",
+    "refreshed_count": 4,
+    "selected_count": 1,
+    "selected_ids": [
+      "program-1e25cb7a9e68ae56"
+    ]
+  },
+  "worker_id": "codex-compiler_registry",
+  "worktree_error": null,
+  "worktree_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000077-20260518_192054"
+}

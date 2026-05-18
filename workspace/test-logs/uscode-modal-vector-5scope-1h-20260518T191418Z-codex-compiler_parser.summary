@@ -19,27 +19,45 @@
   "codex_vector_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder.codex-task-vectors.json",
   "codex_vector_min_similarity": 0.65,
   "codex_worktree_count": 0,
-  "cycles": 50,
-  "elapsed_seconds": 245.723,
-  "final": false,
+  "cycles": 898,
+  "elapsed_seconds": 4495.475,
+  "final": true,
+  "finished_at": "2026-05-18T20:29:24+00:00",
   "latest_codex_vector_claim_report": {
     "candidate_count": 0,
     "mode": "vector",
     "selected_count": 0
   },
-  "latest_queue_counts": {},
-  "latest_role_queue_counts": {},
-  "latest_stop_reason": "waiting_for_program_synthesis_todos",
+  "latest_queue_counts": {
+    "claimed": 1,
+    "completed": 41,
+    "failed_validation": 74,
+    "pending": 93
+  },
+  "latest_role_queue_counts": {
+    "autoencoder_sgd": {
+      "completed": 5,
+      "failed_validation": 70,
+      "pending": 93
+    },
+    "program_synthesis": {
+      "claimed": 1,
+      "completed": 36,
+      "failed_validation": 4
+    }
+  },
+  "latest_stop_reason": "signal_15",
   "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser.jsonl",
   "loop_role": "codex",
-  "program_synthesis_claimed": 0,
-  "program_synthesis_completed": 0,
+  "program_synthesis_claimed": 1,
+  "program_synthesis_completed": 36,
   "program_synthesis_pending": 0,
   "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder.jsonl",
   "queue_run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder",
   "run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser",
   "started_at": "2026-05-18T19:14:29+00:00",
-  "updated_at": "2026-05-18T19:18:34+00:00",
+  "stopped_by_signal": 15,
+  "updated_at": "2026-05-18T20:29:24+00:00",
   "work_dir": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser",
   "worker_id": "codex-compiler_parser"
 }

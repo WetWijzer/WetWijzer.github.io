@@ -1,0 +1,11 @@
+Implemented the `compiler_ambiguity` policy update by extending the registry-driven adaptive ambiguity pairs and adding focused tests.
+
+- Added signal-free adaptive ambiguity coverage for `conditional_normative -> temporal` and `frame -> temporal` in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000038-20260518_225739/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33).
+- Updated policy expectations/directionality tests in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000038-20260518_225739/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:69).
+- Added compiler-level signal-free ambiguity tests for the new pairs in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000038-20260518_225739/tests/unit_tests/logic/modal/test_modal_codec.py:2504).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_frame_temporal or signal_free_pair_policy_for_conditional_temporal or signal_free_adaptive_ambiguity_pair_policy_covers_required_bundle_pairs or signal_free_adaptive_ambiguity_targets_are_ordered_and_directional"` → 4 passed.
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy or adaptive_family_margin_ambiguity_for_temporal_conflicts"` → 11 passed.
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` → 9 passed.

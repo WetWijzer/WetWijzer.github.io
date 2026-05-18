@@ -1,0 +1,25 @@
+Implemented a focused `modal.ir_decompiler` refinement for cue/temporal slot coverage and kept decompiler/triple parity.
+
+**What changed**
+- Added cue-signature slots that bind lexical cue to modal family/operator:
+  - `cue_modal_signature`, `cue_modal_family`, `cue_modal_operator`, `cue_modal_lexeme`
+  - Decompiled slot emission in [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000078-20260518_193051/ipfs_datasets_py/logic/modal/decompiler.py#L419)
+  - Triple emission parity in [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000078-20260518_193051/ipfs_datasets_py/logic/modal/codec.py#L938)
+
+- Refined clause-prefix parsing for temporal starters:
+  - Added condition prefixes: `after`, `by`, `no later than`, `not later than`
+  - Added deterministic boundary-safe prefix matching (`_text_has_prefix`) to avoid partial-token false matches
+  - Added temporal prefix typing:
+    - `condition_prefix_family` / `condition_prefix_temporal_relation`
+    - `exception_prefix_family` / `exception_prefix_temporal_relation`
+  - Decompiler side in [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000078-20260518_193051/ipfs_datasets_py/logic/modal/decompiler.py#L2352)
+  - Triple side in [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000078-20260518_193051/ipfs_datasets_py/logic/modal/codec.py#L1165)
+
+- Added regression fixture/tests for both decode slots and F-logic triples:
+  - New sample doc + assertions in [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000078-20260518_193051/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py#L579)
+  - New tests at [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000078-20260518_193051/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py#L3146)
+
+**Validation run**
+- `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py -k "condition_exception_scope or cue_modal_signature"`: 4 passed
+- `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py`: 57 passed
+- `python3 -m py_compile ipfs_datasets_py/logic/modal/decompiler.py ipfs_datasets_py/logic/modal/codec.py ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py`: passed

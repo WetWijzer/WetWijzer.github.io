@@ -1,0 +1,59 @@
+{
+  "autoencoder_compute_backend": "torch_cuda",
+  "autoencoder_compute_device": "cuda",
+  "autoencoder_compute_device_request": "cuda",
+  "best_validation_ce": 1.0174048408434837,
+  "best_validation_cosine": 0.5501287547561141,
+  "best_validation_ir_ce": 0.430887148,
+  "best_validation_ir_cosine": 0.435423917,
+  "best_validation_ir_reconstruction": 0.281275601,
+  "best_validation_ir_text_reconstruction": 0.0,
+  "best_validation_reconstruction": 0.27399087053060817,
+  "codex_program_synthesis_execution_mode": "queued_for_external_codex_worker",
+  "cycles": 75,
+  "dataset_id": "justicedao/ipfs_uscode",
+  "final": false,
+  "latest_queue_counts": {
+    "claimed": 20,
+    "completed": 95,
+    "failed_validation": 403,
+    "pending": 684
+  },
+  "latest_role_queue_counts": {
+    "autoencoder_sgd": {
+      "completed": 17,
+      "failed_validation": 388,
+      "pending": 543
+    },
+    "program_synthesis": {
+      "claimed": 20,
+      "completed": 78,
+      "failed_validation": 15,
+      "pending": 141
+    }
+  },
+  "latest_stop_reason": "max_iterations",
+  "laws_path": "uscode_parquet/laws.parquet",
+  "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-autoencoder.jsonl",
+  "loop_role": "autoencoder",
+  "metric_failures": 0,
+  "optimizer_policy": "autoencoder_sgd_with_codex_program_synthesis_backlog",
+  "program_synthesis_claimed": 20,
+  "program_synthesis_completed": 78,
+  "program_synthesis_pending": 141,
+  "program_synthesis_pending_cap": 512,
+  "program_synthesis_seeded": 254,
+  "program_synthesis_semantic_deduped": 0,
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-autoencoder",
+  "run_id": "uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-autoencoder",
+  "seed": 53951786935462,
+  "started_at": "2026-05-18T22:44:27+00:00",
+  "state_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-autoencoder.state.json",
+  "test_failures": 0,
+  "train_ce_improved_cycles": 0,
+  "train_cosine_improved_cycles": 6,
+  "updated_at": "2026-05-18T23:31:35+00:00",
+  "validation_ce_improved_cycles": 0,
+  "validation_cosine_improved_cycles": 6
+}

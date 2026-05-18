@@ -1,0 +1,14 @@
+Implemented the `compiler_registry` cue-rule refinement in deterministic scoring, with focused coverage.
+
+- Updated [`spacy_modal_codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000039-20260518_231320/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:873):
+  - Added scope-based fallback logit boosts when a family has no direct cue hit (`temporal`, `conditional_normative`, `deontic`) to reduce zero-probability misses.
+  - Refined generic frame-cue debias trigger to also apply in conditional/exception scope contexts.
+  - Changed generic frame debias behavior from “drop all frame bonus” to “keep discounted structural frame bonus,” so structural frame evidence is retained without letting generic frame cue terms dominate.
+- Added regression tests in [`test_spacy_modal_codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000039-20260518_231320/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:441):
+  - Conditional scope now debiases generic frame cue dominance.
+  - Temporal scope now lifts temporal logit even when no direct temporal cue token matched.
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` -> `50 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "under_this_section_as_deontic_frame_adaptive_signal or surfaces_deontic_temporal_adaptive_ambiguity or surfaces_deontic_conditional_adaptive_ambiguity or uses_logit_fallback_ranking_for_hybrid_frame_adaptive_ambiguity"` -> `4 passed`

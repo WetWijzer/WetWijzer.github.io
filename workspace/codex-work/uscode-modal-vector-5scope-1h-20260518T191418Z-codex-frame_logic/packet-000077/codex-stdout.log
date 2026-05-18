@@ -1,0 +1,16 @@
+Implemented a narrow frame-logic ontology audit fix for `belongs_to_document` feature signals.
+
+**Changes**
+- Extended frame-ontology parsing so `flogic:belongs_to_document:<us-code-id>` is treated as a contextual frame-linked predicate and normalized through source-id logic in [frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000077-20260518_192053/ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py:84) and [frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000077-20260518_192053/ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py:904).
+- Added numeric-token allowance for `belongs_to_document` so normalized coordinates keep title/section numeric components in [frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000077-20260518_192053/ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py:129).
+- Added/updated selector tests for:
+  - normalized raw value extraction,
+  - term extraction from `belongs_to_document`,
+  - feature-key detection,
+  - nested value extraction
+  in [test_frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000077-20260518_192053/tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py:400) and nearby additions at lines 997, 1380, 1460.
+- Updated synthesis-hint coverage so `belongs_to_document` is preserved as a frame feature in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000077-20260518_192053/tests/unit_tests/logic/modal/test_modal_codec.py:4844).
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py` → `70 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "autoencoder_synthesis_hint_extracts_frame_linked_feature_variants"` → `1 passed`

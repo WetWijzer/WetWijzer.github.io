@@ -1,0 +1,13 @@
+Implemented a narrow `frame_logic` audit improvement by treating generic structural values as low-signal, so they get contextualized and don’t pollute high-signal ontology summaries.
+
+- Updated low-signal term set in [frame_bm25_selector.py:293](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000032-20260518_225614/ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py:293) to include `alpha`, `numeric`, and `none`.
+- Added a regression test in [test_frame_bm25_selector.py:404](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000032-20260518_225614/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py:404) validating:
+  - direct extraction still keeps raw terms (`alpha`, `numeric`, `none`),
+  - contextualized terms are emitted (`..._kind_numeric`, `..._pair_none`, etc.),
+  - these raw low-signal terms are excluded from high-signal term output.
+
+Validation run:
+
+1. `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py` (22 passed)
+2. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_flogic_optimizer.py` (18 passed)
+3. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "frame_ontology_audit_terms_contextualize_low_signal_frame_features or modal_codec_frame_ontology_audit_reports_high_signal_terms"` (2 passed)

@@ -1,0 +1,61 @@
+{
+  "codex_apply_mode": "apply_to_main",
+  "codex_bundle_mode": "vector",
+  "codex_claimed_total": 0,
+  "codex_commit_mode": "commit_applied",
+  "codex_exec_mode": "codex_cli",
+  "codex_execution_count": 0,
+  "codex_execution_failure_count": 0,
+  "codex_main_apply_count": 0,
+  "codex_main_apply_failure_count": 0,
+  "codex_main_apply_repair_count": 0,
+  "codex_merge_repair_attempts": 1,
+  "codex_merge_repair_mode": "apply_3way",
+  "codex_packet_count": 0,
+  "codex_patch_count": 0,
+  "codex_program_synthesis_execution_mode": "codex_cli_executor",
+  "codex_scope": "ir_decompiler",
+  "codex_task_embeddings_provider": "local_adapter",
+  "codex_vector_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder.codex-task-vectors.json",
+  "codex_vector_min_similarity": 0.55,
+  "codex_worktree_count": 0,
+  "cycles": 70,
+  "elapsed_seconds": 352.571,
+  "final": false,
+  "latest_codex_vector_claim_report": {
+    "candidate_count": 0,
+    "mode": "vector",
+    "selected_count": 0
+  },
+  "latest_queue_counts": {
+    "claimed": 9,
+    "completed": 26,
+    "failed_validation": 71,
+    "pending": 73
+  },
+  "latest_role_queue_counts": {
+    "autoencoder_sgd": {
+      "completed": 25,
+      "failed_validation": 71,
+      "pending": 68
+    },
+    "program_synthesis": {
+      "claimed": 9,
+      "completed": 1,
+      "pending": 5
+    }
+  },
+  "latest_stop_reason": "waiting_for_program_synthesis_todos",
+  "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-ir_decompiler-01.jsonl",
+  "loop_role": "codex",
+  "program_synthesis_claimed": 9,
+  "program_synthesis_completed": 1,
+  "program_synthesis_pending": 5,
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder",
+  "run_id": "uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-ir_decompiler-01",
+  "started_at": "2026-05-18T23:33:04+00:00",
+  "updated_at": "2026-05-18T23:38:56+00:00",
+  "work_dir": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-ir_decompiler-01",
+  "worker_id": "codex-ir_decompiler-01"
+}

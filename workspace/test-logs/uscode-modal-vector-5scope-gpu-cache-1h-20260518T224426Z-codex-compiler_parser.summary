@@ -1,0 +1,62 @@
+{
+  "codex_apply_mode": "apply_to_main",
+  "codex_bundle_mode": "vector",
+  "codex_claimed_total": 0,
+  "codex_commit_mode": "commit_applied",
+  "codex_exec_mode": "codex_cli",
+  "codex_execution_count": 0,
+  "codex_execution_failure_count": 0,
+  "codex_main_apply_count": 0,
+  "codex_main_apply_failure_count": 0,
+  "codex_main_apply_repair_count": 0,
+  "codex_merge_repair_attempts": 1,
+  "codex_merge_repair_mode": "apply_3way",
+  "codex_packet_count": 0,
+  "codex_patch_count": 0,
+  "codex_program_synthesis_execution_mode": "codex_cli_executor",
+  "codex_scope": "compiler_parser",
+  "codex_task_embeddings_provider": "local_adapter",
+  "codex_vector_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-autoencoder.codex-task-vectors.json",
+  "codex_vector_min_similarity": 0.65,
+  "codex_worktree_count": 0,
+  "cycles": 563,
+  "elapsed_seconds": 2819.518,
+  "final": false,
+  "latest_codex_vector_claim_report": {
+    "candidate_count": 0,
+    "mode": "vector",
+    "selected_count": 0
+  },
+  "latest_queue_counts": {
+    "claimed": 20,
+    "completed": 95,
+    "failed_validation": 403,
+    "pending": 684
+  },
+  "latest_role_queue_counts": {
+    "autoencoder_sgd": {
+      "completed": 17,
+      "failed_validation": 388,
+      "pending": 543
+    },
+    "program_synthesis": {
+      "claimed": 20,
+      "completed": 78,
+      "failed_validation": 15,
+      "pending": 141
+    }
+  },
+  "latest_stop_reason": "waiting_for_program_synthesis_todos",
+  "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_parser.jsonl",
+  "loop_role": "codex",
+  "program_synthesis_claimed": 20,
+  "program_synthesis_completed": 78,
+  "program_synthesis_pending": 141,
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-autoencoder",
+  "run_id": "uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_parser",
+  "started_at": "2026-05-18T22:44:37+00:00",
+  "updated_at": "2026-05-18T23:31:36+00:00",
+  "work_dir": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_parser",
+  "worker_id": "codex-compiler_parser"
+}

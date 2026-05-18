@@ -1,0 +1,30 @@
+Implemented a deterministic cue-slot refinement for `modal.ir_decompiler` that generalizes across the TODO residuals without widening parser scope.
+
+**What changed**
+1. Added derived cue handling plus cue alias emission in F-logic triples:
+- [`codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000157-20260518_201940/ipfs_datasets_py/logic/modal/codec.py#L994)
+- New behavior:
+  - Keeps explicit `modal_cue`.
+  - Derives an additional cue when explicit cue is missing/fallback sentinel by matching operator cue-terms against predicate/condition/exception text (including simple `y -> ies` plural handling, e.g. `authority` vs `authorities`).
+  - Emits alias predicates `modal_cue_*` for existing `cue_modal_*` / `cue_*` components.
+
+2. Mirrored the same logic in decompiler phrase slots:
+- [`decompiler.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000157-20260518_201940/ipfs_datasets_py/logic/modal/decompiler.py#L349)
+- New behavior:
+  - Emits `modal_cue` phrase alongside `cue`.
+  - Emits `modal_cue_*` alias slots for cue lexical/signature components.
+  - Uses the same derived-cue path for fallback/sentinel cue cases.
+
+3. Added/updated regression tests:
+- [`test_ir_decompiler_slots.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000157-20260518_201940/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py#L783)
+- Coverage added for:
+  - `modal_cue_*` alias slots/predicates.
+  - Conditional normative cue alias.
+  - Derived cue from fallback frame predicate (`authority`).
+
+**Validation**
+- `python3 -m py_compile ipfs_datasets_py/logic/modal/codec.py ipfs_datasets_py/logic/modal/decompiler.py ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py`
+- `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py -k 'cue_modal_signature_and_temporal_prefix_slots or condition_proxy_slots_for_exception_only_formula or derives_modal_cue_from_fallback_frame_predicate'`
+- `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py`
+
+Result: all tests passed (`64 passed`).

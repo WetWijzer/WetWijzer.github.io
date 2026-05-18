@@ -1,0 +1,15 @@
+Implemented a deterministic frame-family cue refinement focused on `hybrid->frame` and `temporal->frame` misalignment.
+
+- Updated frame context/scope detection with stronger editorial/statutory signals in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000114-20260518_201151/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:291).
+- Added deterministic frame logit bonus logic so frame evidence can override default no-cue `hybrid` fallback and weak temporal-only cues in structural/editorial contexts in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000114-20260518_201151/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:865) and [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000114-20260518_201151/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1156).
+- Added regression tests for:
+  - editorial frame scope signal detection,
+  - `frame > hybrid` in editorial/no-cue text,
+  - `frame > temporal` in editorial text containing a temporal cue,
+  in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000114-20260518_201151/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:325).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` (37 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "hybrid_frame_adaptive_ambiguity or temporal_adaptive_frame_ambiguity or transferred_as_frame_scope_ambiguity_signal or temporal_frame_family_outvote_ambiguity or frame_scope_family_outvote_ambiguity"` (5 passed)
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (9 passed)

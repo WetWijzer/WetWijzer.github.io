@@ -1,0 +1,77 @@
+# packet-000035
+
+## Source
+The TODO batch is autoencoder/supervisor output; this file is the Codex-facing work order.
+- Raw TODO JSONL: `/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/packet-000035/TODO_LIST.jsonl`
+- TODO markdown: `/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/packet-000035/TODO_LIST.md`
+
+## Worktree
+/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000035-20260518_231644
+
+## Change Capture
+pending: awaiting_codex_changes
+
+## Suggested Files
+- `ipfs_datasets_py/logic/modal/codec.py`
+- `ipfs_datasets_py/logic/modal/decompiler.py`
+- `ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_ir.py`
+
+## TODOs
+- `program-2644729da1a271b6` `refine_typed_ir_or_decompiler_slots`
+  target: `modal.ir_decompiler`
+  scope: `ir_decompiler`
+  bundle: `{"action":"refine_typed_ir_or_decompiler_slots","family_pairs":[],"program_synthesis_scope":"ir_decompiler","target_component":"modal.ir_decompiler"}`
+  vector_bundle: `program-2644729da1a271b6` score `1.0`
+  objective: Embedding residuals point to information not well represented by the typed IR/decompiler.
+  support: 4
+  evidence: `{"cosine_similarity": 0.1243166271, "hint_id": "modal-synthesis-5ac4145001255fed", "priority": 0.298862484483, "reconstruction_loss": 0.298862484483, "sample_id": "us-code-43-1627.-86f764d2d884a21f", "top_embedding_features": ["flogic:source_context_span_char_count_parity:odd", "slot:source_context_span_char_count_parity:odd", "flogic:modal_span_coverage_percent_parity:odd", "flogic:predicate_alnum_segment_count:2", "flogic:predicate_token_count:2", "slot:modal_span_coverage_percent_parity:odd", "slot:predicate_alnum_segment_count:2", "slot:predicate_token_count:2"]}`
+  evidence: `{"cosine_similarity": -0.059060798449, "hint_id": "modal-synthesis-a8d0da83f27d2b10", "priority": 0.510881643268, "reconstruction_loss": 0.510881643268, "sample_id": "us-code-22-4304-c522266be75990ce", "top_embedding_features": ["flogic:predicate_alnum_segment:pub", "flogic:predicate_alnum_segment_suffix:pub", "flogic:predicate_token:pub", "flogic:predicate_token_suffix:pub", "lemma:agreement", "lemma:benefits", "lemma:employee", "lemma:plan"]}`
+  evidence: `{"cosine_similarity": -0.528175012961, "hint_id": "modal-synthesis-ae16505183a0f63a", "priority": 0.789258173907, "reconstruction_loss": 0.789258173907, "sample_id": "us-code-5-8133-e9163264dc0fc8b4", "top_embedding_features": ["cue:deontic:P:authorized", "flogic:cue_modal_lexeme:authorized", "flogic:cue_modal_signature:deontic:P:authorized", "flogic:modal_cue:authorized", "flogic:modal_cue_lexeme:authorized", "flogic:modal_cue_signature:deontic:P:authorized", "flogic:modal_span_char_count_leading_digit:5", "lemma:authorized"]}`
+  evidence: `{"cosine_similarity": -0.322919121323, "hint_id": "modal-synthesis-d8ed2ea5a995d35e", "priority": 0.743987245892, "reconstruction_loss": 0.743987245892, "sample_id": "us-code-7-1963-566d388fcbdb6135", "top_embedding_features": ["flogic:modal_family_count_value:2", "lemma:approved", "lemma:classified", "lemma:purposes", "slot:modal_family_count_value:2", "cue:conditional_normative:O|:except", "family:alethic:1", "family:selected_frame:alethic"]}`
+- `program-2da28d18381f7529` `refine_typed_ir_or_decompiler_slots`
+  target: `modal.ir_decompiler`
+  scope: `ir_decompiler`
+  bundle: `{"action":"refine_typed_ir_or_decompiler_slots","family_pairs":[],"program_synthesis_scope":"ir_decompiler","target_component":"modal.ir_decompiler"}`
+  vector_bundle: `program-2644729da1a271b6` score `0.994735`
+  objective: Embedding residuals point to information not well represented by the typed IR/decompiler.
+  support: 4
+  evidence: `{"cosine_similarity": 0.308584195456, "hint_id": "modal-synthesis-42c77524a8365dba", "priority": 0.265134910191, "reconstruction_loss": 0.265134910191, "sample_id": "us-code-25-652-960405d29604affa", "top_embedding_features": ["flogic:support_span_width_has_zero_digit:false", "flogic:support_span_width_zero_digit_count:0", "slot:support_span_width_has_zero_digit:false", "slot:support_span_width_zero_digit_count:0", "flogic:citation_section_number_digit_count:3", "flogic:citation_section_number_digit_count_bucket:3_digit", "flogic:citation_section_number_digit_count_bucket_positioned:1:3_digit", "flogic:citation_section_number_digit_count_positioned:1:3"]}`
+  evidence: `{"cosine_similarity": 0.121903579918, "hint_id": "modal-synthesis-484967d4a2f5e9bd", "priority": 0.474049472055, "reconstruction_loss": 0.474049472055, "sample_id": "us-code-26-4943-da67256c0ed21118", "top_embedding_features": ["flogic:citation_section_component_signature:N4", "flogic:citation_section_component_signature_positioned:1:N4", "flogic:citation_section_number_digit_count:4", "flogic:citation_section_number_digit_count_bucket:4_digit", "flogic:citation_section_number_digit_count_bucket_positioned:1:4_digit", "flogic:citation_section_number_digit_count_positioned:1:4", "flogic:citation_section_number_magnitude_bucket:1k_to_9k", "flogic:citation_section_number_magnitude_bucket_positioned:1:1k_to_9k"]}`
+  evidence: `{"cosine_similarity": 0.485940288411, "hint_id": "modal-synthesis-5a36641dfb6c0f67", "priority": 0.263490414427, "reconstruction_loss": 0.263490414427, "sample_id": "us-code-21-812-2eb1864ec2e64b00", "top_embedding_features": ["cue:frame:Frame:is a", "flogic:cue_modal_lexeme:is a", "flogic:cue_modal_signature:frame:Frame:is a", "flogic:modal_cue:is a", "flogic:modal_cue_lexeme:is a", "flogic:modal_cue_signature:frame:Frame:is a", "flogic:predicate_alnum_segment:defined", "flogic:predicate_alnum_segment:pub"]}`
+  evidence: `{"cosine_similarity": -0.731253957589, "hint_id": "modal-synthesis-909ebf8d7a450cfe", "priority": 0.479594445512, "reconstruction_loss": 0.479594445512, "sample_id": "us-code-7-6208-125ffc5e9e84fbc9", "top_embedding_features": ["family:selected_frame:frame", "flogic:cue_modal_family:frame", "flogic:cue_modal_operator:Frame", "flogic:modal_cue_family:frame", "flogic:modal_cue_operator:Frame", "flogic:modal_family:frame", "flogic:modal_family_count_family:frame", "flogic:modal_operator:Frame"]}`
+- `program-4c3d931162d6a06e` `refine_typed_ir_or_decompiler_slots`
+  target: `modal.ir_decompiler`
+  scope: `ir_decompiler`
+  bundle: `{"action":"refine_typed_ir_or_decompiler_slots","family_pairs":[],"program_synthesis_scope":"ir_decompiler","target_component":"modal.ir_decompiler"}`
+  vector_bundle: `program-2644729da1a271b6` score `0.993941`
+  objective: Embedding residuals point to information not well represented by the typed IR/decompiler.
+  support: 4
+  evidence: `{"cosine_similarity": 0.158595798709, "hint_id": "modal-synthesis-4174ffb2a900c978", "priority": 0.512753851549, "reconstruction_loss": 0.512753851549, "sample_id": "us-code-33-857-16-ff2b51607659b0ae", "top_embedding_features": ["flogic:predicate_alnum_segment:case", "flogic:predicate_alnum_segment:expenses", "flogic:predicate_alnum_segment_positioned:1:case", "flogic:predicate_alnum_segment_positioned:3:expenses", "flogic:predicate_alnum_segment_prefix:case", "flogic:predicate_token:case", "flogic:predicate_token:expenses", "flogic:predicate_token_prefix:case"]}`
+  evidence: `{"cosine_similarity": 0.14237713439, "hint_id": "modal-synthesis-5f1bdedb075b8396", "priority": 0.5710966097, "reconstruction_loss": 0.5710966097, "sample_id": "us-code-42-11448.-2819f6279d44a144", "top_embedding_features": ["flogic:citation_section_has_trailing_punct:true", "flogic:citation_section_punctuation_style:trailing_punct", "flogic:citation_section_style:single_numeric_trailing_punct", "flogic:citation_section_style_alnum_segment:punct", "flogic:citation_section_style_alnum_segment:trailing", "flogic:citation_section_style_alnum_segment_count:4", "flogic:citation_section_style_alnum_segment_positioned:3:trailing", "flogic:citation_section_style_alnum_segment_positioned:4:punct"]}`
+  evidence: `{"cosine_similarity": 0.686103451088, "hint_id": "modal-synthesis-bf11806552146e2e", "priority": 0.210267059314, "reconstruction_loss": 0.210267059314, "sample_id": "us-code-26-1032-150771d0042795c6", "top_embedding_features": ["flogic:citation_title_section_terminal_number_span_parity:even", "flogic:source_id_title_section_terminal_number_span_parity:even", "slot:citation_title_section_terminal_number_span_parity:even", "slot:source_id_title_section_terminal_number_span_parity:even", "flogic:condition_modal_signature:deontic:O:provided_that", "flogic:modal_formula_count_has_zero_digit:true", "flogic:modal_formula_count_trailing_zero_count:1", "flogic:modal_formula_count_zero_digit_count:1"]}`
+  evidence: `{"cosine_similarity": -0.281146043263, "hint_id": "modal-synthesis-c414226c60bb6906", "priority": 0.572580372269, "reconstruction_loss": 0.572580372269, "sample_id": "us-code-28-1916-4bc992d370b1c04a", "top_embedding_features": ["lemma:security", "flogic:support_span_width_leading_digit:2", "slot:support_span_width_leading_digit:2", "slot:frame_candidate_ranked:2_housing_voucher_benefits", "lemma:july", "flogic:support_span_start_char_parity:even", "slot:support_span_start_char_parity:even", "lemma:enacted"]}`
+- `program-5d24e9fa0d21a3b1` `refine_typed_ir_or_decompiler_slots`
+  target: `modal.ir_decompiler`
+  scope: `ir_decompiler`
+  bundle: `{"action":"refine_typed_ir_or_decompiler_slots","family_pairs":[],"program_synthesis_scope":"ir_decompiler","target_component":"modal.ir_decompiler"}`
+  vector_bundle: `program-2644729da1a271b6` score `0.993796`
+  objective: Embedding residuals point to information not well represented by the typed IR/decompiler.
+  support: 4
+  evidence: `{"cosine_similarity": 0.283640039594, "hint_id": "modal-synthesis-2719e8a3ef8360cb", "priority": 0.255786319501, "reconstruction_loss": 0.255786319501, "sample_id": "us-code-6-426-143e9c9ffed4fadc", "top_embedding_features": ["cue:conditional_normative:O|:subject to", "flogic:citation_title_section_primary_number_span_has_zero_digit:true", "flogic:citation_title_section_terminal_number_span_has_zero_digit:true", "flogic:condition_alnum_segment:subject", "flogic:condition_alnum_segment_positioned:1:subject", "flogic:condition_alnum_segment_positioned:2:to", "flogic:condition_alnum_segment_prefix:subject", "flogic:condition_conditional_normative:O|:subject_to"]}`
+  evidence: `{"cosine_similarity": -0.407150010768, "hint_id": "modal-synthesis-cbfbf869c7be40b1", "priority": 0.451853674948, "reconstruction_loss": 0.451853674948, "sample_id": "us-code-25-607-bb289e70103e9982", "top_embedding_features": ["flogic:source_context_span_char_count_parity:odd", "slot:source_context_span_char_count_parity:odd", "flogic:citation_section_terminal_number_digit_count:3", "flogic:citation_section_terminal_number_digit_count_bucket:3_digit", "flogic:citation_title_section_terminal_number_distance_profile:ascending_lt_1k", "flogic:citation_title_section_terminal_number_distance_profile_stem:ascending_lt_1k", "flogic:citation_title_section_terminal_number_span_digit_count_bucket:3_digit", "flogic:cue_modal_lexeme:ontology"]}`
+  evidence: `{"cosine_similarity": -0.232944199099, "hint_id": "modal-synthesis-e15edf5490f2434b", "priority": 0.609296946774, "reconstruction_loss": 0.609296946774, "sample_id": "us-code-19-1671d-139f3d4588167a39", "top_embedding_features": ["cue:conditional_normative:O|:except", "cue:conditional_normative:O|:pursuant to", "cue:epistemic:K:determines", "family:epistemic:2", "family:selected_frame:alethic", "family:selected_frame:epistemic", "flogic:citation_title_number_parity:odd", "flogic:condition_alnum_segment:b"]}`
+  evidence: `{"cosine_similarity": 0.196977198041, "hint_id": "modal-synthesis-ec768a27af38a19e", "priority": 0.286355038567, "reconstruction_loss": 0.286355038567, "sample_id": "us-code-42-286c.-f47109acd9f56a01", "top_embedding_features": ["flogic:support_span_width_has_zero_digit:false", "flogic:support_span_width_zero_digit_count:0", "slot:support_span_width_has_zero_digit:false", "slot:support_span_width_zero_digit_count:0", "cue:deontic:O:shall", "family:selected_frame:conditional_normative", "flogic:cue_modal_family:conditional_normative", "flogic:cue_modal_lexeme:shall"]}`
+- `program-180a960094af4cc3` `refine_typed_ir_or_decompiler_slots`
+  target: `modal.ir_decompiler`
+  scope: `ir_decompiler`
+  bundle: `{"action":"refine_typed_ir_or_decompiler_slots","family_pairs":[],"program_synthesis_scope":"ir_decompiler","target_component":"modal.ir_decompiler"}`
+  vector_bundle: `program-2644729da1a271b6` score `0.993584`
+  objective: Embedding residuals point to information not well represented by the typed IR/decompiler.
+  support: 4
+  evidence: `{"cosine_similarity": 0.096376815052, "hint_id": "modal-synthesis-4c265dfb4b5802d6", "priority": 0.351346222933, "reconstruction_loss": 0.351346222933, "sample_id": "us-code-22-503-cc8b5baed9ddff5e", "top_embedding_features": ["flogic:support_span_end_char_leading_digit:2", "slot:support_span_end_char_leading_digit:2", "flogic:modal_span_char_count_parity:odd", "slot:modal_span_char_count_parity:odd", "lemma:subchapter", "lemma:provisions", "flogic:citation_title_number_leading_digit:2", "flogic:source_id_title_number_leading_digit:2"]}`
+  evidence: `{"cosine_similarity": -0.010368393351, "hint_id": "modal-synthesis-5645f7b3469f8c7b", "priority": 0.313000688673, "reconstruction_loss": 0.313000688673, "sample_id": "us-code-2-67-796230cd701d2f54", "top_embedding_features": ["flogic:citation_section_component_kind_positioned:1:numeric", "flogic:citation_section_has_mixed_token:false", "flogic:citation_section_has_suffix:false", "flogic:citation_section_mixed_token_count:0", "flogic:citation_section_primary_component_kind:numeric", "flogic:citation_section_primary_has_suffix:false", "flogic:citation_section_primary_terminal_component_kind_pair:numeric|numeric", "flogic:citation_section_profile_signature_alnum_segment:numeric"]}`
+  evidence: `{"cosine_similarity": 0.254869241697, "hint_id": "modal-synthesis-b423110b16f94248", "priority": 0.501925847478, "reconstruction_loss": 0.501925847478, "sample_id": "us-code-15-78aa-01088ad520ec2450", "top_embedding_features": ["flogic:support_span_end_char_has_zero_digit:true", "flogic:support_span_end_char_zero_digit_count:1", "slot:support_span_end_char_has_zero_digit:true", "slot:support_span_end_char_zero_digit_count:1", "flogic:citation_title_number_leading_digit:1", "flogic:source_id_title_number_leading_digit:1", "slot:citation_title_number_leading_digit:1", "slot:source_id_title_number_leading_digit:1"]}`
+  evidence: `{"cosine_similarity": -0.539578080915, "hint_id": "modal-synthesis-ebfa69795fecc5b3", "priority": 0.462388875033, "reconstruction_loss": 0.462388875033, "sample_id": "us-code-6-1139-17044be4ba0cb69f", "top_embedding_features": ["lemma:subsection", "lemma:years", "lemma:provided", "lemma:year", "flogic:predicate_alnum_segment:years", "flogic:predicate_token:years", "slot:predicate_alnum_segment:years", "slot:predicate_token:years"]}`
+
+## Finish
+Leave the completed edits in the worktree; the daemon captures, applies, and validates the diff.

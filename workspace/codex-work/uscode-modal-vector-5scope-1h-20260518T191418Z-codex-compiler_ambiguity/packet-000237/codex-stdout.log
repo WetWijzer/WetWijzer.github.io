@@ -1,0 +1,12 @@
+Implemented the `modal.compiler.ambiguity` policy update by making the signal-free adaptive pair policy explicit for the requested family pairs, and validated it with focused tests.
+
+**Changes**
+- Added a canonical signal-free adaptive ambiguity pair policy (now including `deontic->frame`, `deontic->temporal`, and existing pairs) plus a helper API in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000237-20260518_194304/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33) and [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000237-20260518_194304/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:320).
+- Updated compiler pair-policy lookup to use that canonical helper in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000237-20260518_194304/ipfs_datasets_py/logic/modal/compiler.py:709).
+- Added two regression tests for signal-free adaptive ambiguity on `deontic->frame` and `deontic->temporal` in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000237-20260518_194304/tests/unit_tests/logic/modal/test_modal_codec.py:2325) and [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000237-20260518_194304/tests/unit_tests/logic/modal/test_modal_codec.py:2411).
+
+**Validation**
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_"`  
+  Result: `7 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "surfaces_deontic_temporal_adaptive_ambiguity or treats_under_this_section_as_deontic_frame_adaptive_signal or surfaces_deontic_conditional_adaptive_ambiguity"`  
+  Result: `3 passed`

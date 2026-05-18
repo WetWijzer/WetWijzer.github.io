@@ -1,0 +1,16 @@
+Implemented the `compiler_ambiguity` update to surface explicit adaptive ambiguities for the requested family pairs, including signal-free cases.
+
+- Updated adaptive-family handling to allow `hybrid` as a predicted family and restrict its adaptive target to `frame`: [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000236-20260518_193831/ipfs_datasets_py/logic/modal/compiler.py:539)
+- Extended signal-free adaptive pair policy to include:
+  - `temporal -> frame`
+  - `hybrid -> frame`
+  at [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000236-20260518_193831/ipfs_datasets_py/logic/modal/compiler.py:708)
+- Added focused unit tests validating both new signal-free paths and explicit ambiguity types:
+  - `adaptive_temporal_frame_outvoted_margin_low`
+  - `adaptive_hybrid_frame_outvoted_margin_low`
+  at [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000236-20260518_193831/tests/unit_tests/logic/modal/test_modal_codec.py:2066) and [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000236-20260518_193831/tests/unit_tests/logic/modal/test_modal_codec.py:2152)
+
+Tests run:
+
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy"` → `5 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "surfaces_adaptive_family_margin_ambiguity_for_temporal_conflicts or uses_bm25_frame_support_for_temporal_adaptive_frame_ambiguity or treats_transferred_as_frame_scope_ambiguity_signal"` → `3 passed`

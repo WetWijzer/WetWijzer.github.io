@@ -1,0 +1,17 @@
+Implemented a deterministic frame-term audit improvement focused on the `frame_logic` scope.
+
+**Changes**
+- Updated [frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000033-20260518_230230/ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py:328):
+1. Added explicit contextualization triggers for structural predicates that were showing up in TODO evidence (`*_distance_profile*`, terminal digit-count buckets, and `*_conditional_normative`).
+2. Normalized `*_conditional_normative` values by stripping the modal symbol prefix (`O|:`) so relation terms like `subject_to` are preserved.
+3. Allowed stopword tokens for `*_conditional_normative` predicates so `subject_to` remains intact.
+4. Made contextualized-term emission include those explicit structural predicates even when values are not low-signal.
+
+- Added focused regression coverage in [test_frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000033-20260518_230230/tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py:977):
+1. Verifies `flogic:condition_conditional_normative:O|:subject_to` yields `subject_to`.
+2. Verifies contextualized audit terms now include predicate-qualified distance-profile and terminal bucket terms.
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py` (79 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "normalizes_legacy_slot_positioned_frame_audit_terms or frame_ontology_audit_reports_high_signal_terms or contextualize_low_signal_frame_features"` (3 passed)
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_flogic_optimizer.py` (18 passed)

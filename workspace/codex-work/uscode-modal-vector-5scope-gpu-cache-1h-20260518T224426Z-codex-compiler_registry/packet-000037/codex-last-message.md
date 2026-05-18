@@ -1,0 +1,19 @@
+Implemented a generalized compiler-registry refinement for the modal family conflict directions in this packet.
+
+**Changes**
+- Expanded signal-free adaptive ambiguity policy pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000037-20260518_225831/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33):
+  - added `conditional_normative -> deontic`
+  - added `conditional_normative -> temporal`
+  - added `frame -> conditional_normative`
+  - added `frame -> epistemic`
+  - added `frame -> temporal`
+- Expanded adaptive target-signal map in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000037-20260518_225831/ipfs_datasets_py/logic/modal/compiler.py:650):
+  - for predicted `frame`, now also considers `epistemic`
+  - for predicted `conditional_normative`, now also considers `deontic` and `temporal`
+- Updated registry policy tests in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000037-20260518_225831/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:69).
+- Added adaptive ambiguity regression tests for new directions in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000037-20260518_225831/tests/unit_tests/logic/modal/test_modal_codec.py:2808).
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (9 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_conditional_deontic_adaptive_ambiguity or signal_free_pair_policy_for_conditional_temporal_adaptive_ambiguity or signal_free_pair_policy_for_frame_epistemic_adaptive_ambiguity or signal_free_pair_policy_for_deontic_temporal_adaptive_ambiguity or signal_free_pair_policy_for_frame_deontic_adaptive_ambiguity or modal_compiler_surfaces_adaptive_family_margin_ambiguity_for_temporal_conflicts"` (6 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k adaptive` (22 passed)

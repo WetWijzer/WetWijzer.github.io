@@ -1,0 +1,12 @@
+Implemented a narrow deterministic cue-rule refinement for the `compiler_registry` scope.
+
+- In [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000115-20260518_202257/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:237), I added `_TEMPORAL_WITHIN_AFTER_OVERLAP_RE` and in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000115-20260518_202257/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:717) added `_is_temporal_within_after_overlap(...)`.
+- In [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000115-20260518_202257/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:617), temporal cue extraction now skips `after` when it is part of a `within … <duration> after …` deadline phrase. This prevents double-counting temporal evidence in mixed deontic/temporal clauses.
+- Added regression coverage in [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000115-20260518_202257/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:113):
+  - `test_spacy_encoder_does_not_double_count_within_after_temporal_deadline`
+  - `test_spacy_encoder_keeps_standalone_temporal_after_cue`
+
+Validation run:
+
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "within_after or standalone_temporal_after or spacy_backend_no_longer_emits_missing_formula"` -> `3 passed`
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py` -> `6 passed`

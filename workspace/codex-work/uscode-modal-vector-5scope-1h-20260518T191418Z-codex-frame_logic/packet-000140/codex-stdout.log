@@ -1,0 +1,18 @@
+Implemented a deterministic frame-logic audit-term improvement so frame-linked evidence is preserved as ontology terms, including positioned structural signals.
+
+**What changed**
+- Added shared contextual audit-term extraction in [frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000140-20260518_195913/ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py:803):
+  - New `frame_ontology_contextualized_terms(...)`.
+  - Contextualizes:
+    - low-signal values (`false`, `odd`, small digits, single-char alpha), and
+    - positioned predicates (`*_positioned`) so predicate identity is not lost.
+- Wired codec audit-term assembly to use that shared helper in [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000140-20260518_195913/ipfs_datasets_py/logic/modal/codec.py:4696), replacing duplicated local logic.
+- Extended F-logic optimizer diagnostics to include contextualized terms and their high-signal subset in [flogic_optimizer.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000140-20260518_195913/ipfs_datasets_py/logic/flogic_optimizer.py:337).
+- Added focused tests in [test_frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000140-20260518_195913/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py:346) covering:
+  - low-signal contextualization for `flogic:*` frame features,
+  - positioned structural contextualization (`*_positioned`),
+  - non-contextualized structural terms staying excluded from this helper.
+
+**Validation run**
+- `IPFS_DATASETS_PY_MINIMAL_IMPORTS=1 pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py`
+- Result: `21 passed`

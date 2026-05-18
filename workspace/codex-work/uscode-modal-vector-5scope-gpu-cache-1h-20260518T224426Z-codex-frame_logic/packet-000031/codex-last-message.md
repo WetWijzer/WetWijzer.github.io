@@ -1,0 +1,15 @@
+Implemented a narrow frame-logic audit improvement: legacy family-score features now produce ontology terms instead of being dropped.
+
+Changed files:
+- [frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000031-20260518_224711/ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py:208)
+- [test_frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000031-20260518_224711/tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py:1441)
+
+What changed:
+- Added deterministic parsing for `family:*`, `modal-family:*`, and `modal_family:*` score-style features (excluding `frame`/`selected_frame` aliases) so values like `family:deontic:2` are audited as ontology terms.
+- Wired this into `_frame_ontology_value_from_feature`.
+- Updated tests to reflect that `family:deontic:2` is now frame-audit-relevant and yields `deontic`.
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py` → `77 passed`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_flogic_optimizer.py -k "frame_ontology or frame_feature or semantic_frame_fields or high_signal"` → `4 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "autoencoder_synthesis_hint_extracts_frame_linked_feature_variants or autoencoder_introspection_guides_typed_synthesis_hints"` → `2 passed`

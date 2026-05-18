@@ -1,0 +1,17 @@
+Implemented a narrow frame-logic audit improvement in the codec path.
+
+**What changed**
+- Updated [`codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000083-20260518_194638/ipfs_datasets_py/logic/modal/codec.py#L4596):
+  - `_frame_ontology_audit_terms` now augments existing extracted terms with contextualized forms for low-signal values.
+  - Added helpers to derive deterministic predicate-scoped terms like:
+    - `citation_title_number_parity_even`
+    - `citation_title_section_primary_number_span_trailing_zero_count_0`
+    - `predicate_token_c`
+  - Contextualization is restricted to `flogic:` / `slot:`-namespaced features (and triples mapped through `flogic:`), so unrelated direct frame features are unchanged.
+
+- Added regression coverage in [`test_modal_codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000083-20260518_194638/tests/unit_tests/logic/modal/test_modal_codec.py#L5073):
+  - `test_frame_ontology_audit_terms_contextualize_low_signal_frame_features`
+
+**Validation run**
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "frame_ontology_audit"`
+- Result: `7 passed`

@@ -1,0 +1,10 @@
+Implemented a narrow `modal.compiler.ambiguity` policy extension so temporal low-margin self-competition is surfaced explicitly.
+
+- Added `temporal -> temporal` to signal-free adaptive ambiguity policy pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000043-20260518_231922/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:83).
+- Updated registry coverage/ordering assertions in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000043-20260518_231922/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:69) and [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000043-20260518_231922/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:107).
+- Added a focused compiler test validating explicit temporal self-pair ambiguity emission for low runner-up margin in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000043-20260518_231922/tests/unit_tests/logic/modal/test_modal_codec.py:3109).
+
+Tests run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (pass)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "temporal_self_pair_adaptive_ambiguity or epistemic_deontic_contested_adaptive_ambiguity"` (pass)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "adaptive_family_margin_ambiguity_for_temporal_conflicts or surfaces_deontic_temporal_adaptive_ambiguity or uses_compiled_family_as_adaptive_ambiguity_signal"` (pass)

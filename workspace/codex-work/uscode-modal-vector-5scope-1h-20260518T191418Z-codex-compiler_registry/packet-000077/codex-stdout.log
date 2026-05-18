@@ -1,0 +1,10 @@
+Implemented the `compiler_registry` cue-rule refinement with deterministic, auditable changes:
+
+- Expanded conditional-normative registry cues with stronger scoped-condition markers (`except as otherwise provided`, `except to the extent`, `to the extent provided`, `in the event that`, `in accordance with`, `pursuant to`) in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000077-20260518_192054/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L202).
+- Added temporal `by` disambiguation so `by` only counts as a temporal cue when nearby context is deadline/date-like, reducing false temporal family votes in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000077-20260518_192054/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L166) and [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000077-20260518_192054/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L464).
+- Added regression tests for `by` cue behavior in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000077-20260518_192054/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py#L264).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py tests/unit_tests/logic/modal/test_modal_codec.py`
+- Result: `129 passed`

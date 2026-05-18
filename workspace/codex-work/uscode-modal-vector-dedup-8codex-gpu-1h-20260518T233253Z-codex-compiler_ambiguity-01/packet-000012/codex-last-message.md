@@ -1,0 +1,12 @@
+Implemented a focused `compiler_ambiguity` policy update for the `frame -> deontic` / `frame -> temporal` bundle.
+
+- Promoted `frame -> temporal` into the priority adaptive ambiguity policy in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000012-20260518_233406/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:126).
+- Updated priority-policy expectations in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000012-20260518_233406/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:136).
+- Strengthened modal compiler ambiguity tests in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000012-20260518_233406/tests/unit_tests/logic/modal/test_modal_codec.py:2658):
+  - Existing frame→temporal signal-free test now asserts `is_priority_policy_pair=True`.
+  - Added a new zero-margin frame→temporal test that verifies explicit `adaptive_frame_temporal_outvoted_margin_low` and `severity == "requires_rule"`.
+
+Tests run (passing):
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py::test_priority_signal_free_adaptive_ambiguity_pair_policy_is_directional tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_uses_signal_free_pair_policy_for_frame_temporal_adaptive_ambiguity tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_treats_zero_margin_frame_temporal_priority_pair_as_outvoted_adaptive_ambiguity tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_treats_zero_margin_priority_pair_as_outvoted_adaptive_ambiguity`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "frame_temporal or priority_pair"`

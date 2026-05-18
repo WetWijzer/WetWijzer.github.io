@@ -22,19 +22,19 @@
     "--test-every-cycles",
     "12"
   ],
-  "autoencoder_exit_code": null,
+  "autoencoder_exit_code": 0,
   "autoencoder_pid": 416170,
   "autoencoder_run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder",
   "autoencoder_stderr_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder.orchestrator.stderr.log",
   "autoencoder_stdout_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder.orchestrator.stdout.log",
   "child_status": {
-    "autoencoder": "running",
+    "autoencoder": "exited",
     "codex": {
-      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity": "running",
-      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser": "running",
-      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry": "running",
-      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic": "running",
-      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler": "running"
+      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity": "exited",
+      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser": "exited",
+      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry": "exited",
+      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic": "exited",
+      "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler": "exited"
     }
   },
   "codex_child_count": 5,
@@ -369,13 +369,13 @@
     "--codex-model",
     "gpt-5.3-codex"
   ],
-  "codex_exit_code": null,
+  "codex_exit_code": 0,
   "codex_exit_codes": {
-    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity": null,
-    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser": null,
-    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry": null,
-    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic": null,
-    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler": null
+    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity": 0,
+    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser": 0,
+    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_registry": 0,
+    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic": 0,
+    "uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler": 0
   },
   "codex_pid": 425556,
   "codex_pids": {
@@ -389,8 +389,10 @@
   "codex_stderr_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser.orchestrator.stderr.log",
   "codex_stdout_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_parser.orchestrator.stdout.log",
   "duration_seconds": 3600.0,
-  "elapsed_seconds": 260.03,
-  "final": false,
+  "elapsed_seconds": 4568.415,
+  "final": true,
+  "finished_at": "2026-05-18T20:30:27+00:00",
+  "latest_stop_reason": "paired_timeout_grace_exceeded",
   "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-5scope-1h-20260518T191418Z.jsonl",
   "loop_role": "paired",
   "paired_grace_seconds": 900.0,
@@ -398,5 +400,6 @@
   "queue_run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder",
   "run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z",
   "started_at": "2026-05-18T19:14:19+00:00",
-  "updated_at": "2026-05-18T19:18:39+00:00"
+  "status": "succeeded",
+  "updated_at": "2026-05-18T20:30:27+00:00"
 }

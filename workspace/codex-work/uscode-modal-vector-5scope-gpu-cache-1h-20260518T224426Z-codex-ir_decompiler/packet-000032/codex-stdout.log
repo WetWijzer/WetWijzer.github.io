@@ -1,0 +1,21 @@
+Implemented a generalized `ir_decompiler` slot refinement focused on temporal cue/operator normalization.
+
+**What changed**
+- Added `until` as a deterministic condition-prefix cue and temporal relation in decompiler + triple emitter:
+  - [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000032-20260518_225401/ipfs_datasets_py/logic/modal/decompiler.py:26)
+  - [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000032-20260518_225401/ipfs_datasets_py/logic/modal/codec.py:85)
+
+- Added registry-backed canonical cue-operator inference and emitted new slots/components:
+  - `<prefix>_canonical_operator`
+  - `<prefix>_canonical_signature`
+  - `<prefix>_operator_alignment`
+  - Implemented in decompiler slot path: [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000032-20260518_225401/ipfs_datasets_py/logic/modal/decompiler.py:2839)
+  - Implemented in F-logic triple path: [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000032-20260518_225401/ipfs_datasets_py/logic/modal/codec.py:1692)
+
+- Added regression coverage, including an `until` sample and canonical temporal assertions (`after -> X`, `until -> G`):
+  - [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000032-20260518_225401/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py:664)
+  - [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000032-20260518_225401/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py:3457)
+
+**Validation**
+- `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py -k "cue_modal_signature_and_temporal_prefix_slots or temporal_until_canonical_slots"` → 4 passed
+- `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py` → 66 passed

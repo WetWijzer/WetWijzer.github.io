@@ -1,0 +1,25 @@
+Implemented a focused ambiguity-policy update for `compiler_ambiguity` so priority adaptive pairs emit explicit ambiguity even at zero margin.
+
+Changed files:
+- [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000325-20260518_195914/ipfs_datasets_py/logic/modal/compiler.py#L25)
+- [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000325-20260518_195914/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L33)
+- [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000325-20260518_195914/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py#L7)
+- [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000325-20260518_195914/tests/unit_tests/logic/modal/test_modal_codec.py#L2152)
+
+What changed:
+- Added `PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS` and helper `is_priority_signal_free_adaptive_ambiguity_pair(...)` for:
+  - `deontic -> conditional_normative`
+  - `temporal -> deontic`
+  - `temporal -> frame`
+- In adaptive ambiguity emission:
+  - For priority pairs, non-positive margin (`<= 0.0`) is treated as `outvoted` (explicit ambiguity type uses `..._outvoted_margin_low`).
+  - Severity now follows this resolved direction (`requires_rule` when outvoted).
+  - Added metadata flag: `is_priority_policy_pair`.
+- Added tests to lock behavior:
+  - Registry directional coverage for priority policy pairs.
+  - Compiler zero-margin temporal->frame case now emits explicit outvoted ambiguity and `requires_rule`.
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` → 8 passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "adaptive_ambiguity or adaptive_family_margin or signal_free_pair_policy"` → 13 passed
+- Additional targeted subset for new/affected tests also passed (5/5).

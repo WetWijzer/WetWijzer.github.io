@@ -1,0 +1,21 @@
+Implemented a deterministic `compiler_registry` cue-rule refinement for the `deontic/frame -> temporal` and `frame -> deontic` failure modes.
+
+**What changed**
+- Expanded deontic and temporal cue lexicons in the modal registry so scope phrases are counted as first-class cues, not only side signals:
+  - [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000038-20260518_230416/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:219)
+- Refined weighted family scoring:
+  - Temporal gets a small bonus when strong temporal scope competes with deontic cues.
+  - Generic frame cues (`authority`, `jurisdiction`) are debiased whenever deontic/temporal competing scope is present (not just deontic cue hits).
+  - [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000038-20260518_230416/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:367)
+  - [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000038-20260518_230416/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1073)
+- Added/updated deterministic regression tests for these directions:
+  - Temporal scope phrase outranking deontic (`not later than ...`).
+  - Fiscal-year temporal scope outranking generic frame cues.
+  - Deontic duty phrase outranking generic frame cues.
+  - Updated existing adaptive-pair expectation for the temporal-frame case (now `temporal -> frame` with temporal top-ranked).
+  - [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000038-20260518_230416/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:46)
+
+**Validation**
+- Ran:
+  - `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py`
+- Result: `9 passed`

@@ -1,0 +1,12 @@
+Implemented a narrow `frame_logic` audit fix: contribution payloads are now treated as audit evidence, so frame-linked features from family/reconstruction scoring become ontology terms.
+
+- Updated metadata extraction in [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-frame_logic-01/worktrees/agent-codex-frame_logic-01-packet-000012-20260518_233406/ipfs_datasets_py/logic/modal/codec.py:5335) to include:
+  - `top_family_contributions`
+  - `top_embedding_contributions`
+  from both `modal_ir.metadata` and `modal_ir.frame_logic.metadata`.
+- Extended ontology metadata value-key recognition in [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-frame_logic-01/worktrees/agent-codex-frame_logic-01-packet-000012-20260518_233406/ipfs_datasets_py/logic/modal/codec.py:250) for those contribution fields.
+- Added regression coverage in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-frame_logic-01/worktrees/agent-codex-frame_logic-01-packet-000012-20260518_233406/tests/unit_tests/logic/modal/test_modal_codec.py:6258).
+
+Validation run:
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_frame_ontology_audit_feature_keys_include_evidence_payloads tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_frame_ontology_audit_feature_keys_include_autoencoder_contributions` -> `2 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_audits_structured_hint_evidence_from_term_metadata_without_key_noise tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_frame_ontology_audit_feature_keys_include_evidence_payloads tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_frame_ontology_audit_feature_keys_include_autoencoder_contributions` -> `3 passed`

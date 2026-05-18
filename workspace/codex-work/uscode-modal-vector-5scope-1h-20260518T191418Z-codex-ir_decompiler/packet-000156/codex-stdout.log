@@ -1,0 +1,35 @@
+Implemented a focused `ir_decompiler` refinement that adds deterministic slot coverage and keeps decompiler slots/triples in sync.
+
+**What changed**
+1. Added modal-operator label fallback + signature emission in decompiler output:
+   - Fallback derives label from operator symbol map when label is missing (e.g. `X -> next`).
+   - New `modal_operator_signature` slot/triple (`family:symbol:label` when label exists).
+   - Added typed token/alnum slot expansions for `modal_operator_label` and `modal_operator_signature`.
+   - [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000156-20260518_200811/ipfs_datasets_py/logic/modal/decompiler.py:406)
+   - [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000156-20260518_200811/ipfs_datasets_py/logic/modal/codec.py:955)
+
+2. Added canonical section-style slots/components for citation/source-id sections:
+   - New `*_section_style_canonical` with explicit placeholders: `profile_suffixKind_suffixCase_punctuation`.
+   - New `*_section_style_suffix_kind` and `*_section_style_suffix_case`.
+   - Added typed expansion for canonical style.
+   - [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000156-20260518_200811/ipfs_datasets_py/logic/modal/decompiler.py:3293)
+   - [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000156-20260518_200811/ipfs_datasets_py/logic/modal/codec.py:4143)
+
+3. Added canonical-style provenance alignment signals:
+   - `citation_source_id_section_style_canonical_pair`
+   - `citation_source_id_section_style_canonical_match`
+   - `citation_source_id_section_style_canonical_presence_match`
+   - [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000156-20260518_200811/ipfs_datasets_py/logic/modal/decompiler.py:1508)
+   - [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000156-20260518_200811/ipfs_datasets_py/logic/modal/codec.py:2219)
+
+4. Added regression tests for new behavior:
+   - Canonical section-style slots + source/citation alignment parity.
+   - Operator label fallback and signature parity across decompiler slots and triples.
+   - [test_modal_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000156-20260518_200811/tests/unit/optimizers/logic_theorem_optimizer/test_modal_ir_decompiler_slots.py:561)
+   - [test_modal_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000156-20260518_200811/tests/unit/optimizers/logic_theorem_optimizer/test_modal_ir_decompiler_slots.py:607)
+
+**Tests run**
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_ir_decompiler_slots.py`
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "expand_alphanumeric_citation_section_slots or surface_uscode_source_id_slots"`
+
+Both passed.

@@ -1,0 +1,13 @@
+Implemented a deterministic IR/decompiler refinement focused on the residual gaps (family-count fallback and frame semantics inference).
+
+- Updated triple generation to infer selected frame from IR state (explicit arg, metadata, frame_logic, candidates, metadata terms), and to emit candidate/selected/interpreted frame terms even when candidates are metadata-only: [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000080-20260518_194637/ipfs_datasets_py/logic/modal/codec.py#L797), [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000080-20260518_194637/ipfs_datasets_py/logic/modal/codec.py#L4344).
+- Added formula-derived fallback for `modal_family_count*` components when `metadata.modal_family_counts` is absent: [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000080-20260518_194637/ipfs_datasets_py/logic/modal/codec.py#L2742).
+- Mirrored the same modal-family-count fallback in decompiler slot emission: [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000080-20260518_194637/ipfs_datasets_py/logic/modal/decompiler.py#L953).
+- Added regression tests for:
+  - formula-derived modal family counts (decode + triples),
+  - selected-frame/candidate/term inference from metadata-only frame ontology terms.  
+  See [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000080-20260518_194637/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py#L729), [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000080-20260518_194637/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py#L2641).
+
+Validation run:
+- `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py` (60 passed)
+- `python3 -m py_compile ipfs_datasets_py/logic/modal/codec.py ipfs_datasets_py/logic/modal/decompiler.py ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py`

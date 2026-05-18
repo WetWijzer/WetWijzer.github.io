@@ -1,0 +1,25 @@
+Implemented a scoped IR/decompiler slot refinement for `modal.ir_decompiler` with deterministic behavior in both phrase decoding and F-logic projection.
+
+- Added exception-only `condition_*` proxy emission so formulas that only carry `exceptions` now also emit `condition`, `condition_prefix*`, `condition_modal_*`, and `condition_scope*` slots/components (matching the TODO’s condition-scope residual pattern):
+  - [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000155-20260518_195913/ipfs_datasets_py/logic/modal/decompiler.py:483)
+  - [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000155-20260518_195913/ipfs_datasets_py/logic/modal/decompiler.py:2511)
+  - [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000155-20260518_195913/ipfs_datasets_py/logic/modal/codec.py:1381)
+  - [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000155-20260518_195913/ipfs_datasets_py/logic/modal/codec.py:1584)
+
+- Added explicit conditional-normative cue slots when operator symbol is `O|`:
+  - `<...>_conditional_normative` and `<...>_conditional_normative_signature`
+  - alias slot for modal namespaces (e.g. `cue_conditional_normative`, `condition_conditional_normative`)
+  - [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000155-20260518_195913/ipfs_datasets_py/logic/modal/decompiler.py:2655)
+  - [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000155-20260518_195913/ipfs_datasets_py/logic/modal/codec.py:1553)
+
+- Added regression coverage for the new behavior:
+  - [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000155-20260518_195913/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py:580)
+  - [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000155-20260518_195913/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py:3346)
+
+Tests run:
+
+1. `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py -k "condition_proxy_slots_for_exception_only_formula or condition_exception_scope_slots or cue_modal_signature_and_temporal_prefix_slots"`  
+2. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_ir_decompiler_slots.py -q`  
+3. `pytest -q ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py -q`  
+
+All passed.

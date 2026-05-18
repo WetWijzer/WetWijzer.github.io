@@ -1,0 +1,112 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0
+benchmark: 5.2.3 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/barberb/portland-laws.github.io/ipfs_datasets_py
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: mock-3.15.1, xdist-3.8.0, benchmark-5.2.3, cov-7.1.0, asyncio-1.3.0, hypothesis-6.152.1, anyio-4.13.0, timeout-2.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 186 items
+
+tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py . [  0%]
+............................................                             [ 24%]
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py . [ 24%]
+.......FF..FF.F....F..........                                           [ 40%]
+tests/unit_tests/logic/modal/test_modal_codec.py ..........FF....FF....F [ 53%]
+..F..................................................................... [ 91%]
+...............                                                          [100%]
+
+=================================== FAILURES ===================================
+____ test_spacy_compiler_replays_uscode_editorial_status_zero_formula_cases ____
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:365: in test_spacy_compiler_replays_uscode_editorial_status_zero_formula_cases
+    assert fallback.metadata["cue"] == "__uscode_editorial_status_fallback__"
+E   AssertionError: assert 'omitted' == '__uscode_edi...us_fallback__'
+E     
+E     - __uscode_editorial_status_fallback__
+E     + omitted
+_ test_spacy_compiler_replays_sec_prefixed_transferred_heading_zero_formula_cases _
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:399: in test_spacy_compiler_replays_sec_prefixed_transferred_heading_zero_formula_cases
+    assert fallback.metadata["cue"] == "__uscode_codification_fallback__"
+E   AssertionError: assert 'transferred' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + transferred
+_ test_spacy_compiler_replays_packet_todo_samples_for_46_55318_8_606_and_46_115 _
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:511: in test_spacy_compiler_replays_packet_todo_samples_for_46_55318_8_606_and_46_115
+    assert fallback.metadata["cue"] == cue
+E   AssertionError: assert 'repealed' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + repealed
+___ test_spacy_compiler_replays_packet_todo_samples_for_36_110105_and_25_450 ___
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:548: in test_spacy_compiler_replays_packet_todo_samples_for_36_110105_and_25_450
+    assert fallback.metadata["cue"] == cue
+E   AssertionError: assert 'editorially reclassified' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + editorially reclassified
+_ test_spacy_compiler_replays_packet_todo_samples_for_25_507_10_167_and_38_8112 _
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:611: in test_spacy_compiler_replays_packet_todo_samples_for_25_507_10_167_and_38_8112
+    assert fallback.metadata["cue"] == "__uscode_codification_fallback__"
+E   AssertionError: assert 'editorially reclassified' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + editorially reclassified
+_ test_spacy_compiler_replays_symbolic_validity_todo_samples_for_2_5602_5_5348_and_42_15251 _
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:828: in test_spacy_compiler_replays_symbolic_validity_todo_samples_for_2_5602_5_5348_and_42_15251
+    assert fallback.metadata["cue"] == "__uscode_codification_fallback__"
+E   AssertionError: assert 'editorially reclassified' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + editorially reclassified
+____ test_modal_compiler_replays_packet_todo_zero_formula_sample_for_2_59b _____
+tests/unit_tests/logic/modal/test_modal_codec.py:865: in test_modal_compiler_replays_packet_todo_zero_formula_sample_for_2_59b
+    assert fallback.metadata["cue"] == "__uscode_codification_fallback__"
+E   AssertionError: assert 'editorially reclassified' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + editorially reclassified
+___ test_modal_compiler_replays_packet_todo_samples_for_36_110105_and_25_450 ___
+tests/unit_tests/logic/modal/test_modal_codec.py:909: in test_modal_compiler_replays_packet_todo_samples_for_36_110105_and_25_450
+    assert fallback.metadata["cue"] == cue
+E   AssertionError: assert 'editorially reclassified' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + editorially reclassified
+_ test_modal_compiler_replays_packet_todo_samples_for_46_55318_8_606_and_46_115 _
+tests/unit_tests/logic/modal/test_modal_codec.py:1136: in test_modal_compiler_replays_packet_todo_samples_for_46_55318_8_606_and_46_115
+    assert fallback.metadata["cue"] == cue
+E   AssertionError: assert 'repealed' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + repealed
+_____ test_modal_compiler_replays_dataset_samples_for_478_1_6930_and_60101 _____
+tests/unit_tests/logic/modal/test_modal_codec.py:1197: in test_modal_compiler_replays_dataset_samples_for_478_1_6930_and_60101
+    assert fallback.metadata["fallback_rule"] == fallback_rule
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'fallback_rule'
+___ test_modal_compiler_spacy_replays_editorial_status_zero_formula_samples ____
+tests/unit_tests/logic/modal/test_modal_codec.py:1376: in test_modal_compiler_spacy_replays_editorial_status_zero_formula_samples
+    assert fallback.metadata["fallback_rule"] == "uscode_editorial_status_heading_v1"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'fallback_rule'
+_ test_modal_compiler_replays_packet_todo_symbolic_validity_samples_for_16_773b_and_16_460vv_17 _
+tests/unit_tests/logic/modal/test_modal_codec.py:1501: in test_modal_compiler_replays_packet_todo_symbolic_validity_samples_for_16_773b_and_16_460vv_17
+    assert fallback.metadata["cue"] == "__uscode_codification_fallback__"
+E   AssertionError: assert 'transferred' == '__uscode_cod...on_fallback__'
+E     
+E     - __uscode_codification_fallback__
+E     + transferred
+=========================== short test summary info ============================
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_compiler_replays_uscode_editorial_status_zero_formula_cases
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_compiler_replays_sec_prefixed_transferred_heading_zero_formula_cases
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_compiler_replays_packet_todo_samples_for_46_55318_8_606_and_46_115
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_compiler_replays_packet_todo_samples_for_36_110105_and_25_450
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_compiler_replays_packet_todo_samples_for_25_507_10_167_and_38_8112
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_compiler_replays_symbolic_validity_todo_samples_for_2_5602_5_5348_and_42_15251
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_replays_packet_todo_zero_formula_sample_for_2_59b
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_replays_packet_todo_samples_for_36_110105_and_25_450
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_replays_packet_todo_samples_for_46_55318_8_606_and_46_115
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_replays_dataset_samples_for_478_1_6930_and_60101
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_spacy_replays_editorial_status_zero_formula_samples
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_replays_packet_todo_symbolic_validity_samples_for_16_773b_and_16_460vv_17
+======================= 12 failed, 174 passed in 13.00s ========================

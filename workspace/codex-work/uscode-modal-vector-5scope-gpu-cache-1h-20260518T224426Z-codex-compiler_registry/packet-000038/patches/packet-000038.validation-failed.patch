@@ -1,0 +1,209 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index f863a598..fd0f9d1b 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -219,9 +219,38 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+         family=ModalLogicFamily.DEONTIC,
+         system=ModalSystem.D,
+         operators=(
+-            _op("O", ("obligation", "obligatory"), ("shall", "must", "required", "obligated"), (ModalSystem.D, ModalSystem.KD)),
++            _op(
++                "O",
++                ("obligation", "obligatory"),
++                (
++                    "shall",
++                    "must",
++                    "required",
++                    "obligated",
++                    "is required to",
++                    "has a duty to",
++                    "have a duty to",
++                    "under an obligation to",
++                    "requirement that",
++                    "requirements for",
++                ),
++                (ModalSystem.D, ModalSystem.KD),
++            ),
+             _op("P", ("permission", "permitted"), ("may", "permitted", "authorized", "allowed"), (ModalSystem.D, ModalSystem.KD)),
+-            _op("F", ("prohibition", "forbidden"), ("may not", "must not", "prohibited", "forbidden"), (ModalSystem.D, ModalSystem.KD)),
++            _op(
++                "F",
++                ("prohibition", "forbidden"),
++                (
++                    "may not",
++                    "must not",
++                    "prohibited",
++                    "forbidden",
++                    "is prohibited from",
++                    "prohibition on",
++                    "prohibition of",
++                ),
++                (ModalSystem.D, ModalSystem.KD),
++            ),
+         ),
+         semantics=ModalSemanticsSpec(serial=True),
+         description="Legal obligations, permissions, and prohibitions.",
+@@ -231,7 +260,30 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+         system=ModalSystem.LTL,
+         operators=(
+             _op("G", ("always",), ("always", "throughout", "until"), (ModalSystem.LTL, ModalSystem.CTL)),
+-            _op("F", ("eventually",), ("eventually", "within", "by"), (ModalSystem.LTL, ModalSystem.CTL)),
++            _op(
++                "F",
++                ("eventually",),
++                (
++                    "eventually",
++                    "within",
++                    "by",
++                    "as soon as practicable",
++                    "effective date",
++                    "effective on",
++                    "for any fiscal year",
++                    "for each fiscal year",
++                    "for that fiscal year",
++                    "for the period beginning",
++                    "fiscal year",
++                    "no earlier than",
++                    "no later than",
++                    "not earlier than",
++                    "not later than",
++                    "period beginning on",
++                    "period ending on",
++                ),
++                (ModalSystem.LTL, ModalSystem.CTL),
++            ),
+             _op("X", ("next",), ("next", "after", "following"), (ModalSystem.LTL, ModalSystem.CTL)),
+         ),
+         semantics=ModalSemanticsSpec(tree_time=True),
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index f338ffaa..b760bf7b 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -365,6 +365,7 @@ _GENERIC_FRAME_CUE_TERMS = frozenset(
+     }
+ )
+ _GENERIC_FRAME_CUE_DEBIAS_FACTOR = 0.25
++_TEMPORAL_SCOPE_DEONTIC_COMPETITION_BONUS = 0.35
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+     {
+         "duty",
+@@ -1085,6 +1086,14 @@ def _weighted_modal_family_counts(
+         resolved_signals = modal_ambiguity_signals(encoding)
+     else:
+         resolved_signals = signals
++    temporal_family = ModalLogicFamily.TEMPORAL.value
++    deontic_family = ModalLogicFamily.DEONTIC.value
++    if (
++        temporal_family in counts
++        and deontic_family in counts
++        and _has_strong_temporal_scope_signal(resolved_signals)
++    ):
++        counts[temporal_family] += _TEMPORAL_SCOPE_DEONTIC_COMPETITION_BONUS
+     if not _is_generic_frame_cue_debias_context(encoding, resolved_signals):
+         return counts
+     frame_family = ModalLogicFamily.FRAME.value
+@@ -1097,7 +1106,7 @@ def _is_generic_frame_cue_debias_context(
+     encoding: SpaCyLegalEncoding,
+     signals: Mapping[str, bool],
+ ) -> bool:
+-    if not bool(signals.get("has_deontic_cue")):
++    if not _has_competing_non_frame_scope_signal(signals):
+         return False
+     if bool(signals.get("has_frame_scope_phrase")):
+         return False
+@@ -1113,6 +1122,23 @@ def _is_generic_frame_cue_debias_context(
+     return all(cue in _GENERIC_FRAME_CUE_TERMS for cue in frame_cues)
+ 
+ 
++def _has_competing_non_frame_scope_signal(signals: Mapping[str, bool]) -> bool:
++    return bool(
++        signals.get("has_deontic_scope")
++        or signals.get("has_deontic_cue")
++        or signals.get("has_temporal_scope")
++        or _has_strong_temporal_scope_signal(signals)
++    )
++
++
++def _has_strong_temporal_scope_signal(signals: Mapping[str, bool]) -> bool:
++    return bool(
++        signals.get("has_calendar_date_scope")
++        or signals.get("has_temporal_scope_phrase")
++        or signals.get("has_temporal_within_scope")
++    )
++
++
+ def modal_ambiguity_signals(encoding: SpaCyLegalEncoding) -> Dict[str, bool]:
+     """Return deterministic lexical/contextual flags used by ambiguity policy."""
+     condition_clauses = False
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index b5a662e7..e0ca8ff7 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -43,6 +43,13 @@ def _has_adaptive_explicit_pair(
+     )
+ 
+ 
++def _top_ranked_family(result) -> str:
++    assert result.encoding is not None
++    ranking = result.encoding.ranked_modal_families()
++    assert ranking
++    return str(ranking[0]["family"])
++
++
+ def test_parser_recovers_article_prefixed_commission_heading() -> None:
+     parser = LegalModalParser()
+ 
+@@ -141,10 +148,11 @@ def test_compiler_emits_explicit_frame_to_conditional_and_temporal_adaptive_pair
+         "For the period beginning on January 1, 2030, this authority applies.",
+         document_id="compiler-ambiguity-frame-temporal",
+     )
++    assert _top_ranked_family(temporal_result) == ModalLogicFamily.TEMPORAL.value
+     assert _has_adaptive_explicit_pair(
+         temporal_result,
+-        predicted_family=ModalLogicFamily.FRAME.value,
+-        target_family=ModalLogicFamily.TEMPORAL.value,
++        predicted_family=ModalLogicFamily.TEMPORAL.value,
++        target_family=ModalLogicFamily.FRAME.value,
+     )
+ 
+ 
+@@ -162,3 +170,39 @@ def test_compiler_emits_explicit_conditional_normative_to_epistemic_adaptive_pai
+         predicted_family=ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+         target_family=ModalLogicFamily.EPISTEMIC.value,
+     )
++
++
++def test_compiler_temporal_scope_phrases_outrank_deontic_cues() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "The Secretary shall submit the report not later than January 1, 2030.",
++        document_id="compiler-temporal-scope-vs-deontic",
++    )
++    assert _top_ranked_family(result) == ModalLogicFamily.TEMPORAL.value
++
++
++def test_compiler_temporal_fiscal_year_scope_debiases_generic_frame_cues() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "For each fiscal year, this authority applies to the program.",
++        document_id="compiler-temporal-fiscal-year-vs-frame",
++    )
++    assert _top_ranked_family(result) == ModalLogicFamily.TEMPORAL.value
++
++
++def test_compiler_deontic_duty_phrase_outranks_generic_frame_cues() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "This authority has a duty to notify Congress.",
++        document_id="compiler-deontic-duty-vs-frame",
++    )
++    assert _top_ranked_family(result) == ModalLogicFamily.DEONTIC.value

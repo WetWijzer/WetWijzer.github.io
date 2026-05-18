@@ -1,0 +1,95 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index a68006d7..6a5f3d01 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -234,6 +234,12 @@ _TEMPORAL_WITHIN_PHRASE_RE = re.compile(
+     r")",
+     re.IGNORECASE,
+ )
++_TEMPORAL_WITHIN_AFTER_OVERLAP_RE = re.compile(
++    r"\bwithin\s+(?:(?:\d{1,4}|a|an)\s+)?"
++    r"(?:(?:business|calendar)\s+)?"
++    r"(?:day|days|month|months|year|years|week|weeks|hour|hours)\s*$",
++    re.IGNORECASE,
++)
+ _NON_TEMPORAL_WITHIN_PREFIX_TOKENS = frozenset(
+     {
+         "the",
+@@ -607,6 +613,14 @@ class SpaCyLegalEncoder:
+                                 )
+                             ):
+                                 continue
++                            if (
++                                lowered_cue == "after"
++                                and self._is_temporal_within_after_overlap(
++                                    normalized_text=normalized,
++                                    start_char=match.start(),
++                                )
++                            ):
++                                continue
+                             if (
+                                 lowered_cue == "following"
+                                 and self._is_non_temporal_following_cue(
+@@ -700,6 +714,16 @@ class SpaCyLegalEncoder:
+             end_char=end_char,
+         )
+ 
++    def _is_temporal_within_after_overlap(
++        self,
++        *,
++        normalized_text: str,
++        start_char: int,
++    ) -> bool:
++        """Avoid double-counting `within ... after ...` as two temporal cues."""
++        prefix = normalized_text[max(0, start_char - 96) : start_char]
++        return bool(_TEMPORAL_WITHIN_AFTER_OVERLAP_RE.search(prefix))
++
+     def _is_non_temporal_following_cue(
+         self,
+         *,
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index 0aebf80a..c0388215 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -12,6 +12,9 @@ from ipfs_datasets_py.logic.modal.compiler import (  # noqa: E402
+     DeterministicModalCompiler,
+     ModalCompilerConfig,
+ )
++from ipfs_datasets_py.optimizers.logic_theorem_optimizer.spacy_modal_codec import (  # noqa: E402
++    ranked_modal_families,
++)
+ from ipfs_datasets_py.optimizers.logic_theorem_optimizer.legal_modal_parser import (  # noqa: E402
+     LegalModalParser,
+ )
+@@ -105,3 +108,31 @@ def test_compiler_spacy_backend_no_longer_emits_missing_formula_for_regression_c
+         )
+         assert result.modal_ir.formulas, document_id
+         assert _missing_modal_formula_count(result) == 0, document_id
++
++
++def test_spacy_encoder_does_not_double_count_within_after_temporal_deadline() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "The agency shall submit the report within 90 days after enactment."
++    )
++
++    cues = [(cue.family, cue.cue.lower()) for cue in result.encoding.cues]
++    assert (ModalLogicFamily.DEONTIC.value, "shall") in cues
++    assert (ModalLogicFamily.TEMPORAL.value, "within") in cues
++    assert (ModalLogicFamily.TEMPORAL.value, "after") not in cues
++    ranking = ranked_modal_families(result.encoding)
++    assert ranking[0]["family"] == ModalLogicFamily.DEONTIC.value
++
++
++def test_spacy_encoder_keeps_standalone_temporal_after_cue() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile("The report is effective after enactment.")
++
++    cues = [(cue.family, cue.cue.lower()) for cue in result.encoding.cues]
++    assert (ModalLogicFamily.TEMPORAL.value, "after") in cues

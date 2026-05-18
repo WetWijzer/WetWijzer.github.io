@@ -1,0 +1,15 @@
+Implemented a deterministic IR/decompiler slot refinement for selected-frame family signal, with matching F-logic predicates and regression coverage.
+
+**Changes**
+- Added selected-frame family/count phrase emission in decompiler output:
+  - [`decompiler.py:256`](//home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000033-20260518_230049/ipfs_datasets_py/logic/modal/decompiler.py:256)
+  - [`decompiler.py:1046`](//home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000033-20260518_230049/ipfs_datasets_py/logic/modal/decompiler.py:1046)
+- Added matching selected-frame family/count components to F-logic triples:
+  - [`codec.py:846`](//home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000033-20260518_230049/ipfs_datasets_py/logic/modal/codec.py:846)
+  - [`codec.py:3185`](//home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000033-20260518_230049/ipfs_datasets_py/logic/modal/codec.py:3185)
+- Added regression test verifying slot + triple parity for the new selected-frame family count features:
+  - [`test_modal_codec.py:4691`](//home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-gpu-cache-1h-20260518T224426Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000033-20260518_230049/tests/unit_tests/logic/modal/test_modal_codec.py:4691)
+
+**Tests run**
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "selected_frame_modal_family_count_slots or falls_back_to_frame_logic_selected_frame or surfaces_ranked_frame_candidate_slots"` (3 passed)
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_ir_decompiler_slots.py` (11 passed)

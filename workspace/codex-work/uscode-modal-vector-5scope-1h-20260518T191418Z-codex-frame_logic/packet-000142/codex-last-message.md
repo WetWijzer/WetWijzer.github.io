@@ -1,0 +1,11 @@
+Implemented a narrow frame-logic audit fix so `evidence` payloads are treated like `hint_evidence` in ontology-term auditing.
+
+**Changes**
+- Added `evidence`/`evidences` as recognized metadata value keys and structural keys in [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000142-20260518_201630/ipfs_datasets_py/logic/modal/codec.py:237).
+- Included `metadata["evidence"]` and `frame_logic.metadata["evidence"]` in audit feature-key extraction in [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000142-20260518_201630/ipfs_datasets_py/logic/modal/codec.py:4733).
+- Added regression tests for both term-metadata ingestion and audit-feature-key extraction via `evidence` payloads in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000142-20260518_201630/tests/unit_tests/logic/modal/test_modal_codec.py:5057) and [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-5scope-1h-20260518T191418Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000142-20260518_201630/tests/unit_tests/logic/modal/test_modal_codec.py:5113).
+
+**Verification**
+- Ran:
+  - `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_audits_structured_hint_evidence_from_term_metadata_without_key_noise tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_audits_structured_evidence_from_term_metadata_without_key_noise tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_frame_ontology_audit_feature_keys_include_evidence_payloads`
+- Result: `3 passed`.
