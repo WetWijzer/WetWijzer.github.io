@@ -40,6 +40,7 @@ mkdir -p "$ROOT/workspace/test-logs"
     --max-inner-iterations "${USCODE_MODAL_MAX_INNER_ITERATIONS:-2}" \
     --max-items "${USCODE_MODAL_MAX_ITEMS:-1}" \
     --learning-rate "${USCODE_MODAL_LEARNING_RATE:-0.35}" \
+    --autoencoder-device "${USCODE_MODAL_AUTOENCODER_DEVICE:-auto}" \
     --poll-seconds "${USCODE_MODAL_POLL_SECONDS:-5}" \
     --test-every-cycles "${USCODE_MODAL_TEST_EVERY_CYCLES:-12}" \
     --codex-exec-mode "${USCODE_MODAL_CODEX_EXEC_MODE:-codex_cli}" \
