@@ -1,1 +1,2 @@
 {"created_at": "2026-05-18T19:14:20+00:00", "event": "detached_runner_started", "run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder"}
+{"created_at": "2026-05-18T19:15:19+00:00", "event": "detached_dataset_loaded", "row_count": 60077, "run_id": "uscode-modal-vector-5scope-1h-20260518T191418Z-autoencoder"}
