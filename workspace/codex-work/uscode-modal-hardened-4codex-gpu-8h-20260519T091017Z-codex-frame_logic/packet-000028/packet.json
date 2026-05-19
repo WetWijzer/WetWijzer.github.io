@@ -1,0 +1,209 @@
+{
+  "claimed_at": "2026-05-19T09:12:48+00:00",
+  "codex_apply_mode": "apply_to_main",
+  "codex_exec": {
+    "command": [
+      "codex",
+      "exec",
+      "--cd",
+      "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000028-20260519_091247",
+      "--sandbox",
+      "danger-full-access",
+      "--output-last-message",
+      "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/codex-last-message.md",
+      "--model",
+      "gpt-5.3-codex",
+      "-"
+    ],
+    "duration_seconds": 784.97,
+    "exit_code": 0,
+    "last_message_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/codex-last-message.md",
+    "prompt_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/CODEX_PROMPT.md",
+    "sandbox": "danger-full-access",
+    "status": "succeeded",
+    "stderr_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/codex-stderr.log",
+    "stdout_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/codex-stdout.log"
+  },
+  "main_apply_check": {
+    "exit_code": 0,
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "main_apply_ignored_artifact_paths": [],
+  "main_apply_result": {
+    "exit_code": 0,
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "main_apply_status": "applied",
+  "main_apply_target_files": [
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py",
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py",
+    "tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py"
+  ],
+  "main_apply_target_repo_root": "/home/barberb/portland-laws.github.io/ipfs_datasets_py",
+  "main_apply_untracked_paths": [],
+  "main_apply_validation": {
+    "commands": [
+      {
+        "command": [
+          "/home/barberb/portland-laws.github.io/.venv-dgx/bin/python3",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py",
+          "tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py",
+          "tests/unit_tests/logic/modal/test_modal_codec.py"
+        ],
+        "duration_seconds": 22.392,
+        "exit_code": 0,
+        "status": "passed",
+        "stderr_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/main-apply-validation-1.stderr.log",
+        "stdout_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/main-apply-validation-1.stdout.log"
+      }
+    ],
+    "status": "passed"
+  },
+  "main_commit": {
+    "exit_code": 0,
+    "status": "committed",
+    "stderr_tail": "",
+    "stdout_tail": "[main a9ddf97b] Apply Codex legal IR packet packet-000028\n 3 files changed, 148 insertions(+)\n"
+  },
+  "packet_id": "packet-000028",
+  "packet_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/packet.json",
+  "patch_error": null,
+  "patch_path": null,
+  "patch_status": "applied_to_main",
+  "program_synthesis_scopes": [
+    "frame_logic"
+  ],
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder",
+  "repo_root": "/home/barberb/portland-laws.github.io",
+  "run_id": "uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic",
+  "semantic_bundle_keys": [
+    "{\"action\":\"audit_frame_logic_terms\",\"family_pairs\":[],\"program_synthesis_scope\":\"frame_logic\",\"target_component\":\"modal.frame_logic\"}"
+  ],
+  "source_repo_root": "/home/barberb/portland-laws.github.io/ipfs_datasets_py",
+  "suggested_target_files": [
+    "ipfs_datasets_py/logic/modal/codec.py",
+    "ipfs_datasets_py/optimizers/logic/flogic_optimizer.py",
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py"
+  ],
+  "task_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/CODEX_TASK.md",
+  "task_source": "autoencoder_supervisor_program_synthesis_queue",
+  "todo_list_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/TODO_LIST.jsonl",
+  "todo_markdown_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/packet-000028/TODO_LIST.md",
+  "todos": [
+    {
+      "action": "audit_frame_logic_terms",
+      "citations": [
+        "46 U.S.C. 12107.",
+        "16 U.S.C. 198a",
+        "22 U.S.C. 1642e",
+        "25 U.S.C. 450a-1"
+      ],
+      "claimed_at": "2026-05-19T09:12:47+00:00",
+      "claimed_by": "codex-frame_logic",
+      "completed_at": null,
+      "created_at": "2026-05-19T09:10:45+00:00",
+      "loss_name": "autoencoder_residual_cluster",
+      "loss_value": 0.374510327609,
+      "metadata": {
+        "dedupe_signature": "{\"action\":\"audit_frame_logic_terms\",\"sample_ids\":[\"us-code-16-198a-69c109aec60f214a\",\"us-code-22-1642e-0a4a6e0aa906f829\",\"us-code-25-450a-1-b25ed1d7e3a8d3a7\",\"us-code-46-12107.-ac993296d58346dd\"],\"target_component\":\"modal.frame_logic\"}",
+        "execution_target": "codex_program_repair",
+        "hint_evidence": [
+          {
+            "hint_id": "modal-synthesis-1ad4a6841c4b5be9",
+            "priority": 0.518242019652,
+            "sample_id": "us-code-46-12107.-ac993296d58346dd"
+          },
+          {
+            "hint_id": "modal-synthesis-2cf60d3d3ba57665",
+            "priority": 0.276060016095,
+            "sample_id": "us-code-25-450a-1-b25ed1d7e3a8d3a7"
+          },
+          {
+            "hint_id": "modal-synthesis-3622896e48c8838f",
+            "priority": 0.309809220678,
+            "sample_id": "us-code-22-1642e-0a4a6e0aa906f829"
+          },
+          {
+            "hint_id": "modal-synthesis-3fc96fe021247674",
+            "priority": 0.393930054009,
+            "sample_id": "us-code-16-198a-69c109aec60f214a"
+          }
+        ],
+        "hint_ids": [
+          "modal-synthesis-1ad4a6841c4b5be9",
+          "modal-synthesis-2cf60d3d3ba57665",
+          "modal-synthesis-3622896e48c8838f",
+          "modal-synthesis-3fc96fe021247674"
+        ],
+        "optimizer_role": "program_synthesis",
+        "optimizer_stage": "typed_program_synthesis",
+        "program_synthesis_scope": "frame_logic",
+        "semantic_bundle_key": "{\"action\":\"audit_frame_logic_terms\",\"family_pairs\":[],\"program_synthesis_scope\":\"frame_logic\",\"target_component\":\"modal.frame_logic\"}",
+        "source": "modal_program_synthesis_todo_generator_v1",
+        "support_count": 4,
+        "target_component": "modal.frame_logic",
+        "vector_bundle_anchor_id": "program-d9e9b2f8aa9c4351",
+        "vector_bundle_backend": "embeddings_router",
+        "vector_bundle_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+        "vector_bundle_similarity": 1.0
+      },
+      "objective": "Frame-linked features influenced reconstruction or family scoring and should be audited as ontology terms.",
+      "priority": 41.451033,
+      "sample_ids": [
+        "us-code-46-12107.-ac993296d58346dd",
+        "us-code-16-198a-69c109aec60f214a",
+        "us-code-22-1642e-0a4a6e0aa906f829",
+        "us-code-25-450a-1-b25ed1d7e3a8d3a7"
+      ],
+      "status": "claimed",
+      "todo_id": "program-d9e9b2f8aa9c4351"
+    }
+  ],
+  "vector_bundle_anchor_ids": [
+    "program-d9e9b2f8aa9c4351"
+  ],
+  "vector_claim_report": {
+    "active_target_file_lane_count": 3,
+    "anchor_id": "program-d9e9b2f8aa9c4351",
+    "available_candidate_count": 1,
+    "backend": "embeddings_router",
+    "candidate_count": 1,
+    "fallback_reason": "",
+    "fill_min_similarity": 0.4,
+    "fill_selected_count": 0,
+    "indexed_count": 8,
+    "max_bundle_wait_seconds": 120.0,
+    "min_bundle_size": 2,
+    "min_similarity": 0.5,
+    "mode": "vector",
+    "oldest_candidate_age_seconds": 122.34,
+    "path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+    "provider": "local_adapter",
+    "refreshed_count": 0,
+    "selected_count": 1,
+    "selected_ids": [
+      "program-d9e9b2f8aa9c4351"
+    ],
+    "stale_drain_lease": {
+      "acquired": true,
+      "enabled": true,
+      "expires_at": "2026-05-19T09:14:47+00:00",
+      "key": "frame_logic|modal.frame_logic|{\"action\":\"audit_frame_logic_terms\",\"family_pairs\":[],\"program_synthesis_scope\":\"frame_logic\",\"target_component\":\"modal.frame_logic\"}",
+      "path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.jsonl.stale-bundle-leases.json"
+    },
+    "target_file_lane_lock_scopes": [
+      "compiler_registry"
+    ],
+    "target_file_lane_lock_seconds": 1200.0,
+    "target_file_lane_locked_count": 0
+  },
+  "worker_id": "codex-frame_logic",
+  "worktree_error": null,
+  "worktree_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-frame_logic/worktrees/agent-codex-frame_logic-packet-000028-20260519_091247"
+}

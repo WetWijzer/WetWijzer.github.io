@@ -1,0 +1,14 @@
+Implemented a deterministic modal-family cue refinement focused on deontic/frame/temporal conflict cases.
+
+**Changes**
+- Added `during` as a temporal scope token in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000024-20260519_114212/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:91).
+- Strengthened deontic competing-scope backfill logic in [_apply_competing_scope_backfill](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000024-20260519_114212/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1566):
+  - Added frame-scope signal aggregation.
+  - Upgraded deontic→conditional backfill to also lift weak conditional evidence.
+  - Expanded deontic→temporal backfill to apply when temporal scope is present (including token-driven scope) and temporal evidence is weak.
+  - Added a new deontic→frame backfill path for dense deontic clauses with frame-scope context.
+- Added regression tests in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000024-20260519_114212/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1599) and [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000024-20260519_114212/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1806).
+
+**Tests**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py -k "during_as_temporal_scope_for_deontic_competition or backfills_frame_share_for_dense_deontic_scope_with_frame_scope_phrase or backfills_temporal_share_for_dense_deontic_scope_with_temporal_scope_phrase or backfills_deontic_share_for_frame_scope_with_deontic_tokens or backfills_frame_share_for_statutory_reference_conditional_competition"` passed.
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` passed (`107 passed`).

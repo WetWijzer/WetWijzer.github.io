@@ -1,0 +1,16 @@
+Implemented a small deterministic hardening for adaptive ambiguity emission so near-threshold family margins still produce explicit ambiguity records.
+
+- Updated adaptive margin gating to use a float-tolerant threshold check (`epsilon=1e-12`) in all relevant adaptive paths:
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000167-20260519_122546/ipfs_datasets_py/logic/modal/compiler.py#L804)
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000167-20260519_122546/ipfs_datasets_py/logic/modal/compiler.py#L844)
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000167-20260519_122546/ipfs_datasets_py/logic/modal/compiler.py#L1230)
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000167-20260519_122546/ipfs_datasets_py/logic/modal/compiler.py#L1434)
+  - Added helper: [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000167-20260519_122546/ipfs_datasets_py/logic/modal/compiler.py#L1602)
+
+- Added a regression test that verifies `temporal->temporal` explicit ambiguity is still emitted when margin is effectively at threshold but slightly above due floating-point representation:
+  - [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000167-20260519_122546/tests/unit_tests/logic/modal/test_modal_codec.py#L2325)
+
+Tests run:
+
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k 'marks_temporal_self_pair_as_compiler_required_policy or includes_temporal_self_pair_when_margin_is_threshold_with_float_noise or uses_signal_free_pair_policy_for_temporal_deontic_adaptive_ambiguity or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or emits_explicit_ambiguity_for_required_margin_bundle_pairs'`
+- Result: `5 passed`

@@ -1,0 +1,413 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index f614a5e8..5b1c2d95 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -464,11 +464,16 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "knows",
+                     "finds",
+                     "determines",
++                    "as determined by",
++                    "certification",
++                    "certify",
+                     "has reason to know",
+                     "has reason to believe",
++                    "in the judgment of",
+                     "knowledge of",
+                     "knowingly",
+                     "reason to believe",
++                    "to the satisfaction of",
+                 ),
+                 (ModalSystem.S4, ModalSystem.S5),
+             ),
+@@ -508,9 +513,12 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "provided that",
+                     "subject to",
+                     "as provided by",
++                    "as otherwise provided in",
+                     "except as otherwise provided",
+                     "except as provided in",
+                     "except as provided by",
++                    "except as required by",
++                    "except as otherwise required",
+                     "except to the extent",
+                     "to the extent provided",
+                     "to the extent that",
+@@ -530,6 +538,12 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "subject only to",
+                     "subject, however, to",
+                     "subject however to",
++                    "subject to subsection",
++                    "subject to paragraph",
++                    "subject to subparagraph",
++                    "subject to this section",
++                    "subject to this chapter",
++                    "subject to this title",
+                     "with respect to",
+                 ),
+                 (ModalSystem.KD,),
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 316b55fa..84fc3fd8 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -32,7 +32,10 @@ _CONDITION_PREFIXES = ("provided that", "subject to", "if", "when", "before", "u
+ _EXCEPTION_PREFIXES = ("except that", "except as", "unless", "except")
+ _CONDITIONAL_SCOPE_PHRASES = (
+     "as provided by",
++    "as otherwise provided in",
+     "except as provided by",
++    "except as required by",
++    "except as otherwise required",
+     "in the case of",
+     "in the event that",
+     "notwithstanding",
+@@ -49,6 +52,12 @@ _CONDITIONAL_SCOPE_PHRASES = (
+     "subject, however, to",
+     "subject however to",
+     "subject to the terms and conditions",
++    "subject to subsection",
++    "subject to paragraph",
++    "subject to subparagraph",
++    "subject to this section",
++    "subject to this chapter",
++    "subject to this title",
+ )
+ _STATUTORY_SCOPE_REFERENCE_PHRASES = (
+     "as provided by",
+@@ -59,14 +68,21 @@ _STATUTORY_SCOPE_REFERENCE_PHRASES = (
+     "under this chapter",
+     "under this section",
+     "under this title",
++    "under this subtitle",
++    "under this part",
++    "under this subchapter",
+     "under subsection",
+     "under paragraph",
+     "under subparagraph",
+ )
+ _CONDITIONAL_SCOPE_TOKENS = frozenset(
+     {
++        "except",
+         "notwithstanding",
++        "provided",
+         "pursuant",
++        "subject",
++        "unless",
+     }
+ )
+ _ALETHIC_SCOPE_TOKENS = frozenset(
+@@ -142,6 +158,11 @@ _TEMPORAL_SCOPE_PHRASES = (
+ _EPISTEMIC_SCOPE_TOKENS = frozenset(
+     {
+         "aware",
++        "certification",
++        "certifications",
++        "certified",
++        "certifies",
++        "certify",
+         "determine",
+         "determined",
+         "determines",
+@@ -158,12 +179,15 @@ _EPISTEMIC_SCOPE_TOKENS = frozenset(
+     }
+ )
+ _EPISTEMIC_SCOPE_PHRASES = (
++    "as determined by",
+     "finding that",
+     "findings that",
+     "has reason to believe",
+     "has reason to know",
++    "in the judgment of",
+     "knowledge of",
+     "reason to believe",
++    "to the satisfaction of",
+ )
+ _DYNAMIC_SCOPE_TOKENS = frozenset(
+     {
+@@ -412,11 +436,13 @@ _GENERIC_FRAME_STRUCTURAL_BONUS_DEBIAS_FACTOR = 0.25
+ _GENERIC_FRAME_PRESENT_CUE_SCOPE_BONUS_FACTOR = 0.35
+ _GENERIC_FRAME_NORMATIVE_SCOPE_SOFT_CAP = 1.0
+ _DEONTIC_COMPETING_SCOPE_SOFT_CAP = 3.0
++_DEONTIC_DENSE_COMPETING_SCOPE_SOFT_CAP = 2.25
+ _TEMPORAL_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _CONDITIONAL_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT = 0.12
+ _GENERIC_FRAME_STRONG_TEMPORAL_SCOPE_BACKFILL_WEIGHT = 0.35
+ _COMPETING_SCOPE_BACKFILL_WEIGHT = 0.12
++_DEONTIC_STRONG_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.35
+ _DEONTIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 3.0
+ _TEMPORAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 3.0
+ _CONDITIONAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 2.0
+@@ -424,6 +450,7 @@ _CONDITIONAL_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_DYNAMIC_SCOPE_BACKFILL_TRIGGER = 2.0
+ _DEONTIC_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 3.0
+ _DEONTIC_DYNAMIC_SCOPE_BACKFILL_TRIGGER = 3.0
++_DEONTIC_EPISTEMIC_SCOPE_BACKFILL_TRIGGER = 3.0
+ _CONDITIONAL_FRAME_SCOPE_BACKFILL_TRIGGER = 2.0
+ _FRAME_DEONTIC_SCOPE_BACKFILL_TRIGGER = 0.35
+ _FRAME_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 0.35
+@@ -437,6 +464,7 @@ _TEMPORAL_EPISTEMIC_SCOPE_BACKFILL_TRIGGER = 3.0
+ _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.35
+ _STATUTORY_FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.35
+ _STATUTORY_FRAME_DEONTIC_SCOPE_BACKFILL_WEIGHT = 0.6
++_STATUTORY_FRAME_STRONG_DEONTIC_SCOPE_BACKFILL_WEIGHT = 0.9
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+     {
+         "compliance",
+@@ -1303,8 +1331,6 @@ def _apply_deontic_competing_scope_soft_cap(
+     """Prevent repeated deontic cues from overwhelming competing family evidence."""
+     deontic_family = ModalLogicFamily.DEONTIC.value
+     deontic_count = float(counts.get(deontic_family, 0.0))
+-    if deontic_count <= _DEONTIC_COMPETING_SCOPE_SOFT_CAP:
+-        return
+     has_temporal_competition = (
+         bool(signals.get("has_temporal_scope"))
+         or float(counts.get(ModalLogicFamily.TEMPORAL.value, 0.0)) > 0.0
+@@ -1330,6 +1356,17 @@ def _apply_deontic_competing_scope_soft_cap(
+         or bool(signals.get("has_dynamic_cue"))
+         or float(counts.get(ModalLogicFamily.DYNAMIC.value, 0.0)) > 0.0
+     )
++    competition_count = sum(
++        1
++        for has_competition in (
++            has_temporal_competition,
++            has_frame_competition,
++            has_conditional_competition,
++            has_epistemic_competition,
++            has_dynamic_competition,
++        )
++        if has_competition
++    )
+     if not (
+         has_temporal_competition
+         or has_frame_competition
+@@ -1338,8 +1375,15 @@ def _apply_deontic_competing_scope_soft_cap(
+         or has_dynamic_competition
+     ):
+         return
+-    overflow = deontic_count - _DEONTIC_COMPETING_SCOPE_SOFT_CAP
+-    counts[deontic_family] = _DEONTIC_COMPETING_SCOPE_SOFT_CAP + math.log1p(overflow)
++    soft_cap = (
++        _DEONTIC_DENSE_COMPETING_SCOPE_SOFT_CAP
++        if competition_count >= 3
++        else _DEONTIC_COMPETING_SCOPE_SOFT_CAP
++    )
++    if deontic_count <= soft_cap:
++        return
++    overflow = deontic_count - soft_cap
++    counts[deontic_family] = soft_cap + math.log1p(overflow)
+ 
+ 
+ def _apply_temporal_competing_scope_soft_cap(
+@@ -1444,9 +1488,19 @@ def _apply_generic_frame_scope_backfill(
+             _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT,
+         )
+     if bool(signals.get("has_deontic_scope")):
++        deontic_backfill = _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT
++        if (
++            bool(signals.get("has_statutory_scope_reference"))
++            or bool(signals.get("has_deontic_scope_phrase"))
++            or bool(signals.get("has_deontic_cue"))
++        ):
++            deontic_backfill = max(
++                deontic_backfill,
++                _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            )
+         counts[ModalLogicFamily.DEONTIC.value] = max(
+             float(counts.get(ModalLogicFamily.DEONTIC.value, 0.0)),
+-            _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT,
++            deontic_backfill,
+         )
+     if bool(signals.get("has_epistemic_scope")):
+         counts[ModalLogicFamily.EPISTEMIC.value] = max(
+@@ -1489,7 +1543,18 @@ def _apply_competing_scope_backfill(
+         and conditional_count <= 0.0
+         and bool(signals.get("has_condition_or_exception_scope"))
+     ):
+-        counts[conditional_family] = _COMPETING_SCOPE_BACKFILL_WEIGHT
++        conditional_backfill = _COMPETING_SCOPE_BACKFILL_WEIGHT
++        if (
++            bool(signals.get("has_conditional_scope_phrase"))
++            or bool(signals.get("has_conditional_scope_token"))
++            or bool(signals.get("has_condition_clause"))
++            or bool(signals.get("has_exception_clause"))
++        ):
++            conditional_backfill = max(
++                conditional_backfill,
++                _DEONTIC_STRONG_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            )
++        counts[conditional_family] = conditional_backfill
+     if (
+         conditional_count >= _CONDITIONAL_FRAME_SCOPE_BACKFILL_TRIGGER
+         and frame_count <= 0.0
+@@ -1544,9 +1609,31 @@ def _apply_competing_scope_backfill(
+             or bool(signals.get("has_temporal_within_scope"))
+         )
+     ):
++        temporal_backfill = _COMPETING_SCOPE_BACKFILL_WEIGHT
++        if (
++            bool(signals.get("has_temporal_scope_phrase"))
++            or bool(signals.get("has_calendar_date_scope"))
++            or bool(signals.get("has_temporal_within_scope"))
++        ):
++            temporal_backfill = max(
++                temporal_backfill,
++                _DEONTIC_STRONG_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            )
+         counts[temporal_family] = max(
+             float(counts.get(temporal_family, 0.0)),
+-            _COMPETING_SCOPE_BACKFILL_WEIGHT,
++            temporal_backfill,
++        )
++    if (
++        deontic_count >= _DEONTIC_EPISTEMIC_SCOPE_BACKFILL_TRIGGER
++        and epistemic_count <= 0.0
++        and bool(
++            signals.get("has_epistemic_scope")
++            or signals.get("has_epistemic_cue")
++        )
++    ):
++        counts[epistemic_family] = max(
++            float(counts.get(epistemic_family, 0.0)),
++            _DEONTIC_STRONG_COMPETING_SCOPE_BACKFILL_WEIGHT,
+         )
+     if (
+         deontic_count >= _DEONTIC_DYNAMIC_SCOPE_BACKFILL_TRIGGER
+@@ -1702,19 +1789,19 @@ def _apply_statutory_reference_frame_scope_backfill(
+     """Backfill frame-family support for statutory-reference scope conflicts."""
+     if not bool(signals.get("has_statutory_scope_reference")):
+         return
+-    has_frame_signal = (
+-        bool(signals.get("has_frame_context"))
+-        or bool(signals.get("has_frame_scope_phrase"))
+-        or bool(signals.get("has_frame_editorial_scope_phrase"))
+-    )
+-    if not has_frame_signal:
+-        return
+     frame_family = ModalLogicFamily.FRAME.value
+     frame_count = float(counts.get(frame_family, 0.0))
+     conditional_family = ModalLogicFamily.CONDITIONAL_NORMATIVE.value
+     deontic_family = ModalLogicFamily.DEONTIC.value
+     conditional_count = float(counts.get(conditional_family, 0.0))
+     deontic_count = float(counts.get(deontic_family, 0.0))
++    has_frame_signal = (
++        bool(signals.get("has_frame_context"))
++        or bool(signals.get("has_frame_scope_phrase"))
++        or bool(signals.get("has_frame_editorial_scope_phrase"))
++    )
++    if not has_frame_signal and conditional_count <= 0.0 and deontic_count <= 0.0:
++        return
+     if (
+         conditional_count > 0.0
+         and not bool(signals.get("has_condition_clause"))
+@@ -1729,9 +1816,15 @@ def _apply_statutory_reference_frame_scope_backfill(
+         deontic_count > 0.0
+         and not bool(signals.get("has_deontic_scope_phrase"))
+     ):
++        deontic_frame_backfill = _STATUTORY_FRAME_DEONTIC_SCOPE_BACKFILL_WEIGHT
++        if deontic_count >= _DEONTIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER:
++            deontic_frame_backfill = max(
++                deontic_frame_backfill,
++                _STATUTORY_FRAME_STRONG_DEONTIC_SCOPE_BACKFILL_WEIGHT,
++            )
+         counts[frame_family] = max(
+             frame_count,
+-            _STATUTORY_FRAME_DEONTIC_SCOPE_BACKFILL_WEIGHT,
++            deontic_frame_backfill,
+         )
+ 
+ 
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index fa33352f..72ec33b7 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -61,6 +61,23 @@ def _has_adaptive_explicit_pair_from_source(
+     )
+ 
+ 
++def _adaptive_pair_metadata(
++    result,
++    *,
++    predicted_family: str,
++    target_family: str,
++):
++    for ambiguity in result.ambiguities:
++        if (
++            ambiguity.ambiguity_type.startswith("adaptive_")
++            and ambiguity.ambiguity_type != "adaptive_family_margin_low"
++            and ambiguity.metadata.get("predicted_family") == predicted_family
++            and ambiguity.metadata.get("target_family") == target_family
++        ):
++            return ambiguity.metadata
++    return None
++
++
+ def test_parser_recovers_article_prefixed_commission_heading() -> None:
+     parser = LegalModalParser()
+ 
+@@ -853,3 +870,66 @@ def test_compiler_emits_explicit_deontic_self_pair_for_low_family_margin() -> No
+         predicted_family=ModalLogicFamily.DEONTIC.value,
+         target_family=ModalLogicFamily.DEONTIC.value,
+     )
++
++
++def test_compiler_backfills_frame_share_for_statutory_deontic_scope() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        (
++            "An entity shall submit a report under section 1301 and shall maintain "
++            "records."
++        ),
++        document_id="compiler-ambiguity-deontic-frame-statutory-backfill",
++    )
++    metadata = _adaptive_pair_metadata(
++        result,
++        predicted_family=ModalLogicFamily.DEONTIC.value,
++        target_family=ModalLogicFamily.FRAME.value,
++    )
++    assert metadata is not None
++    assert float(metadata.get("target_share", 0.0)) > 0.0
++
++
++def test_compiler_recognizes_as_otherwise_provided_in_conditional_scope() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        (
++            "The authority is administered by the Secretary as otherwise provided in "
++            "section 585 of this title."
++        ),
++        document_id="compiler-ambiguity-frame-conditional-as-otherwise-provided-in",
++    )
++    metadata = _adaptive_pair_metadata(
++        result,
++        predicted_family=ModalLogicFamily.FRAME.value,
++        target_family=ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++    )
++    assert metadata is not None
++    assert float(metadata.get("target_share", 0.0)) > 0.0
++
++
++def test_compiler_backfills_epistemic_share_for_dense_deontic_determinations() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        (
++            "The Secretary shall issue a determination and shall certify findings and "
++            "shall provide a written determination of eligibility."
++        ),
++        document_id="compiler-ambiguity-deontic-epistemic-determination-backfill",
++    )
++    metadata = _adaptive_pair_metadata(
++        result,
++        predicted_family=ModalLogicFamily.DEONTIC.value,
++        target_family=ModalLogicFamily.EPISTEMIC.value,
++    )
++    assert metadata is not None
++    assert float(metadata.get("target_share", 0.0)) > 0.0

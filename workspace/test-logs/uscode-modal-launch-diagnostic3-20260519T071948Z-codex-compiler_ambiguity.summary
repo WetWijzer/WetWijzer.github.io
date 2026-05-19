@@ -1,0 +1,72 @@
+{
+  "codex_apply_mode": "apply_to_main",
+  "codex_bundle_mode": "vector",
+  "codex_claimed_total": 1,
+  "codex_commit_mode": "commit_applied",
+  "codex_exec_mode": "packet_only",
+  "codex_execution_count": 0,
+  "codex_execution_failure_count": 0,
+  "codex_main_apply_count": 0,
+  "codex_main_apply_failure_count": 0,
+  "codex_main_apply_repair_count": 0,
+  "codex_merge_repair_attempts": 1,
+  "codex_merge_repair_mode": "apply_3way",
+  "codex_packet_count": 1,
+  "codex_patch_count": 0,
+  "codex_program_synthesis_execution_mode": "queued_for_external_codex_worker",
+  "codex_scope": "compiler_ambiguity",
+  "codex_task_embeddings_provider": "local_adapter",
+  "codex_vector_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-launch-diagnostic3-20260519T071948Z-autoencoder.codex-task-vectors.json",
+  "codex_vector_max_bundle_wait_seconds": 0.0,
+  "codex_vector_min_bundle_size": 1,
+  "codex_vector_min_similarity": 0.72,
+  "codex_worktree_count": 1,
+  "cycles": 40,
+  "elapsed_seconds": 45.337,
+  "final": true,
+  "finished_at": "2026-05-19T07:20:34+00:00",
+  "latest_codex_vector_claim_report": {
+    "active_target_file_lane_count": 0,
+    "available_candidate_count": 0,
+    "candidate_count": 0,
+    "max_bundle_wait_seconds": 0.0,
+    "min_bundle_size": 1,
+    "mode": "vector",
+    "oldest_candidate_age_seconds": 0.0,
+    "selected_count": 0,
+    "target_file_lane_lock_scopes": [
+      "compiler_registry"
+    ],
+    "target_file_lane_lock_seconds": 1200.0,
+    "target_file_lane_locked_count": 0
+  },
+  "latest_queue_counts": {
+    "claimed": 1,
+    "failed_validation": 1,
+    "pending": 14
+  },
+  "latest_role_queue_counts": {
+    "autoencoder_sgd": {
+      "failed_validation": 1,
+      "pending": 11
+    },
+    "program_synthesis": {
+      "claimed": 1,
+      "pending": 3
+    }
+  },
+  "latest_stop_reason": "signal_15",
+  "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-launch-diagnostic3-20260519T071948Z-codex-compiler_ambiguity.jsonl",
+  "loop_role": "codex",
+  "program_synthesis_claimed": 1,
+  "program_synthesis_completed": 0,
+  "program_synthesis_pending": 3,
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-launch-diagnostic3-20260519T071948Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-launch-diagnostic3-20260519T071948Z-autoencoder",
+  "run_id": "uscode-modal-launch-diagnostic3-20260519T071948Z-codex-compiler_ambiguity",
+  "started_at": "2026-05-19T07:19:49+00:00",
+  "stopped_by_signal": 15,
+  "updated_at": "2026-05-19T07:20:34+00:00",
+  "work_dir": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-launch-diagnostic3-20260519T071948Z-codex-compiler_ambiguity",
+  "worker_id": "codex-compiler_ambiguity"
+}

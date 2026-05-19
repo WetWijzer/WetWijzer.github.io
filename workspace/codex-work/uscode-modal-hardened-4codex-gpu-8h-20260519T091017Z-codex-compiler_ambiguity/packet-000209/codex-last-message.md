@@ -1,0 +1,16 @@
+Implemented the compiler ambiguity-policy hardening for this packet with deterministic coverage.
+
+- Updated margin metadata to always reflect the exact computed policy margin (single-rounding from `family_margin`) in both adaptive ambiguity paths:
+  - [compiler.py:872](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000209-20260519_131150/ipfs_datasets_py/logic/modal/compiler.py:872)
+  - [compiler.py:1300](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000209-20260519_131150/ipfs_datasets_py/logic/modal/compiler.py:1300)
+
+- Added a new parametrized regression test that exercises all packet family pairs and validates explicit adaptive ambiguity emission, compiler-required policy tagging, margin, and priority:
+  - [test_legal_modal_parser_deterministic_rules.py:66](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000209-20260519_131150/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:66)
+  - Added `pytest` import at [test_legal_modal_parser_deterministic_rules.py:11](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000209-20260519_131150/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:11)
+
+Tests run:
+
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "autoencoder_margins or frame_to_conditional_and_temporal or deontic_to_frame_and_temporal or deontic_to_conditional_normative or temporal_to_frame or temporal_to_deontic"`  
+  Result: `12 passed, 21 deselected`
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py`  
+  Result: `33 passed`

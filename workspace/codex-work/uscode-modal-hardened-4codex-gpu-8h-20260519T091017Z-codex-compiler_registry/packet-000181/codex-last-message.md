@@ -1,0 +1,22 @@
+Implemented a narrow deterministic cue-scoring refinement in the compiler-registry lane, focused on the family-conflict bundles you listed.
+
+**What Changed**
+- Added explicit conditional-scope detection helper and reused it in scoring logic: [spacy_modal_codec.py:2463](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000181-20260519_145623/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:2463)
+- Refined logit boosts to better represent competing scope evidence for:
+  - `deontic -> conditional_normative`
+  - `deontic -> temporal`
+  - `alethic -> deontic`
+  at [spacy_modal_codec.py:2473](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000181-20260519_145623/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:2473)
+- Debiased frame structural bonus when frame evidence is generic/contextual and strong non-frame scope is present, reducing `frame` over-dominance in conditional/statutory/deontic-temporal competition: [spacy_modal_codec.py:2688](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000181-20260519_145623/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:2688)
+
+**Tests Added**
+- Added focused decoder tests for the updated cue-family competition behavior:
+  - [test_spacy_modal_codec.py:523](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000181-20260519_145623/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:523)
+  - [test_spacy_modal_codec.py:598](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000181-20260519_145623/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:598)
+  - [test_spacy_modal_codec.py:657](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000181-20260519_145623/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:657)
+
+**Validation Run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` (127 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "required_margin_bundle_pairs or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or under_this_section_as_deontic_frame_adaptive_signal or surfaces_deontic_temporal_adaptive_ambiguity or surfaces_deontic_conditional_adaptive_ambiguity or treats_zero_margin_frame_conditional_priority_pair_as_outvoted_adaptive_ambiguity or uses_signal_free_pair_policy_for_deontic_temporal_adaptive_ambiguity or uses_signal_free_pair_policy_for_deontic_conditional_adaptive_ambiguity or uses_signal_free_pair_policy_for_alethic_deontic_adaptive_ambiguity"` (9 passed)
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (17 passed)
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py` (32 passed)

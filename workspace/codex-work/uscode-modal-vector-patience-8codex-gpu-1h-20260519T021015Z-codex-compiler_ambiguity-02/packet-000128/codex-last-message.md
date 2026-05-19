@@ -1,0 +1,16 @@
+Implemented a policy-coverage fix for compiled-primary adaptive ambiguity emission and added focused regression tests.
+
+**What Changed**
+- Replaced hardcoded compiled-primary fallback pair expansion with policy-driven expansion from `signal_free_adaptive_ambiguity_targets`, while skipping self-pairs to avoid redundant/self conflicts:
+  - [compiler.py#L805](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000128-20260519_022939/ipfs_datasets_py/logic/modal/compiler.py#L805)
+
+- Added tests to lock in compiled-primary explicit ambiguity coverage for the requested family-policy directions:
+  - `temporal -> deontic`, `temporal -> frame`
+  - `frame -> deontic`, `frame -> conditional_normative`
+  - `conditional_normative -> epistemic`
+  - [test_modal_codec.py#L2097](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000128-20260519_022939/tests/unit_tests/logic/modal/test_modal_codec.py#L2097)
+
+**Validation**
+- Ran:
+  - `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary or signal_free_adaptive_ambiguity_pair_policy_covers_required_bundle_pairs or signal_free_adaptive_ambiguity_targets_are_ordered_and_directional"`
+- Result: `6 passed, 152 deselected`

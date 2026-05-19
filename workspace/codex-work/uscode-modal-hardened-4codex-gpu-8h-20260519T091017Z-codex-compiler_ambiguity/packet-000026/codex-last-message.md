@@ -1,0 +1,15 @@
+Implemented a narrow compiler-ambiguity policy hardening for the packet family-pair bundle.
+
+- Promoted `alethic->conditional_normative` into the priority signal-free adaptive ambiguity policy table so low/zero-margin cases are treated as explicit high-priority ambiguity conflicts:
+  - [modal_registry.py:193](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000026-20260519_100114/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:193)
+
+- Updated registry tests to reflect the promoted priority target and strengthened recurrent-pair coverage (including `temporal->frame` and `alethic->conditional_normative`):
+  - [test_modal_registry.py:281](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000026-20260519_100114/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:281)
+
+- Expanded adaptive compiler policy-pair regression expectations to include `alethic->conditional_normative`:
+  - [test_modal_codec.py:2482](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000026-20260519_100114/tests/unit_tests/logic/modal/test_modal_codec.py:2482)
+
+Tests run (all passing):
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (13 passed)
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "recurrent_policy_pairs or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or orders_priority_adaptive_targets_before_non_priority_targets"` (3 passed)
+3. `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "compiler_emits_explicit"` (15 passed)

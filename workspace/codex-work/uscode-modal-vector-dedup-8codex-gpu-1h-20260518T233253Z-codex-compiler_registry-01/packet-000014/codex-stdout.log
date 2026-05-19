@@ -1,0 +1,17 @@
+Implemented a deterministic cue-rule refinement for the modal compiler registry focused on the reported family confusions.
+
+**What changed**
+- Expanded high-signal deontic/temporal/conditional cue terms in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000014-20260518_234939/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:259):
+  - Deontic: added obligation-phrase cues (`has a duty to`, `have a duty to`, `under an obligation to`).
+  - Temporal: added deadline/calendar cues (`not later than`, `not earlier than`, `no later than`, `no earlier than`, `effective date`, `fiscal year`, `calendar year`).
+  - Conditional normative: added scoped conditional phrases (`in the case of`, `for purposes of`, `for the purposes of`, `notwithstanding`, `with respect to`).
+- Extended deontic soft-cap competition logic in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000014-20260518_234939/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1128) so repeated deontic cues are also capped when competing conditional evidence is present.
+- Updated/additional tests in:
+  - [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000014-20260518_234939/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:25)
+  - [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000014-20260518_234939/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:587)
+  - [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000014-20260518_234939/tests/unit_tests/logic/modal/test_modal_codec.py:3988)
+
+**Validation**
+- Ran:
+  - `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py tests/unit_tests/logic/modal/test_modal_codec.py`
+- Result: `186 passed`

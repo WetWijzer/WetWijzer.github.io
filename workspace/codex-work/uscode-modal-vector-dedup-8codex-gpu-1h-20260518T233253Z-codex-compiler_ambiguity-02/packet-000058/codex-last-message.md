@@ -1,0 +1,11 @@
+Implemented the ambiguity-policy fix for `modal.compiler.ambiguity` by enabling explicit self-pair ambiguity for `epistemic->epistemic` low margins.
+
+**Changes**
+- Added `("epistemic", "epistemic")` to signal-free adaptive ambiguity pairs in [modal_registry.py:79](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000058-20260519_001121/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:79).
+- Updated registry policy assertions in [test_modal_registry.py:99](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000058-20260519_001121/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:99) and [test_modal_registry.py:127](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000058-20260519_001121/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:127) (including aligning the deontic target list with existing `dynamic` policy coverage).
+- Added regression test for explicit epistemic self-pair low-margin ambiguity in [test_modal_codec.py:3312](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000058-20260519_001121/tests/unit_tests/logic/modal/test_modal_codec.py:3312).
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` -> `10 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "epistemic_self_pair_adaptive_ambiguity_for_low_runner_up_margin or epistemic_deontic_contested_adaptive_ambiguity"` -> `2 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "frame_deontic or frame_temporal or epistemic_self_pair_adaptive_ambiguity_for_low_runner_up_margin"` -> `5 passed`

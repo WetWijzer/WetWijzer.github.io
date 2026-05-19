@@ -1,0 +1,13 @@
+Adjusted the adaptive ambiguity pair policy ordering in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000160-20260519_031122/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L75) to make `conditional_normative` targets deterministic and non-duplicated:
+- Removed the duplicate `conditional_normative -> dynamic` entry.
+- Kept target order as `deontic`, `temporal`, `epistemic`, `frame`, `dynamic`, so explicit ambiguity policies for `conditional_normative -> deontic` and `conditional_normative -> frame` are stable.
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -q` → `11 passed`
+- `pytest -q` on 6 focused compiler tests for:
+  - `temporal -> deontic`
+  - `frame -> deontic`
+  - `conditional_normative -> deontic`
+  - `conditional_normative -> frame`
+  - related priority/signal cases  
+  Result: `6 passed`

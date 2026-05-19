@@ -1,0 +1,26 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 8071258a..a5968dce 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -115,10 +115,6 @@ SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] = (
+         ModalLogicFamily.TEMPORAL.value,
+         ModalLogicFamily.DEONTIC.value,
+     ),
+-    (
+-        ModalLogicFamily.TEMPORAL.value,
+-        ModalLogicFamily.ALETHIC.value,
+-    ),
+     (
+         ModalLogicFamily.TEMPORAL.value,
+         ModalLogicFamily.FRAME.value,
+@@ -202,10 +198,6 @@ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...
+         ModalLogicFamily.TEMPORAL.value,
+         ModalLogicFamily.DEONTIC.value,
+     ),
+-    (
+-        ModalLogicFamily.TEMPORAL.value,
+-        ModalLogicFamily.ALETHIC.value,
+-    ),
+     (
+         ModalLogicFamily.TEMPORAL.value,
+         ModalLogicFamily.FRAME.value,

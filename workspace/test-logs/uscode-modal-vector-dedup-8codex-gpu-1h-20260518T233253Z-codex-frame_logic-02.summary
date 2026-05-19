@@ -19,43 +19,43 @@
   "codex_vector_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder.codex-task-vectors.json",
   "codex_vector_min_similarity": 0.55,
   "codex_worktree_count": 0,
-  "cycles": 70,
-  "elapsed_seconds": 352.742,
-  "final": false,
+  "cycles": 894,
+  "elapsed_seconds": 4493.596,
+  "final": true,
+  "finished_at": "2026-05-19T00:47:57+00:00",
   "latest_codex_vector_claim_report": {
     "candidate_count": 0,
     "mode": "vector",
     "selected_count": 0
   },
   "latest_queue_counts": {
-    "claimed": 9,
-    "completed": 26,
-    "failed_validation": 71,
-    "pending": 73
+    "completed": 186,
+    "failed_validation": 510,
+    "pending": 470
   },
   "latest_role_queue_counts": {
     "autoencoder_sgd": {
-      "completed": 25,
-      "failed_validation": 71,
-      "pending": 68
+      "completed": 136,
+      "failed_validation": 482,
+      "pending": 470
     },
     "program_synthesis": {
-      "claimed": 9,
-      "completed": 1,
-      "pending": 5
+      "completed": 50,
+      "failed_validation": 28
     }
   },
-  "latest_stop_reason": "waiting_for_program_synthesis_todos",
+  "latest_stop_reason": "signal_15",
   "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-frame_logic-02.jsonl",
   "loop_role": "codex",
-  "program_synthesis_claimed": 9,
-  "program_synthesis_completed": 1,
-  "program_synthesis_pending": 5,
+  "program_synthesis_claimed": 0,
+  "program_synthesis_completed": 50,
+  "program_synthesis_pending": 0,
   "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder.jsonl",
   "queue_run_id": "uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder",
   "run_id": "uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-frame_logic-02",
   "started_at": "2026-05-18T23:33:04+00:00",
-  "updated_at": "2026-05-18T23:38:56+00:00",
+  "stopped_by_signal": 15,
+  "updated_at": "2026-05-19T00:47:57+00:00",
   "work_dir": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-frame_logic-02",
   "worker_id": "codex-frame_logic-02"
 }

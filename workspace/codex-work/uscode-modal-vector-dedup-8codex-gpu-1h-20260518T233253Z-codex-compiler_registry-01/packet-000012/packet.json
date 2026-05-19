@@ -1,10 +1,104 @@
 {
   "claimed_at": "2026-05-18T23:34:07+00:00",
+  "codex_apply_mode": "apply_to_main",
+  "codex_exec": {
+    "command": [
+      "codex",
+      "exec",
+      "--cd",
+      "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000012-20260518_233406",
+      "--sandbox",
+      "danger-full-access",
+      "--output-last-message",
+      "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/codex-last-message.md",
+      "--model",
+      "gpt-5.3-codex",
+      "-"
+    ],
+    "duration_seconds": 445.671,
+    "exit_code": 0,
+    "last_message_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/codex-last-message.md",
+    "prompt_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/CODEX_PROMPT.md",
+    "sandbox": "danger-full-access",
+    "status": "succeeded",
+    "stderr_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/codex-stderr.log",
+    "stdout_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/codex-stdout.log"
+  },
+  "main_apply_check": {
+    "exit_code": 1,
+    "stderr_tail": "error: patch failed: ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:364\nerror: ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py: patch does not apply\n",
+    "stdout_tail": ""
+  },
+  "main_apply_ignored_artifact_paths": [],
+  "main_apply_merge_repair": {
+    "apply_3way": {
+      "exit_code": 0,
+      "stderr_tail": "Applied patch to 'ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py' cleanly.\nApplied patch to 'tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py' cleanly.\n",
+      "stdout_tail": ""
+    },
+    "cleanup": {
+      "exit_code": 0,
+      "stderr_tail": "",
+      "stdout_tail": ""
+    },
+    "mode": "apply_3way",
+    "status": "repaired",
+    "target_files": [
+      "ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py",
+      "tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py"
+    ],
+    "worktree_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/merge-repair-worktrees/agent-packet-000012-merge-repair-20260518_234133"
+  },
+  "main_apply_repair_status": "repaired",
+  "main_apply_repaired_check": {
+    "exit_code": 0,
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "main_apply_result": {
+    "exit_code": 0,
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "main_apply_status": "applied",
+  "main_apply_target_files": [
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py",
+    "tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py"
+  ],
+  "main_apply_target_repo_root": "/home/barberb/portland-laws.github.io/ipfs_datasets_py",
+  "main_apply_untracked_paths": [],
+  "main_apply_validation": {
+    "commands": [
+      {
+        "command": [
+          "/home/barberb/portland-laws.github.io/.venv-dgx/bin/python3",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py",
+          "tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py",
+          "tests/unit_tests/logic/modal/test_modal_codec.py"
+        ],
+        "duration_seconds": 17.81,
+        "exit_code": 0,
+        "status": "passed",
+        "stderr_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/main-apply-validation-1.stderr.log",
+        "stdout_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/main-apply-validation-1.stdout.log"
+      }
+    ],
+    "status": "passed"
+  },
+  "main_commit": {
+    "exit_code": 0,
+    "status": "committed",
+    "stderr_tail": "",
+    "stdout_tail": "[main 7cd0a945] Apply Codex legal IR packet packet-000012\n 2 files changed, 56 insertions(+), 3 deletions(-)\n"
+  },
   "packet_id": "packet-000012",
   "packet_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/packet-000012/packet.json",
-  "patch_error": "No changes found in worktree: /home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000012-20260518_233406",
+  "patch_error": null,
   "patch_path": null,
-  "patch_status": "awaiting_codex_changes",
+  "patch_status": "applied_to_main",
   "program_synthesis_scopes": [
     "compiler_registry"
   ],

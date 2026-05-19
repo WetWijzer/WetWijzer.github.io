@@ -1,0 +1,18 @@
+Implemented a narrow `compiler_ambiguity` policy update so low-margin adaptive cases still emit explicit ambiguity, while treating the `epistemic->epistemic` zero-margin self-pair as contested (not outvoted).
+
+### What changed
+- Added a registry-level zero-margin contested override pair:
+  - [`modal_registry.py:136`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000280-20260519_134343/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:136)
+  - helper function at [`modal_registry.py:813`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000280-20260519_134343/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:813)
+- Centralized adaptive margin direction logic in compiler:
+  - import at [`compiler.py:26`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000280-20260519_134343/ipfs_datasets_py/logic/modal/compiler.py:26)
+  - new classifier method at [`compiler.py:1585`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000280-20260519_134343/ipfs_datasets_py/logic/modal/compiler.py:1585)
+  - applied in adaptive ambiguity generation at [`compiler.py:855`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000280-20260519_134343/ipfs_datasets_py/logic/modal/compiler.py:855), [`compiler.py:1279`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000280-20260519_134343/ipfs_datasets_py/logic/modal/compiler.py:1279), [`compiler.py:1460`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000280-20260519_134343/ipfs_datasets_py/logic/modal/compiler.py:1460)
+- Activated the zero-margin epistemic self-pair test (it was previously shadowed by duplicate function name):
+  - renamed at [`test_modal_codec.py:6275`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000280-20260519_134343/tests/unit_tests/logic/modal/test_modal_codec.py:6275)
+
+### Validation run
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "epistemic_self_pair_adaptive_ambiguity_for_zero_margin_tie or epistemic_self_pair_adaptive_ambiguity_for_low_runner_up_margin or signal_free_pair_policy_for_alethic_deontic_adaptive_ambiguity or surfaces_deontic_temporal_adaptive_ambiguity"`  
+  - Result: `4 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "marks_temporal_self_pair_as_compiler_required_policy or surfaces_deontic_self_pair_adaptive_ambiguity_for_low_runner_up_margin"`  
+  - Result: `2 passed`

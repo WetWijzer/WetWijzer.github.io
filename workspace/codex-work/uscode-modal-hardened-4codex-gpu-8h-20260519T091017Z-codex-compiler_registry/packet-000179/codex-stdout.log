@@ -1,0 +1,13 @@
+Implemented a narrow modal-family cue rebalance in the codec’s statutory/frame competition lane.
+
+Changes:
+- Tuned statutory/frame competing-scope weights in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000179-20260519_143642/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L530):
+  - `_STATUTORY_FRAME_DEONTIC_SCOPE_BACKFILL_WEIGHT`: `0.6 -> 0.45`
+  - `_STATUTORY_GENERIC_FRAME_COMPETING_SCOPE_MAX`: `0.6 -> 0.62`
+  - `_STATUTORY_GENERIC_FRAME_CONDITIONAL_SCOPE_MAX`: `0.5 -> 0.62`
+  - `_TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX`: `0.35 -> 0.45`
+- Added a regression test in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000179-20260519_143642/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py#L1955) for explicit statutory conditional scope with competing frame/deontic evidence.
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py`
+- Result: `124 passed`

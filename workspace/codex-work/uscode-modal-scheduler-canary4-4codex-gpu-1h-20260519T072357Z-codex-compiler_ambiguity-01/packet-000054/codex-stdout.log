@@ -1,0 +1,13 @@
+Implemented a deterministic compiler ambiguity-priority fix so near-threshold contested margins surface explicit ambiguity with the expected urgency scaling.
+
+- Updated [`compiler.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000054-20260519_073728/ipfs_datasets_py/logic/modal/compiler.py:1154):
+  - `_adaptive_margin_priority(...)` now computes:
+  - `threshold - margin` for positive contested margins (`margin > 0`)
+  - `abs(margin) + threshold` for zero/negative outvoted margins (`margin <= 0`)
+- Added regression coverage in [`test_modal_codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000054-20260519_073728/tests/unit_tests/logic/modal/test_modal_codec.py:4682) for contested self-pair priority (`0.11` with tolerance).
+
+Tests run and passing:
+1. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "temporal_self_pair_adaptive_ambiguity_for_low_runner_up_margin or emits_adaptive_priority_metadata_for_frame_deontic_policy_margin or zero_margin_deontic_temporal_priority_pair"`
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "adaptive_priority"`
+3. `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "compiled_primary_policy or adaptive_logits_disagreement"`
+4. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py`

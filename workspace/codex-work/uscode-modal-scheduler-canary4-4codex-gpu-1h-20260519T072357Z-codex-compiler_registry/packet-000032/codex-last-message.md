@@ -1,0 +1,26 @@
+Implemented a deterministic modal-family cue refinement focused on the repeated `temporal -> deontic/conditional_normative` and `frame -> deontic` drift patterns, plus conditional self-pair adaptive policy support.
+
+Changes:
+- Added missing adaptive policy pair `conditional_normative -> conditional_normative` in both signal-free and priority policy lists.
+  - [modal_registry.py:79](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:79)
+  - [modal_registry.py:170](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:170)
+
+- Refined cue weighting/backfill in `spacy_modal_codec`:
+  - Added temporal competing-scope soft cap to reduce temporal cue over-dominance when deontic/conditional competition exists.
+  - Lowered temporal backfill triggers for deontic and conditional from `3.0` to `2.0`.
+  - Expanded deontic lexical scope markers (tokens/phrases like `penalty`, `violation`, `noncompliance`).
+  - Broadened temporal->deontic backfill gate to trigger from deontic scope directly.
+  - [spacy_modal_codec.py:389](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:389)
+  - [spacy_modal_codec.py:1172](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1172)
+  - [spacy_modal_codec.py:1283](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1283)
+  - [spacy_modal_codec.py:1501](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1501)
+
+- Added/updated tests for new policy and scoring behavior:
+  - [test_modal_registry.py:118](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:118)
+  - [test_spacy_modal_codec.py:1336](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1336)
+  - [test_modal_codec.py:2632](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000032-20260519_083016/tests/unit_tests/logic/modal/test_modal_codec.py:2632)
+
+Tests run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` -> 11 passed
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py -k "two_temporal_cues or dense_temporal_scope_with_condition_clause or backfills_deontic_share_for_frame_scope_with_conditional_competition"` -> 4 passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary_conditional_self_pair_adaptive_ambiguity_for_zero_margin or compiled_primary_deontic_self_pair_adaptive_ambiguity_when_ranking_prefers_temporal or signal_free_adaptive_ambiguity_for_temporal_conflicts"` -> 2 passed

@@ -1,0 +1,12 @@
+Implemented a policy hardening for the requested ambiguity pairs by promoting them to priority signal-free adaptive pairs.
+
+**Changes**
+- Added `deontic -> frame` and `deontic -> temporal` to priority adaptive ambiguity policy in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000019-20260518_233441/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:108).
+- Updated directional priority-policy assertions in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000019-20260518_233441/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:136).
+- Added two compiler tests that lock zero-margin behavior for these pairs as explicit `outvoted` adaptive ambiguities in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000019-20260518_233441/tests/unit_tests/logic/modal/test_modal_codec.py:2242) and [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000019-20260518_233441/tests/unit_tests/logic/modal/test_modal_codec.py:2332).
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` passed (`9 passed`)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "zero_margin_priority_pair_as_outvoted_adaptive_ambiguity or zero_margin_deontic_frame_priority_pair_as_outvoted_adaptive_ambiguity or zero_margin_deontic_temporal_priority_pair_as_outvoted_adaptive_ambiguity"` passed (`3 passed`)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_deontic_frame_adaptive_ambiguity or signal_free_pair_policy_for_deontic_temporal_adaptive_ambiguity"` passed (`2 passed`)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "deontic_frame or deontic_temporal or priority_pair"` passed (`8 passed`)

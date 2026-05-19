@@ -1,0 +1,21 @@
+Implemented a deterministic modal-family cue refinement focused on the `compiler_registry` lane.
+
+Changes made:
+- Added stronger competing-scope controls in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000027-20260519_121239/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py):
+  - New soft caps for `frame` and `alethic` under strong competing evidence (`_apply_frame_competing_scope_soft_cap`, `_apply_alethic_competing_scope_soft_cap`) at lines 1443 and 1492.
+  - Wired these into weighted family counting at line 1247.
+  - Strengthened dense-scope backfill floors for:
+    - `deontic -> conditional_normative` (condition/exception clauses) around line 1692.
+    - `conditional_normative -> deontic` (deontic scope phrase) around line 1730.
+    - `frame -> temporal` strong temporal contexts around line 1842.
+    - `frame -> alethic` low-signal cases around line 1930.
+  - Increased deontic scope logit bonus when alethic competition is present at line 2143.
+
+- Added/updated coverage in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000027-20260519_121239/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py):
+  - New alethic-vs-deontic soft-cap regression test at line 594.
+  - Tightened deontic share expectation for conditional+deontic phrase case at line 1262.
+  - New dense deontic + condition-clause conditional-share test at line 1265.
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py`
+- Result: `109 passed`

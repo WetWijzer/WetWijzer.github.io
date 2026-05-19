@@ -1,0 +1,12 @@
+Implemented a narrow compiler-ambiguity policy update for the requested family bundle.
+
+**Changes**
+- Promoted `conditional_normative->temporal` into the priority adaptive ambiguity pair policy in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000111-20260519_003314/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py).
+- Added priority-policy regression assertion for that pair in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000111-20260519_003314/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py).
+- Added a focused zero-margin behavior test ensuring `conditional_normative->temporal` is treated as explicit outvoted adaptive ambiguity (`requires_rule`) in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000111-20260519_003314/tests/unit_tests/logic/modal/test_modal_codec.py).
+- Added compile-path regression coverage for explicit `conditional_normative->temporal` emission in [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000111-20260519_003314/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py).
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` → `10 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "zero_margin_conditional_temporal_pair or signal_free_pair_policy_for_conditional_temporal"` → `2 passed`
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "conditional_normative_to_temporal"` → `1 passed`

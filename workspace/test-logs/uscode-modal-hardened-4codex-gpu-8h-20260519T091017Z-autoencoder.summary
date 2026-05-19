@@ -1,0 +1,61 @@
+{
+  "autoencoder_compute_backend": "torch_cuda",
+  "autoencoder_compute_device": "cuda",
+  "autoencoder_compute_device_request": "cuda",
+  "best_validation_ce": 0.6724604545289685,
+  "best_validation_cosine": 0.5145916345408994,
+  "best_validation_ir_ce": 0.638828847,
+  "best_validation_ir_cosine": 0.500220238,
+  "best_validation_ir_reconstruction": 0.234858727,
+  "best_validation_ir_text_reconstruction": 0.0,
+  "best_validation_reconstruction": 0.20403252810922828,
+  "codex_program_synthesis_execution_mode": "queued_for_external_codex_worker",
+  "cycles": 319,
+  "dataset_id": "justicedao/ipfs_uscode",
+  "final": false,
+  "latest_queue_counts": {
+    "claimed": 2,
+    "completed": 719,
+    "failed_validation": 2392,
+    "pending": 2224
+  },
+  "latest_role_queue_counts": {
+    "autoencoder_sgd": {
+      "completed": 514,
+      "failed_validation": 2318,
+      "pending": 2220
+    },
+    "program_synthesis": {
+      "claimed": 2,
+      "completed": 205,
+      "failed_validation": 74,
+      "pending": 4
+    }
+  },
+  "latest_stop_reason": "no_validated_improvement",
+  "laws_path": "uscode_parquet/laws.parquet",
+  "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.jsonl",
+  "loop_role": "autoencoder",
+  "metric_failures": 0,
+  "optimizer_policy": "autoencoder_sgd_with_codex_program_synthesis_backlog",
+  "program_synthesis_claimed": 2,
+  "program_synthesis_completed": 205,
+  "program_synthesis_deduped_total": 1536,
+  "program_synthesis_pending": 4,
+  "program_synthesis_pending_cap": 512,
+  "program_synthesis_preinsert_deduped": 1536,
+  "program_synthesis_seeded": 285,
+  "program_synthesis_semantic_deduped": 0,
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder",
+  "run_id": "uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder",
+  "seed": 795883331573,
+  "started_at": "2026-05-19T09:10:18+00:00",
+  "state_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.state.json",
+  "test_failures": 1,
+  "train_ce_improved_cycles": 0,
+  "train_cosine_improved_cycles": 153,
+  "updated_at": "2026-05-19T15:55:36+00:00",
+  "validation_ce_improved_cycles": 0,
+  "validation_cosine_improved_cycles": 153
+}

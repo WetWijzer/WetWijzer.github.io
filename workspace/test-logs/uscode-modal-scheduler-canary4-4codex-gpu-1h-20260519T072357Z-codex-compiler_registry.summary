@@ -1,0 +1,92 @@
+{
+  "codex_apply_mode": "apply_to_main",
+  "codex_bundle_mode": "vector",
+  "codex_claimed_total": 45,
+  "codex_commit_mode": "commit_applied",
+  "codex_exec_mode": "codex_cli",
+  "codex_execution_count": 8,
+  "codex_execution_failure_count": 2,
+  "codex_main_apply_count": 2,
+  "codex_main_apply_failure_count": 5,
+  "codex_main_apply_repair_count": 0,
+  "codex_merge_repair_attempts": 1,
+  "codex_merge_repair_mode": "apply_3way",
+  "codex_packet_count": 8,
+  "codex_patch_count": 5,
+  "codex_program_synthesis_execution_mode": "codex_cli_executor",
+  "codex_scope": "compiler_registry",
+  "codex_task_embeddings_provider": "local_adapter",
+  "codex_vector_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-autoencoder.codex-task-vectors.json",
+  "codex_vector_max_bundle_wait_seconds": 180.0,
+  "codex_vector_min_bundle_size": 3,
+  "codex_vector_min_similarity": 0.55,
+  "codex_worktree_count": 8,
+  "cycles": 33,
+  "elapsed_seconds": 5472.86,
+  "final": true,
+  "finished_at": "2026-05-19T08:55:19+00:00",
+  "latest_codex_vector_claim_report": {
+    "active_target_file_lane_count": 0,
+    "anchor_id": "program-49b5f4e02b3b8ccf",
+    "available_candidate_count": 13,
+    "backend": "embeddings_router",
+    "candidate_count": 13,
+    "fallback_reason": "",
+    "fill_min_similarity": 0.45,
+    "fill_selected_count": 0,
+    "indexed_count": 103,
+    "max_bundle_wait_seconds": 180.0,
+    "min_bundle_size": 3,
+    "min_similarity": 0.55,
+    "mode": "vector",
+    "oldest_candidate_age_seconds": 3624.069,
+    "path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-autoencoder.codex-task-vectors.json",
+    "provider": "local_adapter",
+    "refreshed_count": 0,
+    "selected_count": 6,
+    "selected_ids": [
+      "program-49b5f4e02b3b8ccf",
+      "program-b6f47a7dffb48a29",
+      "program-701c9141e65bb442",
+      "program-f4a369a724b97ce3",
+      "program-7ba32f40802779f0",
+      "program-f128048fb8aac9dd"
+    ],
+    "target_file_lane_lock_scopes": [
+      "compiler_registry"
+    ],
+    "target_file_lane_lock_seconds": 1200.0,
+    "target_file_lane_locked_count": 0
+  },
+  "latest_queue_counts": {
+    "completed": 117,
+    "failed_validation": 518,
+    "pending": 472
+  },
+  "latest_role_queue_counts": {
+    "autoencoder_sgd": {
+      "completed": 64,
+      "failed_validation": 476,
+      "pending": 464
+    },
+    "program_synthesis": {
+      "completed": 53,
+      "failed_validation": 42,
+      "pending": 8
+    }
+  },
+  "latest_stop_reason": "signal_15",
+  "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry.jsonl",
+  "loop_role": "codex",
+  "program_synthesis_claimed": 0,
+  "program_synthesis_completed": 53,
+  "program_synthesis_pending": 8,
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-autoencoder",
+  "run_id": "uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry",
+  "started_at": "2026-05-19T07:24:07+00:00",
+  "stopped_by_signal": 15,
+  "updated_at": "2026-05-19T08:55:19+00:00",
+  "work_dir": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry",
+  "worker_id": "codex-compiler_registry"
+}

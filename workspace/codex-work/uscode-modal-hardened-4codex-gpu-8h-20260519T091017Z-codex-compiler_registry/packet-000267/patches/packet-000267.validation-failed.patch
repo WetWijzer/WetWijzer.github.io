@@ -1,0 +1,121 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 5f820a06..69ebee5c 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -31,8 +31,12 @@ _CLAUSE_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_'-]*")
+ _CONDITION_PREFIXES = ("provided that", "subject to", "if", "when", "before", "upon")
+ _EXCEPTION_PREFIXES = ("except that", "except as", "unless", "except")
+ _CONDITIONAL_SCOPE_PHRASES = (
++    "as provided in",
++    "as provided under",
+     "as provided by",
++    "as otherwise provided in",
+     "except as provided by",
++    "except as provided under",
+     "in the case of",
+     "in the event that",
+     "notwithstanding",
+@@ -1842,7 +1846,8 @@ def _apply_competing_scope_backfill(
+         or bool(signals.get("has_temporal_within_scope"))
+     )
+     has_strong_conditional_scope = (
+-        bool(signals.get("has_exception_clause"))
++        bool(signals.get("has_condition_clause"))
++        or bool(signals.get("has_exception_clause"))
+         or bool(signals.get("has_conditional_scope_phrase"))
+         or bool(signals.get("has_conditional_scope_token"))
+         or bool(signals.get("has_statutory_scope_reference"))
+@@ -2456,7 +2461,13 @@ def _is_generic_frame_cue_debias_context(
+         if cue.family == ModalLogicFamily.FRAME.value
+     ]
+     if not frame_cues:
+-        return False
++        # Debias context-only frame signals (e.g., "Secretary", "committee")
++        # when competing modal scope evidence is present.
++        return bool(signals.get("has_frame_context")) and not (
++            bool(signals.get("has_frame_scope_phrase"))
++            or bool(signals.get("has_frame_editorial_scope_phrase"))
++            or bool(signals.get("has_frame_cue"))
++        )
+     return all(cue in _GENERIC_FRAME_CUE_TERMS for cue in frame_cues)
+ 
+ 
+@@ -2485,6 +2496,8 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+         conditional_bonus = 0.9
+         if explicit_conditional_scope:
+             conditional_bonus += 0.15
++        if bool(signals.get("has_temporal_scope")) and explicit_conditional_scope:
++            conditional_bonus += 0.15
+         if has_statutory_frame_context:
+             conditional_bonus += 0.35
+         if (
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index 1d0ec853..47e7b10f 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -267,6 +267,65 @@ def test_compiler_emits_explicit_deontic_to_conditional_normative_adaptive_pair(
+     )
+ 
+ 
++def test_compiler_backfills_conditional_family_for_when_clause_under_deontic_scope() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    encoding = compiler.encoder.encode(
++        "The Secretary shall submit the report when the committee approves.",
++        document_id="compiler-conditional-when-backfill",
++    )
++    ranking = encoding.ranked_modal_families()
++
++    conditional_candidate = next(
++        (
++            candidate
++            for candidate in ranking
++            if candidate["family"] == ModalLogicFamily.CONDITIONAL_NORMATIVE.value
++        ),
++        None,
++    )
++    deontic_candidate = next(
++        (
++            candidate
++            for candidate in ranking
++            if candidate["family"] == ModalLogicFamily.DEONTIC.value
++        ),
++        None,
++    )
++
++    assert deontic_candidate is not None
++    assert conditional_candidate is not None
++    assert float(conditional_candidate["share_raw"]) > 0.0
++    assert float(conditional_candidate["share_raw"]) < float(deontic_candidate["share_raw"])
++
++
++def test_compiler_adaptive_logits_debias_context_only_frame_scope_for_statutory_reference() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    encoding = compiler.encoder.encode(
++        "As provided in section 3, the Secretary acts.",
++        document_id="compiler-frame-context-debias",
++    )
++    ranking = compiler._adaptive_family_ranking_from_logits(encoding)
++
++    assert ranking
++    assert ranking[0]["family"] == ModalLogicFamily.CONDITIONAL_NORMATIVE.value
++    frame_candidate = next(
++        (
++            candidate
++            for candidate in ranking
++            if candidate["family"] == ModalLogicFamily.FRAME.value
++        ),
++        None,
++    )
++    assert frame_candidate is not None
++    assert float(ranking[0]["share_raw"]) > float(frame_candidate["share_raw"])
++
++
+ def test_compiler_emits_explicit_temporal_to_deontic_adaptive_pair() -> None:
+     compiler = DeterministicModalCompiler(
+         config=ModalCompilerConfig(parser_backend="spacy")

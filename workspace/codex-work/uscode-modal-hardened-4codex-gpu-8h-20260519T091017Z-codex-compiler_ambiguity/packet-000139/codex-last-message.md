@@ -1,0 +1,9 @@
+Implemented a narrow `compiler_ambiguity` policy hardening for alethic/temporal conflicts.
+
+- Updated [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000139-20260519_121630/ipfs_datasets_py/logic/modal/compiler.py:1164) so alethic predictions treat `has_temporal_scope` as direct target-signal evidence for `alethic -> temporal` adaptive ambiguity evaluation.
+- Added regression coverage in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000139-20260519_121630/tests/unit_tests/logic/modal/test_modal_codec.py:8201) to assert the ambiguity is emitted with `has_target_signal_evidence=True` and `signal_free_pair_policy_applied=False` when temporal scope is present.
+
+Tests run:
+
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "alethic_temporal_adaptive_ambiguity"` (passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or emits_explicit_ambiguity_for_required_margin_bundle_pairs or uses_signal_free_pair_policy_for_alethic_temporal_adaptive_ambiguity or uses_temporal_signal_for_alethic_temporal_adaptive_ambiguity"` (passed)

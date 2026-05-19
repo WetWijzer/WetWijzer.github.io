@@ -1,0 +1,12 @@
+Implemented a focused `compiler_ambiguity` policy update and regression coverage.
+
+- Expanded highest-priority adaptive ambiguity pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000225-20260519_025503/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L140) to include:
+  - `deontic->deontic`
+  - `deontic->dynamic`
+  - `frame->epistemic`
+
+- Added test helper + assertions in [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000225-20260519_025503/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py#L64) to verify these pairs now emit explicit adaptive ambiguities flagged as priority, including deontic self-pair direction handling (`adaptive_margin_direction == "outvoted"`).
+
+Validation run:
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -q` → `21 passed`
+- `pytest -q ipfs_datasets_py/logic/modal -q` → `66 passed`

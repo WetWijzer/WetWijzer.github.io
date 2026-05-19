@@ -1,0 +1,17 @@
+Implemented a deterministic temporal-cue refinement for dotted month dates (for example `Oct. 6, 2006`) to reduce frame/conditional over-weighting in statutory text.
+
+- Updated date/scope regex handling in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000106-20260519_130446/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L219):
+  - Added `_MONTH_NAME_DATE_PATTERN` with optional trailing `.` for month abbreviations.
+  - Reused it in `_CALENDAR_DATE_RE` and `_TEMPORAL_WITHIN_PHRASE_RE`.
+  - Expanded `_MONTH_NAME_TOKENS` to include dotted variants (`oct.`, `aug.`, etc.).
+- Added regressions in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000106-20260519_130446/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py#L292) and [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000106-20260519_130446/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py#L1577) for:
+  - `by Oct. 6, 2006` being treated as a temporal deadline cue.
+  - dotted-month calendar dates triggering temporal backfill under deontic competition.
+
+Tests run:
+
+```bash
+pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_encoder_treats_deadline_by_as_temporal_cue tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_encoder_treats_deadline_by_with_dotted_month_as_temporal_cue tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_codec_backfills_temporal_share_for_deontic_competition_with_calendar_scope tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_codec_backfills_temporal_share_for_deontic_competition_with_dotted_month_calendar_scope
+```
+
+Result: `4 passed`.

@@ -1,0 +1,23 @@
+Implemented the ambiguity-policy update for the requested family bundle and added regression coverage for the packet evidence.
+
+- Added `deontic->epistemic` to `COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS` so it is treated as compiler-required (not only priority/signal-free):  
+  [modal_registry.py:67](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000219-20260519_132807/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:67)
+
+- Updated registry policy tests to reflect the new required pair and target ordering:  
+  [test_modal_registry.py:209](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000219-20260519_132807/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:209)
+
+- Extended modal compiler ambiguity regression cases:
+  - Added required-bundle scenario for `deontic->epistemic` explicit ambiguity emission.  
+  - Added the exact packet evidence margins for:
+    - `frame->deontic` (`-0.9045986346`)
+    - `deontic->epistemic` (`-0.663964931589`)
+    - `frame->temporal` (`-0.617309325395`)  
+  [test_modal_codec.py:12774](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000219-20260519_132807/tests/unit_tests/logic/modal/test_modal_codec.py:12774)  
+  [test_modal_codec.py:13154](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000219-20260519_132807/tests/unit_tests/logic/modal/test_modal_codec.py:13154)
+
+Validation run (focused):
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pairs or emits_explicit_ambiguity_for_required_margin_bundle_pairs or emits_explicit_ambiguity_for_todo_evidence_margin_pairs"`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "deontic_epistemic or compiler_required_policy_pair"`
+
+All passed.

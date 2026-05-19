@@ -1,0 +1,16 @@
+Implemented the compiler ambiguity policy update for the low-margin family pairs.
+
+- Added `alethic->frame` to signal-free adaptive ambiguity policy in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000217-20260519_025050/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L33).
+- Updated alethic adaptive target-signal mapping so frame-scope signals count as explicit evidence in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000217-20260519_025050/ipfs_datasets_py/logic/modal/compiler.py#L909).
+- Added focused unit tests for:
+  - signal-free `alethic->frame` adaptive ambiguity
+  - signaled `alethic->frame` adaptive ambiguity  
+  in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000217-20260519_025050/tests/unit_tests/logic/modal/test_modal_codec.py#L5512).
+
+Tests run:
+
+```bash
+pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "alethic_epistemic_adaptive_ambiguity or alethic_deontic_adaptive_ambiguity or alethic_dynamic_adaptive_ambiguity or alethic_frame_adaptive_ambiguity"
+```
+
+Result: `5 passed, 147 deselected`.

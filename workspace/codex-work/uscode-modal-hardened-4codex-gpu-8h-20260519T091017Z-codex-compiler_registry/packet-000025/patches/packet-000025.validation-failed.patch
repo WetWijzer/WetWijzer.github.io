@@ -1,0 +1,198 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 80e6ef87..67494a87 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -99,6 +99,10 @@ COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] =
+         ModalLogicFamily.TEMPORAL.value,
+         ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+     ),
++    (
++        ModalLogicFamily.TEMPORAL.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ),
+ )
+ 
+ SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] = (
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index b65e4c8a..9fa81ee1 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -1927,6 +1927,8 @@ def _apply_statutory_reference_frame_scope_backfill(
+         conditional_count > 0.0
+         and not bool(signals.get("has_condition_clause"))
+         and not bool(signals.get("has_exception_clause"))
++        and not bool(signals.get("has_conditional_scope_phrase"))
++        and not bool(signals.get("has_conditional_scope_token"))
+     ):
+         counts[frame_family] = max(
+             frame_count,
+@@ -1936,6 +1938,12 @@ def _apply_statutory_reference_frame_scope_backfill(
+     if (
+         deontic_count > 0.0
+         and not bool(signals.get("has_deontic_scope_phrase"))
++        and not bool(signals.get("has_deontic_cue"))
++        and not bool(signals.get("has_temporal_scope"))
++        and not bool(signals.get("has_condition_clause"))
++        and not bool(signals.get("has_exception_clause"))
++        and not bool(signals.get("has_conditional_scope_phrase"))
++        and not bool(signals.get("has_conditional_scope_token"))
+     ):
+         counts[frame_family] = max(
+             frame_count,
+@@ -2002,7 +2010,7 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+                 or bool(signals.get("has_frame_cue"))
+             )
+         ):
+-            conditional_bonus += 0.25
++            conditional_bonus += 0.35
+         boosts[ModalLogicFamily.CONDITIONAL_NORMATIVE.value] = conditional_bonus
+     if bool(signals.get("has_deontic_scope")):
+         deontic_bonus = 0.8
+@@ -2015,7 +2023,7 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+                 or bool(signals.get("has_frame_cue"))
+             )
+         ):
+-            deontic_bonus += 0.4
++            deontic_bonus += 0.55
+         if bool(signals.get("has_temporal_scope")):
+             deontic_bonus += 0.25
+         if bool(signals.get("has_alethic_scope")) or bool(signals.get("has_alethic_cue")):
+@@ -2030,6 +2038,23 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+         or bool(signals.get("has_temporal_within_scope"))
+     ):
+         temporal_bonus += 0.3
++    if (
++        bool(signals.get("has_statutory_scope_reference"))
++        and (
++            bool(signals.get("has_frame_context"))
++            or bool(signals.get("has_frame_cue"))
++        )
++    ):
++        temporal_bonus += 0.35
++    if (
++        bool(signals.get("has_deontic_scope"))
++        and (
++            bool(signals.get("has_calendar_date_scope"))
++            or bool(signals.get("has_temporal_scope_phrase"))
++            or bool(signals.get("has_temporal_within_scope"))
++        )
++    ):
++        temporal_bonus += 0.2
+     if temporal_bonus > 0.0:
+         boosts[ModalLogicFamily.TEMPORAL.value] = temporal_bonus
+     if bool(signals.get("has_epistemic_scope")):
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index e4e72199..b9ef744b 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -202,6 +202,7 @@ def test_compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pai
+     assert ("frame", "temporal") in required_pairs
+     assert ("temporal", "conditional_normative") in required_pairs
+     assert ("temporal", "deontic") in required_pairs
++    assert ("temporal", "temporal") in required_pairs
+     assert compiler_required_adaptive_ambiguity_targets("alethic") == (
+         "deontic",
+         "temporal",
+@@ -227,6 +228,7 @@ def test_compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pai
+     assert compiler_required_adaptive_ambiguity_targets("temporal") == (
+         "deontic",
+         "conditional_normative",
++        "temporal",
+     )
+     assert is_compiler_required_adaptive_ambiguity_pair(
+         "frame",
+@@ -248,6 +250,7 @@ def test_compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pai
+         "conditional_normative",
+     ) is True
+     assert is_compiler_required_adaptive_ambiguity_pair("deontic", "temporal") is True
++    assert is_compiler_required_adaptive_ambiguity_pair("temporal", "temporal") is True
+ 
+ 
+ def test_signal_free_adaptive_ambiguity_targets_are_ordered_and_directional() -> None:
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index e9d28d50..9ce1c860 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -563,6 +563,82 @@ def test_spacy_decoder_strengthens_deontic_scope_boost_for_temporal_competition(
+     assert competing_logits["deontic"] > baseline_logits["deontic"]
+ 
+ 
++def test_spacy_decoder_strengthens_temporal_scope_boost_for_statutory_frame_context() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    baseline = build_us_code_sample(
++        title="42",
++        section="8321a",
++        text="Not later than January 1, 2030, notice applies.",
++    )
++    competing = build_us_code_sample(
++        title="42",
++        section="8321b",
++        text="Authority under this section applies not later than January 1, 2030.",
++    )
++
++    baseline_logits = codec.family_logits_for_sample(
++        baseline,
++        modal_families=("temporal", "frame", "deontic"),
++    )
++    competing_logits = codec.family_logits_for_sample(
++        competing,
++        modal_families=("temporal", "frame", "deontic"),
++    )
++
++    assert competing_logits["temporal"] > baseline_logits["temporal"]
++
++
++def test_spacy_decoder_reduces_statutory_frame_bias_when_deontic_cue_is_explicit() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    baseline = build_us_code_sample(
++        title="20",
++        section="1161b",
++        text="Authority under this section imposes liability for noncompliance.",
++    )
++    competing = build_us_code_sample(
++        title="20",
++        section="1161c",
++        text="Authority under this section shall impose liability for noncompliance.",
++    )
++
++    baseline_logits = codec.family_logits_for_sample(
++        baseline,
++        modal_families=("frame", "deontic", "temporal"),
++    )
++    competing_logits = codec.family_logits_for_sample(
++        competing,
++        modal_families=("frame", "deontic", "temporal"),
++    )
++
++    assert competing_logits["frame"] <= baseline_logits["frame"]
++    assert competing_logits["deontic"] > competing_logits["frame"]
++
++
++def test_spacy_decoder_prefers_conditional_scope_over_frame_in_statutory_as_provided_clause() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="42",
++        section="5161",
++        text="Authority under this section applies as provided in subsection (b).",
++    )
++
++    logits = codec.family_logits_for_sample(
++        sample,
++        modal_families=("conditional_normative", "frame", "deontic"),
++    )
++
++    assert logits["conditional_normative"] > logits["frame"]
++
++
+ def test_spacy_decoder_strengthens_deontic_scope_boost_for_alethic_competition() -> None:
+     codec = SpaCyModalCodec(
+         encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),

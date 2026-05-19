@@ -1,0 +1,253 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 5f820a06..e192a8e4 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -538,8 +538,13 @@ _TEMPORAL_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
+ _TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX = 0.45
+ _DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
+ _DEONTIC_COMPETING_SCOPE_BACKFILL_MAX = 0.35
++_ALETHIC_NORMATIVE_COMPETING_SCOPE_BACKFILL_RATIO = 0.45
++_ALETHIC_NORMATIVE_COMPETING_SCOPE_MAX = 0.72
++_ALETHIC_STRONG_CONDITIONAL_COMPETING_SCOPE_MAX = 0.85
+ _DYNAMIC_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
+ _DYNAMIC_COMPETING_SCOPE_BACKFILL_MAX = 0.45
++_FRAME_TEMPORAL_COMPETING_SCOPE_BACKFILL_RATIO = 0.42
++_FRAME_TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX = 1.35
+ _STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX = 0.55
+ _FRAME_STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.45
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+@@ -1357,6 +1362,10 @@ def _weighted_modal_family_counts(
+         counts,
+         resolved_signals,
+     )
++    _apply_alethic_normative_scope_backfill(
++        counts,
++        resolved_signals,
++    )
+     _apply_statutory_reference_frame_scope_backfill(
+         counts,
+         resolved_signals,
+@@ -1366,6 +1375,10 @@ def _weighted_modal_family_counts(
+             counts,
+             resolved_signals,
+         )
++    _apply_frame_temporal_scope_backfill(
++        counts,
++        resolved_signals,
++    )
+     return counts
+ 
+ 
+@@ -1852,7 +1865,15 @@ def _apply_competing_scope_backfill(
+         and conditional_count <= _COMPETING_SCOPE_BACKFILL_WEIGHT
+         and bool(signals.get("has_condition_or_exception_scope"))
+     ):
+-        conditional_backfill = _COMPETING_SCOPE_BACKFILL_WEIGHT
++        conditional_backfill = max(
++            _COMPETING_SCOPE_BACKFILL_WEIGHT,
++            _scaled_competing_scope_backfill(
++                source_count=deontic_count,
++                ratio=_DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO,
++                minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++                maximum=_DEONTIC_COMPETING_SCOPE_BACKFILL_MAX,
++            ),
++        )
+         if (
+             bool(signals.get("has_statutory_scope_reference"))
+             or bool(signals.get("has_conditional_scope_phrase"))
+@@ -2362,6 +2383,119 @@ def _apply_competing_scope_backfill(
+         )
+ 
+ 
++def _apply_alethic_normative_scope_backfill(
++    counts: Dict[str, float],
++    signals: Mapping[str, bool],
++) -> None:
++    """Inject stronger normative competition when alethic cues dominate scope-heavy clauses."""
++    alethic_family = ModalLogicFamily.ALETHIC.value
++    deontic_family = ModalLogicFamily.DEONTIC.value
++    conditional_family = ModalLogicFamily.CONDITIONAL_NORMATIVE.value
++    alethic_count = float(counts.get(alethic_family, 0.0))
++    if alethic_count <= 0.0:
++        return
++
++    deontic_count = float(counts.get(deontic_family, 0.0))
++    has_deontic_scope = bool(
++        signals.get("has_deontic_scope")
++        or signals.get("has_deontic_cue")
++        or signals.get("has_deontic_scope_phrase")
++    )
++    if (
++        has_deontic_scope
++        and deontic_count <= _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT
++    ):
++        deontic_ratio = _ALETHIC_NORMATIVE_COMPETING_SCOPE_BACKFILL_RATIO
++        if bool(signals.get("has_deontic_scope_phrase")) or bool(
++            signals.get("has_deontic_cue")
++        ):
++            deontic_ratio += 0.1
++        deontic_floor = max(
++            _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            _scaled_competing_scope_backfill(
++                source_count=alethic_count,
++                ratio=deontic_ratio,
++                minimum=_STRONG_SCOPE_BACKFILL_WEIGHT,
++                maximum=_ALETHIC_NORMATIVE_COMPETING_SCOPE_MAX,
++            ),
++        )
++        counts[deontic_family] = max(
++            float(counts.get(deontic_family, 0.0)),
++            deontic_floor,
++        )
++
++    conditional_count = float(counts.get(conditional_family, 0.0))
++    if (
++        bool(signals.get("has_condition_or_exception_scope"))
++        and conditional_count <= _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT
++    ):
++        has_strong_conditional_scope = bool(
++            signals.get("has_condition_clause")
++            or signals.get("has_exception_clause")
++            or signals.get("has_conditional_scope_phrase")
++            or signals.get("has_conditional_scope_token")
++            or signals.get("has_statutory_scope_reference")
++        )
++        conditional_ratio = _ALETHIC_NORMATIVE_COMPETING_SCOPE_BACKFILL_RATIO
++        conditional_maximum = _ALETHIC_NORMATIVE_COMPETING_SCOPE_MAX
++        if has_strong_conditional_scope:
++            conditional_ratio += 0.15
++            conditional_maximum = _ALETHIC_STRONG_CONDITIONAL_COMPETING_SCOPE_MAX
++        conditional_floor = max(
++            _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            _scaled_competing_scope_backfill(
++                source_count=alethic_count,
++                ratio=conditional_ratio,
++                minimum=_STRONG_SCOPE_BACKFILL_WEIGHT,
++                maximum=conditional_maximum,
++            ),
++        )
++        counts[conditional_family] = max(
++            float(counts.get(conditional_family, 0.0)),
++            conditional_floor,
++        )
++
++
++def _apply_frame_temporal_scope_backfill(
++    counts: Dict[str, float],
++    signals: Mapping[str, bool],
++) -> None:
++    """Raise temporal competition in frame-heavy clauses with explicit time scope."""
++    if not bool(signals.get("has_temporal_scope")):
++        return
++    has_strong_temporal_scope = bool(
++        signals.get("has_calendar_date_scope")
++        or signals.get("has_temporal_scope_phrase")
++        or signals.get("has_temporal_within_scope")
++        or signals.get("has_temporal_scope_token")
++    )
++    if not has_strong_temporal_scope:
++        return
++    if bool(signals.get("has_frame_scope_phrase")) or bool(
++        signals.get("has_frame_editorial_scope_phrase")
++    ):
++        return
++    if bool(signals.get("has_deontic_scope")) or bool(
++        signals.get("has_condition_or_exception_scope")
++    ):
++        return
++    frame_family = ModalLogicFamily.FRAME.value
++    temporal_family = ModalLogicFamily.TEMPORAL.value
++    frame_count = float(counts.get(frame_family, 0.0))
++    if frame_count <= 0.0:
++        return
++    temporal_floor = _scaled_competing_scope_backfill(
++        source_count=frame_count,
++        ratio=_FRAME_TEMPORAL_COMPETING_SCOPE_BACKFILL_RATIO,
++        minimum=_FRAME_STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        maximum=_FRAME_TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX,
++    )
++    counts[temporal_family] = max(
++        float(counts.get(temporal_family, 0.0)),
++        temporal_floor,
++    )
++
++
+ def _apply_statutory_reference_frame_scope_backfill(
+     counts: Dict[str, float],
+     signals: Mapping[str, bool],
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index 6cbadd09..ed0b41b0 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -9387,8 +9387,8 @@ def test_modal_codec_upgrades_generic_frame_temporal_scope_backfill_floor() -> N
+ 
+     assert ranking[0]["family"] == "frame"
+     assert ranking[1]["family"] == "temporal"
+-    assert ranking[0]["share"] == 0.631579
+-    assert ranking[1]["share"] == 0.368421
++    assert ranking[0]["share"] == 0.571429
++    assert ranking[1]["share"] == 0.428571
+ 
+ 
+ def test_modal_codec_upgrades_generic_frame_deontic_scope_backfill_floor() -> None:
+@@ -9431,6 +9431,60 @@ def test_modal_codec_upgrades_generic_frame_conditional_and_temporal_backfill_fl
+     assert ranking[2]["share"] == 0.269231
+ 
+ 
++def test_modal_codec_boosts_temporal_share_under_dense_generic_frame_scope() -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++        )
++    )
++
++    encoding = compiler.encoder.encode(
++        "The authority, authority, authority, authority, authority, authority, authority, authority, authority, authority annual deadline applies."
++    )
++    ranking = ranked_modal_families(encoding)
++    shares = {row["family"]: float(row["share"]) for row in ranking}
++
++    assert ranking[0]["family"] == "frame"
++    assert shares["temporal"] > 0.25
++
++
++def test_modal_codec_backfills_deontic_share_against_dense_alethic_cues() -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++        )
++    )
++
++    encoding = compiler.encoder.encode(
++        "It is impossible and cannot and cannot to proceed, and liability for violations applies."
++    )
++    ranking = ranked_modal_families(encoding)
++    shares = {row["family"]: float(row["share"]) for row in ranking}
++
++    assert ranking[0]["family"] == "alethic"
++    assert shares["deontic"] > 0.08
++
++
++def test_modal_codec_backfills_conditional_share_under_dense_deontic_scope() -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++        )
++    )
++
++    encoding = compiler.encoder.encode(
++        "Before issuance of the permit, the agency shall and must, and shall and must, provide written notice."
++    )
++    ranking = ranked_modal_families(encoding)
++    shares = {row["family"]: float(row["share"]) for row in ranking}
++
++    assert ranking[0]["family"] == "deontic"
++    assert shares["conditional_normative"] > 0.07
++
++
+ def test_modal_codec_treats_powers_and_duties_as_deontic_scope_phrase() -> None:
+     compiler = DeterministicModalCompiler(
+         ModalCompilerConfig(

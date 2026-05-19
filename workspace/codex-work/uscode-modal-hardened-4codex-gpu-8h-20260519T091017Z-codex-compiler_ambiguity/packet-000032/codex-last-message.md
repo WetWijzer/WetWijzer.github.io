@@ -1,0 +1,22 @@
+Implemented the ambiguity-policy hardening for the `compiler_ambiguity` TODO bundle and added focused regressions.
+
+- Updated compiler-required policy pairs to explicitly include `frame->deontic` in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000032-20260519_104258/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33).
+- Added deterministic registry helpers for required-bundle introspection:
+  - `compiler_required_adaptive_ambiguity_targets`
+  - `is_compiler_required_adaptive_ambiguity_pair`
+  in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000032-20260519_104258/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:671).
+- Hardened adaptive ambiguity metadata and zero/negative-margin escalation logic to track required-bundle hits via:
+  - `is_compiler_required_policy_pair`
+  - `runner_up_is_compiler_required_policy_pair`
+  across adaptive ambiguity paths in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000032-20260519_104258/ipfs_datasets_py/logic/modal/compiler.py:800), [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000032-20260519_104258/ipfs_datasets_py/logic/modal/compiler.py:1210), [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000032-20260519_104258/ipfs_datasets_py/logic/modal/compiler.py:1427).
+- Added registry coverage test for the exact required deontic conflict trio in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000032-20260519_104258/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:184).
+- Added modal compiler regression using the exact evidence margins/priorities for:
+  - `temporal->deontic`
+  - `deontic->deontic`
+  - `frame->deontic`
+  in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000032-20260519_104258/tests/unit_tests/logic/modal/test_modal_codec.py:11949).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py::test_compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pairs tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py::test_compiler_required_adaptive_ambiguity_pairs_are_covered_by_both_policies` -> 2 passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_emits_explicit_ambiguity_for_required_deontic_margin_bundle tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_uses_signal_free_pair_policy_for_temporal_deontic_adaptive_ambiguity tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_uses_signal_free_pair_policy_for_frame_deontic_adaptive_ambiguity tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_surfaces_deontic_self_pair_adaptive_ambiguity_for_low_runner_up_margin` -> 4 passed

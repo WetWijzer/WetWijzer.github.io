@@ -1,0 +1,28 @@
+Implemented a focused `compiler_registry`-lane hardening for modal family cues and adaptive pair policy.
+
+**What changed**
+- Updated [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000015-20260519_100252/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py):
+1. Added `alethic -> conditional_normative` to `PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS`.
+2. Narrowed alethic cue terms by removing `"may be"` from alethic possibility cues.
+3. Expanded conditional-normative cue terms with:
+   - `"subject only to"`
+   - `"subject, however, to"`
+   - `"subject however to"`
+
+- Updated [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000015-20260519_100252/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py):
+1. Strengthened frame-debias and competing-family backfill constants in generic-frame contexts.
+2. Lowered frame-trigger thresholds for deontic/temporal/conditional backfill.
+3. Expanded deontic scope token/phrase coverage for enforcement/penalty language (e.g. `violation`, `penalty`, `fined`, `imprisoned`, `subject to criminal penalties`).
+
+- Added/updated tests:
+1. [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000015-20260519_100252/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py) for new alethic priority behavior.
+2. [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000015-20260519_100252/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py):
+   - regression for avoiding alethic `"may be"` cue in permission context
+   - regression for stronger deontic share in frame-heavy penalty text
+
+**Tests run**
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` -> `13 passed`
+2. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py -k "may_be_permission_context or penalty_terms or debiases_generic_frame_logits_when_deontic_force_is_present or debiases_generic_frame_logits_when_conditional_scope_is_present or debiases_generic_frame_logits_when_temporal_scope_is_present or backfills_deontic_share_for_frame_scope_with_deontic_tokens"` -> `5 passed`
+3. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_alethic_conditional_adaptive_ambiguity or uses_conditional_signal_for_alethic_conditional_adaptive_ambiguity or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle"` -> `3 passed`
+
+I did not run the full suite.

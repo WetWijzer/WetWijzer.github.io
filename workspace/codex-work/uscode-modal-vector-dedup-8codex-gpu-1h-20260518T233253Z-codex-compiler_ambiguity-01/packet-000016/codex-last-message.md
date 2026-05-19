@@ -1,0 +1,16 @@
+Implemented a focused `compiler_ambiguity` policy update by expanding priority adaptive ambiguity pairs and adding deterministic regressions for the requested family-pair behavior.
+
+**Changes**
+- Updated priority signal-free adaptive pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000016-20260518_235621/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:112):
+  - added `deontic->deontic`
+  - added `deontic->temporal`
+  - added `conditional_normative->temporal`
+  - added `conditional_normative->frame`
+- Synced directional priority-policy assertions in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000016-20260518_235621/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:138) (including correcting `deontic->frame` expectation).
+- Added compile-level ambiguity regression for `conditional_normative->temporal` in [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000016-20260518_235621/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:230).
+- Added zero-margin priority regressions in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000016-20260518_235621/tests/unit_tests/logic/modal/test_modal_codec.py:2945) and [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000016-20260518_235621/tests/unit_tests/logic/modal/test_modal_codec.py:3865), verifying these now classify tie margins as `outvoted` with `requires_rule`.
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` passed.
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py` passed.
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` passed (`131 passed`).

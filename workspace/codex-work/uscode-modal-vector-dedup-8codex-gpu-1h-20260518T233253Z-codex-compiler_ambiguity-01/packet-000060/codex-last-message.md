@@ -1,0 +1,16 @@
+Implemented a narrow `compiler_ambiguity` policy enhancement:
+
+- Updated family ambiguity flow to emit explicit adaptive ambiguities from logits when logits-top family disagrees with cue-ranked top family, instead of only using logits when cue ranking is empty.  
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000060-20260519_001359/ipfs_datasets_py/logic/modal/compiler.py#L429)
+- Added `adaptive_predicted_family_source` metadata and threaded source labels (`ranked_modal_families`, `adaptive_logits`, `adaptive_logits_fallback`) for explicit ambiguity traceability.  
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000060-20260519_001359/ipfs_datasets_py/logic/modal/compiler.py#L616)
+- Expanded regression coverage:
+  - Added explicit `frame->epistemic` assertion to existing frame-pair test.
+  - Added a new disagreement test that forces adaptive logits to disagree with cue ranking and verifies explicit `deontic->dynamic` ambiguity emission from `adaptive_logits`.  
+  - [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000060-20260519_001359/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py#L125)
+  - [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000060-20260519_001359/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py#L283)
+
+Validation run:
+
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py`  
+- Result: `15 passed`

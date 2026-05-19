@@ -1,0 +1,32 @@
+Implemented a generalized modal-family cue refinement focused on `frame -> temporal/deontic/epistemic`, `temporal -> deontic`, and `deontic -> dynamic` competition.
+
+### What changed
+- Expanded epistemic scope detection and propagation in cue/signal logic:
+  - Added epistemic lexical scope tokens/phrases and emitted `has_epistemic_scope` + `has_epistemic_scope_phrase`.
+  - Used those signals in frame debias context, scope boosts, and backfill.
+  - File: [spacy_modal_codec.py:142](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000033-20260519_084337/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:142)
+
+- Strengthened deterministic family balancing rules:
+  - Added temporal competing soft-cap (`_apply_temporal_competing_scope_soft_cap`) to prevent dense temporal cues from overwhelming deontic/conditional/dynamic evidence.
+  - Extended deontic soft-cap to account for dynamic competition.
+  - Added stronger temporal backfill under generic frame cues when strong temporal markers are present (calendar/temporal phrase/within).
+  - Added frame->epistemic backfill trigger.
+  - File: [spacy_modal_codec.py:1187](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000033-20260519_084337/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1187)
+
+- Aligned compiler adaptive target-signal mapping with new epistemic scope signal:
+  - `has_epistemic_scope` is now considered (not only explicit epistemic cue) for relevant predicted families.
+  - File: [compiler.py:1051](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000033-20260519_084337/ipfs_datasets_py/logic/modal/compiler.py:1051)
+
+- Added/updated tests for the refined behavior:
+  - New modal codec tests for strong temporal frame backfill, epistemic scope without epistemic cue, deontic-vs-dynamic soft cap, temporal-vs-deontic soft cap.
+  - File: [test_spacy_modal_codec.py:510](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000033-20260519_084337/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:510)
+  - Updated one deterministic compiler expectation to reflect stronger temporal interpretation in that fixture.
+  - File: [test_legal_modal_parser_deterministic_rules.py:143](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000033-20260519_084337/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:143)
+
+### Tests run
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py -k "backfills_strong_temporal_share_for_generic_frame_scope_with_calendar_date or debiases_generic_frame_logits_when_epistemic_scope_is_present_without_epistemic_cues or soft_caps_repeated_deontic_logits_for_dynamic_competition or soft_caps_repeated_temporal_logits_for_deontic_competition or debiases_generic_frame_logits_when_epistemic_cues_are_present or backfills_temporal_share_for_generic_frame_only_scope or soft_caps_repeated_deontic_logits_for_epistemic_competition"`  
+  - `7 passed`
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "frame_to_conditional_and_temporal or alethic_to_epistemic or temporal_to_deontic"`  
+  - `4 passed`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py -k "generic_frame or soft_caps_repeated or backfills_"`  
+  - `36 passed`

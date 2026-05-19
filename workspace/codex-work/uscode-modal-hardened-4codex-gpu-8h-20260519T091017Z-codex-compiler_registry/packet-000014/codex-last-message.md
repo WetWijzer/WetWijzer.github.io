@@ -1,0 +1,26 @@
+Implemented a deterministic cue-rule refinement focused on `deontic/frame/temporal/conditional` family conflicts in the codec.
+
+**What changed**
+- Added deontic-scope competing-family backfill so non-dense deontic clauses can still surface `frame`, `temporal`, and `conditional_normative` evidence when strong scope/context signals are present.  
+  [spacy_modal_codec.py:419](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000014-20260519_095214/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:419)  
+  [spacy_modal_codec.py:1451](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000014-20260519_095214/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1451)
+- Strengthened frame→deontic backfill when deontic scope is phrase-level (not just token-level).  
+  [spacy_modal_codec.py:1615](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000014-20260519_095214/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1615)
+- Prevented logit double-counting by not applying extra scope boosts when a family already has weighted-count support from deterministic backfill.  
+  [spacy_modal_codec.py:981](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000014-20260519_095214/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:981)
+
+**Tests added**
+- Added focused coverage for:
+  - stronger frame-scope deontic phrase handling,
+  - non-dense deontic→frame statutory backfill,
+  - non-dense deontic→temporal scope-phrase backfill,
+  - non-dense deontic→conditional condition-clause backfill.  
+  [test_spacy_modal_codec.py:1499](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000014-20260519_095214/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1499)  
+  [test_spacy_modal_codec.py:1574](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000014-20260519_095214/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1574)  
+  [test_spacy_modal_codec.py:1654](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000014-20260519_095214/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1654)  
+  [test_spacy_modal_codec.py:1680](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000014-20260519_095214/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1680)
+
+**Validation run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` → `98 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or orders_priority_adaptive_targets_before_non_priority_targets"` → `2 passed`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` still has a pre-existing failure in `test_signal_free_adaptive_ambiguity_targets_are_ordered_and_directional` (no registry edits were made in this patch).

@@ -1,0 +1,12 @@
+Implemented a compiler-side ambiguity hardening so low-margin adaptive records always surface an explicit ambiguity variant.
+
+- Updated [`compiler.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000069-20260519_081847/ipfs_datasets_py/logic/modal/compiler.py:302) to post-process family ambiguities via `_ensure_explicit_adaptive_ambiguities`, including adaptive-logits-fallback and normal ranking returns.
+- Added `_adaptive_explicit_ambiguity_key` and `_ensure_explicit_adaptive_ambiguities` in [`compiler.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000069-20260519_081847/ipfs_datasets_py/logic/modal/compiler.py:598) to:
+  - backfill missing explicit `adaptive_*_margin_low` records from `adaptive_family_margin_low` metadata
+  - avoid duplicating explicit records when already present.
+- Added regression tests in [`test_modal_codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000069-20260519_081847/tests/unit_tests/logic/modal/test_modal_codec.py:1787) covering explicit backfill and non-duplication behavior.
+
+Validation run:
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "backfills_missing_explicit_adaptive or does_not_duplicate_existing_explicit_adaptive or surfaces_adaptive_family_margin_ambiguity_for_temporal_conflicts"` → 3 passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` → 166 passed
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` → 11 passed

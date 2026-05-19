@@ -1,0 +1,23 @@
+Implemented a focused `compiler_ambiguity` policy update so requested family pairs surface as explicit priority ambiguities in tie margins.
+
+- Promoted two ambiguity pairs to priority policy:
+  - `alethic -> deontic`
+  - `frame -> epistemic`
+  - Change: [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000046-20260519_080347/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:156)
+
+- Updated registry assertions to match priority policy behavior/order (including existing directional pairs surfaced by the table):
+  - Change: [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000046-20260519_080347/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:200)
+
+- Added compiler tests that verify zero-margin ties for those pairs are classified as priority `outvoted` explicit ambiguities (`requires_rule`):
+  - `frame <-> epistemic` tie case
+  - `alethic <-> deontic` tie case
+  - Change: [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000046-20260519_080347/tests/unit_tests/logic/modal/test_modal_codec.py:4442)
+  - Change: [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000046-20260519_080347/tests/unit_tests/logic/modal/test_modal_codec.py:6148)
+
+Tests run:
+
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "priority_signal_free_adaptive or frame_epistemic_tie_as_priority or alethic_deontic_tie_as_priority"`  
+   Result: `4 passed`
+
+2. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "frame_epistemic or alethic_deontic or priority_signal_free_adaptive"`  
+   Result: `7 passed`

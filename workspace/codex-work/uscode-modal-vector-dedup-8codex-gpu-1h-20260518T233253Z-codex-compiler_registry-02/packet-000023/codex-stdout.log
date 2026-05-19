@@ -1,0 +1,19 @@
+Implemented the `compiler_registry`-scoped modal-family cue refinement for the requested pair set.
+
+- Added new signal-free adaptive ambiguity pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000023-20260519_000729/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L33):
+  - `alethic -> epistemic`
+  - `deontic -> dynamic`
+- Extended adaptive target-signal routing in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000023-20260519_000729/ipfs_datasets_py/logic/modal/compiler.py#L803):
+  - `deontic` now checks dynamic signal evidence (`has_dynamic_scope` / `has_dynamic_cue`)
+  - `alethic` now checks epistemic signal evidence (`has_epistemic_cue`)
+- Updated registry policy tests in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000023-20260519_000729/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py#L80) for the new pairs and ordering.
+- Added codec regressions in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000023-20260519_000729/tests/unit_tests/logic/modal/test_modal_codec.py#L3968):
+  - `test_modal_compiler_uses_signal_free_pair_policy_for_deontic_dynamic_adaptive_ambiguity`
+  - `test_modal_compiler_uses_signal_free_pair_policy_for_alethic_epistemic_adaptive_ambiguity`
+
+Validation run:
+- `python -m py_compile ...` (updated files): pass
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -q`: `10 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -q -k "signal_free_pair_policy_for_deontic_dynamic_adaptive_ambiguity or signal_free_pair_policy_for_alethic_epistemic_adaptive_ambiguity or signal_free_pair_policy_for_deontic_epistemic_adaptive_ambiguity or signal_free_pair_policy_for_deontic_temporal_adaptive_ambiguity"`: `4 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -q -k "signal_free_pair_policy"`: `17 passed`
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -q`: `11 passed`

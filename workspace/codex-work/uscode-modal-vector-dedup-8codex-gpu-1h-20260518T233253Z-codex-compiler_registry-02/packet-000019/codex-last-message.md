@@ -1,0 +1,9 @@
+Implemented a deterministic scoring refinement for the `deontic->frame` and `deontic->temporal` failure mode by reducing repeated deontic cue dominance when competing frame/temporal scope evidence is present.
+
+- Added `_DEONTIC_COMPETING_SCOPE_SOFT_CAP` and a new soft-cap helper in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000019-20260518_233441/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L369).
+- Wired the cap into `_weighted_modal_family_counts` so it applies both with and without generic-frame debias flow in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000019-20260518_233441/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L1097).
+- Added regression tests for repeated deontic cues under temporal and frame competition in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000019-20260518_233441/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py#L482).
+
+Validation run:
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` (43 passed)
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "deontic_temporal_adaptive_ambiguity or deontic_frame_adaptive_signal or temporal_scope_family_outvote_ambiguity or frame_scope_family_outvote_ambiguity"` (5 passed)

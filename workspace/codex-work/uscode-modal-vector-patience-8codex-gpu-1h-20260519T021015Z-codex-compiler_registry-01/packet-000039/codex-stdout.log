@@ -1,0 +1,14 @@
+Implemented a deterministic cue-weighting refinement in the compiler-registry lane:
+
+1. Updated weighted family evidence to collapse nested same-family cue spans before scoring (e.g. `except` + `except as provided by` no longer triple-count as separate weighted evidence).
+- [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000039-20260519_021343/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1109)
+- [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000039-20260519_021343/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1142)
+
+2. Added regression tests for nested conditional overlap and same-family nested cue overlap behavior.
+- [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000039-20260519_021343/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:868)
+- [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000039-20260519_021343/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:889)
+
+Validation run:
+
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` -> `59 passed`
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` -> `141 passed`

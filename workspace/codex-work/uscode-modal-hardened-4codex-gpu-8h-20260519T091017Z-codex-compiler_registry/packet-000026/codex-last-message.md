@@ -1,0 +1,25 @@
+Implemented a deterministic modal-family cue refinement focused on the requested family conflicts (`alethic->conditional_normative`, `deontic->frame`, `deontic->temporal`, `frame->temporal`, `temporal->deontic`).
+
+**What changed**
+- Expanded conditional-necessity cue coverage:
+  - Added conditional scope phrases like `as may be necessary` / `as may be necessary to` / `as necessary to` / `to the extent necessary` in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000026-20260519_120107/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:33).
+  - Added matching conditional operator cue terms in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000026-20260519_120107/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:594).
+
+- Refined deterministic competing-scope backfills in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000026-20260519_120107/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:418):
+  - New low-threshold strong-signal bridges for:
+    - `deontic -> temporal`
+    - `temporal -> deontic`
+    - `deontic -> frame` when structural frame signals are present
+    - `alethic -> conditional_normative` when conditional/statutory scope is present
+  - Strengthened `frame -> temporal` backfill under strong temporal evidence using scaled weighting.
+  - Core logic updates are in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000026-20260519_120107/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1588).
+
+- Added temporal logit boost for date-heavy frame-context text without frame cues (to reduce frame-overprediction in temporal contexts) in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000026-20260519_120107/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:2102).
+
+- Added targeted regression tests for the new bridges/bonuses in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000026-20260519_120107/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:3119).
+
+**Validation run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py`  
+  - `112 passed`
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py`  
+  - `26 passed`

@@ -1,0 +1,33 @@
+# packet-000135
+
+## Source
+The TODO batch is autoencoder/supervisor output; this file is the Codex-facing work order.
+- Raw TODO JSONL: `/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000135/TODO_LIST.jsonl`
+- TODO markdown: `/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000135/TODO_LIST.md`
+
+## Worktree
+/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000135-20260519_114932
+
+## Change Capture
+pending: awaiting_codex_changes
+
+## Suggested Files
+- `ipfs_datasets_py/logic/modal/compiler.py`
+- `ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py`
+- `ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py`
+
+## TODOs
+- `program-e7832b3b76d0f638` `add_or_review_modal_ambiguity_policy`
+  target: `modal.compiler.ambiguity`
+  scope: `compiler_ambiguity`
+  bundle: `{"action":"add_or_review_modal_ambiguity_policy","family_pairs":["deontic->temporal","frame->conditional_normative","frame->deontic","frame->temporal"],"program_synthesis_scope":"compiler_ambiguity","target_component":"modal.compiler.ambiguity"}`
+  vector_bundle: `program-e7832b3b76d0f638` score `1.0`
+  objective: The adaptive family margin is small, so the compiler should expose an explicit ambiguity.
+  support: 4
+  evidence: `{"family_margin": -0.858265621341, "hint_id": "modal-synthesis-8a93b3095d2e654f", "predicted_family": "frame", "priority": 1.008265621341, "sample_id": "us-code-42-300j-51e286d3b4f6aa47", "target_family": "deontic"}`
+  evidence: `{"family_margin": -0.339465897704, "hint_id": "modal-synthesis-c42519d0c121b27b", "predicted_family": "deontic", "priority": 0.489465897704, "sample_id": "us-code-7-2209c-9e364338270ca36c", "target_family": "temporal"}`
+  evidence: `{"family_margin": -0.8417531115, "hint_id": "modal-synthesis-d7d62e195c47d93a", "predicted_family": "frame", "priority": 0.9917531115, "sample_id": "us-code-42-8321.-18cda303b32a8b79", "target_family": "temporal"}`
+  evidence: `{"family_margin": -0.479417759252, "hint_id": "modal-synthesis-efcb4ec9f9213317", "predicted_family": "frame", "priority": 0.629417759252, "sample_id": "us-code-42-5161.-8dac7a75a629d81d", "target_family": "conditional_normative"}`
+
+## Finish
+Leave the completed edits in the worktree; the daemon captures, applies, and validates the diff.

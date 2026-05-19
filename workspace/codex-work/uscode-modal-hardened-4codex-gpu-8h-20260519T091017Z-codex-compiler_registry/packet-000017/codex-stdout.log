@@ -1,0 +1,14 @@
+Implemented a scoped cue-rule refinement to reduce `frame` over-dominance when only minimal competing scope evidence exists.
+
+- Updated backfill promotion logic in [spacy_modal_codec.py:1566](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000017-20260519_102604/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1566), [spacy_modal_codec.py:1575](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000017-20260519_102604/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1575), and [spacy_modal_codec.py:1594](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000017-20260519_102604/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1594):
+  - Changed `<= 0.0` checks to `<= _COMPETING_SCOPE_BACKFILL_WEIGHT` for frame-to-`deontic`/`temporal`/`conditional_normative` backfill escalation.
+  - Effect: clauses that only had tiny generic backfill (`0.12`) now get promoted to the stronger frame-competing floor (`0.35`) for these target families.
+
+- Added focused regression tests in [test_modal_codec.py:8266](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000017-20260519_102604/tests/unit_tests/logic/modal/test_modal_codec.py:8266), [test_modal_codec.py:8285](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000017-20260519_102604/tests/unit_tests/logic/modal/test_modal_codec.py:8285), and [test_modal_codec.py:8304](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000017-20260519_102604/tests/unit_tests/logic/modal/test_modal_codec.py:8304) to lock improved ranking behavior for:
+  - `frame` vs `temporal` scope-only competition
+  - `frame` vs `deontic` scope-only competition
+  - `frame` vs combined `conditional_normative` + `temporal` scope competition
+
+Validation run:
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py`  
+- Result: `181 passed`

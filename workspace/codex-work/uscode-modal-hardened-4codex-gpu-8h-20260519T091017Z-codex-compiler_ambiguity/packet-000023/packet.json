@@ -1,0 +1,558 @@
+{
+  "claimed_at": "2026-05-19T09:45:47+00:00",
+  "codex_apply_mode": "apply_to_main",
+  "codex_exec": {
+    "command": [
+      "codex",
+      "exec",
+      "--cd",
+      "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000023-20260519_094546",
+      "--sandbox",
+      "danger-full-access",
+      "--output-last-message",
+      "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/codex-last-message.md",
+      "--model",
+      "gpt-5.3-codex",
+      "-"
+    ],
+    "duration_seconds": 236.555,
+    "exit_code": 0,
+    "last_message_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/codex-last-message.md",
+    "prompt_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/CODEX_PROMPT.md",
+    "sandbox": "danger-full-access",
+    "status": "succeeded",
+    "stderr_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/codex-stderr.log",
+    "stdout_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/codex-stdout.log"
+  },
+  "main_apply_check": {
+    "exit_code": 0,
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "main_apply_ignored_artifact_paths": [],
+  "main_apply_result": {
+    "exit_code": 0,
+    "stderr_tail": "",
+    "stdout_tail": ""
+  },
+  "main_apply_status": "applied",
+  "main_apply_target_files": [
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py",
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py",
+    "tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py"
+  ],
+  "main_apply_target_repo_root": "/home/barberb/portland-laws.github.io/ipfs_datasets_py",
+  "main_apply_untracked_paths": [],
+  "main_apply_validation": {
+    "commands": [
+      {
+        "command": [
+          "/home/barberb/portland-laws.github.io/.venv-dgx/bin/python3",
+          "-m",
+          "pytest",
+          "-q",
+          "tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py",
+          "tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py",
+          "tests/unit_tests/logic/modal/test_modal_codec.py"
+        ],
+        "duration_seconds": 23.229,
+        "exit_code": 0,
+        "status": "passed",
+        "stderr_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/main-apply-validation-1.stderr.log",
+        "stdout_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/main-apply-validation-1.stdout.log"
+      }
+    ],
+    "status": "passed"
+  },
+  "main_commit": {
+    "exit_code": 0,
+    "status": "committed",
+    "stderr_tail": "",
+    "stdout_tail": "[main 411d551e] Apply Codex legal IR packet packet-000023\n 3 files changed, 92 insertions(+)\n"
+  },
+  "packet_id": "packet-000023",
+  "packet_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/packet.json",
+  "patch_error": null,
+  "patch_path": null,
+  "patch_status": "applied_to_main",
+  "program_synthesis_scopes": [
+    "compiler_ambiguity"
+  ],
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder",
+  "repo_root": "/home/barberb/portland-laws.github.io",
+  "run_id": "uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity",
+  "semantic_bundle_keys": [
+    "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"conditional_normative->deontic\",\"temporal->deontic\",\"temporal->temporal\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+    "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"deontic->conditional_normative\",\"deontic->temporal\",\"frame->deontic\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+    "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"deontic->deontic\",\"deontic->temporal\",\"frame->deontic\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+    "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"frame->alethic\",\"frame->deontic\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+    "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"frame->conditional_normative\",\"frame->deontic\",\"frame->temporal\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+    "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"frame->conditional_normative\",\"frame->temporal\",\"temporal->epistemic\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}"
+  ],
+  "source_repo_root": "/home/barberb/portland-laws.github.io/ipfs_datasets_py",
+  "suggested_target_files": [
+    "ipfs_datasets_py/logic/modal/compiler.py",
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py",
+    "ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py"
+  ],
+  "task_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/CODEX_TASK.md",
+  "task_source": "autoencoder_supervisor_program_synthesis_queue",
+  "todo_list_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/TODO_LIST.jsonl",
+  "todo_markdown_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/packet-000023/TODO_LIST.md",
+  "todos": [
+    {
+      "action": "add_or_review_modal_ambiguity_policy",
+      "citations": [
+        "49 U.S.C. 41310.",
+        "29 U.S.C. 3221"
+      ],
+      "claimed_at": "2026-05-19T09:45:46+00:00",
+      "claimed_by": "codex-compiler_ambiguity",
+      "completed_at": null,
+      "created_at": "2026-05-19T09:38:32+00:00",
+      "loss_name": "autoencoder_residual_cluster",
+      "loss_value": 0.959535214976,
+      "metadata": {
+        "dedupe_signature": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"sample_ids\":[\"us-code-29-3221-a5a6deb63d139047\",\"us-code-49-41310.-d010484de13ae8d0\"],\"target_component\":\"modal.compiler.ambiguity\"}",
+        "execution_target": "codex_program_repair",
+        "hint_evidence": [
+          {
+            "family_margin": -0.739578936711,
+            "hint_id": "modal-synthesis-12ab55758c49d8d5",
+            "predicted_family": "frame",
+            "priority": 0.889578936711,
+            "sample_id": "us-code-29-3221-a5a6deb63d139047",
+            "target_family": "alethic"
+          },
+          {
+            "family_margin": -0.879491493241,
+            "hint_id": "modal-synthesis-c3c2cc370498cf82",
+            "predicted_family": "frame",
+            "priority": 1.029491493241,
+            "sample_id": "us-code-49-41310.-d010484de13ae8d0",
+            "target_family": "deontic"
+          }
+        ],
+        "hint_ids": [
+          "modal-synthesis-12ab55758c49d8d5",
+          "modal-synthesis-c3c2cc370498cf82"
+        ],
+        "optimizer_role": "program_synthesis",
+        "optimizer_stage": "typed_program_synthesis",
+        "program_synthesis_scope": "compiler_ambiguity",
+        "semantic_bundle_key": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"frame->alethic\",\"frame->deontic\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+        "source": "modal_program_synthesis_todo_generator_v1",
+        "support_count": 2,
+        "target_component": "modal.compiler.ambiguity",
+        "vector_bundle_anchor_id": "program-e964e2f9407f505d",
+        "vector_bundle_backend": "embeddings_router",
+        "vector_bundle_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+        "vector_bundle_similarity": 1.0
+      },
+      "objective": "The adaptive family margin is small, so the compiler should expose an explicit ambiguity.",
+      "priority": 97.953521,
+      "sample_ids": [
+        "us-code-49-41310.-d010484de13ae8d0",
+        "us-code-29-3221-a5a6deb63d139047"
+      ],
+      "status": "claimed",
+      "todo_id": "program-e964e2f9407f505d"
+    },
+    {
+      "action": "add_or_review_modal_ambiguity_policy",
+      "citations": [
+        "31 U.S.C. 6904",
+        "12 U.S.C. 3041",
+        "15 U.S.C. 52"
+      ],
+      "claimed_at": "2026-05-19T09:45:46+00:00",
+      "claimed_by": "codex-compiler_ambiguity",
+      "completed_at": null,
+      "created_at": "2026-05-19T09:36:49+00:00",
+      "loss_name": "autoencoder_residual_cluster",
+      "loss_value": 0.77152482026,
+      "metadata": {
+        "dedupe_signature": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"sample_ids\":[\"us-code-12-3041-c49da1d75259d673\",\"us-code-15-52-8e1157bd728bbdff\",\"us-code-31-6904-714f9a12df496721\"],\"target_component\":\"modal.compiler.ambiguity\"}",
+        "execution_target": "codex_program_repair",
+        "hint_evidence": [
+          {
+            "family_margin": 0.007279991044,
+            "hint_id": "modal-synthesis-52622728c5eb9417",
+            "predicted_family": "deontic",
+            "priority": 0.142720008956,
+            "sample_id": "us-code-15-52-8e1157bd728bbdff",
+            "target_family": "deontic"
+          },
+          {
+            "family_margin": -0.912069343873,
+            "hint_id": "modal-synthesis-dae4d0ea3ce82799",
+            "predicted_family": "deontic",
+            "priority": 1.062069343873,
+            "sample_id": "us-code-12-3041-c49da1d75259d673",
+            "target_family": "temporal"
+          },
+          {
+            "family_margin": -0.959785107952,
+            "hint_id": "modal-synthesis-ef493cadf633f299",
+            "predicted_family": "frame",
+            "priority": 1.109785107952,
+            "sample_id": "us-code-31-6904-714f9a12df496721",
+            "target_family": "deontic"
+          }
+        ],
+        "hint_ids": [
+          "modal-synthesis-52622728c5eb9417",
+          "modal-synthesis-dae4d0ea3ce82799",
+          "modal-synthesis-ef493cadf633f299"
+        ],
+        "optimizer_role": "program_synthesis",
+        "optimizer_stage": "typed_program_synthesis",
+        "program_synthesis_scope": "compiler_ambiguity",
+        "semantic_bundle_key": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"deontic->deontic\",\"deontic->temporal\",\"frame->deontic\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+        "source": "modal_program_synthesis_todo_generator_v1",
+        "support_count": 3,
+        "target_component": "modal.compiler.ambiguity",
+        "vector_bundle_anchor_id": "program-e964e2f9407f505d",
+        "vector_bundle_backend": "embeddings_router",
+        "vector_bundle_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+        "vector_bundle_similarity": 0.97574
+      },
+      "objective": "The adaptive family margin is small, so the compiler should expose an explicit ambiguity.",
+      "priority": 80.152482,
+      "sample_ids": [
+        "us-code-31-6904-714f9a12df496721",
+        "us-code-12-3041-c49da1d75259d673",
+        "us-code-15-52-8e1157bd728bbdff"
+      ],
+      "status": "claimed",
+      "todo_id": "program-505482364b202f08"
+    },
+    {
+      "action": "add_or_review_modal_ambiguity_policy",
+      "citations": [
+        "44 U.S.C. 703.",
+        "42 U.S.C. 300s",
+        "10 U.S.C. 8780"
+      ],
+      "claimed_at": "2026-05-19T09:45:46+00:00",
+      "claimed_by": "codex-compiler_ambiguity",
+      "completed_at": null,
+      "created_at": "2026-05-19T09:39:49+00:00",
+      "loss_name": "autoencoder_residual_cluster",
+      "loss_value": 0.792579524128,
+      "metadata": {
+        "dedupe_signature": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"sample_ids\":[\"us-code-10-8780-2539f35ce317901f\",\"us-code-42-300s-2ad85e15c53957bb\",\"us-code-44-703.-d84677bf1ce82052\"],\"target_component\":\"modal.compiler.ambiguity\"}",
+        "execution_target": "codex_program_repair",
+        "hint_evidence": [
+          {
+            "family_margin": -0.612873897209,
+            "hint_id": "modal-synthesis-3d0e10914eaaf1a6",
+            "predicted_family": "deontic",
+            "priority": 0.762873897209,
+            "sample_id": "us-code-42-300s-2ad85e15c53957bb",
+            "target_family": "conditional_normative"
+          },
+          {
+            "family_margin": -0.518545682385,
+            "hint_id": "modal-synthesis-92df89c7cf7fe43b",
+            "predicted_family": "frame",
+            "priority": 0.668545682385,
+            "sample_id": "us-code-10-8780-2539f35ce317901f",
+            "target_family": "deontic"
+          },
+          {
+            "family_margin": -0.79631899279,
+            "hint_id": "modal-synthesis-d5cc6ea03be08e34",
+            "predicted_family": "deontic",
+            "priority": 0.94631899279,
+            "sample_id": "us-code-44-703.-d84677bf1ce82052",
+            "target_family": "temporal"
+          }
+        ],
+        "hint_ids": [
+          "modal-synthesis-3d0e10914eaaf1a6",
+          "modal-synthesis-92df89c7cf7fe43b",
+          "modal-synthesis-d5cc6ea03be08e34"
+        ],
+        "optimizer_role": "program_synthesis",
+        "optimizer_stage": "typed_program_synthesis",
+        "program_synthesis_scope": "compiler_ambiguity",
+        "semantic_bundle_key": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"deontic->conditional_normative\",\"deontic->temporal\",\"frame->deontic\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+        "source": "modal_program_synthesis_todo_generator_v1",
+        "support_count": 3,
+        "target_component": "modal.compiler.ambiguity",
+        "vector_bundle_anchor_id": "program-e964e2f9407f505d",
+        "vector_bundle_backend": "embeddings_router",
+        "vector_bundle_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+        "vector_bundle_similarity": 0.971671
+      },
+      "objective": "The adaptive family margin is small, so the compiler should expose an explicit ambiguity.",
+      "priority": 82.257952,
+      "sample_ids": [
+        "us-code-44-703.-d84677bf1ce82052",
+        "us-code-42-300s-2ad85e15c53957bb",
+        "us-code-10-8780-2539f35ce317901f"
+      ],
+      "status": "claimed",
+      "todo_id": "program-ac014c9394c2db77"
+    },
+    {
+      "action": "add_or_review_modal_ambiguity_policy",
+      "citations": [
+        "10 U.S.C. 467",
+        "16 U.S.C. 6551",
+        "42 U.S.C. 3271."
+      ],
+      "claimed_at": "2026-05-19T09:45:46+00:00",
+      "claimed_by": "codex-compiler_ambiguity",
+      "completed_at": null,
+      "created_at": "2026-05-19T09:37:44+00:00",
+      "loss_name": "autoencoder_residual_cluster",
+      "loss_value": 0.5570953288,
+      "metadata": {
+        "dedupe_signature": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"sample_ids\":[\"us-code-10-467-2e5d5d26ed55812b\",\"us-code-16-6551-10034197b0128141\",\"us-code-42-3271.-bbdebdd3b4a07703\"],\"target_component\":\"modal.compiler.ambiguity\"}",
+        "execution_target": "codex_program_repair",
+        "hint_evidence": [
+          {
+            "family_margin": -0.240981950365,
+            "hint_id": "modal-synthesis-01c7a1475c1960ee",
+            "predicted_family": "frame",
+            "priority": 0.390981950365,
+            "sample_id": "us-code-42-3271.-bbdebdd3b4a07703",
+            "target_family": "temporal"
+          },
+          {
+            "family_margin": -0.65257734715,
+            "hint_id": "modal-synthesis-63f232cb51227d0e",
+            "predicted_family": "frame",
+            "priority": 0.80257734715,
+            "sample_id": "us-code-10-467-2e5d5d26ed55812b",
+            "target_family": "conditional_normative"
+          },
+          {
+            "family_margin": -0.327726688886,
+            "hint_id": "modal-synthesis-c563bd2caae6f973",
+            "predicted_family": "temporal",
+            "priority": 0.477726688886,
+            "sample_id": "us-code-16-6551-10034197b0128141",
+            "target_family": "epistemic"
+          }
+        ],
+        "hint_ids": [
+          "modal-synthesis-01c7a1475c1960ee",
+          "modal-synthesis-63f232cb51227d0e",
+          "modal-synthesis-c563bd2caae6f973"
+        ],
+        "optimizer_role": "program_synthesis",
+        "optimizer_stage": "typed_program_synthesis",
+        "program_synthesis_scope": "compiler_ambiguity",
+        "semantic_bundle_key": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"frame->conditional_normative\",\"frame->temporal\",\"temporal->epistemic\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+        "source": "modal_program_synthesis_todo_generator_v1",
+        "support_count": 3,
+        "target_component": "modal.compiler.ambiguity",
+        "vector_bundle_anchor_id": "program-e964e2f9407f505d",
+        "vector_bundle_backend": "embeddings_router",
+        "vector_bundle_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+        "vector_bundle_similarity": 0.964363
+      },
+      "objective": "The adaptive family margin is small, so the compiler should expose an explicit ambiguity.",
+      "priority": 58.709533,
+      "sample_ids": [
+        "us-code-10-467-2e5d5d26ed55812b",
+        "us-code-16-6551-10034197b0128141",
+        "us-code-42-3271.-bbdebdd3b4a07703"
+      ],
+      "status": "claimed",
+      "todo_id": "program-31686e3e64b4e572"
+    },
+    {
+      "action": "add_or_review_modal_ambiguity_policy",
+      "citations": [
+        "10 U.S.C. 3681",
+        "7 U.S.C. 1736",
+        "51 U.S.C. 50922."
+      ],
+      "claimed_at": "2026-05-19T09:45:46+00:00",
+      "claimed_by": "codex-compiler_ambiguity",
+      "completed_at": null,
+      "created_at": "2026-05-19T09:37:19+00:00",
+      "loss_name": "autoencoder_residual_cluster",
+      "loss_value": 0.283672291934,
+      "metadata": {
+        "dedupe_signature": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"sample_ids\":[\"us-code-10-3681-c44b2b729da795d9\",\"us-code-51-50922.-770ebeebe323b49b\",\"us-code-7-1736-924f9153fa08ba7a\"],\"target_component\":\"modal.compiler.ambiguity\"}",
+        "execution_target": "codex_program_repair",
+        "hint_evidence": [
+          {
+            "family_margin": 0.133552825543,
+            "hint_id": "modal-synthesis-35a107a8b0a4bc51",
+            "predicted_family": "temporal",
+            "priority": 0.016447174457,
+            "sample_id": "us-code-51-50922.-770ebeebe323b49b",
+            "target_family": "temporal"
+          },
+          {
+            "family_margin": -0.416225497581,
+            "hint_id": "modal-synthesis-8e1e9354942947e5",
+            "predicted_family": "conditional_normative",
+            "priority": 0.566225497581,
+            "sample_id": "us-code-10-3681-c44b2b729da795d9",
+            "target_family": "deontic"
+          },
+          {
+            "family_margin": -0.118344203765,
+            "hint_id": "modal-synthesis-c17efd026c957c79",
+            "predicted_family": "temporal",
+            "priority": 0.268344203765,
+            "sample_id": "us-code-7-1736-924f9153fa08ba7a",
+            "target_family": "deontic"
+          }
+        ],
+        "hint_ids": [
+          "modal-synthesis-35a107a8b0a4bc51",
+          "modal-synthesis-8e1e9354942947e5",
+          "modal-synthesis-c17efd026c957c79"
+        ],
+        "optimizer_role": "program_synthesis",
+        "optimizer_stage": "typed_program_synthesis",
+        "program_synthesis_scope": "compiler_ambiguity",
+        "semantic_bundle_key": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"conditional_normative->deontic\",\"temporal->deontic\",\"temporal->temporal\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+        "source": "modal_program_synthesis_todo_generator_v1",
+        "support_count": 3,
+        "target_component": "modal.compiler.ambiguity",
+        "vector_bundle_anchor_id": "program-e964e2f9407f505d",
+        "vector_bundle_backend": "embeddings_router",
+        "vector_bundle_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+        "vector_bundle_similarity": 0.962439
+      },
+      "objective": "The adaptive family margin is small, so the compiler should expose an explicit ambiguity.",
+      "priority": 31.367229,
+      "sample_ids": [
+        "us-code-10-3681-c44b2b729da795d9",
+        "us-code-7-1736-924f9153fa08ba7a",
+        "us-code-51-50922.-770ebeebe323b49b"
+      ],
+      "status": "claimed",
+      "todo_id": "program-2e397e730f74c890"
+    },
+    {
+      "action": "add_or_review_modal_ambiguity_policy",
+      "citations": [
+        "42 U.S.C. 16183.",
+        "42 U.S.C. 9605.",
+        "20 U.S.C. 2341",
+        "33 U.S.C. 59jj"
+      ],
+      "claimed_at": "2026-05-19T09:45:46+00:00",
+      "claimed_by": "codex-compiler_ambiguity",
+      "completed_at": null,
+      "created_at": "2026-05-19T09:44:54+00:00",
+      "loss_name": "autoencoder_residual_cluster",
+      "loss_value": 0.779122139472,
+      "metadata": {
+        "dedupe_signature": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"sample_ids\":[\"us-code-20-2341-bc423b78c83aa543\",\"us-code-33-59jj-f5897fef9d8e4971\",\"us-code-42-16183.-128b2c1ba48b8f9d\",\"us-code-42-9605.-e797e44e0150247e\"],\"target_component\":\"modal.compiler.ambiguity\"}",
+        "execution_target": "codex_program_repair",
+        "hint_evidence": [
+          {
+            "family_margin": -0.364600427884,
+            "hint_id": "modal-synthesis-43c88582d977c1bf",
+            "predicted_family": "frame",
+            "priority": 0.514600427884,
+            "sample_id": "us-code-20-2341-bc423b78c83aa543",
+            "target_family": "deontic"
+          },
+          {
+            "family_margin": -0.996957729615,
+            "hint_id": "modal-synthesis-6f8625de54cfb883",
+            "predicted_family": "frame",
+            "priority": 1.146957729615,
+            "sample_id": "us-code-42-16183.-128b2c1ba48b8f9d",
+            "target_family": "conditional_normative"
+          },
+          {
+            "family_margin": -0.201482979004,
+            "hint_id": "modal-synthesis-7a1097c911e1904c",
+            "predicted_family": "frame",
+            "priority": 0.351482979004,
+            "sample_id": "us-code-33-59jj-f5897fef9d8e4971",
+            "target_family": "deontic"
+          },
+          {
+            "family_margin": -0.953447421386,
+            "hint_id": "modal-synthesis-d6ae54897b9496cb",
+            "predicted_family": "frame",
+            "priority": 1.103447421386,
+            "sample_id": "us-code-42-9605.-e797e44e0150247e",
+            "target_family": "temporal"
+          }
+        ],
+        "hint_ids": [
+          "modal-synthesis-43c88582d977c1bf",
+          "modal-synthesis-6f8625de54cfb883",
+          "modal-synthesis-7a1097c911e1904c",
+          "modal-synthesis-d6ae54897b9496cb"
+        ],
+        "optimizer_role": "program_synthesis",
+        "optimizer_stage": "typed_program_synthesis",
+        "program_synthesis_scope": "compiler_ambiguity",
+        "semantic_bundle_key": "{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"frame->conditional_normative\",\"frame->deontic\",\"frame->temporal\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}",
+        "source": "modal_program_synthesis_todo_generator_v1",
+        "support_count": 4,
+        "target_component": "modal.compiler.ambiguity",
+        "vector_bundle_anchor_id": "program-e964e2f9407f505d",
+        "vector_bundle_backend": "embeddings_router",
+        "vector_bundle_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+        "vector_bundle_similarity": 0.936902
+      },
+      "objective": "The adaptive family margin is small, so the compiler should expose an explicit ambiguity.",
+      "priority": 81.912214,
+      "sample_ids": [
+        "us-code-42-16183.-128b2c1ba48b8f9d",
+        "us-code-42-9605.-e797e44e0150247e",
+        "us-code-20-2341-bc423b78c83aa543",
+        "us-code-33-59jj-f5897fef9d8e4971"
+      ],
+      "status": "claimed",
+      "todo_id": "program-1bd02c9411dc4e82"
+    }
+  ],
+  "vector_bundle_anchor_ids": [
+    "program-e964e2f9407f505d"
+  ],
+  "vector_claim_report": {
+    "active_target_file_lane_count": 3,
+    "anchor_id": "program-e964e2f9407f505d",
+    "available_candidate_count": 8,
+    "backend": "embeddings_router",
+    "candidate_count": 8,
+    "fallback_reason": "",
+    "fill_min_similarity": 0.4,
+    "fill_selected_count": 0,
+    "indexed_count": 55,
+    "max_bundle_wait_seconds": 120.0,
+    "min_bundle_size": 2,
+    "min_similarity": 0.5,
+    "mode": "vector",
+    "oldest_candidate_age_seconds": 537.401,
+    "path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-autoencoder.codex-task-vectors.json",
+    "provider": "local_adapter",
+    "refreshed_count": 4,
+    "selected_count": 6,
+    "selected_ids": [
+      "program-e964e2f9407f505d",
+      "program-505482364b202f08",
+      "program-ac014c9394c2db77",
+      "program-31686e3e64b4e572",
+      "program-2e397e730f74c890",
+      "program-1bd02c9411dc4e82"
+    ],
+    "target_file_lane_lock_scopes": [
+      "compiler_registry"
+    ],
+    "target_file_lane_lock_seconds": 1200.0,
+    "target_file_lane_locked_count": 0
+  },
+  "worker_id": "codex-compiler_ambiguity",
+  "worktree_error": null,
+  "worktree_path": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000023-20260519_094546"
+}

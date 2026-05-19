@@ -1,0 +1,287 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index c90c49c7..7ff2e21f 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -346,7 +346,11 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "shall",
+                     "must",
+                     "required",
++                    "required to",
++                    "is required to",
+                     "obligated",
++                    "liable for",
++                    "is liable for",
+                     "has a duty to",
+                     "have a duty to",
+                     "under an obligation to",
+@@ -354,7 +358,20 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                 (ModalSystem.D, ModalSystem.KD),
+             ),
+             _op("P", ("permission", "permitted"), ("may", "permitted", "authorized", "allowed"), (ModalSystem.D, ModalSystem.KD)),
+-            _op("F", ("prohibition", "forbidden"), ("may not", "must not", "prohibited", "forbidden"), (ModalSystem.D, ModalSystem.KD)),
++            _op(
++                "F",
++                ("prohibition", "forbidden"),
++                (
++                    "may not",
++                    "must not",
++                    "shall not",
++                    "prohibited",
++                    "forbidden",
++                    "is prohibited from",
++                    "unlawful to",
++                ),
++                (ModalSystem.D, ModalSystem.KD),
++            ),
+         ),
+         semantics=ModalSemanticsSpec(serial=True),
+         description="Legal obligations, permissions, and prohibitions.",
+@@ -378,6 +395,13 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "from time to time",
+                     "on or after",
+                     "beginning on or after",
++                    "after enactment",
++                    "after the date of enactment",
++                    "on the date of enactment",
++                    "effective upon enactment",
++                    "effective beginning on",
++                    "for the period beginning on",
++                    "for the period ending on",
+                     "no earlier than",
+                     "no later than",
+                     "not earlier than",
+@@ -444,10 +468,19 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "except",
+                     "provided that",
+                     "subject to",
++                    "subject to section",
++                    "subject to subsection",
++                    "subject to paragraph",
++                    "subject to subparagraph",
++                    "subject to this section",
++                    "subject to this chapter",
++                    "subject, however, to",
++                    "subject however to",
+                     "as provided by",
+                     "except as otherwise provided",
+                     "except as provided in",
+                     "except as provided by",
++                    "except as provided under",
+                     "except to the extent",
+                     "to the extent provided",
+                     "to the extent that",
+@@ -460,6 +493,8 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "in accordance with",
+                     "notwithstanding",
+                     "pursuant to",
++                    "under regulations prescribed by",
++                    "under regulations prescribed under",
+                     "under terms and conditions",
+                     "under such terms and conditions",
+                     "on such terms and conditions",
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index cf431c02..12aa9b30 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -33,6 +33,7 @@ _EXCEPTION_PREFIXES = ("except that", "except as", "unless", "except")
+ _CONDITIONAL_SCOPE_PHRASES = (
+     "as provided by",
+     "except as provided by",
++    "except as provided under",
+     "in the case of",
+     "in the event that",
+     "notwithstanding",
+@@ -44,10 +45,18 @@ _CONDITIONAL_SCOPE_PHRASES = (
+     "except as otherwise provided",
+     "under terms and conditions",
+     "under such terms and conditions",
++    "under regulations prescribed by",
++    "under regulations prescribed under",
+     "on such terms and conditions",
+     "subject only to",
+     "subject, however, to",
+     "subject however to",
++    "subject to section",
++    "subject to subsection",
++    "subject to paragraph",
++    "subject to subparagraph",
++    "subject to this section",
++    "subject to this chapter",
+     "subject to the terms and conditions",
+ )
+ _STATUTORY_SCOPE_REFERENCE_PHRASES = (
+@@ -65,8 +74,10 @@ _STATUTORY_SCOPE_REFERENCE_PHRASES = (
+ )
+ _CONDITIONAL_SCOPE_TOKENS = frozenset(
+     {
++        "except",
+         "notwithstanding",
+         "pursuant",
++        "unless",
+     }
+ )
+ _ALETHIC_SCOPE_TOKENS = frozenset(
+@@ -99,6 +110,7 @@ _TEMPORAL_SCOPE_TOKENS = frozenset(
+         "day",
+         "deadline",
+         "effective",
++        "enactment",
+         "fiscal",
+         "immediately",
+         "later",
+@@ -118,14 +130,19 @@ _TEMPORAL_SCOPE_TOKENS = frozenset(
+ )
+ _TEMPORAL_SCOPE_PHRASES = (
+     "as soon as practicable",
++    "after enactment",
++    "after the date of enactment",
+     "beginning on or after",
+     "calendar year",
+     "during the pendency of",
+     "effective date",
++    "effective beginning on",
+     "effective on",
+     "effective on first day",
++    "effective upon enactment",
+     "for any fiscal year",
+     "for each fiscal year",
++    "for the period ending on",
+     "for that fiscal year",
+     "from time to time",
+     "for the period beginning",
+@@ -134,6 +151,7 @@ _TEMPORAL_SCOPE_PHRASES = (
+     "no later than",
+     "not earlier than",
+     "not later than",
++    "on the date of enactment",
+     "on or after",
+     "period beginning on",
+     "period ending on",
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index a80e1ac1..714b8ba8 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -33,6 +33,9 @@ def test_deontic_profile_has_expected_operators_and_serial_semantics() -> None:
+     assert {"O", "P", "F"}.issubset(symbols)
+     assert {"shall", "must", "may", "prohibited"}.issubset(cue_terms)
+     assert {"has a duty to", "under an obligation to"}.issubset(cue_terms)
++    assert {"required to", "is required to", "shall not", "unlawful to"}.issubset(
++        cue_terms
++    )
+ 
+ 
+ def test_frame_profile_is_bm25_ontology_grounded() -> None:
+@@ -52,6 +55,9 @@ def test_conditional_profile_includes_terms_and_conditions_cues() -> None:
+     assert "notwithstanding" in cue_terms
+     assert "except as provided by" in cue_terms
+     assert "as provided by" in cue_terms
++    assert "subject to subsection" in cue_terms
++    assert "subject to section" in cue_terms
++    assert "under regulations prescribed by" in cue_terms
+ 
+ 
+ def test_temporal_profile_includes_deadline_and_calendar_scope_cues() -> None:
+@@ -63,6 +69,8 @@ def test_temporal_profile_includes_deadline_and_calendar_scope_cues() -> None:
+     assert "fiscal year" in cue_terms
+     assert "from time to time" in cue_terms
+     assert "on or after" in cue_terms
++    assert "after the date of enactment" in cue_terms
++    assert "effective upon enactment" in cue_terms
+ 
+ 
+ def test_registry_serialization_is_stable_json_ready() -> None:
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index 542d3fdf..6b4e970e 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -1419,6 +1419,30 @@ def test_spacy_encoder_extracts_temporal_scope_cues_from_deadline_phrases() -> N
+     )
+ 
+ 
++def test_spacy_encoder_extracts_temporal_scope_cues_from_enactment_phrases() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        (
++            "This section is effective upon enactment and applies after the date "
++            "of enactment."
++        ),
++        document_id="sample-temporal-enactment-phrases",
++    )
++
++    assert any(
++        cue.family == "temporal"
++        and cue.cue.lower() == "effective upon enactment"
++        for cue in encoding.cues
++    )
++    assert any(
++        cue.family == "temporal"
++        and cue.cue.lower() == "after the date of enactment"
++        for cue in encoding.cues
++    )
++    signals = modal_ambiguity_signals(encoding)
++    assert signals["has_temporal_scope"] is True
++
++
+ def test_spacy_encoder_extracts_deontic_obligation_phrase_cue() -> None:
+     encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
+     encoding = encoder.encode(
+@@ -1433,6 +1457,28 @@ def test_spacy_encoder_extracts_deontic_obligation_phrase_cue() -> None:
+     )
+ 
+ 
++def test_spacy_encoder_extracts_deontic_prohibition_cues_from_shall_not_and_unlawful_to() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        (
++            "A person shall not disclose records, and it is unlawful to falsify "
++            "required filings."
++        ),
++        document_id="sample-deontic-prohibition-phrases",
++    )
++
++    assert any(
++        cue.family == "deontic"
++        and cue.cue.lower() == "shall not"
++        for cue in encoding.cues
++    )
++    assert any(
++        cue.family == "deontic"
++        and cue.cue.lower() == "unlawful to"
++        for cue in encoding.cues
++    )
++
++
+ def test_spacy_encoder_treats_the_following_as_non_temporal_list_intro() -> None:
+     encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
+     encoding = encoder.encode(
+@@ -1474,6 +1520,30 @@ def test_spacy_encoder_extracts_conditional_cue_except_as_provided_by() -> None:
+     )
+ 
+ 
++def test_spacy_encoder_extracts_conditional_scope_cues_from_subject_to_subsection_and_regulations() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        (
++            "Subject to subsection (b) and under regulations prescribed by the "
++            "Secretary, this authority applies."
++        ),
++        document_id="sample-conditional-subsection-regulations",
++    )
++
++    assert any(
++        cue.family == "conditional_normative"
++        and cue.cue.lower() == "subject to subsection"
++        for cue in encoding.cues
++    )
++    assert any(
++        cue.family == "conditional_normative"
++        and cue.cue.lower() == "under regulations prescribed by"
++        for cue in encoding.cues
++    )
++    signals = modal_ambiguity_signals(encoding)
++    assert signals["has_condition_or_exception_scope"] is True
++
++
+ def test_spacy_codec_collapses_nested_conditional_cues_in_weighted_family_ranking() -> None:
+     encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
+     encoding = encoder.encode(

@@ -1,0 +1,42 @@
+# packet-000105
+
+## Source
+The TODO batch is autoencoder/supervisor output; this file is the Codex-facing work order.
+- Raw TODO JSONL: `/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/packet-000105/TODO_LIST.jsonl`
+- TODO markdown: `/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/packet-000105/TODO_LIST.md`
+
+## Worktree
+/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000105-20260519_125459
+
+## Change Capture
+pending: awaiting_codex_changes
+
+## Suggested Files
+- `ipfs_datasets_py/logic/modal/compiler.py`
+- `ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py`
+- `ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py`
+
+## TODOs
+- `program-1ac8a05c998e789a` `refine_modal_family_cue_rules`
+  target: `modal.compiler.registry`
+  scope: `compiler_registry`
+  bundle: `{"action":"refine_modal_family_cue_rules","family_pairs":["alethic->temporal","frame->deontic","frame->temporal"],"program_synthesis_scope":"compiler_registry","target_component":"modal.compiler.registry"}`
+  vector_bundle: `program-1ac8a05c998e789a` score `1.0`
+  objective: Adaptive family evidence disagrees with, or is weak for, the typed modal family.
+  support: 3
+  evidence: `{"family_margin": -0.999907091831, "hint_id": "modal-synthesis-58acc60613533975", "predicted_family": "frame", "priority": 0.99999700956, "sample_id": "us-code-18-956-b86919ed0b6b3fa9", "target_family": "temporal", "target_probability": 2.99044e-06}`
+  evidence: `{"family_margin": -0.99240219376, "hint_id": "modal-synthesis-824e05365046043e", "predicted_family": "frame", "priority": 0.998174294559, "sample_id": "us-code-28-1738-a2fdec05f100f657", "target_family": "deontic", "target_probability": 0.001825705441}`
+  evidence: `{"family_margin": -0.795219252903, "hint_id": "modal-synthesis-a5edf613869b6a2e", "predicted_family": "alethic", "priority": 0.98897196457, "sample_id": "us-code-49-20101.-2ac3d3010e2c3de8", "target_family": "temporal", "target_probability": 0.01102803543}`
+- `program-34d9980c5468c3b7` `refine_modal_family_cue_rules`
+  target: `modal.compiler.registry`
+  scope: `compiler_registry`
+  bundle: `{"action":"refine_modal_family_cue_rules","family_pairs":["conditional_normative->temporal","frame->deontic","temporal->deontic"],"program_synthesis_scope":"compiler_registry","target_component":"modal.compiler.registry"}`
+  vector_bundle: `program-1ac8a05c998e789a` score `0.984846`
+  objective: Adaptive family evidence disagrees with, or is weak for, the typed modal family.
+  support: 3
+  evidence: `{"family_margin": -0.284224385856, "hint_id": "modal-synthesis-14a614d0e9f9734f", "predicted_family": "conditional_normative", "priority": 0.878189548919, "sample_id": "us-code-19-2372-7a8bb398787d1d34", "target_family": "temporal", "target_probability": 0.121810451081}`
+  evidence: `{"family_margin": -0.228446639842, "hint_id": "modal-synthesis-3996d297b1781cdf", "predicted_family": "frame", "priority": 0.647850856509, "sample_id": "us-code-36-230310-1fc4e0a5e5a733b8", "target_family": "deontic", "target_probability": 0.352149143491}`
+  evidence: `{"family_margin": -0.137812866903, "hint_id": "modal-synthesis-9b84848afdc89bd1", "predicted_family": "temporal", "priority": 0.805440658489, "sample_id": "us-code-26-2010-1d49b3824d22c29f", "target_family": "deontic", "target_probability": 0.194559341511}`
+
+## Finish
+Leave the completed edits in the worktree; the daemon captures, applies, and validates the diff.

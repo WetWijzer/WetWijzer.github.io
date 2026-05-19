@@ -1,0 +1,293 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index cbd5c467..966b0877 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -110,6 +110,10 @@ SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] = (
+ )
+ 
+ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] = (
++    (
++        ModalLogicFamily.DEONTIC.value,
++        ModalLogicFamily.DEONTIC.value,
++    ),
+     (
+         ModalLogicFamily.DEONTIC.value,
+         ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+@@ -118,6 +122,18 @@ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...
+         ModalLogicFamily.DEONTIC.value,
+         ModalLogicFamily.FRAME.value,
+     ),
++    (
++        ModalLogicFamily.DEONTIC.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ),
++    (
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ),
++    (
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++        ModalLogicFamily.FRAME.value,
++    ),
+     (
+         ModalLogicFamily.TEMPORAL.value,
+         ModalLogicFamily.DEONTIC.value,
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index b14f6087..f50820f5 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -227,6 +227,22 @@ def test_compiler_emits_explicit_conditional_normative_to_frame_adaptive_pair()
+     )
+ 
+ 
++def test_compiler_emits_explicit_conditional_normative_to_temporal_adaptive_pair() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "In the event that eligibility is confirmed, payment is due by June 1, 2030.",
++        document_id="compiler-ambiguity-conditional-temporal",
++    )
++    assert _has_adaptive_explicit_pair(
++        result,
++        predicted_family=ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++        target_family=ModalLogicFamily.TEMPORAL.value,
++    )
++
++
+ def test_compiler_emits_explicit_conditional_normative_to_epistemic_adaptive_pair() -> None:
+     compiler = DeterministicModalCompiler(
+         config=ModalCompilerConfig(parser_backend="spacy")
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index bfd92263..dd843ad7 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -136,16 +136,27 @@ def test_signal_free_adaptive_ambiguity_targets_are_ordered_and_directional() ->
+ 
+ 
+ def test_priority_signal_free_adaptive_ambiguity_pair_policy_is_directional() -> None:
++    assert is_priority_signal_free_adaptive_ambiguity_pair("deontic", "deontic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair(
+         "deontic",
+         "conditional_normative",
+     )
++    assert is_priority_signal_free_adaptive_ambiguity_pair("deontic", "frame")
++    assert is_priority_signal_free_adaptive_ambiguity_pair("deontic", "temporal")
++    assert is_priority_signal_free_adaptive_ambiguity_pair(
++        "conditional_normative",
++        "temporal",
++    )
++    assert is_priority_signal_free_adaptive_ambiguity_pair(
++        "conditional_normative",
++        "frame",
++    )
+     assert is_priority_signal_free_adaptive_ambiguity_pair("temporal", "deontic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("temporal", "frame")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("hybrid", "frame")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "deontic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "temporal")
+     assert (
+-        is_priority_signal_free_adaptive_ambiguity_pair("deontic", "frame")
++        is_priority_signal_free_adaptive_ambiguity_pair("deontic", "epistemic")
+         is False
+     )
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index 0fcc6e2e..f701c9b1 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -2942,6 +2942,97 @@ def test_modal_compiler_uses_signal_free_pair_policy_for_conditional_temporal_ad
+     )
+ 
+ 
++def test_modal_compiler_treats_zero_margin_conditional_temporal_priority_pair_as_outvoted_adaptive_ambiguity(
++    monkeypatch,
++) -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++            modal_adaptive_family_margin=0.15,
++        )
++    )
++    monkeypatch.setattr(
++        "ipfs_datasets_py.logic.modal.compiler.modal_ambiguity_signals",
++        lambda _: {},
++    )
++    encoding = SpaCyLegalEncoding(
++        document_id="adaptive-zero-margin-conditional-temporal-doc",
++        text="Provided that the filing is complete, notice applies.",
++        normalized_text="Provided that the filing is complete, notice applies.",
++        tokens=[],
++        sentences=[],
++        cues=[
++            SpaCyModalCueFeature(
++                family="conditional_normative",
++                system="STIT",
++                symbol="O_if",
++                label="conditional_obligation",
++                cue="provided that",
++                start_char=0,
++                end_char=13,
++                token_indices=[],
++            ),
++        ],
++    )
++    modal_ir = ModalIRDocument(
++        document_id="adaptive-zero-margin-conditional-temporal-doc",
++        source="us_code",
++        normalized_text=encoding.normalized_text,
++        formulas=[
++            ModalIRFormula(
++                formula_id="f-conditional-1",
++                operator=ModalIROperator(
++                    family="conditional_normative",
++                    system="STIT",
++                    symbol="O_if",
++                    label="conditional_obligation",
++                ),
++                predicate=ModalIRPredicate(
++                    name="notice_applies",
++                    arguments=["actor:agency"],
++                    role="conditional_scope",
++                ),
++                provenance=ModalIRProvenance(
++                    source_id="adaptive-zero-margin-conditional-temporal-doc",
++                    start_char=0,
++                    end_char=len(encoding.normalized_text),
++                    citation="11 U.S.C. 547",
++                ),
++            ),
++        ],
++    )
++    ambiguities = compiler._adaptive_family_margin_ambiguities(
++        encoding,
++        modal_ir=modal_ir,
++        ranking=[
++            {"family": "conditional_normative", "count": 1, "share": 0.5},
++            {"family": "temporal", "count": 1, "share": 0.5},
++        ],
++        family_shares={"conditional_normative": 0.5, "temporal": 0.5},
++    )
++
++    adaptive_temporal = next(
++        ambiguity
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["conditional_normative", "temporal"]
++    )
++    assert adaptive_temporal.metadata["family_margin"] == 0.0
++    assert adaptive_temporal.metadata["adaptive_margin_direction"] == "outvoted"
++    assert adaptive_temporal.metadata["is_priority_policy_pair"] is True
++    assert adaptive_temporal.metadata["explicit_ambiguity_type"] == (
++        "adaptive_conditional_normative_temporal_outvoted_margin_low"
++    )
++    assert adaptive_temporal.severity == "requires_rule"
++    assert any(
++        ambiguity.ambiguity_type
++        == "adaptive_conditional_normative_temporal_outvoted_margin_low"
++        and ambiguity.metadata["family_margin"] == 0.0
++        for ambiguity in ambiguities
++    )
++
++
+ def test_modal_compiler_uses_signal_free_pair_policy_for_conditional_deontic_adaptive_ambiguity(
+     monkeypatch,
+ ) -> None:
+@@ -3771,6 +3862,96 @@ def test_modal_compiler_treats_zero_margin_deontic_frame_priority_pair_as_outvot
+     )
+ 
+ 
++def test_modal_compiler_treats_zero_margin_deontic_temporal_priority_pair_as_outvoted_adaptive_ambiguity(
++    monkeypatch,
++) -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++            modal_adaptive_family_margin=0.15,
++        )
++    )
++    monkeypatch.setattr(
++        "ipfs_datasets_py.logic.modal.compiler.modal_ambiguity_signals",
++        lambda _: {},
++    )
++    encoding = SpaCyLegalEncoding(
++        document_id="adaptive-zero-margin-deontic-temporal-doc",
++        text="The agency shall provide written notice.",
++        normalized_text="The agency shall provide written notice.",
++        tokens=[],
++        sentences=[],
++        cues=[
++            SpaCyModalCueFeature(
++                family="deontic",
++                system="D",
++                symbol="O",
++                label="obligation",
++                cue="shall",
++                start_char=11,
++                end_char=16,
++                token_indices=[],
++            ),
++        ],
++    )
++    modal_ir = ModalIRDocument(
++        document_id="adaptive-zero-margin-deontic-temporal-doc",
++        source="us_code",
++        normalized_text=encoding.normalized_text,
++        formulas=[
++            ModalIRFormula(
++                formula_id="f-deontic-1",
++                operator=ModalIROperator(
++                    family="deontic",
++                    system="D",
++                    symbol="O",
++                    label="obligation",
++                ),
++                predicate=ModalIRPredicate(
++                    name="provide_notice",
++                    arguments=["actor:agency"],
++                    role="clause",
++                ),
++                provenance=ModalIRProvenance(
++                    source_id="adaptive-zero-margin-deontic-temporal-doc",
++                    start_char=0,
++                    end_char=len(encoding.normalized_text),
++                    citation="18 U.S.C. 930",
++                ),
++            ),
++        ],
++    )
++    ambiguities = compiler._adaptive_family_margin_ambiguities(
++        encoding,
++        modal_ir=modal_ir,
++        ranking=[
++            {"family": "deontic", "count": 1, "share": 0.5},
++            {"family": "temporal", "count": 1, "share": 0.5},
++        ],
++        family_shares={"deontic": 0.5, "temporal": 0.5},
++    )
++
++    adaptive_temporal = next(
++        ambiguity
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["deontic", "temporal"]
++    )
++    assert adaptive_temporal.metadata["family_margin"] == 0.0
++    assert adaptive_temporal.metadata["adaptive_margin_direction"] == "outvoted"
++    assert adaptive_temporal.metadata["is_priority_policy_pair"] is True
++    assert adaptive_temporal.metadata["explicit_ambiguity_type"] == (
++        "adaptive_deontic_temporal_outvoted_margin_low"
++    )
++    assert adaptive_temporal.severity == "requires_rule"
++    assert any(
++        ambiguity.ambiguity_type == "adaptive_deontic_temporal_outvoted_margin_low"
++        and ambiguity.metadata["family_margin"] == 0.0
++        for ambiguity in ambiguities
++    )
++
++
+ def test_modal_compiler_uses_signal_free_pair_policy_for_deontic_temporal_adaptive_ambiguity(
+     monkeypatch,
+ ) -> None:

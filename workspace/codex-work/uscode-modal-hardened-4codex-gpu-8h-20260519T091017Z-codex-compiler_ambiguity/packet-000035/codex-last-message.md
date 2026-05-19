@@ -1,0 +1,12 @@
+Implemented a focused `compiler_ambiguity` policy hardening for low-margin `epistemic->deontic` cases.
+
+- Updated priority ambiguity policy to include `epistemic->deontic` in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000035-20260519_110224/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:259).  
+  This makes zero-margin ties emit the explicit `outvoted` adaptive ambiguity path (`requires_rule`) instead of `contested`.
+- Updated registry expectations in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000035-20260519_110224/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:339) to reflect the new priority direction and target ordering.
+- Updated compiler behavior assertion in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000035-20260519_110224/tests/unit_tests/logic/modal/test_modal_codec.py:5823) from contested/review to outvoted/requires_rule for the zero-margin `epistemic->deontic` case.
+
+Tests run (focused, all passed):
+
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -k "priority_signal_free"`  
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "epistemic_deontic"`  
+3. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "required_margin_bundle_pairs"`

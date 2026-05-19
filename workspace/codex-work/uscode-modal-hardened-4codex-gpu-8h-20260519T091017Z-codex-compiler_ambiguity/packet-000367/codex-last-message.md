@@ -1,0 +1,15 @@
+Implemented the `compiler_ambiguity` policy hardening for this packet.
+
+Changes made:
+- Added `alethic->deontic` to `COMPILER_AMBIGUITY_POLICY_FAMILY_PAIRS` so emitted adaptive ambiguities for that pair are explicitly tagged as part of the compiler ambiguity bundle in metadata.  
+  - [modal_registry.py:140](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000367-20260519_143114/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:140)
+
+- Added regression test for `alethic->deontic` from adaptive logits, asserting `is_compiler_ambiguity_bundle_pair=True` and `ambiguity_policy_bundle=="compiler_ambiguity"`.  
+  - [test_legal_modal_parser_deterministic_rules.py:871](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000367-20260519_143114/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:871)
+
+- Added regression test for `frame->dynamic` signal-free emission from adaptive logits, asserting compiler-ambiguity bundle tagging and `signal_free_pair_policy_applied=True`.  
+  - [test_legal_modal_parser_deterministic_rules.py:1120](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000367-20260519_143114/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:1120)
+
+Validation run:
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "alethic_to_deontic_pair_as_compiler_ambiguity_bundle_from_adaptive_logits or frame_to_dynamic_pair_as_compiler_ambiguity_signal_free_policy_without_target_evidence or frame_to_temporal_pair_as_compiler_required_policy_without_target_evidence"`
+- Result: `3 passed, 28 deselected`

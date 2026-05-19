@@ -1,0 +1,20 @@
+Implemented a deterministic cue-weight refinement in the modal compiler registry lane by updating only [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000029-20260519_123051/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py).
+
+What changed:
+1. Added pair-specific competing-scope floor constants and a reusable helper (`_apply_competing_scope_floor`) to preserve weak-but-relevant target-family evidence during dominant-family cue clusters.
+2. Applied new floor logic inside `_apply_competing_scope_backfill` for the targeted family directions:
+   1. `frame -> deontic`
+   2. `frame -> conditional_normative`
+   3. `frame -> alethic`
+   4. `deontic -> frame`
+   5. `temporal -> deontic`
+3. Tuned statutory frame backfill to avoid over-amplifying frame evidence when strong temporal scope markers are present.
+4. Slightly strengthened deontic logit boost under temporal competition (when deontic cue exists), and temporal logit boost under statutory frame-context temporal scope.
+5. Hardened `ranked_modal_families` share rounding so rounded shares deterministically sum to 1.0 (fixes edge drift like `1.000001`).
+
+Validation run:
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` (111 passed)
+2. `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py` (26 passed)
+3. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (16 passed)
+
+No other files were changed.

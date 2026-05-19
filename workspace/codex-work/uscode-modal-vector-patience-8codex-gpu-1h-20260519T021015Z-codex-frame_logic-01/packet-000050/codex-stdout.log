@@ -1,0 +1,22 @@
+Implemented a deterministic frame-logic audit improvement so family-scoring fields are captured as ontology terms even when they are provided as metadata aliases rather than explicit frame-feature keys.
+
+Updated files:
+- [frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-frame_logic-01/worktrees/agent-codex-frame_logic-01-packet-000050-20260519_021439/ipfs_datasets_py/optimizers/logic_theorem_optimizer/frame_bm25_selector.py:274)
+  - Added family alias mappings in `_FRAME_ONTOLOGY_VALUE_KEY_FEATURE_PREFIXES`:
+    - `family`, `family_name`, `modal_family_name`, `selected_family`, `candidate_family`
+  - These now synthesize canonical `family:selected_frame:<value>` features for ontology-term extraction.
+
+- [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-frame_logic-01/worktrees/agent-codex-frame_logic-01-packet-000050-20260519_021439/ipfs_datasets_py/logic/modal/codec.py:5450)
+  - Extended `_frame_ontology_audit_metadata_feature_keys` to include family-scoring metadata fields from both document metadata and `frame_logic.metadata`.
+  - Added explicit synthesis of `family:selected_frame:<value>` for `family`, `predicted_family`, `target_family`, and `selected_family`.
+
+- [test_frame_bm25_selector.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-frame_logic-01/worktrees/agent-codex-frame_logic-01-packet-000050-20260519_021439/tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py:1751)
+  - Added regression test for family alias synthesis from nested values.
+
+- [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-frame_logic-01/worktrees/agent-codex-frame_logic-01-packet-000050-20260519_021439/tests/unit_tests/logic/modal/test_modal_codec.py:7714)
+  - Added regression test that frame-audit feature-key extraction includes family-scoring metadata fields and yields ontology terms.
+
+Tests run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_frame_bm25_selector.py -k "synthesizes_family_alias_fields or synthesizes_semantic_frame_fields"` -> passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "frame_ontology_audit_feature_keys_include_family_scoring_metadata_fields or frame_ontology_audit_feature_keys_include_autoencoder_contributions"` -> passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "frame_ontology_audit_feature_keys_include"` -> passed

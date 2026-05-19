@@ -1,0 +1,27 @@
+Implemented a targeted ambiguity-policy upgrade by promoting three high-signal adaptive pairs to **priority** so zero-margin cases become explicit outvoted ambiguities (`requires_rule`) instead of contested review.
+
+Changed files:
+- [modal_registry.py:156](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000056-20260519_075724/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:156)
+- [test_modal_registry.py:200](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000056-20260519_075724/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:200)
+- [test_modal_codec.py:2378](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000056-20260519_075724/tests/unit_tests/logic/modal/test_modal_codec.py:2378)
+- [test_modal_codec.py:4787](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000056-20260519_075724/tests/unit_tests/logic/modal/test_modal_codec.py:4787)
+- [test_modal_codec.py:5889](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000056-20260519_075724/tests/unit_tests/logic/modal/test_modal_codec.py:5889)
+
+Policy changes:
+- Added to `PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS`:
+1. `deontic -> dynamic`
+2. `deontic -> deontic`
+3. `temporal -> conditional_normative`
+
+Test updates:
+- Updated registry expectations for new priority-directional pairs and target ordering.
+- Added zero-margin modal compiler tests confirming outvoted priority behavior for:
+1. `temporal -> conditional_normative`
+2. `deontic -> deontic` (self-pair)
+3. `deontic -> dynamic`
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (11 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "...selected..."` (6 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "priority_pair"` (10 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` (163 passed)

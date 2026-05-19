@@ -1,0 +1,146 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 799e63af..a15aefc9 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -398,6 +398,8 @@ _CONDITIONAL_FRAME_SCOPE_BACKFILL_TRIGGER = 2.0
+ _FRAME_DEONTIC_SCOPE_BACKFILL_TRIGGER = 0.5
+ _FRAME_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 0.5
+ _TEMPORAL_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 3.0
++_LEADING_DEONTIC_COMPETING_FAMILY_BONUS = 1.1
++_LEADING_DEONTIC_COMPETING_FAMILY_BONUS_CAP = 2.2
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+     {
+         "duty",
+@@ -1152,6 +1154,11 @@ def _weighted_modal_family_counts(
+         counts,
+         resolved_signals,
+     )
++    _apply_leading_deontic_competing_family_boost(
++        counts,
++        encoding,
++        resolved_signals,
++    )
+     _apply_competing_scope_backfill(
+         counts,
+         resolved_signals,
+@@ -1250,6 +1257,56 @@ def _apply_deontic_competing_scope_soft_cap(
+     counts[deontic_family] = _DEONTIC_COMPETING_SCOPE_SOFT_CAP + math.log1p(overflow)
+ 
+ 
++def _apply_leading_deontic_competing_family_boost(
++    counts: Dict[str, float],
++    encoding: SpaCyLegalEncoding,
++    signals: Mapping[str, bool],
++) -> None:
++    """Boost leading deontic force when later scope cues from other families stack up."""
++    deontic_family = ModalLogicFamily.DEONTIC.value
++    temporal_family = ModalLogicFamily.TEMPORAL.value
++    frame_family = ModalLogicFamily.FRAME.value
++
++    deontic_count = float(counts.get(deontic_family, 0.0))
++    if deontic_count <= 0.0:
++        return
++    if not bool(signals.get("has_deontic_scope")):
++        return
++
++    first_modal_cue: Optional[SpaCyModalCueFeature] = None
++    for cue in encoding.cues:
++        if cue.family in {deontic_family, temporal_family, frame_family}:
++            first_modal_cue = cue
++            break
++    if first_modal_cue is None or first_modal_cue.family != deontic_family:
++        return
++
++    temporal_count = float(counts.get(temporal_family, 0.0))
++    frame_count = float(counts.get(frame_family, 0.0))
++    bonus = 0.0
++
++    if (
++        temporal_count > deontic_count
++        and bool(signals.get("has_temporal_scope"))
++    ):
++        bonus += _LEADING_DEONTIC_COMPETING_FAMILY_BONUS
++    if (
++        frame_count > deontic_count
++        and (
++            bool(signals.get("has_frame_context"))
++            or bool(signals.get("has_statutory_scope_reference"))
++            or bool(signals.get("has_frame_cue"))
++        )
++    ):
++        bonus += _LEADING_DEONTIC_COMPETING_FAMILY_BONUS
++    if bonus <= 0.0:
++        return
++    counts[deontic_family] = deontic_count + min(
++        bonus,
++        _LEADING_DEONTIC_COMPETING_FAMILY_BONUS_CAP,
++    )
++
++
+ def _apply_generic_frame_scope_backfill(
+     counts: Dict[str, float],
+     signals: Mapping[str, bool],
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index 6aa18ecd..82a45b7a 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -717,6 +717,59 @@ def test_spacy_decoder_boosts_temporal_logits_from_scope_without_temporal_cues()
+     assert logits["temporal"] > -0.25
+ 
+ 
++def test_spacy_codec_prioritizes_leading_deontic_force_over_dense_temporal_scope_cues() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="20",
++        section="806",
++        text=(
++            "The Secretary shall, from time to time, on or after January 1, 2030, "
++            "exercise authority and jurisdiction under this section."
++        ),
++    )
++
++    ranking = ranked_modal_families(codec.encode_sample(sample))
++    deontic_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "deontic"
++    )
++    temporal_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "temporal"
++    )
++
++    assert ranking[0]["family"] == "deontic"
++    assert deontic_share >= temporal_share
++
++
++def test_spacy_decoder_prioritizes_leading_deontic_logits_for_temporal_and_frame_competition() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="12",
++        section="1816",
++        text=(
++            "The Board may, from time to time and until January 1, 2030, exercise "
++            "authority and jurisdiction under this chapter."
++        ),
++    )
++
++    logits = codec.family_logits_for_sample(
++        sample,
++        modal_families=("deontic", "temporal", "frame"),
++    )
++
++    assert logits["deontic"] > logits["temporal"]
++    assert logits["deontic"] > logits["frame"]
++
++
+ def test_spacy_decoder_boosts_dynamic_logits_from_scope_without_dynamic_cues() -> None:
+     codec = SpaCyModalCodec(
+         encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),

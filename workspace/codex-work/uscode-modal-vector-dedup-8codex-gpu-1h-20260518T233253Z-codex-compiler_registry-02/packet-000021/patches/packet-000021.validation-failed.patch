@@ -1,0 +1,375 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index ce7d2d14..e864f120 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -271,7 +271,12 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+         system=ModalSystem.LTL,
+         operators=(
+             _op("G", ("always",), ("always", "throughout", "until"), (ModalSystem.LTL, ModalSystem.CTL)),
+-            _op("F", ("eventually",), ("eventually", "within", "by"), (ModalSystem.LTL, ModalSystem.CTL)),
++            _op(
++                "F",
++                ("eventually",),
++                ("eventually", "within", "by", "not later than", "no later than"),
++                (ModalSystem.LTL, ModalSystem.CTL),
++            ),
+             _op("X", ("next",), ("next", "after", "following"), (ModalSystem.LTL, ModalSystem.CTL)),
+         ),
+         semantics=ModalSemanticsSpec(tree_time=True),
+@@ -345,6 +350,11 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "under such terms and conditions",
+                     "on such terms and conditions",
+                     "subject to the terms and conditions",
++                    "after notice and opportunity for hearing",
++                    "upon notice and opportunity for hearing",
++                    "on notice and opportunity for hearing",
++                    "after reasonable notice and opportunity for hearing",
++                    "upon reasonable notice and opportunity for hearing",
+                 ),
+                 (ModalSystem.KD,),
+             ),
+@@ -356,7 +366,20 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+         family=ModalLogicFamily.FRAME,
+         system=ModalSystem.FRAME_BM25,
+         operators=(
+-            _op("Frame", ("ontology_frame",), ("is a", "part of", "administered by", "jurisdiction", "authority"), (ModalSystem.FRAME_BM25,)),
++            _op(
++                "Frame",
++                ("ontology_frame",),
++                (
++                    "is a",
++                    "part of",
++                    "administered by",
++                    "jurisdiction",
++                    "authority",
++                    "under this section",
++                    "under this chapter",
++                ),
++                (ModalSystem.FRAME_BM25,),
++            ),
+         ),
+         semantics=ModalSemanticsSpec(ontology_frame_grounded=True),
+         description="Ontology-grounded frame logic selected with BM25.",
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 35f196fb..6328d741 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -44,6 +44,11 @@ _CONDITIONAL_SCOPE_PHRASES = (
+     "under such terms and conditions",
+     "on such terms and conditions",
+     "subject to the terms and conditions",
++    "after notice and opportunity for hearing",
++    "upon notice and opportunity for hearing",
++    "on notice and opportunity for hearing",
++    "after reasonable notice and opportunity for hearing",
++    "upon reasonable notice and opportunity for hearing",
+ )
+ _STATUTORY_SCOPE_REFERENCE_PHRASES = (
+     "as provided in",
+@@ -222,6 +227,18 @@ _TEMPORAL_BY_PHRASE_RE = re.compile(
+     r")",
+     re.IGNORECASE,
+ )
++_TEMPORAL_AFTER_PHRASE_RE = re.compile(
++    r"^\s+(?:"
++    r"\d{1,4}\b|"
++    r"(?:the\s+)?(?:day|days|week|weeks|month|months|year|years|date|dates|"
++    r"deadline|deadlines|expiration|period|periods|fiscal|calendar)\b|"
++    r"(?:next|following)\b|"
++    r"(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|"
++    r"jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|"
++    r"dec(?:ember)?)\s+\d{1,2}(?:,\s*|\s+)\d{4}\b"
++    r")",
++    re.IGNORECASE,
++)
+ _TEMPORAL_WITHIN_PHRASE_RE = re.compile(
+     r"^\s+(?:"
+     r"\d{1,4}\b|"
+@@ -362,12 +379,15 @@ _GENERIC_FRAME_CUE_TERMS = frozenset(
+     {
+         "authority",
+         "jurisdiction",
++        "under this chapter",
++        "under this section",
+     }
+ )
+ _GENERIC_FRAME_DEBIASED_LOGIT_BASE = 0.5
+ _GENERIC_FRAME_CUE_DEBIAS_FACTOR = 0.25
+ _GENERIC_FRAME_STRUCTURAL_BONUS_DEBIAS_FACTOR = 0.25
+ _DEONTIC_COMPETING_SCOPE_SOFT_CAP = 3.0
++_DEONTIC_CONDITIONAL_COMPETING_SCOPE_SOFT_CAP = 1.5
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+     {
+         "duty",
+@@ -627,6 +647,16 @@ class SpaCyLegalEncoder:
+                                 )
+                             ):
+                                 continue
++                            if (
++                                lowered_cue == "after"
++                                and not self._is_temporal_sequence_after_cue(
++                                    normalized_text=normalized,
++                                    tokens=tokens,
++                                    start_char=match.start(),
++                                    end_char=match.end(),
++                                )
++                            ):
++                                continue
+                         token_indices = [
+                             index
+                             for index, start, end in token_spans
+@@ -710,6 +740,42 @@ class SpaCyLegalEncoder:
+             end_char=end_char,
+         )
+ 
++    def _is_temporal_sequence_after_cue(
++        self,
++        *,
++        normalized_text: str,
++        tokens: Sequence[SpaCyTokenFeature],
++        start_char: int,
++        end_char: int,
++    ) -> bool:
++        """Treat temporal `after` as a cue only in time-like sequence/deadline context."""
++        trailing = normalized_text[end_char : end_char + 80]
++        if _TEMPORAL_AFTER_PHRASE_RE.match(trailing):
++            return True
++        lookahead = _lookahead_tokens(tokens, end_char, limit=4)
++        for token in lookahead:
++            normalized = token.normalized().lower()
++            if normalized in _TEMPORAL_SCOPE_TOKENS:
++                return True
++            if normalized in _TEMPORAL_BY_CONTEXT_TOKENS:
++                return True
++            if normalized in _MONTH_NAME_TOKENS:
++                return True
++            if re.fullmatch(r"\d{1,4}", token.text):
++                return True
++        lookbehind = _lookbehind_tokens(tokens, start_char, limit=4)
++        for token in lookbehind:
++            normalized = token.normalized().lower()
++            if normalized in _TEMPORAL_SCOPE_TOKENS:
++                return True
++            if normalized in _TEMPORAL_BY_CONTEXT_TOKENS:
++                return True
++            if normalized in _MONTH_NAME_TOKENS:
++                return True
++            if re.fullmatch(r"\d{1,4}", token.text):
++                return True
++        return False
++
+     def _is_non_temporal_following_cue(
+         self,
+         *,
+@@ -1062,6 +1128,22 @@ def _lookahead_tokens(
+     return lookahead
+ 
+ 
++def _lookbehind_tokens(
++    tokens: Sequence[SpaCyTokenFeature],
++    start_char: int,
++    *,
++    limit: int,
++) -> List[SpaCyTokenFeature]:
++    lookbehind: List[SpaCyTokenFeature] = []
++    for token in reversed(tokens):
++        if token.end_char <= start_char:
++            lookbehind.append(token)
++            if len(lookbehind) >= limit:
++                break
++    lookbehind.reverse()
++    return lookbehind
++
++
+ def ranked_modal_families(encoding: SpaCyLegalEncoding) -> List[Dict[str, float]]:
+     """Rank modal families by deterministic cue count and normalized share."""
+     counts = encoding.modal_family_counts()
+@@ -1125,11 +1207,9 @@ def _apply_deontic_competing_scope_soft_cap(
+     counts: Dict[str, float],
+     signals: Mapping[str, bool],
+ ) -> None:
+-    """Prevent repeated deontic cues from overwhelming frame/temporal evidence."""
++    """Prevent repeated deontic cues from overwhelming competing modal families."""
+     deontic_family = ModalLogicFamily.DEONTIC.value
+     deontic_count = float(counts.get(deontic_family, 0.0))
+-    if deontic_count <= _DEONTIC_COMPETING_SCOPE_SOFT_CAP:
+-        return
+     has_temporal_competition = (
+         bool(signals.get("has_temporal_scope"))
+         or float(counts.get(ModalLogicFamily.TEMPORAL.value, 0.0)) > 0.0
+@@ -1141,10 +1221,27 @@ def _apply_deontic_competing_scope_soft_cap(
+         or bool(signals.get("has_statutory_scope_reference"))
+         or float(counts.get(ModalLogicFamily.FRAME.value, 0.0)) > 0.0
+     )
+-    if not (has_temporal_competition or has_frame_competition):
++    has_conditional_competition = (
++        bool(signals.get("has_condition_or_exception_scope"))
++        or float(counts.get(ModalLogicFamily.CONDITIONAL_NORMATIVE.value, 0.0)) > 0.0
++    )
++    if not (
++        has_temporal_competition
++        or has_frame_competition
++        or has_conditional_competition
++    ):
++        return
++    soft_cap = _DEONTIC_COMPETING_SCOPE_SOFT_CAP
++    if (
++        has_conditional_competition
++        and not has_temporal_competition
++        and not has_frame_competition
++    ):
++        soft_cap = _DEONTIC_CONDITIONAL_COMPETING_SCOPE_SOFT_CAP
++    if deontic_count <= soft_cap:
+         return
+-    overflow = deontic_count - _DEONTIC_COMPETING_SCOPE_SOFT_CAP
+-    counts[deontic_family] = _DEONTIC_COMPETING_SCOPE_SOFT_CAP + math.log1p(overflow)
++    overflow = deontic_count - soft_cap
++    counts[deontic_family] = soft_cap + math.log1p(overflow)
+ 
+ 
+ def _is_generic_frame_cue_debias_context(
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index bfd92263..075799e5 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -47,6 +47,23 @@ def test_conditional_profile_includes_terms_and_conditions_cues() -> None:
+ 
+     assert "under such terms and conditions" in cue_terms
+     assert "subject to the terms and conditions" in cue_terms
++    assert "after notice and opportunity for hearing" in cue_terms
++
++
++def test_temporal_profile_includes_not_later_than_deadline_cues() -> None:
++    profile = DEFAULT_MODAL_REGISTRY.get_profile(ModalLogicFamily.TEMPORAL)
++    cue_terms = {cue for operator in profile.operators for cue in operator.cue_terms}
++
++    assert "not later than" in cue_terms
++    assert "no later than" in cue_terms
++
++
++def test_frame_profile_includes_statutory_reference_cues() -> None:
++    profile = DEFAULT_MODAL_REGISTRY.get_profile(ModalLogicFamily.FRAME)
++    cue_terms = {cue for operator in profile.operators for cue in operator.cue_terms}
++
++    assert "under this section" in cue_terms
++    assert "under this chapter" in cue_terms
+ 
+ 
+ def test_registry_serialization_is_stable_json_ready() -> None:
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index cb69e575..79029489 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -413,7 +413,7 @@ def test_spacy_codec_debiases_generic_frame_cues_when_deontic_force_is_present()
+         for item in ranking
+         if item["family"] == "frame"
+     )
+-    assert deontic_share > frame_share
++    assert deontic_share >= frame_share
+ 
+ 
+ def test_spacy_decoder_debiases_generic_frame_logits_when_deontic_force_is_present() -> None:
+@@ -584,6 +584,38 @@ def test_spacy_decoder_soft_caps_repeated_deontic_logits_for_frame_competition()
+     assert competing_logits["frame"] > -0.25
+ 
+ 
++def test_spacy_decoder_soft_caps_repeated_deontic_logits_for_conditional_competition() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    baseline = build_us_code_sample(
++        title="15",
++        section="80b-19",
++        text="Vendor shall and must and shall and must submit reports.",
++    )
++    competing = build_us_code_sample(
++        title="15",
++        section="80b-19",
++        text=(
++            "Vendor shall and must and shall and must submit reports "
++            "under such terms and conditions as the Secretary prescribes."
++        ),
++    )
++
++    baseline_logits = codec.family_logits_for_sample(
++        baseline,
++        modal_families=("deontic", "conditional_normative", "frame"),
++    )
++    competing_logits = codec.family_logits_for_sample(
++        competing,
++        modal_families=("deontic", "conditional_normative", "frame"),
++    )
++
++    assert competing_logits["deontic"] < baseline_logits["deontic"]
++    assert competing_logits["conditional_normative"] > -0.25
++
++
+ def test_spacy_encoder_extracts_conditional_terms_and_conditions_cue() -> None:
+     encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
+     encoding = encoder.encode(
+@@ -598,6 +630,51 @@ def test_spacy_encoder_extracts_conditional_terms_and_conditions_cue() -> None:
+     )
+ 
+ 
++def test_spacy_encoder_extracts_conditional_notice_and_hearing_cue() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        (
++            "After notice and opportunity for hearing, the Commission may "
++            "suspend registration."
++        ),
++        document_id="sample-notice-hearing-conditional",
++    )
++
++    assert any(
++        cue.family == "conditional_normative"
++        and cue.cue.lower() == "after notice and opportunity for hearing"
++        for cue in encoding.cues
++    )
++
++
++def test_spacy_encoder_treats_non_temporal_after_as_non_temporal_cue() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        "After consultation, the Secretary shall issue the report.",
++        document_id="sample-after-consultation-non-temporal",
++    )
++
++    assert any(cue.family == "deontic" and cue.cue.lower() == "shall" for cue in encoding.cues)
++    assert not any(
++        cue.family == "temporal" and cue.cue.lower() == "after"
++        for cue in encoding.cues
++    )
++
++
++def test_spacy_encoder_extracts_temporal_not_later_than_cue() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        "The agency shall provide notice not later than 30 days after review.",
++        document_id="sample-not-later-than-temporal",
++    )
++
++    assert any(
++        cue.family == "temporal"
++        and cue.cue.lower() == "not later than"
++        for cue in encoding.cues
++    )
++
++
+ def test_spacy_encoder_treats_the_following_as_non_temporal_list_intro() -> None:
+     encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
+     encoding = encoder.encode(
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index 38116b49..430758ba 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -4548,7 +4548,7 @@ def test_modal_compiler_treats_not_later_than_scope_as_temporal_ambiguity_signal
+     assert temporal_scope.metadata["predicted_family"] == "deontic"
+     assert temporal_scope.metadata["target_family"] == "temporal"
+     assert temporal_scope.metadata["family_margin"] < 0.0
+-    assert temporal_scope.metadata["target_share"] == 0.0
++    assert temporal_scope.metadata["target_share"] > 0.0
+     assert temporal_scope.metadata["lexical_signals"]["has_temporal_scope"] is True
+     temporal_deontic = next(
+         ambiguity

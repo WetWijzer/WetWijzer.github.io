@@ -1,0 +1,11 @@
+Implemented the ambiguity-policy hardening as a generalized compiler-ambiguity update.
+
+- Added `frame->frame` and `temporal->frame` to compiler-required adaptive ambiguity pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000168-20260519_123248/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:95).
+- Updated affected policy expectation for temporal self-pair runner-up required status in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000168-20260519_123248/tests/unit_tests/logic/modal/test_modal_codec.py:2311).
+- Extended policy-coverage tests to explicitly include `frame->frame` and `temporal->frame` in both compiled-primary and required-margin bundles in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000168-20260519_123248/tests/unit_tests/logic/modal/test_modal_codec.py:12247) and [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000168-20260519_123248/tests/unit_tests/logic/modal/test_modal_codec.py:12510).
+
+Tests run:
+
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "includes_temporal_self_pair_when_margin_is_zero or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or emits_explicit_ambiguity_for_required_margin_bundle_pairs"` (pass)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "marks_temporal_self_pair_as_compiler_required_policy or includes_compiler_required_targets_when_priority_targets_are_missing or orders_priority_adaptive_targets_before_non_priority_targets or includes_priority_adaptive_targets_even_when_signal_map_is_sparse"` (pass)
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "compiler_required_policy or explicit_deontic_self_pair"` (pass)

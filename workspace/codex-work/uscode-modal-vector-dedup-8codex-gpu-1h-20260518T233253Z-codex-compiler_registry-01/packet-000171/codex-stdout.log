@@ -1,0 +1,22 @@
+Implemented a deterministic cue-rule refinement for `frame -> deontic` and `frame -> conditional_normative` conflicts.
+
+**Changes made**
+- Added a priority adaptive ambiguity pair for `frame -> conditional_normative` so zero-margin ties are treated as outvoted/requires-rule:
+  - [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000171-20260519_002941/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L150)
+- Added a deterministic soft cap for repeated generic frame cues in mixed normative contexts (`has_deontic_scope` or `has_condition_or_exception_scope`), preventing repeated `frame` generic cues from overwhelming deontic/conditional evidence:
+  - Constant: [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000171-20260519_002941/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L380)
+  - Applied in weighting path: [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000171-20260519_002941/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L1128)
+  - New helper: [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000171-20260519_002941/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L1139)
+
+**Tests added/updated**
+- Priority pair coverage update:
+  - [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000171-20260519_002941/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py#L164)
+- New zero-margin frame/conditional priority behavior test:
+  - [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000171-20260519_002941/tests/unit_tests/logic/modal/test_modal_codec.py#L2799)
+- New regression tests for repeated generic frame cues vs deontic/conditional scope:
+  - [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000171-20260519_002941/tests/unit_tests/logic/modal/test_modal_codec.py#L4760)
+
+**Validation run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` → 10 passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "zero_margin_frame_conditional_priority_pair or caps_repeated_generic_frame_cues or frame_conditional_adaptive_ambiguity or frame_deontic_adaptive_ambiguity"` → 5 passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` → 139 passed

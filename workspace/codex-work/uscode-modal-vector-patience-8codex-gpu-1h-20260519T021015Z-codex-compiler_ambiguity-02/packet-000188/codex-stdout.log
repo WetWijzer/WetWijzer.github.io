@@ -1,0 +1,11 @@
+Implemented a focused ambiguity-policy update for `modal.compiler.ambiguity` by tightening registry pair policy and validating compiler behavior.
+
+- Promoted `conditional_normative -> frame` into the priority signal-free adaptive ambiguity policy, so this pair is treated as explicit high-priority ambiguity in compiler metadata ([modal_registry.py:132](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000188-20260519_024350/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:132)).
+- Removed a duplicate `conditional_normative -> epistemic` entry from the signal-free pair table to keep adaptive target lists deterministic/unique ([modal_registry.py:33](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000188-20260519_024350/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33)).
+- Updated registry unit assertions accordingly, including the new priority expectation for `conditional_normative -> frame` ([test_modal_registry.py:176](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000188-20260519_024350/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:176)).
+- Added compiler regression coverage asserting the emitted `conditional_normative -> frame` explicit adaptive ambiguity is marked as a priority policy pair ([test_legal_modal_parser_deterministic_rules.py:237](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000188-20260519_024350/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:237)).
+
+Tests run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py`
+- Result: `31 passed`

@@ -1,0 +1,150 @@
+diff --git a/ipfs_datasets_py/logic/modal/compiler.py b/ipfs_datasets_py/logic/modal/compiler.py
+index fea5c4e8..773ca2aa 100644
+--- a/ipfs_datasets_py/logic/modal/compiler.py
++++ b/ipfs_datasets_py/logic/modal/compiler.py
+@@ -24,6 +24,7 @@ from ipfs_datasets_py.optimizers.logic_theorem_optimizer.modal_ir import (
+     ModalIRFrame,
+ )
+ from ipfs_datasets_py.optimizers.logic_theorem_optimizer.modal_registry import (
++    compiler_ambiguity_policy_targets,
+     compiler_required_adaptive_ambiguity_targets,
+     DEFAULT_MODAL_REGISTRY,
+     is_compiler_ambiguity_policy_pair,
+@@ -778,6 +779,10 @@ class DeterministicModalCompiler:
+             predicted_family
+         ):
+             target_signal_by_family.setdefault(policy_target_family, False)
++        for policy_target_family in compiler_ambiguity_policy_targets(
++            predicted_family
++        ):
++            target_signal_by_family.setdefault(policy_target_family, False)
+         for policy_target_family in signal_free_adaptive_ambiguity_targets(
+             predicted_family
+         ):
+@@ -1009,6 +1014,14 @@ class DeterministicModalCompiler:
+                     and target_family not in compiled_primary_targets
+                 ):
+                     compiled_primary_targets.append(target_family)
++            for target_family in compiler_ambiguity_policy_targets(
++                compiled_primary_family
++            ):
++                if (
++                    target_family != compiled_primary_family
++                    and target_family not in compiled_primary_targets
++                ):
++                    compiled_primary_targets.append(target_family)
+             for target_family in compiler_required_adaptive_ambiguity_targets(
+                 compiled_primary_family
+             ):
+@@ -1072,6 +1085,12 @@ class DeterministicModalCompiler:
+             if target_family not in seen_targets:
+                 ordered_targets.append(target_family)
+                 seen_targets.add(target_family)
++        for target_family in compiler_ambiguity_policy_targets(
++            predicted_family
++        ):
++            if target_family not in seen_targets:
++                ordered_targets.append(target_family)
++                seen_targets.add(target_family)
+         for target_family in compiler_required_adaptive_ambiguity_targets(
+             predicted_family
+         ):
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 2d5aba46..fddd9f37 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -841,6 +841,9 @@ def supports_signal_free_adaptive_ambiguity_pair(
+         resolved_target_family in signal_free_adaptive_ambiguity_targets(
+             predicted_family
+         )
++        or resolved_target_family in compiler_ambiguity_policy_targets(
++            predicted_family
++        )
+         or resolved_target_family in compiler_required_adaptive_ambiguity_targets(
+             predicted_family
+         )
+@@ -859,6 +862,18 @@ def signal_free_adaptive_ambiguity_targets(
+     )
+ 
+ 
++def compiler_ambiguity_policy_targets(
++    predicted_family: ModalLogicFamily | str,
++) -> Tuple[str, ...]:
++    """Return ordered compiler-ambiguity policy targets for a predicted family."""
++    resolved_predicted_family = _resolve_modal_family_name(predicted_family)
++    return tuple(
++        target_family
++        for source_family, target_family in COMPILER_AMBIGUITY_POLICY_FAMILY_PAIRS
++        if source_family == resolved_predicted_family
++    )
++
++
+ def priority_signal_free_adaptive_ambiguity_targets(
+     predicted_family: ModalLogicFamily | str,
+ ) -> Tuple[str, ...]:
+@@ -954,6 +969,7 @@ __all__ = [
+     "COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS",
+     "is_compiler_ambiguity_policy_pair",
+     "ZERO_MARGIN_CONTESTED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS",
++    "compiler_ambiguity_policy_targets",
+     "compiler_required_adaptive_ambiguity_targets",
+     "is_compiler_required_adaptive_ambiguity_pair",
+     "NORMATIVE_MODAL_FAMILIES",
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index 1c061e5b..c166f5cb 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -6,6 +6,7 @@ import json
+ 
+ import ipfs_datasets_py.optimizers.logic_theorem_optimizer.modal_registry as modal_registry
+ from ipfs_datasets_py.optimizers.logic_theorem_optimizer.modal_registry import (
++    compiler_ambiguity_policy_targets,
+     COMPILER_AMBIGUITY_POLICY_FAMILY_PAIRS,
+     COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS,
+     compiler_required_adaptive_ambiguity_targets,
+@@ -209,6 +210,32 @@ def test_signal_free_support_falls_back_to_compiler_required_policy_pairs(
+     ) is True
+ 
+ 
++def test_signal_free_support_falls_back_to_compiler_ambiguity_policy_pairs(
++    monkeypatch,
++) -> None:
++    trimmed_signal_free_pairs = tuple(
++        pair
++        for pair in modal_registry.SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS
++        if pair != ("hybrid", "frame")
++    )
++    monkeypatch.setattr(
++        modal_registry,
++        "SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS",
++        trimmed_signal_free_pairs,
++    )
++
++    assert ("hybrid", "frame") not in (
++        modal_registry.COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS
++    )
++    assert ("hybrid", "frame") in (
++        modal_registry.COMPILER_AMBIGUITY_POLICY_FAMILY_PAIRS
++    )
++    assert supports_signal_free_adaptive_ambiguity_pair(
++        "hybrid",
++        "frame",
++    ) is True
++
++
+ def test_compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pairs() -> None:
+     required_pairs = set(COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS)
+ 
+@@ -372,6 +399,12 @@ def test_compiler_ambiguity_policy_pair_helper_matches_declared_bundle() -> None
+     assert is_compiler_required_adaptive_ambiguity_pair("temporal", "temporal") is True
+ 
+ 
++def test_compiler_ambiguity_policy_targets_cover_todo_family_pairs() -> None:
++    assert "deontic" in compiler_ambiguity_policy_targets("alethic")
++    assert "conditional_normative" in compiler_ambiguity_policy_targets("frame")
++    assert "deontic" in compiler_ambiguity_policy_targets("frame")
++
++
+ def test_signal_free_adaptive_ambiguity_targets_are_ordered_and_directional() -> None:
+     assert signal_free_adaptive_ambiguity_targets("alethic") == (
+         "epistemic",

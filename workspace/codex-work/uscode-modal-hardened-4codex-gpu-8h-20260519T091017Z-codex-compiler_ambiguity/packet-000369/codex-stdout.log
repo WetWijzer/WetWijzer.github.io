@@ -1,0 +1,20 @@
+Implemented the ambiguity-policy expansion for the `compiler_ambiguity` bundle and validated it.
+
+**Changes made**
+- Added these directional pairs to `COMPILER_AMBIGUITY_POLICY_FAMILY_PAIRS`:
+  - `deontic -> conditional_normative`
+  - `conditional_normative -> deontic`
+  - `temporal -> deontic`  
+  in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000369-20260519_144224/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:140)
+
+- Updated registry policy-bundle expectations and helper assertions in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000369-20260519_144224/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:270)
+
+- Added/updated compiler assertions so these pairs now explicitly require:
+  - `is_compiler_ambiguity_bundle_pair is True`
+  - `ambiguity_policy_bundle == "compiler_ambiguity"`  
+  in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000369-20260519_144224/tests/unit_tests/logic/modal/test_modal_codec.py:5454), [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000369-20260519_144224/tests/unit_tests/logic/modal/test_modal_codec.py:7305), [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000369-20260519_144224/tests/unit_tests/logic/modal/test_modal_codec.py:9422), [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000369-20260519_144224/tests/unit_tests/logic/modal/test_modal_codec.py:9970)
+
+**Validation**
+- Ran:
+  - `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_uses_signal_free_pair_policy_for_conditional_deontic_adaptive_ambiguity tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_uses_signal_free_pair_policy_for_deontic_conditional_adaptive_ambiguity tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_surfaces_deontic_conditional_adaptive_ambiguity tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_treats_prohibition_heading_as_adaptive_deontic_signal`
+- Result: `21 passed`

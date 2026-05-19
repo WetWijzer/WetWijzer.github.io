@@ -1,0 +1,254 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index ce290eb5..dae145ea 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -454,6 +454,14 @@ _DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
+ _DEONTIC_COMPETING_SCOPE_BACKFILL_MAX = 0.35
+ _STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX = 0.55
+ _FRAME_STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.45
++_FRAME_TO_DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
++_FRAME_TO_CONDITIONAL_COMPETING_SCOPE_BACKFILL_RATIO = 0.18
++_FRAME_TO_ALETHIC_COMPETING_SCOPE_BACKFILL_RATIO = 0.16
++_FRAME_TO_COMPETING_SCOPE_BACKFILL_MAX = 0.45
++_DEONTIC_TO_FRAME_COMPETING_SCOPE_BACKFILL_RATIO = 0.18
++_DEONTIC_TO_FRAME_COMPETING_SCOPE_BACKFILL_MAX = 0.4
++_TEMPORAL_TO_DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
++_TEMPORAL_TO_DEONTIC_COMPETING_SCOPE_BACKFILL_MAX = 0.4
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+     {
+         "compliance",
+@@ -1184,20 +1192,27 @@ def ranked_modal_families(encoding: SpaCyLegalEncoding) -> List[Dict[str, float]
+     if total <= 0:
+         return []
+     ranking: List[Dict[str, float]] = []
+-    for family in sorted(
++    ordered_families = sorted(
+         weighted_counts,
+         key=lambda item: (
+             -float(weighted_counts.get(item, 0.0)),
+             item,
+         ),
+-    ):
++    )
++    rounded_share_total = 0.0
++    for index, family in enumerate(ordered_families):
+         share_raw = float(weighted_counts.get(family, 0.0)) / float(total)
++        if index == len(ordered_families) - 1:
++            share = round(max(0.0, 1.0 - rounded_share_total), 6)
++        else:
++            share = round(share_raw, 6)
++            rounded_share_total += share
+         ranking.append(
+             {
+                 "family": family,
+                 "count": int(counts.get(family, 0)),
+                 "share_raw": share_raw,
+-                "share": round(share_raw, 6),
++                "share": share,
+             }
+         )
+     return ranking
+@@ -1592,6 +1607,37 @@ def _scaled_competing_scope_backfill(
+     )
+ 
+ 
++def _apply_competing_scope_floor(
++    *,
++    counts: Dict[str, float],
++    source_family: str,
++    target_family: str,
++    source_count: float,
++    target_count: float,
++    has_target_signal: bool,
++    ratio: float,
++    minimum: float,
++    maximum: float,
++) -> None:
++    """Ensure weak competing-family support survives dominant cue clusters."""
++    if source_family == target_family:
++        return
++    if source_count <= 0.0 or not has_target_signal:
++        return
++    floor = _scaled_competing_scope_backfill(
++        source_count=source_count,
++        ratio=ratio,
++        minimum=minimum,
++        maximum=maximum,
++    )
++    if target_count >= floor:
++        return
++    counts[target_family] = max(
++        float(counts.get(target_family, 0.0)),
++        floor,
++    )
++
++
+ def _apply_generic_frame_statutory_competing_scope_backfill(
+     counts: Dict[str, float],
+     signals: Mapping[str, bool],
+@@ -2074,6 +2120,99 @@ def _apply_competing_scope_backfill(
+             float(counts.get(frame_family, 0.0)),
+             _COMPETING_SCOPE_BACKFILL_WEIGHT,
+         )
++    resolved_frame_count = float(counts.get(frame_family, 0.0))
++    resolved_deontic_count = float(counts.get(deontic_family, 0.0))
++    resolved_conditional_count = float(counts.get(conditional_family, 0.0))
++    resolved_alethic_count = float(counts.get(alethic_family, 0.0))
++    resolved_temporal_count = float(counts.get(temporal_family, 0.0))
++    has_deontic_scope_signal = bool(
++        signals.get("has_deontic_scope") or signals.get("has_deontic_cue")
++    )
++    has_conditional_scope_signal = bool(
++        signals.get("has_condition_or_exception_scope")
++        and (
++            bool(signals.get("has_statutory_scope_reference"))
++            or bool(signals.get("has_conditional_scope_phrase"))
++            or bool(signals.get("has_conditional_scope_token"))
++            or bool(signals.get("has_condition_clause"))
++            or bool(signals.get("has_exception_clause"))
++        )
++    )
++    has_alethic_scope_signal = bool(
++        signals.get("has_alethic_scope") or signals.get("has_alethic_cue")
++    )
++    has_strong_frame_scope_signal = bool(
++        signals.get("has_statutory_scope_reference")
++        or signals.get("has_frame_scope_phrase")
++        or signals.get("has_frame_editorial_scope_phrase")
++        or signals.get("has_frame_context")
++    )
++    has_strong_temporal_scope_signal = bool(
++        signals.get("has_temporal_scope")
++        and (
++            signals.get("has_statutory_scope_reference")
++            or signals.get("has_temporal_scope_phrase")
++            or signals.get("has_temporal_within_scope")
++            or signals.get("has_calendar_date_scope")
++        )
++    )
++    _apply_competing_scope_floor(
++        counts=counts,
++        source_family=frame_family,
++        target_family=deontic_family,
++        source_count=resolved_frame_count,
++        target_count=resolved_deontic_count,
++        has_target_signal=has_deontic_scope_signal,
++        ratio=_FRAME_TO_DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO,
++        minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        maximum=_FRAME_TO_COMPETING_SCOPE_BACKFILL_MAX,
++    )
++    _apply_competing_scope_floor(
++        counts=counts,
++        source_family=frame_family,
++        target_family=conditional_family,
++        source_count=resolved_frame_count,
++        target_count=resolved_conditional_count,
++        has_target_signal=has_conditional_scope_signal,
++        ratio=_FRAME_TO_CONDITIONAL_COMPETING_SCOPE_BACKFILL_RATIO,
++        minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        maximum=_FRAME_TO_COMPETING_SCOPE_BACKFILL_MAX,
++    )
++    _apply_competing_scope_floor(
++        counts=counts,
++        source_family=frame_family,
++        target_family=alethic_family,
++        source_count=resolved_frame_count,
++        target_count=resolved_alethic_count,
++        has_target_signal=has_alethic_scope_signal,
++        ratio=_FRAME_TO_ALETHIC_COMPETING_SCOPE_BACKFILL_RATIO,
++        minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        maximum=_FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT,
++    )
++    _apply_competing_scope_floor(
++        counts=counts,
++        source_family=deontic_family,
++        target_family=frame_family,
++        source_count=resolved_deontic_count,
++        target_count=resolved_frame_count,
++        has_target_signal=has_strong_frame_scope_signal,
++        ratio=_DEONTIC_TO_FRAME_COMPETING_SCOPE_BACKFILL_RATIO,
++        minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        maximum=_DEONTIC_TO_FRAME_COMPETING_SCOPE_BACKFILL_MAX,
++    )
++    _apply_competing_scope_floor(
++        counts=counts,
++        source_family=temporal_family,
++        target_family=deontic_family,
++        source_count=resolved_temporal_count,
++        target_count=float(counts.get(deontic_family, 0.0)),
++        has_target_signal=bool(
++            has_deontic_scope_signal and has_strong_temporal_scope_signal
++        ),
++        ratio=_TEMPORAL_TO_DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO,
++        minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        maximum=_TEMPORAL_TO_DEONTIC_COMPETING_SCOPE_BACKFILL_MAX,
++    )
+ 
+ 
+ def _apply_statutory_reference_frame_scope_backfill(
+@@ -2096,6 +2235,22 @@ def _apply_statutory_reference_frame_scope_backfill(
+     deontic_family = ModalLogicFamily.DEONTIC.value
+     conditional_count = float(counts.get(conditional_family, 0.0))
+     deontic_count = float(counts.get(deontic_family, 0.0))
++    has_strong_temporal_scope = bool(
++        signals.get("has_calendar_date_scope")
++        or signals.get("has_temporal_scope_phrase")
++        or signals.get("has_temporal_within_scope")
++    )
++    statutory_conditional_frame_floor = _STATUTORY_FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT
++    statutory_deontic_frame_floor = _STATUTORY_FRAME_DEONTIC_SCOPE_BACKFILL_WEIGHT
++    if has_strong_temporal_scope:
++        statutory_conditional_frame_floor = min(
++            statutory_conditional_frame_floor,
++            _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        )
++        statutory_deontic_frame_floor = min(
++            statutory_deontic_frame_floor,
++            _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        )
+     if (
+         conditional_count > 0.0
+         and not bool(signals.get("has_condition_clause"))
+@@ -2103,7 +2258,7 @@ def _apply_statutory_reference_frame_scope_backfill(
+     ):
+         counts[frame_family] = max(
+             frame_count,
+-            _STATUTORY_FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            statutory_conditional_frame_floor,
+         )
+         frame_count = float(counts.get(frame_family, 0.0))
+     if (
+@@ -2112,7 +2267,7 @@ def _apply_statutory_reference_frame_scope_backfill(
+     ):
+         counts[frame_family] = max(
+             frame_count,
+-            _STATUTORY_FRAME_DEONTIC_SCOPE_BACKFILL_WEIGHT,
++            statutory_deontic_frame_floor,
+         )
+ 
+ 
+@@ -2191,6 +2346,8 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+             deontic_bonus += 0.4
+         if bool(signals.get("has_temporal_scope")):
+             deontic_bonus += 0.25
++            if bool(signals.get("has_deontic_cue")):
++                deontic_bonus += 0.1
+         if bool(signals.get("has_alethic_scope")) or bool(signals.get("has_alethic_cue")):
+             deontic_bonus += 0.35
+         boosts[ModalLogicFamily.DEONTIC.value] = deontic_bonus
+@@ -2203,6 +2360,15 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+         or bool(signals.get("has_temporal_within_scope"))
+     ):
+         temporal_bonus += 0.3
++    if (
++        temporal_bonus > 0.0
++        and bool(signals.get("has_statutory_scope_reference"))
++        and (
++            bool(signals.get("has_frame_context"))
++            or bool(signals.get("has_frame_cue"))
++        )
++    ):
++        temporal_bonus += 0.15
+     if temporal_bonus > 0.0:
+         boosts[ModalLogicFamily.TEMPORAL.value] = temporal_bonus
+     if bool(signals.get("has_epistemic_scope")):

@@ -1,0 +1,13 @@
+Implemented a focused `compiler_ambiguity` policy hardening for adaptive family conflicts.
+
+- Added `frame -> epistemic` to high-priority signal-free adaptive ambiguity pairs so zero-margin cases are treated as explicit outvoted ambiguity: [modal_registry.py:227](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000020-20260519_092231/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:227)
+- Added a regression test that enforces `frame` vs `epistemic` zero-margin emits `adaptive_frame_epistemic_outvoted_margin_low` with `requires_rule`: [test_modal_codec.py:5231](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000020-20260519_092231/tests/unit_tests/logic/modal/test_modal_codec.py:5231)
+- Updated priority ordering expectation for frame targets to reflect new priority (`epistemic` before non-priority targets): [test_modal_codec.py:10944](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000020-20260519_092231/tests/unit_tests/logic/modal/test_modal_codec.py:10944)
+- Brought registry tests into alignment with existing `temporal -> alethic` policy entries (these constants already existed but test expectations were stale): [test_modal_registry.py:138](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000020-20260519_092231/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:138)
+
+Validation run:
+
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py`  
+Passed: `11 passed`
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "zero_margin_frame_epistemic_priority_pair or orders_priority_adaptive_targets_before_non_priority_targets or uses_signal_free_pair_policy_for_frame_epistemic"`  
+Passed: `3 passed`

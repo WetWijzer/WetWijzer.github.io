@@ -1,0 +1,212 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 8d067a2b..1e7c316c 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -131,6 +131,10 @@ SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] = (
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.DEONTIC.value,
+     ),
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.DYNAMIC.value,
++    ),
+     (
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.FRAME.value,
+@@ -202,6 +206,10 @@ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.TEMPORAL.value,
+     ),
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.DYNAMIC.value,
++    ),
+ )
+ 
+ 
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index cf431c02..6cd1d333 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -381,7 +381,7 @@ _GENERIC_FRAME_CUE_TERMS = frozenset(
+     }
+ )
+ _GENERIC_FRAME_DEBIASED_LOGIT_BASE = 0.5
+-_GENERIC_FRAME_CUE_DEBIAS_FACTOR = 0.25
++_GENERIC_FRAME_CUE_DEBIAS_FACTOR = 0.2
+ _GENERIC_FRAME_STRUCTURAL_BONUS_DEBIAS_FACTOR = 0.25
+ _GENERIC_FRAME_NORMATIVE_SCOPE_SOFT_CAP = 1.0
+ _DEONTIC_COMPETING_SCOPE_SOFT_CAP = 3.0
+@@ -389,18 +389,19 @@ _CONDITIONAL_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT = 0.08
+ _COMPETING_SCOPE_BACKFILL_WEIGHT = 0.08
+ _DEONTIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 3.0
+-_TEMPORAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 3.0
++_TEMPORAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_DYNAMIC_SCOPE_BACKFILL_TRIGGER = 2.0
+ _DEONTIC_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 3.0
+ _DEONTIC_DYNAMIC_SCOPE_BACKFILL_TRIGGER = 3.0
+ _CONDITIONAL_FRAME_SCOPE_BACKFILL_TRIGGER = 2.0
+-_FRAME_DEONTIC_SCOPE_BACKFILL_TRIGGER = 0.5
+-_FRAME_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 0.5
+-_FRAME_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 0.5
+-_TEMPORAL_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 3.0
+-_TEMPORAL_FRAME_SCOPE_BACKFILL_TRIGGER = 3.0
++_FRAME_DEONTIC_SCOPE_BACKFILL_TRIGGER = 0.4
++_FRAME_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 0.4
++_FRAME_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 0.4
++_FRAME_DYNAMIC_SCOPE_BACKFILL_TRIGGER = 0.4
++_TEMPORAL_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 2.0
++_TEMPORAL_FRAME_SCOPE_BACKFILL_TRIGGER = 2.0
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+     {
+         "duty",
+@@ -1329,6 +1330,11 @@ def _apply_generic_frame_scope_backfill(
+             float(counts.get(ModalLogicFamily.DEONTIC.value, 0.0)),
+             _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT,
+         )
++    if bool(signals.get("has_dynamic_scope")):
++        counts[ModalLogicFamily.DYNAMIC.value] = max(
++            float(counts.get(ModalLogicFamily.DYNAMIC.value, 0.0)),
++            _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT,
++        )
+ 
+ 
+ def _apply_competing_scope_backfill(
+@@ -1452,6 +1458,20 @@ def _apply_competing_scope_backfill(
+             float(counts.get(conditional_family, 0.0)),
+             _COMPETING_SCOPE_BACKFILL_WEIGHT,
+         )
++    if (
++        frame_count >= _FRAME_DYNAMIC_SCOPE_BACKFILL_TRIGGER
++        and dynamic_count <= 0.0
++        and bool(signals.get("has_dynamic_scope"))
++        and (
++            bool(signals.get("has_dynamic_scope_phrase"))
++            or bool(signals.get("has_deontic_scope"))
++            or bool(signals.get("has_condition_or_exception_scope"))
++        )
++    ):
++        counts[dynamic_family] = max(
++            float(counts.get(dynamic_family, 0.0)),
++            _COMPETING_SCOPE_BACKFILL_WEIGHT,
++        )
+     if (
+         temporal_count >= _TEMPORAL_DEONTIC_SCOPE_BACKFILL_TRIGGER
+         and deontic_count <= 0.0
+@@ -1504,6 +1524,7 @@ def _is_generic_frame_cue_debias_context(
+         bool(signals.get("has_deontic_scope"))
+         or bool(signals.get("has_temporal_scope"))
+         or bool(signals.get("has_condition_or_exception_scope"))
++        or bool(signals.get("has_dynamic_scope"))
+         or bool(signals.get("has_epistemic_cue"))
+     ):
+         return False
+@@ -1527,7 +1548,7 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+     if bool(signals.get("has_condition_or_exception_scope")):
+         boosts[ModalLogicFamily.CONDITIONAL_NORMATIVE.value] = 0.9
+     if bool(signals.get("has_deontic_scope")):
+-        boosts[ModalLogicFamily.DEONTIC.value] = 0.8
++        boosts[ModalLogicFamily.DEONTIC.value] = 0.9
+     temporal_bonus = 0.0
+     if bool(signals.get("has_temporal_scope")):
+         temporal_bonus += 1.2
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index 1fa9856f..c6731018 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -176,6 +176,22 @@ def test_compiler_emits_explicit_frame_to_conditional_and_temporal_adaptive_pair
+     )
+ 
+ 
++def test_compiler_emits_explicit_frame_to_dynamic_adaptive_pair() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "Authority under this section applies upon transfer.",
++        document_id="compiler-ambiguity-frame-dynamic",
++    )
++    assert _has_adaptive_explicit_pair(
++        result,
++        predicted_family=ModalLogicFamily.FRAME.value,
++        target_family=ModalLogicFamily.DYNAMIC.value,
++    )
++
++
+ def test_compiler_emits_explicit_deontic_to_frame_and_temporal_adaptive_pairs() -> None:
+     compiler = DeterministicModalCompiler(
+         config=ModalCompilerConfig(parser_backend="spacy")
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index 00c6069b..ca8c5e5a 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -135,6 +135,7 @@ def test_signal_free_adaptive_ambiguity_pair_policy_covers_required_bundle_pairs
+         "conditional_normative",
+     )
+     assert supports_signal_free_adaptive_ambiguity_pair("frame", "deontic")
++    assert supports_signal_free_adaptive_ambiguity_pair("frame", "dynamic")
+     assert supports_signal_free_adaptive_ambiguity_pair("frame", "frame")
+     assert supports_signal_free_adaptive_ambiguity_pair("frame", "epistemic")
+     assert supports_signal_free_adaptive_ambiguity_pair("frame", "dynamic")
+@@ -184,6 +185,7 @@ def test_signal_free_adaptive_ambiguity_targets_are_ordered_and_directional() ->
+     assert signal_free_adaptive_ambiguity_targets("frame") == (
+         "conditional_normative",
+         "deontic",
++        "dynamic",
+         "frame",
+         "epistemic",
+         "dynamic",
+@@ -220,6 +222,7 @@ def test_priority_signal_free_adaptive_ambiguity_pair_policy_is_directional() ->
+     )
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "deontic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "temporal")
++    assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "dynamic")
+     assert (
+         is_priority_signal_free_adaptive_ambiguity_pair("epistemic", "deontic")
+         is False
+@@ -240,6 +243,7 @@ def test_priority_signal_free_adaptive_targets_are_ordered_directional_subsets()
+         "conditional_normative",
+         "deontic",
+         "temporal",
++        "dynamic",
+     )
+     assert priority_signal_free_adaptive_ambiguity_targets("deontic") == (
+         "conditional_normative",
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index 542d3fdf..1f6ef4ed 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -607,6 +607,29 @@ def test_spacy_decoder_debiases_generic_frame_logits_for_while_pending_scope() -
+     assert logits["temporal"] > logits["frame"]
+ 
+ 
++def test_spacy_decoder_debiases_generic_frame_logits_for_dynamic_scope_phrase() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="10",
++        section="7542",
++        text="Authority under this section applies upon transfer.",
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++
++    logits = codec.family_logits_for_sample(
++        sample,
++        modal_families=("frame", "dynamic", "deontic"),
++    )
++
++    assert signals["has_dynamic_scope"] is True
++    assert signals["has_dynamic_scope_phrase"] is True
++    assert logits["dynamic"] > logits["frame"]
++
++
+ def test_spacy_decoder_debiases_generic_frame_logits_when_deontic_scope_phrase_is_present() -> None:
+     codec = SpaCyModalCodec(
+         encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),

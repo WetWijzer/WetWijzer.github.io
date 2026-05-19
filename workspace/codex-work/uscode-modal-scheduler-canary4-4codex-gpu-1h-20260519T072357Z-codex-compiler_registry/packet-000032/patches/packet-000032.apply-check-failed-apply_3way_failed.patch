@@ -1,0 +1,382 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 8071258a..f6d2f2af 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -79,6 +79,10 @@ SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] = (
+         ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+         ModalLogicFamily.DEONTIC.value,
+     ),
++    (
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++    ),
+     (
+         ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+         ModalLogicFamily.TEMPORAL.value,
+@@ -166,6 +170,10 @@ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...
+         ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+         ModalLogicFamily.DEONTIC.value,
+     ),
++    (
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++    ),
+     (
+         ModalLogicFamily.DEONTIC.value,
+         ModalLogicFamily.EPISTEMIC.value,
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index cf431c02..aa0cca2b 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -386,10 +386,11 @@ _GENERIC_FRAME_STRUCTURAL_BONUS_DEBIAS_FACTOR = 0.25
+ _GENERIC_FRAME_NORMATIVE_SCOPE_SOFT_CAP = 1.0
+ _DEONTIC_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _CONDITIONAL_COMPETING_SCOPE_SOFT_CAP = 3.0
++_TEMPORAL_COMPETING_SCOPE_SOFT_CAP = 2.0
+ _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT = 0.08
+ _COMPETING_SCOPE_BACKFILL_WEIGHT = 0.08
+ _DEONTIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 3.0
+-_TEMPORAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 3.0
++_TEMPORAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_DYNAMIC_SCOPE_BACKFILL_TRIGGER = 2.0
+@@ -399,30 +400,41 @@ _CONDITIONAL_FRAME_SCOPE_BACKFILL_TRIGGER = 2.0
+ _FRAME_DEONTIC_SCOPE_BACKFILL_TRIGGER = 0.5
+ _FRAME_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 0.5
+ _FRAME_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 0.5
+-_TEMPORAL_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 3.0
++_TEMPORAL_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 2.0
+ _TEMPORAL_FRAME_SCOPE_BACKFILL_TRIGGER = 3.0
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+     {
++        "compliance",
+         "duty",
+         "duties",
+         "liabilities",
+         "liable",
+         "liability",
+         "mandatory",
++        "noncompliance",
+         "obligation",
+         "obligations",
++        "penalties",
++        "penalty",
+         "prohibition",
+         "prohibitions",
+         "prohibited",
+         "requirement",
+         "requirements",
+         "unlawful",
++        "violation",
++        "violations",
+     }
+ )
+ _DEONTIC_SCOPE_PHRASES = (
++    "civil penalty for",
++    "failure to comply with",
+     "has a duty to",
+     "have a duty to",
++    "in violation of",
++    "is in violation of",
+     "liability for",
++    "out of compliance with",
+     "prohibition of",
+     "prohibition on",
+     "requirement that",
+@@ -430,6 +442,8 @@ _DEONTIC_SCOPE_PHRASES = (
+     "is liable for",
+     "is prohibited from",
+     "is required to",
++    "subject to a civil penalty",
++    "subject to civil penalties",
+     "under an obligation to",
+ )
+ 
+@@ -1155,6 +1169,10 @@ def _weighted_modal_family_counts(
+         counts,
+         resolved_signals,
+     )
++    _apply_temporal_competing_scope_soft_cap(
++        counts,
++        resolved_signals,
++    )
+     _apply_conditional_competing_scope_soft_cap(
+         counts,
+         resolved_signals,
+@@ -1262,6 +1280,33 @@ def _apply_deontic_competing_scope_soft_cap(
+     counts[deontic_family] = _DEONTIC_COMPETING_SCOPE_SOFT_CAP + math.log1p(overflow)
+ 
+ 
++def _apply_temporal_competing_scope_soft_cap(
++    counts: Dict[str, float],
++    signals: Mapping[str, bool],
++) -> None:
++    """Prevent repeated temporal cues from overwhelming normative competition."""
++    temporal_family = ModalLogicFamily.TEMPORAL.value
++    deontic_family = ModalLogicFamily.DEONTIC.value
++    conditional_family = ModalLogicFamily.CONDITIONAL_NORMATIVE.value
++    temporal_count = float(counts.get(temporal_family, 0.0))
++    if temporal_count <= _TEMPORAL_COMPETING_SCOPE_SOFT_CAP:
++        return
++    has_deontic_competition = (
++        bool(signals.get("has_deontic_scope"))
++        or float(counts.get(deontic_family, 0.0)) > 0.0
++    )
++    has_conditional_competition = (
++        bool(signals.get("has_condition_or_exception_scope"))
++        or float(counts.get(conditional_family, 0.0)) > 0.0
++    )
++    if not (has_deontic_competition or has_conditional_competition):
++        return
++    overflow = temporal_count - _TEMPORAL_COMPETING_SCOPE_SOFT_CAP
++    counts[temporal_family] = _TEMPORAL_COMPETING_SCOPE_SOFT_CAP + math.log1p(
++        overflow
++    )
++
++
+ def _apply_conditional_competing_scope_soft_cap(
+     counts: Dict[str, float],
+     signals: Mapping[str, bool],
+@@ -1456,10 +1501,6 @@ def _apply_competing_scope_backfill(
+         temporal_count >= _TEMPORAL_DEONTIC_SCOPE_BACKFILL_TRIGGER
+         and deontic_count <= 0.0
+         and bool(signals.get("has_deontic_scope"))
+-        and (
+-            bool(signals.get("has_statutory_scope_reference"))
+-            or bool(signals.get("has_deontic_scope_phrase"))
+-        )
+     ):
+         counts[deontic_family] = max(
+             float(counts.get(deontic_family, 0.0)),
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index feb21fc6..2659cae5 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -115,6 +115,10 @@ def test_signal_free_adaptive_ambiguity_pair_policy_covers_required_bundle_pairs
+         "conditional_normative",
+         "deontic",
+     )
++    assert supports_signal_free_adaptive_ambiguity_pair(
++        "conditional_normative",
++        "conditional_normative",
++    )
+     assert supports_signal_free_adaptive_ambiguity_pair(
+         "conditional_normative",
+         "temporal",
+@@ -167,6 +171,7 @@ def test_signal_free_adaptive_ambiguity_targets_are_ordered_and_directional() ->
+     assert signal_free_adaptive_ambiguity_targets("temporal") == (
+         "conditional_normative",
+         "deontic",
++        "alethic",
+         "frame",
+         "temporal",
+     )
+@@ -180,6 +185,7 @@ def test_signal_free_adaptive_ambiguity_targets_are_ordered_and_directional() ->
+     )
+     assert signal_free_adaptive_ambiguity_targets("conditional_normative") == (
+         "deontic",
++        "conditional_normative",
+         "temporal",
+         "epistemic",
+         "dynamic",
+@@ -218,6 +224,10 @@ def test_priority_signal_free_adaptive_ambiguity_pair_policy_is_directional() ->
+         "conditional_normative",
+         "deontic",
+     )
++    assert is_priority_signal_free_adaptive_ambiguity_pair(
++        "conditional_normative",
++        "conditional_normative",
++    )
+     assert is_priority_signal_free_adaptive_ambiguity_pair("deontic", "epistemic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("deontic", "temporal")
+     assert is_priority_signal_free_adaptive_ambiguity_pair(
+@@ -250,12 +260,14 @@ def test_priority_signal_free_adaptive_ambiguity_pair_policy_is_directional() ->
+ def test_priority_signal_free_adaptive_targets_are_ordered_directional_subsets() -> None:
+     assert priority_signal_free_adaptive_ambiguity_targets("conditional_normative") == (
+         "deontic",
++        "conditional_normative",
+         "temporal",
+         "frame",
+     )
+     assert priority_signal_free_adaptive_ambiguity_targets("temporal") == (
+         "conditional_normative",
+         "deontic",
++        "alethic",
+         "frame",
+     )
+     assert priority_signal_free_adaptive_ambiguity_targets("frame") == (
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index 542d3fdf..fce9f992 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -1333,6 +1333,60 @@ def test_spacy_codec_backfills_conditional_share_for_dense_temporal_scope_with_c
+     assert conditional_share > 0.0
+ 
+ 
++def test_spacy_codec_backfills_deontic_share_for_two_temporal_cues_with_deontic_scope_tokens() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="42",
++        section="10104",
++        text=(
++            "Within 30 days after review, liability for noncompliance applies."
++        ),
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert not any(cue.family == "deontic" for cue in encoding.cues)
++    assert signals["has_temporal_scope"] is True
++    assert signals["has_deontic_scope"] is True
++    deontic_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "deontic"
++    )
++    assert deontic_share > 0.0
++
++
++def test_spacy_codec_backfills_conditional_share_for_two_temporal_cues_with_condition_clause() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="16",
++        section="410i",
++        text=(
++            "When designated, the order is effective on first day after enactment."
++        ),
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert not any(cue.family == "conditional_normative" for cue in encoding.cues)
++    assert signals["has_condition_clause"] is True
++    assert signals["has_temporal_scope"] is True
++    conditional_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "conditional_normative"
++    )
++    assert conditional_share > 0.0
++
++
+ def test_spacy_codec_backfills_frame_share_for_dense_temporal_scope_with_frame_context() -> None:
+     codec = SpaCyModalCodec(
+         encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index 4a51e270..bb562bb9 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -2629,6 +2629,104 @@ def test_modal_compiler_surfaces_compiled_primary_deontic_self_pair_adaptive_amb
+     )
+ 
+ 
++def test_modal_compiler_surfaces_compiled_primary_conditional_self_pair_adaptive_ambiguity_for_zero_margin(
++    monkeypatch,
++) -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++            modal_adaptive_family_margin=0.15,
++        )
++    )
++    monkeypatch.setattr(
++        "ipfs_datasets_py.logic.modal.compiler.modal_ambiguity_signals",
++        lambda _: {},
++    )
++    encoding = SpaCyLegalEncoding(
++        document_id="adaptive-compiled-primary-conditional-self-doc",
++        text="Within 30 days notice applies.",
++        normalized_text="Within 30 days notice applies.",
++        tokens=[],
++        sentences=[],
++        cues=[
++            SpaCyModalCueFeature(
++                family="temporal",
++                system="LTL",
++                symbol="F",
++                label="eventually",
++                cue="within",
++                start_char=0,
++                end_char=6,
++                token_indices=[],
++            ),
++        ],
++    )
++    modal_ir = ModalIRDocument(
++        document_id="adaptive-compiled-primary-conditional-self-doc",
++        source="us_code",
++        normalized_text=encoding.normalized_text,
++        formulas=[
++            ModalIRFormula(
++                formula_id="f-conditional-1",
++                operator=ModalIROperator(
++                    family="conditional_normative",
++                    system="KD",
++                    symbol="O|",
++                    label="conditional_obligation",
++                ),
++                predicate=ModalIRPredicate(
++                    name="provide_notice",
++                    arguments=["actor:agency"],
++                    role="condition",
++                ),
++                provenance=ModalIRProvenance(
++                    source_id="adaptive-compiled-primary-conditional-self-doc",
++                    start_char=0,
++                    end_char=len(encoding.normalized_text),
++                    citation="12 U.S.C. 4105",
++                ),
++            ),
++        ],
++    )
++    ambiguities = compiler._adaptive_family_margin_ambiguities(
++        encoding,
++        modal_ir=modal_ir,
++        ranking=[
++            {"family": "temporal", "count": 2, "share": 0.5},
++            {"family": "conditional_normative", "count": 2, "share": 0.5},
++        ],
++        family_shares={"temporal": 0.5, "conditional_normative": 0.5},
++    )
++
++    adaptive_conditional_self = next(
++        ambiguity
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["conditional_normative"]
++    )
++    assert adaptive_conditional_self.metadata["adaptive_predicted_family_source"] == (
++        "compiled_primary_family"
++    )
++    assert adaptive_conditional_self.metadata["adaptive_policy_pair"] == (
++        "conditional_normative->conditional_normative"
++    )
++    assert adaptive_conditional_self.metadata["is_priority_policy_pair"] is True
++    assert adaptive_conditional_self.metadata["family_margin"] == 0.0
++    assert adaptive_conditional_self.metadata["adaptive_margin_direction"] == "outvoted"
++    assert (
++        adaptive_conditional_self.metadata["explicit_ambiguity_type"]
++        == "adaptive_conditional_normative_conditional_normative_outvoted_margin_low"
++    )
++    assert any(
++        ambiguity.ambiguity_type
++        == "adaptive_conditional_normative_conditional_normative_outvoted_margin_low"
++        and ambiguity.metadata["adaptive_predicted_family_source"]
++        == "compiled_primary_family"
++        for ambiguity in ambiguities
++    )
++
++
+ def test_modal_compiler_surfaces_compiled_primary_deontic_alethic_adaptive_ambiguity_from_signal_targets(
+     monkeypatch,
+ ) -> None:

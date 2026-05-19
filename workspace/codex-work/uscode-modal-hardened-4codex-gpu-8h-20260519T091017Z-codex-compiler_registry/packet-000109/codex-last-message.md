@@ -1,0 +1,14 @@
+Implemented a narrow deterministic cue-rule refinement for modal family evidence, focused on the requested weak/conflicting pairs (`frame->deontic`, `frame->temporal`, `deontic->epistemic`, and stronger self-support for conditional/statutory-style scope contexts).
+
+- Updated lexical scope signals and phrase cues in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000109-20260519_133207/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py):
+  - Added temporal scope coverage for expiration/enactment language.
+  - Added epistemic scope coverage for `deem/deemed/deems` language.
+  - Added deontic scope phrase coverage for `powers and duties` style legal force wording.
+- Added a targeted deontic→epistemic competing-scope backfill path (only when deontic is dense and epistemic scope/cue evidence exists) in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000109-20260519_133207/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py).
+- Added focused regression tests for these new cue/scope behaviors in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000109-20260519_133207/tests/unit_tests/logic/modal/test_modal_codec.py).
+
+Validation run:
+
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "powers_and_duties or deemed_to or backfills_epistemic_share or date_of_enactment or generic_frame"`: passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "frame_temporal or frame_deontic or deontic_epistemic or temporal_scope_family_outvoted or frame_scope_family_outvoted or deontic_scope_family_outvoted or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle"`: passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py`: **199 passed**

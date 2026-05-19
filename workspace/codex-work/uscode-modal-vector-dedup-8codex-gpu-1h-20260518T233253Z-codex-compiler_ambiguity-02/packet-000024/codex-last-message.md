@@ -1,0 +1,17 @@
+Implemented a focused `compiler_ambiguity` policy update so explicit adaptive ambiguities now cover the missing family transitions from this packet.
+
+- Added missing signal-free adaptive ambiguity pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000024-20260519_000413/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L33):
+  - `alethic -> epistemic`
+  - `deontic -> dynamic`
+- Expanded deterministic target-signal mapping in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000024-20260519_000413/ipfs_datasets_py/logic/modal/compiler.py#L803):
+  - `deontic` now maps `dynamic` scope/cue signals.
+  - `conditional_normative` now maps `deontic` signals.
+  - `alethic` now maps `epistemic` cues.
+- Added regression tests in [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000024-20260519_000413/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py#L246):
+  - `conditional_normative -> deontic`
+  - `deontic -> dynamic`
+  - `alethic -> epistemic`
+
+Validation run:
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py`
+- Result: `14 passed`

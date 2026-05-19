@@ -1,0 +1,80 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index a4a70e13..e0f1d47d 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -31,6 +31,10 @@ NORMATIVE_MODAL_FAMILIES: Tuple[ModalLogicFamily, ...] = (
+ )
+ 
+ COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] = (
++    (
++        ModalLogicFamily.ALETHIC.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ),
+     (
+         ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+         ModalLogicFamily.TEMPORAL.value,
+@@ -47,10 +51,22 @@ COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] =
+         ModalLogicFamily.DEONTIC.value,
+         ModalLogicFamily.FRAME.value,
+     ),
++    (
++        ModalLogicFamily.DEONTIC.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ),
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++    ),
+     (
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.DEONTIC.value,
+     ),
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ),
+     (
+         ModalLogicFamily.TEMPORAL.value,
+         ModalLogicFamily.DEONTIC.value,
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index b63b49fb..a5f9126c 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -185,21 +185,34 @@ def test_compiler_required_adaptive_ambiguity_pairs_are_covered_by_both_policies
+         )
+ 
+ 
+-def test_compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pairs() -> None:
++def test_compiler_required_adaptive_ambiguity_bundle_covers_recurrent_conflict_pairs() -> None:
+     required_pairs = set(COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS)
+ 
++    assert ("alethic", "temporal") in required_pairs
++    assert ("deontic", "temporal") in required_pairs
+     assert ("deontic", "deontic") in required_pairs
++    assert ("frame", "conditional_normative") in required_pairs
+     assert ("frame", "deontic") in required_pairs
++    assert ("frame", "temporal") in required_pairs
+     assert ("temporal", "deontic") in required_pairs
++    assert compiler_required_adaptive_ambiguity_targets("alethic") == ("temporal",)
++    assert compiler_required_adaptive_ambiguity_targets("conditional_normative") == (
++        "temporal",
++    )
+     assert compiler_required_adaptive_ambiguity_targets("deontic") == (
+         "conditional_normative",
+         "deontic",
+         "frame",
++        "temporal",
++    )
++    assert compiler_required_adaptive_ambiguity_targets("frame") == (
++        "conditional_normative",
++        "deontic",
++        "temporal",
+     )
+-    assert compiler_required_adaptive_ambiguity_targets("frame") == ("deontic",)
+     assert compiler_required_adaptive_ambiguity_targets("temporal") == ("deontic",)
+     assert is_compiler_required_adaptive_ambiguity_pair("frame", "deontic") is True
+-    assert is_compiler_required_adaptive_ambiguity_pair("deontic", "temporal") is False
++    assert is_compiler_required_adaptive_ambiguity_pair("deontic", "temporal") is True
+ 
+ 
+ def test_signal_free_adaptive_ambiguity_targets_are_ordered_and_directional() -> None:

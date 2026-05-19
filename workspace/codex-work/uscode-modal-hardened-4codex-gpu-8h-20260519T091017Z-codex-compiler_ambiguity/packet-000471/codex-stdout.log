@@ -1,0 +1,10 @@
+Implemented the compiler ambiguity-policy hardening for the requested family pairs.
+
+- Added `deontic->frame` to the compiler ambiguity bundle pair table so it is tagged as `compiler_ambiguity` (not only required/priority signal-free): [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000471-20260519_152946/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:170)
+- Strengthened an existing deontic→frame regression to assert compiler-bundle tagging metadata: [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000471-20260519_152946/tests/unit_tests/logic/modal/test_modal_codec.py:7565)
+- Added a focused regression for the TODO policy trio (`deontic->frame`, `frame->deontic`, `frame->temporal`) using the evidence-style margins/priorities and asserting explicit ambiguity + compiler-bundle metadata: [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000471-20260519_152946/tests/unit_tests/logic/modal/test_modal_codec.py:13831)
+
+Validation run:
+
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` (205 passed)
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py` (32 passed)

@@ -1,0 +1,14 @@
+Implemented a deterministic family-cue refinement focused on reducing `frame` over-dominance in statutory scope conflicts and strengthening temporal/deontic/conditional competition backfills.
+
+- Updated weighted-family logic in [spacy_modal_codec.py:1251](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000023-20260519_112954/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1251) and [spacy_modal_codec.py:1499](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000023-20260519_112954/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1499):
+  - Added scaled statutory generic-frame competing backfill for `deontic`, `temporal`, `conditional_normative`, and `epistemic`.
+  - Added a shared scaled backfill helper for deterministic, explainable floor computation.
+- Strengthened dense cross-family backfills in [spacy_modal_codec.py:1650](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000023-20260519_112954/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1650) and [spacy_modal_codec.py:1806](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000023-20260519_112954/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1806):
+  - `deontic -> temporal` backfill now scales with dense deontic signals.
+  - `temporal -> deontic` and `temporal -> conditional_normative` backfills now scale with dense temporal signals.
+  - Included statutory-reference eligibility in temporal->conditional backfill gating.
+- Added regression tests in [test_spacy_modal_codec.py:2955](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000023-20260519_112954/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:2955) to cover these new statutory conflict behaviors.
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` -> `105 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` -> `186 passed`

@@ -1,0 +1,12 @@
+Implemented a narrow ambiguity-policy hardening for the requested compiler ambiguity family pairs.
+
+- Promoted `temporal->temporal` to a **priority** signal-free adaptive ambiguity pair in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000030-20260519_103006/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:255).
+- Updated registry coverage to assert that `temporal->temporal` is priority and part of ordered priority targets/recurrent pair coverage in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000030-20260519_103006/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:271).
+- Added compiler test for zero-margin temporal self-pair with a non-priority runner-up to verify deterministic `outvoted` escalation and explicit ambiguity emission in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000030-20260519_103006/tests/unit_tests/logic/modal/test_modal_codec.py:6251).
+- Expanded compiled-primary policy-bundle scenarios to include `frame->conditional_normative` and `deontic->epistemic` explicit ambiguity checks in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000030-20260519_103006/tests/unit_tests/logic/modal/test_modal_codec.py:11572).
+
+Tests run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (13 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "temporal_self_pair_as_outvoted_when_self_pair_is_priority or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle"` (2 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "deontic_epistemic or frame_temporal or frame_conditional_normative or temporal_temporal"` (5 passed)

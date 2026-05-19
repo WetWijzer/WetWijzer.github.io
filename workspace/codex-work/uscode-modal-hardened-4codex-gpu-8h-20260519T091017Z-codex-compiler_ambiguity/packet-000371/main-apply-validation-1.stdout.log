@@ -1,0 +1,38 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0
+benchmark: 5.2.3 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/barberb/portland-laws.github.io/ipfs_datasets_py
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: mock-3.15.1, xdist-3.8.0, benchmark-5.2.3, cov-7.1.0, asyncio-1.3.0, hypothesis-6.152.1, anyio-4.13.0, timeout-2.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 388 items
+
+tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py . [  0%]
+............................................................             [ 15%]
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py . [ 15%]
+........................................................................ [ 34%]
+...................................................                      [ 47%]
+tests/unit_tests/logic/modal/test_modal_codec.py ....................... [ 53%]
+........................................................................ [ 72%]
+........................................................................ [ 90%]
+..............................F.F...                                     [100%]
+
+=================================== FAILURES ===================================
+_ test_modal_compiler_orders_priority_adaptive_targets_before_non_priority_targets _
+tests/unit_tests/logic/modal/test_modal_codec.py:12710: in test_modal_compiler_orders_priority_adaptive_targets_before_non_priority_targets
+    assert ordered_targets == [
+E   AssertionError: assert ['conditional... 'frame', ...] == ['conditional...hic', 'frame']
+E     
+E     Left contains one more item: 'dynamic'
+E     Use -v to get more diff
+_ test_modal_compiler_includes_compiler_required_targets_when_priority_targets_are_missing _
+tests/unit_tests/logic/modal/test_modal_codec.py:12752: in test_modal_compiler_includes_compiler_required_targets_when_priority_targets_are_missing
+    assert ordered_targets[:5] == [
+E   AssertionError: assert ['conditional...', 'temporal'] == ['conditional...', 'temporal']
+E     
+E     At index 3 diff: 'dynamic' != 'epistemic'
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_orders_priority_adaptive_targets_before_non_priority_targets
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_includes_compiler_required_targets_when_priority_targets_are_missing
+======================== 2 failed, 386 passed in 23.57s ========================

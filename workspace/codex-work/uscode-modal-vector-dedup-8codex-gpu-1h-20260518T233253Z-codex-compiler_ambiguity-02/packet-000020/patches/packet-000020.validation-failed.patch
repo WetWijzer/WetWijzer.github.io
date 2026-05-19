@@ -1,0 +1,143 @@
+diff --git a/ipfs_datasets_py/logic/modal/compiler.py b/ipfs_datasets_py/logic/modal/compiler.py
+index 061c709e..5c2db217 100644
+--- a/ipfs_datasets_py/logic/modal/compiler.py
++++ b/ipfs_datasets_py/logic/modal/compiler.py
+@@ -279,10 +279,10 @@ class DeterministicModalCompiler:
+         frame_selections: Sequence[FrameSelection] = (),
+     ) -> List[ModalCompilationAmbiguity]:
+         ranking = ranked_modal_families(encoding)
++        adaptive_ranking = self._adaptive_family_ranking_from_logits(encoding)
+         if not ranking:
+             if not encoding.normalized_text:
+                 return []
+-            adaptive_ranking = self._adaptive_family_ranking_from_logits(encoding)
+             if not adaptive_ranking:
+                 return []
+             adaptive_family_shares = {
+@@ -429,8 +429,15 @@ class DeterministicModalCompiler:
+             self._adaptive_family_margin_ambiguities(
+                 encoding,
+                 modal_ir=modal_ir,
+-                ranking=ranking,
+-                family_shares=family_shares,
++                ranking=adaptive_ranking or ranking,
++                family_shares=(
++                    {
++                        str(candidate["family"]): self._ranking_share(candidate)
++                        for candidate in adaptive_ranking
++                    }
++                    if adaptive_ranking
++                    else family_shares
++                ),
+                 frame_selections=frame_selections,
+             )
+         )
+@@ -709,7 +716,11 @@ class DeterministicModalCompiler:
+                 and not supports_signal_free_pair_policy
+             ):
+                 continue
+-            family_margin = target_share - predicted_share
++            family_margin = (
++                predicted_margin_to_runner_up
++                if is_self_pair and predicted_margin_to_runner_up is not None
++                else target_share - predicted_share
++            )
+             if family_margin > threshold:
+                 continue
+             margin_direction = "outvoted" if (
+@@ -724,10 +735,7 @@ class DeterministicModalCompiler:
+             )
+             predicted_share_display = round(predicted_share, 6)
+             target_share_display = round(target_share, 6)
+-            family_margin_display = round(
+-                target_share_display - predicted_share_display,
+-                6,
+-            )
++            family_margin_display = round(family_margin, 6)
+             candidate_ids = (
+                 [predicted_family]
+                 if is_self_pair
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index a24228f4..dd9336f4 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -43,6 +43,25 @@ def _has_adaptive_explicit_pair(
+     )
+ 
+ 
++def _adaptive_explicit_pair(
++    result,
++    *,
++    predicted_family: str,
++    target_family: str,
++):
++    for ambiguity in result.ambiguities:
++        if not ambiguity.ambiguity_type.startswith("adaptive_"):
++            continue
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low":
++            continue
++        if ambiguity.metadata.get("predicted_family") != predicted_family:
++            continue
++        if ambiguity.metadata.get("target_family") != target_family:
++            continue
++        return ambiguity
++    return None
++
++
+ def test_parser_recovers_article_prefixed_commission_heading() -> None:
+     parser = LegalModalParser()
+ 
+@@ -225,3 +244,53 @@ def test_compiler_emits_explicit_deontic_self_pair_for_low_family_margin() -> No
+         predicted_family=ModalLogicFamily.DEONTIC.value,
+         target_family=ModalLogicFamily.DEONTIC.value,
+     )
++
++
++def test_compiler_uses_logit_softmax_margin_for_adaptive_pair_policy() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "As provided in section 3, this authority applies.",
++        document_id="compiler-ambiguity-adaptive-logit-margin",
++    )
++    ambiguity = _adaptive_explicit_pair(
++        result,
++        predicted_family=ModalLogicFamily.FRAME.value,
++        target_family=ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++    )
++    assert ambiguity is not None
++    metadata = ambiguity.metadata
++    assert float(metadata.get("predicted_share") or 0.0) < 1.0
++    assert float(metadata.get("target_share") or 0.0) > 0.0
++    assert float(metadata.get("family_margin") or 0.0) > -1.0
++    ranking = metadata.get("family_ranking") or []
++    assert ranking
++    assert str(ranking[0].get("source") or "") == "logit_softmax_fallback"
++
++
++def test_compiler_uses_runner_up_gap_for_adaptive_deontic_self_pair_margin() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(
++            parser_backend="spacy",
++            modal_adaptive_family_margin=0.5,
++        )
++    )
++
++    result = compiler.compile(
++        "The Secretary shall, by June 1, 2030, submit the report and may revise it.",
++        document_id="compiler-ambiguity-adaptive-self-gap",
++    )
++    ambiguity = _adaptive_explicit_pair(
++        result,
++        predicted_family=ModalLogicFamily.DEONTIC.value,
++        target_family=ModalLogicFamily.DEONTIC.value,
++    )
++    assert ambiguity is not None
++    assert ambiguity.ambiguity_type.endswith("contested_margin_low")
++    metadata = ambiguity.metadata
++    family_margin = float(metadata.get("family_margin") or 0.0)
++    runner_up_margin = float(metadata.get("predicted_margin_to_runner_up") or 0.0)
++    assert family_margin > 0.0
++    assert family_margin == runner_up_margin

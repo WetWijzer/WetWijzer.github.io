@@ -1,0 +1,15 @@
+Implemented a focused compiler-registry refinement for adaptive family cues centered on `epistemic -> conditional_normative` and related ambiguity policy coverage.
+
+- Added `epistemic -> conditional_normative` to compiler-required, compiler-ambiguity, signal-free, and priority policy tables in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000180-20260519_144722/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:87), [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000180-20260519_144722/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:182), [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000180-20260519_144722/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:304), [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000180-20260519_144722/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:429).
+- Added explicit epistemic-family target signal routing for conditional/deontic/temporal scope evidence in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000180-20260519_144722/ipfs_datasets_py/logic/modal/compiler.py:1140).
+- Updated registry policy assertions and expected directional target orderings in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000180-20260519_144722/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:148).
+- Added two compiler ambiguity tests for `epistemic -> conditional_normative`:
+  - signal-free policy path
+  - signaled conditional-scope path
+  in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000180-20260519_144722/tests/unit_tests/logic/modal/test_modal_codec.py:6382).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (17 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k 'epistemic and conditional and adaptive'` (3 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k 'epistemic and adaptive'` (13 passed)

@@ -1,0 +1,22 @@
+Implemented this packet as a policy hardening review by adding regression coverage for the recurrent adaptive ambiguity family pairs.
+
+**What I changed**
+- Added a registry-level assertion that recurrent directional pairs are both signal-free supported and priority-ranked:  
+[tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000024-20260519_095013/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:306)
+
+- Added a compiler regression test that validates explicit adaptive ambiguity emission for the recurrent bundle pairs, including:
+  - `deontic->deontic`
+  - `deontic->conditional_normative`
+  - `deontic->frame`
+  - `deontic->temporal`
+  - `frame->conditional_normative`
+  - `frame->deontic`
+  - `frame->temporal`
+  - `alethic->deontic`  
+[tests/unit_tests/logic/modal/test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000024-20260519_095013/tests/unit_tests/logic/modal/test_modal_codec.py:2434)
+
+**Validation run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "recurrent_compiler_ambiguity_pairs or recurrent_policy_pairs or priority_signal_free_policy_covers_recurrent_compiler_ambiguity_pairs"`  
+  Result: `2 passed`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -k "adaptive or signal_free"`  
+  Result: `76 passed`

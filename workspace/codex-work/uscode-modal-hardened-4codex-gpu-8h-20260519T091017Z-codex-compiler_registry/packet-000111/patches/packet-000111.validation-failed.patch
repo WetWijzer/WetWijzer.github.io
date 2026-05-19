@@ -1,0 +1,179 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 56b73320..e8dcacbf 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -517,7 +517,7 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+         family=ModalLogicFamily.ALETHIC,
+         system=ModalSystem.S5,
+         operators=(
+-            _op("□", ("necessary", "must_be"), ("necessary", "impossible", "cannot"), (ModalSystem.K, ModalSystem.T, ModalSystem.S4, ModalSystem.S5)),
++            _op("□", ("necessary", "must_be"), ("necessary", "impossible"), (ModalSystem.K, ModalSystem.T, ModalSystem.S4, ModalSystem.S5)),
+             _op("◇", ("possible",), ("possible", "can be"), (ModalSystem.K, ModalSystem.T, ModalSystem.S4, ModalSystem.S5)),
+         ),
+         semantics=ModalSemanticsSpec(reflexive=True, transitive=True, symmetric=True, euclidean=True),
+@@ -534,15 +534,39 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "shall",
+                     "must",
+                     "required",
++                    "requirement",
++                    "requirements",
+                     "obligated",
+                     "has a duty to",
+                     "have a duty to",
++                    "is liable for",
++                    "is guilty of",
++                    "shall be fined",
++                    "shall be imprisoned",
++                    "subject to a civil penalty",
++                    "subject to civil penalties",
++                    "subject to criminal penalties",
++                    "subject to imprisonment",
+                     "under an obligation to",
+                 ),
+                 (ModalSystem.D, ModalSystem.KD),
+             ),
+             _op("P", ("permission", "permitted"), ("may", "permitted", "authorized", "allowed"), (ModalSystem.D, ModalSystem.KD)),
+-            _op("F", ("prohibition", "forbidden"), ("may not", "must not", "prohibited", "forbidden"), (ModalSystem.D, ModalSystem.KD)),
++            _op(
++                "F",
++                ("prohibition", "forbidden"),
++                (
++                    "may not",
++                    "must not",
++                    "shall not",
++                    "cannot",
++                    "prohibited",
++                    "forbidden",
++                    "is prohibited from",
++                    "unlawful",
++                ),
++                (ModalSystem.D, ModalSystem.KD),
++            ),
+         ),
+         semantics=ModalSemanticsSpec(serial=True),
+         description="Legal obligations, permissions, and prohibitions.",
+@@ -594,6 +618,12 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "knowledge of",
+                     "knowingly",
+                     "reason to believe",
++                    "deem",
++                    "deemed",
++                    "deems",
++                    "deemed to",
++                    "is deemed",
++                    "are deemed",
+                 ),
+                 (ModalSystem.S4, ModalSystem.S5),
+             ),
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 6a9119f1..fa954c41 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -75,7 +75,6 @@ _CONDITIONAL_SCOPE_TOKENS = frozenset(
+ )
+ _ALETHIC_SCOPE_TOKENS = frozenset(
+     {
+-        "cannot",
+         "impossible",
+         "necessary",
+         "necessarily",
+@@ -545,6 +544,7 @@ _DEONTIC_SCOPE_TOKENS = frozenset(
+         "allowed",
+         "authorize",
+         "authorized",
++        "cannot",
+         "compliance",
+         "comply",
+         "duty",
+@@ -1879,7 +1879,7 @@ def _apply_competing_scope_backfill(
+         )
+     if (
+         conditional_count >= _CONDITIONAL_DEONTIC_SCOPE_BACKFILL_TRIGGER
+-        and deontic_count <= 0.0
++        and deontic_count <= _COMPETING_SCOPE_BACKFILL_WEIGHT
+         and bool(signals.get("has_deontic_scope"))
+     ):
+         deontic_backfill = _COMPETING_SCOPE_BACKFILL_WEIGHT
+@@ -2188,7 +2188,7 @@ def _apply_competing_scope_backfill(
+         )
+     if (
+         frame_count >= _FRAME_EPISTEMIC_SCOPE_BACKFILL_TRIGGER
+-        and epistemic_count <= 0.0
++        and epistemic_count <= _COMPETING_SCOPE_BACKFILL_WEIGHT
+         and bool(signals.get("has_epistemic_scope"))
+     ):
+         counts[epistemic_family] = max(
+@@ -2197,7 +2197,7 @@ def _apply_competing_scope_backfill(
+         )
+     elif (
+         has_moderate_frame_competition
+-        and epistemic_count <= 0.0
++        and epistemic_count <= _COMPETING_SCOPE_BACKFILL_WEIGHT
+         and bool(signals.get("has_epistemic_scope"))
+     ):
+         counts[epistemic_family] = max(
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index adbb9baa..6c9caaec 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -1039,3 +1039,60 @@ def test_compiler_marks_frame_to_temporal_pair_as_compiler_required_policy_witho
+         and ambiguity.metadata.get("signal_free_pair_policy_applied") is True
+         for ambiguity in result.ambiguities
+     )
++
++
++def test_compiler_treats_cannot_as_deontic_prohibition_cue() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "A person cannot disclose the record unless authorized by law.",
++        document_id="compiler-cue-cannot-deontic",
++    )
++    assert result.encoding is not None
++    cannot_families = [
++        cue.family
++        for cue in result.encoding.cues
++        if cue.cue.lower() == "cannot"
++    ]
++    assert cannot_families
++    assert all(
++        family == ModalLogicFamily.DEONTIC.value
++        for family in cannot_families
++    )
++
++
++def test_compiler_captures_deontic_penalty_scope_phrase_as_cue() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "A violator is subject to civil penalties under section 5 of this title.",
++        document_id="compiler-cue-deontic-penalty-scope",
++    )
++    assert result.encoding is not None
++    assert any(
++        cue.family == ModalLogicFamily.DEONTIC.value
++        and cue.cue.lower() == "subject to civil penalties"
++        for cue in result.encoding.cues
++    )
++
++
++def test_compiler_captures_epistemic_deemed_phrases_as_cues() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    result = compiler.compile(
++        "A person is deemed to have knowledge of the filing.",
++        document_id="compiler-cue-epistemic-deemed",
++    )
++    assert result.encoding is not None
++    deemed_cues = {
++        cue.cue.lower()
++        for cue in result.encoding.cues
++        if cue.family == ModalLogicFamily.EPISTEMIC.value
++    }
++    assert {"deemed", "deemed to", "is deemed"} & deemed_cues

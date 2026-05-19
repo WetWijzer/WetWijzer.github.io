@@ -1,0 +1,19 @@
+Implemented a deterministic `compiler_registry`-scoped cue-rule refinement to address the requested family drifts (`alethic→deontic/conditional_normative`, `deontic→conditional_normative`, `frame→temporal`).
+
+- Updated weighting/backfill logic in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000249-20260519_151120/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L541):
+  - Added new pair-focused constants for alethic normative competition and frame-temporal rebalance (`#L541-L547`).
+  - Integrated two new deterministic passes into weighted family scoring (`#L1365-L1381`):
+    - `_apply_alethic_normative_scope_backfill` (`#L2386`) to strengthen deontic/conditional support when alethic cues dominate but normative scope evidence exists.
+    - `_apply_frame_temporal_scope_backfill` (`#L2459`) to raise temporal share in frame-heavy clauses with strong temporal scope and no explicit editorial/frame-scope override.
+  - Strengthened dense deontic→conditional backfill to scale by deontic signal strength instead of a fixed floor (`#L1863-L1876`).
+
+- Added/updated regression tests in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000249-20260519_151120/tests/unit_tests/logic/modal/test_modal_codec.py#L9383):
+  - Adjusted expected temporal/frame share for strengthened temporal rebalance (`#L9390-L9391`).
+  - Added targeted tests for:
+    - dense generic-frame + temporal scope rebalance (`#L9434`)
+    - alethic-dominant text deontic backfill (`#L9452`)
+    - dense deontic text conditional backfill (`#L9470`)
+
+Validation run:
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py`
+- Result: `207 passed`

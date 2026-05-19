@@ -1,0 +1,158 @@
+diff --git a/ipfs_datasets_py/logic/modal/compiler.py b/ipfs_datasets_py/logic/modal/compiler.py
+index 061c709e..fbcbaf80 100644
+--- a/ipfs_datasets_py/logic/modal/compiler.py
++++ b/ipfs_datasets_py/logic/modal/compiler.py
+@@ -431,6 +431,10 @@ class DeterministicModalCompiler:
+                 modal_ir=modal_ir,
+                 ranking=ranking,
+                 family_shares=family_shares,
++                family_share_fallbacks=self._adaptive_family_shares_for_missing_targets(
++                    encoding,
++                    family_shares=family_shares,
++                ),
+                 frame_selections=frame_selections,
+             )
+         )
+@@ -592,6 +596,26 @@ class DeterministicModalCompiler:
+             )
+         return ranking
+ 
++    def _adaptive_family_shares_for_missing_targets(
++        self,
++        encoding: SpaCyLegalEncoding,
++        *,
++        family_shares: Dict[str, float],
++    ) -> Dict[str, float]:
++        """Provide adaptive softmax shares for families absent from ranking evidence."""
++        adaptive_ranking = self._adaptive_family_ranking_from_logits(encoding)
++        if not adaptive_ranking:
++            return {}
++        fallback_shares = {
++            str(candidate["family"]): self._ranking_share(candidate)
++            for candidate in adaptive_ranking
++        }
++        return {
++            family: share
++            for family, share in fallback_shares.items()
++            if family not in family_shares
++        }
++
+     def _adaptive_family_margin_ambiguities(
+         self,
+         encoding: SpaCyLegalEncoding,
+@@ -599,6 +623,7 @@ class DeterministicModalCompiler:
+         modal_ir: ModalIRDocument,
+         ranking: Sequence[Dict[str, Any]],
+         family_shares: Dict[str, float],
++        family_share_fallbacks: Optional[Dict[str, float]] = None,
+         frame_selections: Sequence[FrameSelection] = (),
+     ) -> List[ModalCompilationAmbiguity]:
+         """Surface explicit ambiguities when strong legal families compete."""
+@@ -690,10 +715,19 @@ class DeterministicModalCompiler:
+             ):
+                 continue
+             target_share = float(family_shares.get(target_family, 0.0))
++            target_share_evidence = target_share
++            target_share_source = "family_ranking"
++            if (
++                target_family not in family_shares
++                and family_share_fallbacks is not None
++                and target_family in family_share_fallbacks
++            ):
++                target_share = float(family_share_fallbacks[target_family])
++                target_share_source = "adaptive_logit_fallback"
+             has_compiled_target_family_formula = target_family in compiled_modal_families
+             has_target_signal_evidence = bool(
+                 has_signal
+-                or target_share > 0.0
++                or target_share_evidence > 0.0
+                 or has_compiled_target_family_formula
+             )
+             supports_signal_free_pair_policy = self._supports_signal_free_adaptive_pair(
+@@ -771,6 +805,8 @@ class DeterministicModalCompiler:
+                 "target_family": target_family,
+                 "target_share_raw": target_share,
+                 "target_share": target_share_display,
++                "target_share_source": target_share_source,
++                "target_share_evidence_raw": target_share_evidence,
+                 "is_self_pair": is_self_pair,
+             }
+             base_message = (
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index 38116b49..9ed383f7 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -3918,6 +3918,73 @@ def test_modal_compiler_surfaces_deontic_conditional_adaptive_ambiguity() -> Non
+     )
+ 
+ 
++def test_modal_compiler_uses_adaptive_share_fallback_for_signal_free_deontic_conditional_margin() -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++            modal_adaptive_family_margin=0.15,
++        )
++    )
++
++    compiled = compiler.compile("The agency shall provide written notice.")
++
++    adaptive_conditional = next(
++        ambiguity
++        for ambiguity in compiled.ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["deontic", "conditional_normative"]
++    )
++    assert adaptive_conditional.metadata["predicted_family"] == "deontic"
++    assert adaptive_conditional.metadata["target_family"] == "conditional_normative"
++    assert adaptive_conditional.metadata["target_share_source"] == "adaptive_logit_fallback"
++    assert adaptive_conditional.metadata["target_share_evidence_raw"] == 0.0
++    assert adaptive_conditional.metadata["signal_free_pair_policy_applied"] is True
++    assert adaptive_conditional.metadata["family_margin"] < 0.0
++    assert adaptive_conditional.metadata["family_margin"] > -1.0
++    assert (
++        adaptive_conditional.metadata["explicit_ambiguity_type"]
++        == "adaptive_deontic_conditional_normative_outvoted_margin_low"
++    )
++    assert any(
++        ambiguity.ambiguity_type
++        == "adaptive_deontic_conditional_normative_outvoted_margin_low"
++        and ambiguity.metadata["target_share_source"] == "adaptive_logit_fallback"
++        for ambiguity in compiled.ambiguities
++    )
++
++
++def test_modal_compiler_surfaces_frame_deontic_adaptive_ambiguity() -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++            modal_adaptive_family_margin=0.15,
++        )
++    )
++
++    compiled = compiler.compile("Transferred editorial notes.")
++
++    adaptive_deontic = next(
++        ambiguity
++        for ambiguity in compiled.ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["frame", "deontic"]
++    )
++    assert adaptive_deontic.metadata["predicted_family"] == "frame"
++    assert adaptive_deontic.metadata["target_family"] == "deontic"
++    assert adaptive_deontic.metadata["is_priority_policy_pair"] is True
++    assert adaptive_deontic.metadata["family_margin"] < 0.0
++    assert (
++        adaptive_deontic.metadata["explicit_ambiguity_type"]
++        == "adaptive_frame_deontic_outvoted_margin_low"
++    )
++    assert any(
++        ambiguity.ambiguity_type == "adaptive_frame_deontic_outvoted_margin_low"
++        for ambiguity in compiled.ambiguities
++    )
++
++
+ def test_modal_compiler_surfaces_deontic_alethic_adaptive_ambiguity() -> None:
+     compiler = DeterministicModalCompiler(
+         ModalCompilerConfig(

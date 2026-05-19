@@ -1,0 +1,231 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index dcbac176..26792ea3 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -111,6 +111,10 @@ COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...] =
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.EPISTEMIC.value,
+     ),
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.DYNAMIC.value,
++    ),
+     (
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.TEMPORAL.value,
+@@ -417,6 +421,10 @@ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.EPISTEMIC.value,
+     ),
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.DYNAMIC.value,
++    ),
+     (
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.TEMPORAL.value,
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 33f4e0c8..58a058fb 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -496,7 +496,7 @@ _DEONTIC_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _DEONTIC_STRONG_COMPETING_SCOPE_SOFT_CAP = 2.5
+ _TEMPORAL_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _CONDITIONAL_COMPETING_SCOPE_SOFT_CAP = 3.0
+-_FRAME_COMPETING_SCOPE_SOFT_CAP = 3.0
++_FRAME_COMPETING_SCOPE_SOFT_CAP = 2.5
+ _ALETHIC_COMPETING_SCOPE_SOFT_CAP = 2.0
+ _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT = 0.12
+ _GENERIC_FRAME_STRONG_TEMPORAL_SCOPE_BACKFILL_WEIGHT = 0.35
+@@ -533,6 +533,8 @@ _STATUTORY_GENERIC_FRAME_COMPETING_SCOPE_RATIO = 0.9
+ _STATUTORY_GENERIC_FRAME_COMPETING_SCOPE_MAX = 0.6
+ _STATUTORY_GENERIC_FRAME_CONDITIONAL_SCOPE_MAX = 0.5
+ _STATUTORY_GENERIC_FRAME_EPISTEMIC_SCOPE_MAX = 0.45
++_STATUTORY_GENERIC_FRAME_ALETHIC_SCOPE_MAX = 0.45
++_STATUTORY_GENERIC_FRAME_DYNAMIC_SCOPE_MAX = 0.5
+ _STATUTORY_GENERIC_FRAME_STRONG_TEMPORAL_SCOPE_MAX = 0.72
+ _TEMPORAL_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
+ _TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX = 0.35
+@@ -1421,6 +1423,8 @@ def _apply_generic_frame_normative_scope_soft_cap(
+         or bool(signals.get("has_condition_or_exception_scope"))
+         or bool(signals.get("has_temporal_scope"))
+         or bool(signals.get("has_epistemic_scope"))
++        or bool(signals.get("has_alethic_scope"))
++        or bool(signals.get("has_dynamic_scope"))
+     )
+     if not has_competing_scope:
+         return
+@@ -1615,11 +1619,24 @@ def _apply_frame_competing_scope_soft_cap(
+             or bool(signals.get("has_deontic_scope_phrase"))
+         )
+     )
++    has_dynamic_competition = (
++        bool(signals.get("has_dynamic_scope"))
++        or bool(signals.get("has_dynamic_cue"))
++        or float(counts.get(ModalLogicFamily.DYNAMIC.value, 0.0)) > 0.0
++    )
++    has_strong_dynamic_competition = (
++        has_dynamic_competition
++        and (
++            bool(signals.get("has_dynamic_scope_phrase"))
++            or bool(signals.get("has_dynamic_cue"))
++        )
++    )
+     if not (
+         has_strong_temporal_competition
+         or has_strong_conditional_competition
+         or has_alethic_competition
+         or has_strong_deontic_competition
++        or has_strong_dynamic_competition
+     ):
+         return
+     overflow = frame_count - _FRAME_COMPETING_SCOPE_SOFT_CAP
+@@ -1805,6 +1822,34 @@ def _apply_generic_frame_statutory_competing_scope_backfill(
+             float(counts.get(ModalLogicFamily.EPISTEMIC.value, 0.0)),
+             epistemic_floor,
+         )
++    if bool(
++        signals.get("has_alethic_scope")
++        or signals.get("has_alethic_cue")
++    ):
++        alethic_floor = _scaled_competing_scope_backfill(
++            source_count=frame_count,
++            ratio=_STATUTORY_GENERIC_FRAME_COMPETING_SCOPE_RATIO,
++            minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            maximum=_STATUTORY_GENERIC_FRAME_ALETHIC_SCOPE_MAX,
++        )
++        counts[ModalLogicFamily.ALETHIC.value] = max(
++            float(counts.get(ModalLogicFamily.ALETHIC.value, 0.0)),
++            alethic_floor,
++        )
++    if bool(
++        signals.get("has_dynamic_scope")
++        or signals.get("has_dynamic_cue")
++    ):
++        dynamic_floor = _scaled_competing_scope_backfill(
++            source_count=frame_count,
++            ratio=_STATUTORY_GENERIC_FRAME_COMPETING_SCOPE_RATIO,
++            minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            maximum=_STATUTORY_GENERIC_FRAME_DYNAMIC_SCOPE_MAX,
++        )
++        counts[ModalLogicFamily.DYNAMIC.value] = max(
++            float(counts.get(ModalLogicFamily.DYNAMIC.value, 0.0)),
++            dynamic_floor,
++        )
+ 
+ 
+ def _apply_competing_scope_backfill(
+@@ -2517,17 +2562,36 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+             if bool(signals.get("has_alethic_scope_phrase"))
+             else 0.45
+         )
++        if (
++            bool(signals.get("has_statutory_scope_reference"))
++            and (
++                bool(signals.get("has_frame_context"))
++                or bool(signals.get("has_frame_cue"))
++            )
++        ):
++            alethic_bonus += 0.2
+         boosts[ModalLogicFamily.ALETHIC.value] = alethic_bonus
+     dynamic_bonus = 0.0
+     if bool(signals.get("has_dynamic_scope_phrase")):
+         dynamic_bonus += 1.0
+         if bool(signals.get("has_deontic_scope")) or bool(signals.get("has_deontic_cue")):
+             dynamic_bonus += 0.25
+-    elif bool(signals.get("has_dynamic_scope")) and not (
+-        bool(signals.get("has_frame_scope_phrase"))
+-        or bool(signals.get("has_frame_editorial_scope_phrase"))
++    elif bool(signals.get("has_dynamic_scope")) and (
++        not (
++            bool(signals.get("has_frame_scope_phrase"))
++            or bool(signals.get("has_frame_editorial_scope_phrase"))
++        )
++        or bool(signals.get("has_statutory_scope_reference"))
+     ):
+         dynamic_bonus += 0.7
++        if (
++            bool(signals.get("has_statutory_scope_reference"))
++            and (
++                bool(signals.get("has_frame_context"))
++                or bool(signals.get("has_frame_cue"))
++            )
++        ):
++            dynamic_bonus += 0.2
+         if bool(signals.get("has_deontic_scope")) or bool(signals.get("has_deontic_cue")):
+             dynamic_bonus += 0.2
+     if dynamic_bonus > 0.0:
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index a419972e..a0185e71 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -223,6 +223,7 @@ def test_compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pai
+     assert ("frame", "deontic") in required_pairs
+     assert ("frame", "alethic") in required_pairs
+     assert ("frame", "epistemic") in required_pairs
++    assert ("frame", "dynamic") in required_pairs
+     assert ("frame", "temporal") in required_pairs
+     assert ("temporal", "conditional_normative") in required_pairs
+     assert ("temporal", "deontic") in required_pairs
+@@ -256,6 +257,7 @@ def test_compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pai
+         "deontic",
+         "alethic",
+         "epistemic",
++        "dynamic",
+         "temporal",
+         "frame",
+     )
+@@ -284,6 +286,7 @@ def test_compiler_ambiguity_policy_pair_helper_matches_declared_bundle() -> None
+     assert is_compiler_required_adaptive_ambiguity_pair("frame", "deontic") is True
+     assert is_compiler_required_adaptive_ambiguity_pair("frame", "alethic") is True
+     assert is_compiler_required_adaptive_ambiguity_pair("frame", "epistemic") is True
++    assert is_compiler_required_adaptive_ambiguity_pair("frame", "dynamic") is True
+     assert is_compiler_required_adaptive_ambiguity_pair("frame", "temporal") is True
+     assert is_compiler_required_adaptive_ambiguity_pair(
+         "conditional_normative",
+@@ -447,6 +450,7 @@ def test_priority_signal_free_adaptive_ambiguity_pair_policy_is_directional() ->
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "deontic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "alethic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "epistemic")
++    assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "dynamic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "temporal")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("epistemic", "deontic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("epistemic", "temporal")
+@@ -463,6 +467,7 @@ def test_priority_signal_free_adaptive_targets_are_ordered_directional_subsets()
+         "deontic",
+         "temporal",
+         "frame",
++        "conditional_normative",
+     )
+     assert priority_signal_free_adaptive_ambiguity_targets("temporal") == (
+         "conditional_normative",
+@@ -475,6 +480,7 @@ def test_priority_signal_free_adaptive_targets_are_ordered_directional_subsets()
+         "conditional_normative",
+         "deontic",
+         "epistemic",
++        "dynamic",
+         "temporal",
+         "alethic",
+         "frame",
+@@ -514,6 +520,7 @@ def test_priority_signal_free_policy_covers_recurrent_compiler_ambiguity_pairs()
+         ("frame", "deontic"),
+         ("frame", "alethic"),
+         ("frame", "epistemic"),
++        ("frame", "dynamic"),
+         ("frame", "temporal"),
+     )
+     for predicted_family, target_family in recurrent_pairs:
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index 498c09ca..f850d0ed 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -4778,7 +4778,8 @@ def test_modal_compiler_uses_signal_free_pair_policy_for_frame_dynamic_adaptive_
+     )
+     assert adaptive_dynamic.metadata["has_target_signal_evidence"] is False
+     assert adaptive_dynamic.metadata["signal_free_pair_policy_applied"] is True
+-    assert adaptive_dynamic.metadata["is_priority_policy_pair"] is False
++    assert adaptive_dynamic.metadata["is_priority_policy_pair"] is True
++    assert adaptive_dynamic.metadata["is_compiler_required_policy_pair"] is True
+     assert (
+         adaptive_dynamic.metadata["explicit_ambiguity_type"]
+         == "adaptive_frame_dynamic_outvoted_margin_low"

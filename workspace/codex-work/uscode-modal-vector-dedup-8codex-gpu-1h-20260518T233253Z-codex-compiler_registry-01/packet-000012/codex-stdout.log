@@ -1,0 +1,23 @@
+Implemented a targeted modal-family cue refinement focused on frame→deontic and frame→temporal conflicts by tightening generic frame-cue debiasing.
+
+**Changes**
+1. Updated decoder scoring in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000012-20260518_233406/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py):
+- Added `_GENERIC_FRAME_DEBIASED_LOGIT_BASE = 0.5`.
+- When generic frame cues are in a debias context, frame-family base logit now uses the lower debiased base (instead of the default `2.0`).
+- Reused a single computed `generic_frame_debias_context` during family logit calculation.
+
+2. Broadened generic frame debias trigger in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000012-20260518_233406/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py):
+- Debias now activates when generic frame cues co-occur with:
+  - `has_deontic_scope`, or
+  - `has_temporal_scope`, or
+  - `has_condition_or_exception_scope`.
+
+3. Added regression tests in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000012-20260518_233406/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py):
+- Temporal-scope case now verifies `temporal > frame` for generic frame terms.
+- Deontic-scope-phrase case now verifies `deontic > frame` for generic frame terms.
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py`  
+  Passed: `43`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py`  
+  Passed: `124`

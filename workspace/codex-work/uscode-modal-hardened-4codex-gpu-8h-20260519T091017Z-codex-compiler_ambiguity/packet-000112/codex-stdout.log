@@ -1,0 +1,12 @@
+Implemented `compiler_ambiguity` hardening by ensuring adaptive-logit family competition is always evaluated for explicit ambiguity emission.
+
+**Changes**
+- Updated [`ipfs_datasets_py/logic/modal/compiler.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000112-20260519_112326/ipfs_datasets_py/logic/modal/compiler.py#L443):
+  - Removed the gating that only emitted `adaptive_logits` ambiguities when top-family changed or top-margin was low.
+  - Now always runs `_adaptive_family_margin_ambiguities(...)` for `adaptive_logits`, so explicit ambiguity types are surfaced for policy pairs like `frame->deontic`, `frame->temporal`, and `temporal->conditional_normative` whenever margins satisfy policy conditions.
+- Removed now-unused helper `_top_family_margin` from [`compiler.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000112-20260519_112326/ipfs_datasets_py/logic/modal/compiler.py#L267).
+
+**Validation**
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` (186 passed)
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py` (25 passed)
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -k "compiler_required or signal_free"` (8 passed)

@@ -1,0 +1,20 @@
+Implemented a focused compiler-registry/modal-cue refinement for the requested family-conflict bundle.
+
+**Changes**
+- Added `deontic -> dynamic` to compiler-required adaptive ambiguity policy in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000022-20260519_112127/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:34).
+- Refined deterministic scope-to-logit boosts in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000022-20260519_112127/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1833) to strengthen the specific confusion pairs:
+  - `deontic -> conditional_normative`
+  - `frame -> conditional_normative`
+  - `frame -> deontic`
+  - `frame -> epistemic`
+  - `deontic -> dynamic`
+  - `alethic -> temporal`
+  - `conditional_normative -> deontic`
+- Updated registry coverage assertions in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000022-20260519_112127/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:188).
+- Added targeted spaCy decoder tests for the new scope-boost behavior in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000022-20260519_112127/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:539).
+
+**Validation**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py`  
+  Result: `121 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "recurrent_policy_pairs or required_margin_bundle_pairs or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle"`  
+  Result: `3 passed`

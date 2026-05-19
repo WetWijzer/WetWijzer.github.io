@@ -1,0 +1,9 @@
+Implemented a targeted compiler ambiguity-policy enhancement for `deontic -> conditional_normative` and added regression coverage.
+
+- Updated [`compiler.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000059-20260519_000746/ipfs_datasets_py/logic/modal/compiler.py:776) so that when the compiled primary family is `deontic` but cue ranking predicts another family, the compiler still emits the explicit adaptive ambiguity for `deontic -> conditional_normative` using the existing signal-free policy path.
+- Added regression test [`test_modal_codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000059-20260519_000746/tests/unit_tests/logic/modal/test_modal_codec.py:2001) to verify this exact scenario (`compiled primary deontic`, cue-predicted `temporal`) and assert the explicit ambiguity type `adaptive_deontic_conditional_normative_outvoted_margin_low`.
+
+Validation run:
+
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary_deontic_conditional_policy_ambiguity_when_cues_predict_temporal or signal_free_pair_policy_for_temporal_deontic_adaptive_ambiguity or formula_signal"` passed.
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py` passed (`131 passed`).

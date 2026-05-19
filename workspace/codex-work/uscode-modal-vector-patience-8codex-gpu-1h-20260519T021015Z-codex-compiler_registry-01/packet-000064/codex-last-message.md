@@ -1,0 +1,14 @@
+Implemented the compiler-registry lane update by refining deterministic modal family cue backfill rules and adding targeted regressions.
+
+- Added new competing-scope backfill triggers in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000064-20260519_024350/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:391).
+- Extended `_apply_competing_scope_backfill` in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000064-20260519_024350/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1283) with new deterministic backfills for:
+  - `conditional_normative -> frame` (statutory-reference dense conditionals),
+  - `deontic -> temporal` (dense deontic with temporal scope signals),
+  - `frame -> deontic` (frame-heavy clauses with deontic scope evidence),
+  - `frame -> temporal` (frame-heavy clauses with temporal scope evidence).
+- Added 4 regression tests in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000064-20260519_024350/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:931) covering the above pair directions.
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py`
+- Result: `90 passed`

@@ -1,0 +1,15 @@
+Implemented a deterministic `compiler_registry` refinement focused on reducing over-dominant `frame` outcomes and tightening adaptive policy coverage for `frame` conflicts.
+
+- Added `frame->dynamic` to compiler-required adaptive ambiguity pairs and priority adaptive pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000177-20260519_141804/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:99) and [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000177-20260519_141804/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:413).
+- Strengthened frame-vs-competing-family cue balancing in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000177-20260519_141804/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:499):
+  - lowered frame soft-cap for dense frame cue clusters,
+  - treated alethic/dynamic scope as competing scope in generic-frame debias,
+  - added statutory generic-frame backfill support for `alethic` and `dynamic`,
+  - boosted alethic/dynamic logits in statutory frame-context conflicts.
+- Updated assertions for new policy semantics in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000177-20260519_141804/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:223) and [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000177-20260519_141804/tests/unit_tests/logic/modal/test_modal_codec.py:4706).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` -> `17 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k 'signal_free_pair_policy_for_frame_dynamic_adaptive_ambiguity or explicit_frame_policy_pair_ambiguities_for_evidence_margins'` -> `2 passed`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py -k 'statutory_generic_frame_competition or dynamic_share_for_frame_scope_with_dynamic_phrase or soft_caps_repeated_frame_share_for_deontic_competition or generic_frame_only_scope or deontic_force_is_present or temporal_scope_is_present or conditional_scope_is_present'` -> `13 passed`

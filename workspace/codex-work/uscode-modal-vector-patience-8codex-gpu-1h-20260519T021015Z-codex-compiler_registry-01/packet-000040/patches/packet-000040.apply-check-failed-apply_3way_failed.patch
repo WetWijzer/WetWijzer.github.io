@@ -1,0 +1,270 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index c2088fbf..b9ed6195 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -384,7 +384,10 @@ _GENERIC_FRAME_DEBIASED_LOGIT_BASE = 0.5
+ _GENERIC_FRAME_CUE_DEBIAS_FACTOR = 0.25
+ _GENERIC_FRAME_STRUCTURAL_BONUS_DEBIAS_FACTOR = 0.25
+ _GENERIC_FRAME_NORMATIVE_SCOPE_SOFT_CAP = 1.0
++_FRAME_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _DEONTIC_COMPETING_SCOPE_SOFT_CAP = 3.0
++_TEMPORAL_COMPETING_SCOPE_SOFT_CAP = 3.0
++_CONDITIONAL_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+     {
+         "duty",
+@@ -1119,16 +1122,15 @@ def _weighted_modal_family_counts(
+         resolved_signals = modal_ambiguity_signals(encoding)
+     else:
+         resolved_signals = signals
+-    if not _is_generic_frame_cue_debias_context(encoding, resolved_signals):
+-        _apply_deontic_competing_scope_soft_cap(
++    if _is_generic_frame_cue_debias_context(encoding, resolved_signals):
++        frame_family = ModalLogicFamily.FRAME.value
++        if frame_family in counts:
++            counts[frame_family] *= _GENERIC_FRAME_CUE_DEBIAS_FACTOR
++        _apply_generic_frame_normative_scope_soft_cap(
+             counts,
+             resolved_signals,
+         )
+-        return counts
+-    frame_family = ModalLogicFamily.FRAME.value
+-    if frame_family in counts:
+-        counts[frame_family] *= _GENERIC_FRAME_CUE_DEBIAS_FACTOR
+-    _apply_generic_frame_normative_scope_soft_cap(
++    _apply_frame_competing_scope_soft_cap(
+         counts,
+         resolved_signals,
+     )
+@@ -1136,6 +1138,14 @@ def _weighted_modal_family_counts(
+         counts,
+         resolved_signals,
+     )
++    _apply_temporal_competing_scope_soft_cap(
++        counts,
++        resolved_signals,
++    )
++    _apply_conditional_competing_scope_soft_cap(
++        counts,
++        resolved_signals,
++    )
+     return counts
+ 
+ 
+@@ -1229,6 +1239,90 @@ def _apply_deontic_competing_scope_soft_cap(
+     counts[deontic_family] = _DEONTIC_COMPETING_SCOPE_SOFT_CAP + math.log1p(overflow)
+ 
+ 
++def _apply_temporal_competing_scope_soft_cap(
++    counts: Dict[str, float],
++    signals: Mapping[str, bool],
++) -> None:
++    """Prevent repeated temporal cues from overwhelming deontic/conditional evidence."""
++    temporal_family = ModalLogicFamily.TEMPORAL.value
++    temporal_count = float(counts.get(temporal_family, 0.0))
++    if temporal_count <= _TEMPORAL_COMPETING_SCOPE_SOFT_CAP:
++        return
++    has_deontic_competition = (
++        bool(signals.get("has_deontic_scope"))
++        or float(counts.get(ModalLogicFamily.DEONTIC.value, 0.0)) > 0.0
++    )
++    has_conditional_competition = (
++        bool(signals.get("has_condition_or_exception_scope"))
++        or float(counts.get(ModalLogicFamily.CONDITIONAL_NORMATIVE.value, 0.0)) > 0.0
++    )
++    if not (has_deontic_competition or has_conditional_competition):
++        return
++    overflow = temporal_count - _TEMPORAL_COMPETING_SCOPE_SOFT_CAP
++    counts[temporal_family] = _TEMPORAL_COMPETING_SCOPE_SOFT_CAP + math.log1p(overflow)
++
++
++def _apply_conditional_competing_scope_soft_cap(
++    counts: Dict[str, float],
++    signals: Mapping[str, bool],
++) -> None:
++    """Prevent repeated conditional cues from overwhelming temporal/deontic evidence."""
++    conditional_family = ModalLogicFamily.CONDITIONAL_NORMATIVE.value
++    conditional_count = float(counts.get(conditional_family, 0.0))
++    if conditional_count <= _CONDITIONAL_COMPETING_SCOPE_SOFT_CAP:
++        return
++    has_temporal_competition = (
++        bool(signals.get("has_temporal_scope"))
++        or float(counts.get(ModalLogicFamily.TEMPORAL.value, 0.0)) > 0.0
++    )
++    has_deontic_competition = (
++        bool(signals.get("has_deontic_scope"))
++        or float(counts.get(ModalLogicFamily.DEONTIC.value, 0.0)) > 0.0
++    )
++    if not (has_temporal_competition or has_deontic_competition):
++        return
++    overflow = conditional_count - _CONDITIONAL_COMPETING_SCOPE_SOFT_CAP
++    counts[conditional_family] = (
++        _CONDITIONAL_COMPETING_SCOPE_SOFT_CAP + math.log1p(overflow)
++    )
++
++
++def _apply_frame_competing_scope_soft_cap(
++    counts: Dict[str, float],
++    signals: Mapping[str, bool],
++) -> None:
++    """Prevent repeated frame cues from overwhelming competing modal families."""
++    frame_family = ModalLogicFamily.FRAME.value
++    frame_count = float(counts.get(frame_family, 0.0))
++    if frame_count <= _FRAME_COMPETING_SCOPE_SOFT_CAP:
++        return
++    has_deontic_competition = (
++        bool(signals.get("has_deontic_scope"))
++        or float(counts.get(ModalLogicFamily.DEONTIC.value, 0.0)) > 0.0
++    )
++    has_temporal_competition = (
++        bool(signals.get("has_temporal_scope"))
++        or float(counts.get(ModalLogicFamily.TEMPORAL.value, 0.0)) > 0.0
++    )
++    has_conditional_competition = (
++        bool(signals.get("has_condition_or_exception_scope"))
++        or float(counts.get(ModalLogicFamily.CONDITIONAL_NORMATIVE.value, 0.0)) > 0.0
++    )
++    has_epistemic_competition = (
++        bool(signals.get("has_epistemic_cue"))
++        or float(counts.get(ModalLogicFamily.EPISTEMIC.value, 0.0)) > 0.0
++    )
++    if not (
++        has_deontic_competition
++        or has_temporal_competition
++        or has_conditional_competition
++        or has_epistemic_competition
++    ):
++        return
++    overflow = frame_count - _FRAME_COMPETING_SCOPE_SOFT_CAP
++    counts[frame_family] = _FRAME_COMPETING_SCOPE_SOFT_CAP + math.log1p(overflow)
++
++
+ def _is_generic_frame_cue_debias_context(
+     encoding: SpaCyLegalEncoding,
+     signals: Mapping[str, bool],
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index d99c5c1a..21d35a3f 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -752,6 +752,121 @@ def test_spacy_decoder_soft_caps_repeated_deontic_logits_for_conditional_competi
+     assert competing_logits["conditional_normative"] > -0.25
+ 
+ 
++def test_spacy_decoder_soft_caps_repeated_temporal_logits_for_deontic_competition() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    baseline = build_us_code_sample(
++        title="26",
++        section="9000",
++        text=(
++            "Reporting is due not later than 30 days and by January 1, 2030 and "
++            "on or after each fiscal year."
++        ),
++    )
++    competing = build_us_code_sample(
++        title="26",
++        section="9001",
++        text=(
++            "The agency shall and must and shall and must ensure reporting is due "
++            "not later than 30 days and by January 1, 2030 and on or after each "
++            "fiscal year."
++        ),
++    )
++
++    baseline_logits = codec.family_logits_for_sample(
++        baseline,
++        modal_families=("temporal", "deontic", "frame"),
++    )
++    competing_logits = codec.family_logits_for_sample(
++        competing,
++        modal_families=("temporal", "deontic", "frame"),
++    )
++
++    assert competing_logits["temporal"] < baseline_logits["temporal"]
++    assert competing_logits["deontic"] > -0.25
++
++
++def test_spacy_decoder_soft_caps_repeated_conditional_logits_for_temporal_competition() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    baseline = build_us_code_sample(
++        title="26",
++        section="9002",
++        text=(
++            "Except as provided by subsection (b), except as provided in subsection "
++            "(c), notwithstanding subsection (d), subject to the terms and "
++            "conditions, and under such terms and conditions, this authority applies."
++        ),
++    )
++    competing = build_us_code_sample(
++        title="26",
++        section="9003",
++        text=(
++            "Except as provided by subsection (b), except as provided in subsection "
++            "(c), notwithstanding subsection (d), subject to the terms and "
++            "conditions, and under such terms and conditions, this authority "
++            "applies not later than 30 days after the effective date."
++        ),
++    )
++
++    baseline_logits = codec.family_logits_for_sample(
++        baseline,
++        modal_families=("conditional_normative", "temporal", "deontic"),
++    )
++    competing_logits = codec.family_logits_for_sample(
++        competing,
++        modal_families=("conditional_normative", "temporal", "deontic"),
++    )
++
++    assert competing_logits["conditional_normative"] < baseline_logits["conditional_normative"]
++    assert competing_logits["temporal"] > -0.25
++
++
++def test_spacy_decoder_soft_caps_repeated_frame_logits_for_competing_scope() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    repeated_editorial_frame_context = " ".join(
++        [
++            (
++                "Editorial notes authority and jurisdiction are part of this "
++                "chapter and administered by the Secretary."
++            )
++            for _ in range(3)
++        ]
++    )
++    baseline = build_us_code_sample(
++        title="26",
++        section="9004",
++        text=repeated_editorial_frame_context,
++    )
++    competing = build_us_code_sample(
++        title="26",
++        section="9005",
++        text=(
++            f"{repeated_editorial_frame_context} "
++            "The Secretary shall and must provide notice."
++        ),
++    )
++
++    baseline_logits = codec.family_logits_for_sample(
++        baseline,
++        modal_families=("frame", "deontic", "temporal"),
++    )
++    competing_logits = codec.family_logits_for_sample(
++        competing,
++        modal_families=("frame", "deontic", "temporal"),
++    )
++
++    assert competing_logits["frame"] < baseline_logits["frame"]
++    assert competing_logits["deontic"] > -0.25
++
++
+ def test_spacy_encoder_extracts_conditional_terms_and_conditions_cue() -> None:
+     encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
+     encoding = encoder.encode(

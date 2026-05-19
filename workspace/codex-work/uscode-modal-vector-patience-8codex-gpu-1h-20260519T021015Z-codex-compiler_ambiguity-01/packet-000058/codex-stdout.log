@@ -1,0 +1,12 @@
+Implemented a focused `compiler_ambiguity` policy update for adaptive modal-family conflicts.
+
+- Added `alethic -> dynamic` to the signal-free adaptive ambiguity pair policy in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000058-20260519_023234/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33).
+- Updated alethic target-signal routing to include dynamic scope/cue evidence (and removed the duplicated alethic branch) in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000058-20260519_023234/ipfs_datasets_py/logic/modal/compiler.py:929).
+- Extended registry policy tests in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000058-20260519_023234/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:84).
+- Added explicit compiler ambiguity coverage for `adaptive_alethic_dynamic_outvoted_margin_low` in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000058-20260519_023234/tests/unit_tests/logic/modal/test_modal_codec.py:5252).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` passed (`10 passed`).
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_alethic_dynamic or signal_free_pair_policy_for_alethic_epistemic or signal_free_pair_policy_for_frame_deontic or signal_free_pair_policy_for_frame_temporal or signal_free_pair_policy_for_temporal_conditional or signal_free_pair_policy_for_temporal_deontic"` passed (`6 passed`).
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "adaptive and (alethic or dynamic)"` passed (`4 passed`).

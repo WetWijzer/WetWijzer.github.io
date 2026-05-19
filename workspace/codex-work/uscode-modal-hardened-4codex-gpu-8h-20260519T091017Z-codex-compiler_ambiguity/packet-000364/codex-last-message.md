@@ -1,0 +1,15 @@
+Implemented a focused compiler-ambiguity policy expansion for the requested family pairs.
+
+**Changes made**
+- Updated [`modal_registry.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000364-20260519_141449/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:140) `COMPILER_AMBIGUITY_POLICY_FAMILY_PAIRS` to include:
+  - `frame->conditional_normative`
+  - `frame->alethic`
+  - `frame->temporal`
+  - `temporal->temporal`
+  - (kept existing `frame->deontic`, `deontic->temporal`, `deontic->dynamic`)
+- Updated registry policy assertions in [`test_modal_registry.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000364-20260519_141449/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:270) to match the expanded compiler ambiguity bundle.
+- Fixed a stale expectation in [`test_modal_registry.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000364-20260519_141449/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:463) so `priority_signal_free_adaptive_ambiguity_targets("conditional_normative")` includes `conditional_normative` (consistent with current priority policy construction).
+
+**Validation run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` -> `17 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or emits_explicit_adaptive_ambiguity_for_recurrent_policy_pairs"` -> `2 passed`

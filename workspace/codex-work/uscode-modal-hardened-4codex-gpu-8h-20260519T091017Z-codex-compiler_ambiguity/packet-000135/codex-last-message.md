@@ -1,0 +1,11 @@
+Implemented a targeted compiler-ambiguity hardening fix and regression coverage.
+
+- Removed a duplicate emission path for compiled-primary self-pair adaptive ambiguities in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000135-20260519_114932/ipfs_datasets_py/logic/modal/compiler.py:967).  
+  This keeps explicit adaptive ambiguity signaling deterministic while preserving required non-self policy pairs (including `deontic->temporal`, `frame->conditional_normative`, `frame->deontic`, `frame->temporal`).
+
+- Added regression assertions in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000135-20260519_114932/tests/unit_tests/logic/modal/test_modal_codec.py:2195) to enforce single-emission behavior for compiled-primary self-pair base and explicit adaptive ambiguities.
+
+Tests run (all passed):
+
+1. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary_self_pair_ambiguity_for_low_margin or compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or explicit_ambiguity_for_required_margin_bundle_pairs"`  
+2. `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "compiled_primary_policy or deontic_self_pair"`

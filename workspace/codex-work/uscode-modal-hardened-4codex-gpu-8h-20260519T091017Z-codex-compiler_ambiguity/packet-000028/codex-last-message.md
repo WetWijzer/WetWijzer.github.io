@@ -1,0 +1,14 @@
+Implemented a narrow `modal.compiler.ambiguity` hardening for explicit adaptive ambiguity surfacing.
+
+**Changes**
+- Updated [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000028-20260519_101700/ipfs_datasets_py/logic/modal/compiler.py#L610) to backfill explicit adaptive ambiguity records even when base `adaptive_family_margin_low` metadata is missing `explicit_ambiguity_type`.
+- Added deterministic derivation in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000028-20260519_101700/ipfs_datasets_py/logic/modal/compiler.py#L660) from `adaptive_policy_pair` / candidate ids / margin direction.
+- Added regression test in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000028-20260519_101700/tests/unit_tests/logic/modal/test_modal_codec.py#L1817) for `conditional_normative->temporal` when explicit type is absent.
+- Extended recurrent priority-pair coverage in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000028-20260519_101700/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py#L317) to include `conditional_normative->temporal`.
+
+**Tests**
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "backfills_missing_explicit_adaptive_ambiguity_from_base_record or derives_missing_explicit_adaptive_ambiguity_type_from_policy_pair or does_not_duplicate_existing_explicit_adaptive_ambiguity_record"` passed.
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -k "recurrent_compiler_ambiguity_pairs"` passed.
+- Earlier focused ambiguity policy runs also passed:
+  - `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py`
+  - `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "...ambiguity-policy subset..."`

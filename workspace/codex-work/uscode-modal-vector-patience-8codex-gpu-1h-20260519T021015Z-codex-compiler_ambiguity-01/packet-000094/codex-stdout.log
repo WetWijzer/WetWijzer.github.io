@@ -1,0 +1,13 @@
+Implemented the compiler ambiguity-policy update for the `compiler_ambiguity` scope.
+
+Changes made:
+- Added `alethic->deontic` to signal-free adaptive ambiguity policy pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000094-20260519_023957/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33).
+- Added deontic signal consideration when predicted family is alethic in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000094-20260519_023957/ipfs_datasets_py/logic/modal/compiler.py:929).
+- Updated registry policy coverage/ordering tests in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000094-20260519_023957/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:84).
+- Added new adaptive ambiguity tests in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000094-20260519_023957/tests/unit_tests/logic/modal/test_modal_codec.py:4156):
+  - `deontic->deontic` self-pair low-runner-up margin explicit ambiguity
+  - `alethic->deontic` signal-free pair policy explicit ambiguity
+
+Tests run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -q` -> `10 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "alethic_deontic_adaptive_ambiguity or alethic_epistemic_adaptive_ambiguity or alethic_dynamic_adaptive_ambiguity or deontic_self_pair_adaptive_ambiguity"` -> `4 passed`

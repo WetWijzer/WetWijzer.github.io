@@ -1,0 +1,21 @@
+Implemented a deterministic modal-family refinement that targets the repeated `frame/conditional_normative/deontic/temporal` conflicts and adds missing `alethic->frame` policy coverage.
+
+Changed:
+- Added `alethic->frame` to signal-free and priority adaptive ambiguity policy pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000105-20260519_025015/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33).
+- Added alethic frame-signal routing in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000105-20260519_025015/ipfs_datasets_py/logic/modal/compiler.py:909).
+- Refined deterministic family balancing/backfill in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000105-20260519_025015/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:387):
+  - added conditional competing-scope soft cap,
+  - added strong-signal generic-frame backfill weights,
+  - allowed low-support backfill for conditional→deontic/temporal,
+  - added deontic-dense statutory frame backfill.
+
+Tests added/updated:
+- [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000105-20260519_025015/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:84)
+- [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000105-20260519_025015/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:931)
+- [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000105-20260519_025015/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:651)
+
+Validation run:
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (10 passed)
+2. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` (67 passed)
+3. `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py` (22 passed)
+4. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "caps_repeated_generic_frame_cues_against_deontic_scope or caps_repeated_generic_frame_cues_against_conditional_scope or treats_as_provided_in_as_conditional_scope_ambiguity_signal or treats_court_as_frame_scope_ambiguity_signal or treats_period_beginning_with_calendar_date_as_temporal_scope_signal or treats_prohibition_heading_as_adaptive_deontic_signal"` (6 passed)

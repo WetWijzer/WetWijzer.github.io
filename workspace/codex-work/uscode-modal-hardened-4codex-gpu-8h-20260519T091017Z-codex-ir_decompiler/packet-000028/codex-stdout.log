@@ -1,0 +1,14 @@
+Implemented a narrow IR/decompiler slot refinement for suffix-kind topology and citation/source alignment.
+
+- Added coarse suffix-kind slots at section parse time in [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000028-20260519_091247/ipfs_datasets_py/logic/modal/decompiler.py:4312) and [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000028-20260519_091247/ipfs_datasets_py/logic/modal/codec.py:4015):
+  `*_primary_suffix_kind_coarse`, `*_terminal_suffix_kind_coarse`, `*_primary_terminal_suffix_kind_pair`, `*_primary_terminal_suffix_kind_match`.
+- Added provenance alignment slots comparing citation vs source-id suffix kinds in [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000028-20260519_091247/ipfs_datasets_py/logic/modal/decompiler.py:1987) and [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000028-20260519_091247/ipfs_datasets_py/logic/modal/codec.py:2830):
+  `citation_source_id_section_primary_suffix_kind_*` and `citation_source_id_section_terminal_suffix_kind_*`.
+- Added focused regression fixtures/tests for the cited residual samples (`12107.`, `198a`, `1642e`, `450a-1`) in [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000028-20260519_091247/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py:745) and [test_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-ir_decompiler/worktrees/agent-codex-ir_decompiler-packet-000028-20260519_091247/ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py:5045).
+
+Validation run:
+
+1. `IPFS_DATASETS_PY_MINIMAL_IMPORTS=1 pytest ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py -k suffix_kind_coarse_and_alignment_slots -q`  
+Passed: `2 passed`.
+2. `IPFS_DATASETS_PY_MINIMAL_IMPORTS=1 pytest ipfs_datasets_py/logic/modal/test_ir_decompiler_slots.py -k "suffix_kind_coarse_and_alignment_slots or section_style_slots or citation_source_id_alignment_slots" -q`  
+Passed: `7 passed`.

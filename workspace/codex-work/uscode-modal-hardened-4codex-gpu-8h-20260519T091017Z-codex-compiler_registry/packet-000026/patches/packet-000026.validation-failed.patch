@@ -1,0 +1,345 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 80e6ef87..b1050aae 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -603,8 +603,12 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "except to the extent",
+                     "to the extent provided",
+                     "to the extent that",
++                    "to the extent necessary",
+                     "in the event that",
+                     "in the case of",
++                    "as may be necessary",
++                    "as may be necessary to",
++                    "as necessary to",
+                     "provided, however, that",
+                     "only if",
+                     "for purposes of",
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index b65e4c8a..421fa907 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -31,6 +31,9 @@ _CLAUSE_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_'-]*")
+ _CONDITION_PREFIXES = ("provided that", "subject to", "if", "when", "before", "upon")
+ _EXCEPTION_PREFIXES = ("except that", "except as", "unless", "except")
+ _CONDITIONAL_SCOPE_PHRASES = (
++    "as may be necessary",
++    "as may be necessary to",
++    "as necessary to",
+     "as provided by",
+     "except as provided by",
+     "in the case of",
+@@ -49,6 +52,7 @@ _CONDITIONAL_SCOPE_PHRASES = (
+     "subject, however, to",
+     "subject however to",
+     "subject to the terms and conditions",
++    "to the extent necessary",
+ )
+ _STATUTORY_SCOPE_REFERENCE_PHRASES = (
+     "as provided by",
+@@ -425,6 +429,8 @@ _CONDITIONAL_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_DYNAMIC_SCOPE_BACKFILL_TRIGGER = 2.0
+ _DEONTIC_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 3.0
+ _DEONTIC_DYNAMIC_SCOPE_BACKFILL_TRIGGER = 3.0
++_DEONTIC_FRAME_SCOPE_BACKFILL_TRIGGER = 1.0
++_DEONTIC_TEMPORAL_STRONG_SCOPE_BACKFILL_TRIGGER = 1.0
+ _CONDITIONAL_FRAME_SCOPE_BACKFILL_TRIGGER = 2.0
+ _FRAME_DEONTIC_SCOPE_BACKFILL_TRIGGER = 0.35
+ _FRAME_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 0.35
+@@ -436,6 +442,8 @@ _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_TRIGGER = 0.2
+ _TEMPORAL_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 3.0
+ _TEMPORAL_FRAME_SCOPE_BACKFILL_TRIGGER = 3.0
+ _TEMPORAL_EPISTEMIC_SCOPE_BACKFILL_TRIGGER = 3.0
++_TEMPORAL_DEONTIC_STRONG_SCOPE_BACKFILL_TRIGGER = 1.0
++_ALETHIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 1.0
+ _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.35
+ _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.18
+ _STATUTORY_FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.35
+@@ -447,6 +455,7 @@ _STATUTORY_GENERIC_FRAME_EPISTEMIC_SCOPE_MAX = 0.45
+ _STATUTORY_GENERIC_FRAME_STRONG_TEMPORAL_SCOPE_MAX = 0.72
+ _TEMPORAL_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
+ _TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX = 0.35
++_FRAME_STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_RATIO = 0.4
+ _DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO = 0.2
+ _DEONTIC_COMPETING_SCOPE_BACKFILL_MAX = 0.35
+ _STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX = 0.55
+@@ -1593,6 +1602,20 @@ def _apply_competing_scope_backfill(
+         or bool(signals.get("has_statutory_scope_reference"))
+         or bool(signals.get("has_frame_cue"))
+     )
++    has_structural_frame_scope_signal = (
++        bool(signals.get("has_frame_scope_phrase"))
++        or bool(signals.get("has_frame_editorial_scope_phrase"))
++        or bool(signals.get("has_statutory_scope_reference"))
++    )
++    has_strong_temporal_scope = (
++        bool(signals.get("has_calendar_date_scope"))
++        or bool(signals.get("has_temporal_scope_phrase"))
++        or bool(signals.get("has_temporal_within_scope"))
++    )
++    has_strong_deontic_scope = (
++        bool(signals.get("has_deontic_scope_phrase"))
++        or bool(signals.get("has_deontic_cue"))
++    )
+     if (
+         deontic_count >= _DEONTIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER
+         and conditional_count <= _COMPETING_SCOPE_BACKFILL_WEIGHT
+@@ -1675,10 +1698,30 @@ def _apply_competing_scope_backfill(
+             float(counts.get(temporal_family, 0.0)),
+             temporal_backfill,
+         )
++    elif (
++        deontic_count >= _DEONTIC_TEMPORAL_STRONG_SCOPE_BACKFILL_TRIGGER
++        and temporal_count <= 0.0
++        and bool(signals.get("has_temporal_scope"))
++        and has_strong_temporal_scope
++    ):
++        temporal_backfill = max(
++            _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            _scaled_competing_scope_backfill(
++                source_count=deontic_count,
++                ratio=_DEONTIC_COMPETING_SCOPE_BACKFILL_RATIO,
++                minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++                maximum=_DEONTIC_COMPETING_SCOPE_BACKFILL_MAX,
++            ),
++        )
++        counts[temporal_family] = max(
++            float(counts.get(temporal_family, 0.0)),
++            temporal_backfill,
++        )
+     if (
+-        deontic_count >= _DEONTIC_DYNAMIC_SCOPE_BACKFILL_TRIGGER
++        deontic_count >= _DEONTIC_FRAME_SCOPE_BACKFILL_TRIGGER
+         and frame_count <= _COMPETING_SCOPE_BACKFILL_WEIGHT
+         and has_frame_scope_signal
++        and has_structural_frame_scope_signal
+     ):
+         frame_backfill = _COMPETING_SCOPE_BACKFILL_WEIGHT
+         if (
+@@ -1732,14 +1775,16 @@ def _apply_competing_scope_backfill(
+         and bool(signals.get("has_temporal_scope"))
+     ):
+         temporal_backfill = _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT
+-        if (
+-            bool(signals.get("has_calendar_date_scope"))
+-            or bool(signals.get("has_temporal_scope_phrase"))
+-            or bool(signals.get("has_temporal_within_scope"))
+-        ):
++        if has_strong_temporal_scope:
+             temporal_backfill = max(
+                 temporal_backfill,
+                 _GENERIC_FRAME_STRONG_TEMPORAL_SCOPE_BACKFILL_WEIGHT,
++                _scaled_competing_scope_backfill(
++                    source_count=frame_count,
++                    ratio=_FRAME_STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_RATIO,
++                    minimum=_GENERIC_FRAME_STRONG_TEMPORAL_SCOPE_BACKFILL_WEIGHT,
++                    maximum=_STRONG_TEMPORAL_COMPETING_SCOPE_BACKFILL_MAX,
++                ),
+             )
+         counts[temporal_family] = max(
+             float(counts.get(temporal_family, 0.0)),
+@@ -1850,6 +1895,39 @@ def _apply_competing_scope_backfill(
+             float(counts.get(deontic_family, 0.0)),
+             deontic_backfill,
+         )
++    elif (
++        temporal_count >= _TEMPORAL_DEONTIC_STRONG_SCOPE_BACKFILL_TRIGGER
++        and deontic_count <= 0.0
++        and bool(signals.get("has_deontic_scope"))
++        and has_strong_deontic_scope
++    ):
++        deontic_backfill = max(
++            _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++            _scaled_competing_scope_backfill(
++                source_count=temporal_count,
++                ratio=_TEMPORAL_COMPETING_SCOPE_BACKFILL_RATIO,
++                minimum=_FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++                maximum=_DEONTIC_COMPETING_SCOPE_BACKFILL_MAX,
++            ),
++        )
++        counts[deontic_family] = max(
++            float(counts.get(deontic_family, 0.0)),
++            deontic_backfill,
++        )
++    if (
++        alethic_count >= _ALETHIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER
++        and conditional_count <= 0.0
++        and bool(signals.get("has_condition_or_exception_scope"))
++        and (
++            bool(signals.get("has_statutory_scope_reference"))
++            or bool(signals.get("has_conditional_scope_phrase"))
++            or bool(signals.get("has_conditional_scope_token"))
++        )
++    ):
++        counts[conditional_family] = max(
++            float(counts.get(conditional_family, 0.0)),
++            _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        )
+     if (
+         temporal_count >= _TEMPORAL_CONDITIONAL_SCOPE_BACKFILL_TRIGGER
+         and conditional_count <= 0.0
+@@ -2024,12 +2102,19 @@ def _scope_signal_family_logit_boosts(signals: Mapping[str, bool]) -> Dict[str,
+     temporal_bonus = 0.0
+     if bool(signals.get("has_temporal_scope")):
+         temporal_bonus += 1.2
+-    if (
++    has_strong_temporal_scope = (
+         bool(signals.get("has_calendar_date_scope"))
+         or bool(signals.get("has_temporal_scope_phrase"))
+         or bool(signals.get("has_temporal_within_scope"))
+-    ):
++    )
++    if has_strong_temporal_scope:
+         temporal_bonus += 0.3
++    if (
++        has_strong_temporal_scope
++        and bool(signals.get("has_frame_context"))
++        and not bool(signals.get("has_frame_cue"))
++    ):
++        temporal_bonus += 0.6
+     if temporal_bonus > 0.0:
+         boosts[ModalLogicFamily.TEMPORAL.value] = temporal_bonus
+     if bool(signals.get("has_epistemic_scope")):
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index e9d28d50..9ac04602 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -3116,6 +3116,138 @@ def test_spacy_codec_strengthens_temporal_share_for_dense_deontic_scope_statutor
+     assert temporal_share > 0.1
+ 
+ 
++def test_spacy_codec_detects_conditional_necessity_cues_with_alethic_overlap() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="28",
++        section="376",
++        text=(
++            "This authority, as may be necessary to carry out duties under this section, "
++            "shall be exercised by the Secretary."
++        ),
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert signals["has_condition_or_exception_scope"] is True
++    assert any(
++        cue.family == "conditional_normative"
++        and cue.cue.lower() in {"as may be necessary", "as may be necessary to"}
++        for cue in encoding.cues
++    )
++    conditional_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "conditional_normative"
++    )
++    alethic_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "alethic"
++    )
++    assert conditional_share > 0.0
++    assert alethic_share > 0.0
++
++
++def test_spacy_codec_backfills_frame_share_for_deontic_scope_with_structural_frame_phrase() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="10",
++        section="2350p",
++        text="The Secretary shall carry out duties in this former section.",
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert not any(cue.family == "frame" for cue in encoding.cues)
++    assert signals["has_frame_scope_phrase"] is True
++    assert signals["has_deontic_scope"] is True
++    frame_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "frame"
++    )
++    assert frame_share > 0.0
++
++
++def test_spacy_codec_backfills_temporal_share_for_single_deontic_deadline_date_scope() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="20",
++        section="9706",
++        text="The Secretary shall submit the report on June 1, 2030.",
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert not any(cue.family == "temporal" for cue in encoding.cues)
++    assert signals["has_deontic_scope"] is True
++    assert signals["has_temporal_scope"] is True
++    temporal_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "temporal"
++    )
++    assert temporal_share > 0.0
++
++
++def test_spacy_codec_backfills_deontic_share_for_temporal_scope_with_deontic_phrase() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="29",
++        section="1085b",
++        text="Within 30 days after review, liability for noncompliance applies.",
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert not any(cue.family == "deontic" for cue in encoding.cues)
++    assert signals["has_temporal_scope"] is True
++    assert signals["has_deontic_scope"] is True
++    assert signals["has_deontic_scope_phrase"] is True
++    deontic_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "deontic"
++    )
++    assert deontic_share > 0.0
++
++
++def test_spacy_decoder_boosts_temporal_logits_for_date_heavy_frame_scope_without_frame_cues() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="33",
++        section="466",
++        text="Section 466 was repealed on June 12, 1960, and effective on January 1, 1961.",
++    )
++
++    logits = codec.family_logits_for_sample(
++        sample,
++        modal_families=("frame", "temporal", "hybrid"),
++    )
++
++    assert logits["temporal"] > logits["frame"]
++
++
+ def test_supervisor_with_spacy_codec_improves_loss_and_cosine() -> None:
+     sample = build_us_code_sample(
+         title="5",

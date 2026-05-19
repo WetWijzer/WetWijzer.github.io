@@ -1,0 +1,10 @@
+Implemented a deterministic compiler ambiguity-policy enhancement so compiled-primary mismatches now also emit explicit self-pair adaptive ambiguity (`family->family`) when the compiled family is low-margin against runner-up evidence.
+
+- Added compiled-primary self-pair ambiguity emission in [`compiler.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000068-20260519_081029/ipfs_datasets_py/logic/modal/compiler.py:888) and new helper [`_compiled_primary_family_self_adaptive_pair_ambiguities`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000068-20260519_081029/ipfs_datasets_py/logic/modal/compiler.py:1144).
+- Added regression test for this path in [`test_modal_codec.py`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000068-20260519_081029/tests/unit_tests/logic/modal/test_modal_codec.py:2013).
+
+Validation run:
+
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_family_as_adaptive_ambiguity_signal or compiled_primary_self_pair_ambiguity_for_low_margin or signal_free_pair_policy_for_temporal_deontic_adaptive_ambiguity"` passed (`3 passed`).
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_frame_temporal_adaptive_ambiguity or emits_explicit_frame_policy_pair_ambiguities_for_evidence_margins or signal_free_pair_policy_for_deontic_temporal_adaptive_ambiguity or signal_free_pair_policy_for_deontic_conditional_adaptive_ambiguity or treats_zero_margin_deontic_self_priority_pair_as_outvoted_adaptive_ambiguity"` passed (`4 passed`).
+- `python -m py_compile ipfs_datasets_py/logic/modal/compiler.py tests/unit_tests/logic/modal/test_modal_codec.py` passed.

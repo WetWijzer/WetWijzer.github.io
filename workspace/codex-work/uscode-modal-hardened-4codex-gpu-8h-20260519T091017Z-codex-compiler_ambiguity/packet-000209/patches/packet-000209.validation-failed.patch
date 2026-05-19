@@ -1,0 +1,176 @@
+diff --git a/ipfs_datasets_py/logic/modal/compiler.py b/ipfs_datasets_py/logic/modal/compiler.py
+index 295983e3..18d1dfb6 100644
+--- a/ipfs_datasets_py/logic/modal/compiler.py
++++ b/ipfs_datasets_py/logic/modal/compiler.py
+@@ -869,14 +869,7 @@ class DeterministicModalCompiler:
+             )
+             predicted_share_display = round(predicted_share, 6)
+             target_share_display = round(target_share, 6)
+-            family_margin_display = (
+-                round(family_margin, 6)
+-                if is_self_pair
+-                else round(
+-                    target_share_display - predicted_share_display,
+-                    6,
+-                )
+-            )
++            family_margin_display = round(family_margin, 6)
+             candidate_ids = (
+                 [predicted_family]
+                 if is_self_pair
+@@ -1304,14 +1297,7 @@ class DeterministicModalCompiler:
+             if runner_up_share is not None
+             else None
+         )
+-        family_margin_display = (
+-            round(family_margin, 6)
+-            if is_self_pair
+-            else round(
+-                primary_share_display - competing_share_display,
+-                6,
+-            )
+-        )
++        family_margin_display = round(family_margin, 6)
+         candidate_ids = (
+             [compiled_primary_family]
+             if is_self_pair
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index b672b655..88dac7b1 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -8,6 +8,8 @@ os.environ.setdefault("IPFS_DATASETS_PY_MINIMAL_IMPORTS", "1")
+ os.environ.setdefault("IPFS_DATASETS_AUTO_INSTALL", "false")
+ os.environ.setdefault("IPFS_KIT_AUTO_INSTALL_DEPS", "0")
+ 
++import pytest
++
+ from ipfs_datasets_py.logic.modal.compiler import (  # noqa: E402
+     DeterministicModalCompiler,
+     ModalCompilerConfig,
+@@ -61,6 +63,126 @@ def _has_adaptive_explicit_pair_from_source(
+     )
+ 
+ 
++@pytest.mark.parametrize(
++    (
++        "predicted_family",
++        "target_family",
++        "expected_margin",
++        "expected_priority",
++    ),
++    (
++        (
++            ModalLogicFamily.ALETHIC.value,
++            ModalLogicFamily.TEMPORAL.value,
++            -0.997947612652,
++            1.147947612652,
++        ),
++        (
++            ModalLogicFamily.FRAME.value,
++            ModalLogicFamily.TEMPORAL.value,
++            -0.991738583671,
++            1.141738583671,
++        ),
++        (
++            ModalLogicFamily.DEONTIC.value,
++            ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++            -0.165277862425,
++            0.315277862425,
++        ),
++        (
++            ModalLogicFamily.FRAME.value,
++            ModalLogicFamily.DEONTIC.value,
++            -0.997156465148,
++            1.147156465148,
++        ),
++        (
++            ModalLogicFamily.DEONTIC.value,
++            ModalLogicFamily.TEMPORAL.value,
++            -0.527232618908,
++            0.677232618908,
++        ),
++        (
++            ModalLogicFamily.TEMPORAL.value,
++            ModalLogicFamily.FRAME.value,
++            -0.481314124117,
++            0.631314124117,
++        ),
++    ),
++)
++def test_compiler_emits_explicit_compiler_required_pairs_for_autoencoder_margins(
++    predicted_family: str,
++    target_family: str,
++    expected_margin: float,
++    expected_priority: float,
++) -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    predicted_share = abs(float(expected_margin))
++    runner_up_family = (
++        ModalLogicFamily.EPISTEMIC.value
++        if ModalLogicFamily.EPISTEMIC.value not in {predicted_family, target_family}
++        else ModalLogicFamily.DYNAMIC.value
++    )
++    runner_up_share = max(0.0, predicted_share - 0.05)
++
++    def _mock_adaptive_family_ranking_from_logits(_encoding):
++        return [
++            {
++                "family": predicted_family,
++                "count": 0,
++                "logit": 1.6,
++                "share_raw": predicted_share,
++                "share": predicted_share,
++                "source": "logit_softmax_fallback",
++            },
++            {
++                "family": runner_up_family,
++                "count": 0,
++                "logit": 1.2,
++                "share_raw": runner_up_share,
++                "share": runner_up_share,
++                "source": "logit_softmax_fallback",
++            },
++        ]
++
++    compiler._adaptive_family_ranking_from_logits = _mock_adaptive_family_ranking_from_logits  # type: ignore[method-assign]
++
++    result = compiler.compile(
++        "The Secretary shall act.",
++        document_id=f"compiler-ambiguity-autoencoder-{predicted_family}-{target_family}",
++    )
++
++    explicit_matches = [
++        ambiguity
++        for ambiguity in result.ambiguities
++        if ambiguity.ambiguity_type.startswith("adaptive_")
++        and ambiguity.ambiguity_type != "adaptive_family_margin_low"
++        and ambiguity.metadata.get("adaptive_predicted_family_source")
++        == "adaptive_logits"
++        and ambiguity.metadata.get("predicted_family") == predicted_family
++        and ambiguity.metadata.get("target_family") == target_family
++    ]
++    assert explicit_matches
++
++    explicit_ambiguity = explicit_matches[0]
++    assert explicit_ambiguity.severity == "requires_rule"
++    assert explicit_ambiguity.metadata.get("adaptive_policy_pair") == (
++        f"{predicted_family}->{target_family}"
++    )
++    assert explicit_ambiguity.metadata.get("is_compiler_required_policy_pair") is True
++    assert explicit_ambiguity.metadata.get("family_margin_raw") == pytest.approx(
++        expected_margin
++    )
++    assert explicit_ambiguity.metadata.get("family_margin") == pytest.approx(
++        round(expected_margin, 6)
++    )
++    assert explicit_ambiguity.metadata.get("priority") == pytest.approx(
++        expected_priority
++    )
++
++
+ def test_parser_recovers_article_prefixed_commission_heading() -> None:
+     parser = LegalModalParser()
+ 

@@ -1,59 +1,61 @@
 {
   "codex_apply_mode": "apply_to_main",
   "codex_bundle_mode": "vector",
-  "codex_claimed_total": 0,
+  "codex_claimed_total": 24,
   "codex_commit_mode": "commit_applied",
   "codex_exec_mode": "codex_cli",
-  "codex_execution_count": 0,
-  "codex_execution_failure_count": 0,
-  "codex_main_apply_count": 0,
-  "codex_main_apply_failure_count": 0,
-  "codex_main_apply_repair_count": 0,
+  "codex_execution_count": 9,
+  "codex_execution_failure_count": 1,
+  "codex_main_apply_count": 4,
+  "codex_main_apply_failure_count": 4,
+  "codex_main_apply_repair_count": 2,
   "codex_merge_repair_attempts": 1,
   "codex_merge_repair_mode": "apply_3way",
-  "codex_packet_count": 0,
-  "codex_patch_count": 0,
+  "codex_packet_count": 9,
+  "codex_patch_count": 4,
   "codex_program_synthesis_execution_mode": "codex_cli_executor",
   "codex_scope": "compiler_registry",
   "codex_task_embeddings_provider": "local_adapter",
   "codex_vector_index_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder.codex-task-vectors.json",
   "codex_vector_min_similarity": 0.55,
-  "codex_worktree_count": 0,
-  "cycles": 18,
-  "elapsed_seconds": 92.499,
-  "final": false,
+  "codex_worktree_count": 9,
+  "cycles": 137,
+  "elapsed_seconds": 4492.072,
+  "final": true,
+  "finished_at": "2026-05-19T00:47:56+00:00",
   "latest_codex_vector_claim_report": {
     "candidate_count": 0,
     "mode": "vector",
     "selected_count": 0
   },
   "latest_queue_counts": {
-    "claimed": 4,
-    "completed": 4,
-    "failed_validation": 8,
-    "pending": 8
+    "completed": 186,
+    "failed_validation": 510,
+    "pending": 470
   },
   "latest_role_queue_counts": {
     "autoencoder_sgd": {
-      "completed": 4,
-      "failed_validation": 8,
-      "pending": 8
+      "completed": 136,
+      "failed_validation": 482,
+      "pending": 470
     },
     "program_synthesis": {
-      "claimed": 4
+      "completed": 50,
+      "failed_validation": 28
     }
   },
-  "latest_stop_reason": "waiting_for_program_synthesis_todos",
+  "latest_stop_reason": "signal_15",
   "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02.jsonl",
   "loop_role": "codex",
-  "program_synthesis_claimed": 4,
-  "program_synthesis_completed": 0,
+  "program_synthesis_claimed": 0,
+  "program_synthesis_completed": 50,
   "program_synthesis_pending": 0,
   "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder.jsonl",
   "queue_run_id": "uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder",
   "run_id": "uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02",
   "started_at": "2026-05-18T23:33:04+00:00",
-  "updated_at": "2026-05-18T23:34:36+00:00",
+  "stopped_by_signal": 15,
+  "updated_at": "2026-05-19T00:47:56+00:00",
   "work_dir": "/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02",
   "worker_id": "codex-compiler_registry-02"
 }

@@ -1,0 +1,10 @@
+Expanded the `compiler_ambiguity` policy bundle so the compiler now tags additional low-margin adaptive pairs as explicit bundle ambiguities.
+
+Changed:
+- Added policy pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000365-20260519_142102/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L140): `deontic->deontic`, `frame->dynamic`, `alethic->frame`, `conditional_normative->frame`, `temporal->conditional_normative` (plus existing pairs retained).
+- Updated registry bundle expectations and helper assertions in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000365-20260519_142102/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py#L270).
+- Added metadata assertions in targeted modal compiler tests so these pairs now must carry `is_compiler_ambiguity_bundle_pair=True` and `ambiguity_policy_bundle=\"compiler_ambiguity\"` in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000365-20260519_142102/tests/unit_tests/logic/modal/test_modal_codec.py#L2228).
+
+Tests run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (17 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary_self_pair_ambiguity_for_low_margin or signal_free_pair_policy_for_temporal_conditional_adaptive_ambiguity or signal_free_pair_policy_for_frame_dynamic_adaptive_ambiguity or signal_free_pair_policy_for_conditional_frame_adaptive_ambiguity or signal_free_pair_policy_for_alethic_frame_adaptive_ambiguity"` (5 passed)

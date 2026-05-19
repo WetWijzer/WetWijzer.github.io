@@ -1,0 +1,65 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 8d067a2b..9c82ab21 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -178,6 +178,10 @@ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...
+         ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+         ModalLogicFamily.FRAME.value,
+     ),
++    (
++        ModalLogicFamily.TEMPORAL.value,
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++    ),
+     (
+         ModalLogicFamily.TEMPORAL.value,
+         ModalLogicFamily.DEONTIC.value,
+@@ -202,6 +206,10 @@ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...
+         ModalLogicFamily.FRAME.value,
+         ModalLogicFamily.TEMPORAL.value,
+     ),
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.FRAME.value,
++    ),
+ )
+ 
+ 
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index 00c6069b..8059c51c 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -211,6 +211,10 @@ def test_priority_signal_free_adaptive_ambiguity_pair_policy_is_directional() ->
+         "conditional_normative",
+         "frame",
+     )
++    assert is_priority_signal_free_adaptive_ambiguity_pair(
++        "temporal",
++        "conditional_normative",
++    )
+     assert is_priority_signal_free_adaptive_ambiguity_pair("temporal", "deontic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("temporal", "frame")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("hybrid", "frame")
+@@ -220,6 +224,7 @@ def test_priority_signal_free_adaptive_ambiguity_pair_policy_is_directional() ->
+     )
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "deontic")
+     assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "temporal")
++    assert is_priority_signal_free_adaptive_ambiguity_pair("frame", "frame")
+     assert (
+         is_priority_signal_free_adaptive_ambiguity_pair("epistemic", "deontic")
+         is False
+@@ -233,6 +238,7 @@ def test_priority_signal_free_adaptive_targets_are_ordered_directional_subsets()
+         "frame",
+     )
+     assert priority_signal_free_adaptive_ambiguity_targets("temporal") == (
++        "conditional_normative",
+         "deontic",
+         "frame",
+     )
+@@ -240,6 +246,7 @@ def test_priority_signal_free_adaptive_targets_are_ordered_directional_subsets()
+         "conditional_normative",
+         "deontic",
+         "temporal",
++        "frame",
+     )
+     assert priority_signal_free_adaptive_ambiguity_targets("deontic") == (
+         "conditional_normative",

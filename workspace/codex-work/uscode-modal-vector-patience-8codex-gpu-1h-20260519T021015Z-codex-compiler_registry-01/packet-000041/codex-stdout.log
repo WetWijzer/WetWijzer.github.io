@@ -1,0 +1,19 @@
+Implemented a narrow deterministic cue-balance update to reduce `conditional_normative`/`frame` overprediction against `deontic` and `temporal`.
+
+**Code changes**
+- Updated competing-scope handling in [`spacy_modal_codec.py:1193`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000041-20260519_023328/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1193):
+  - Frame soft-cap now applies for temporal competition too (not only deontic/conditional).
+  - Broadened conditional→deontic backfill gating to allow deontic scope phrases (not only statutory-reference phrases).
+  - Added new conditional→temporal backfill path when temporal scope is present but temporal cue count is zero.
+  - Broadened temporal→deontic backfill gating similarly.
+- Added new trigger constant in [`spacy_modal_codec.py:393`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000041-20260519_023328/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:393).
+
+**Tests added**
+- [`test_spacy_modal_codec.py:839`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000041-20260519_023328/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:839): repeated frame cues are soft-capped under temporal competition.
+- [`test_spacy_modal_codec.py:874`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000041-20260519_023328/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:874): conditional-heavy text backfills deontic share from deontic scope phrase.
+- [`test_spacy_modal_codec.py:903`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000041-20260519_023328/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:903): conditional-heavy text backfills temporal share from temporal scope phrase.
+
+**Validation run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` → 65 passed.
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` → 10 passed.
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "adaptive_family_margin"` → 1 passed.

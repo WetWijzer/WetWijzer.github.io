@@ -1,33 +1,42 @@
 {
+  "applied_todo_ids": 136,
   "autoencoder_compute_backend": "torch_cuda",
   "autoencoder_compute_device": "cuda",
   "autoencoder_compute_device_request": "cuda",
-  "best_validation_ce": 1.5339453542116392,
+  "best_validation_ce": 0.7554021734638879,
   "best_validation_cosine": 0.53058441910441,
-  "best_validation_ir_ce": 1.61852125,
-  "best_validation_ir_cosine": 0.378560474,
-  "best_validation_ir_reconstruction": 0.301631,
+  "best_validation_ir_ce": 0.634708844,
+  "best_validation_ir_cosine": 0.430966008,
+  "best_validation_ir_reconstruction": 0.237291547,
   "best_validation_ir_text_reconstruction": 0.0,
-  "best_validation_reconstruction": 0.2749577185017516,
+  "best_validation_reconstruction": 0.21437435690328666,
   "codex_program_synthesis_execution_mode": "queued_for_external_codex_worker",
-  "cycles": 9,
+  "cycles": 66,
   "dataset_id": "justicedao/ipfs_uscode",
-  "final": false,
+  "decoded_embedding_entries": 93,
+  "elapsed_seconds": 3636.13,
+  "family_logit_entries": 0,
+  "feature_embedding_weight_entries": 122018,
+  "feature_family_logit_entries": 0,
+  "final": true,
+  "finished_at": "2026-05-19T00:33:30+00:00",
   "latest_queue_counts": {
-    "claimed": 6,
-    "completed": 25,
-    "failed_validation": 71,
-    "pending": 77
+    "claimed": 4,
+    "completed": 182,
+    "failed_validation": 508,
+    "pending": 472
   },
   "latest_role_queue_counts": {
     "autoencoder_sgd": {
-      "completed": 25,
-      "failed_validation": 71,
-      "pending": 68
+      "completed": 136,
+      "failed_validation": 482,
+      "pending": 470
     },
     "program_synthesis": {
-      "claimed": 6,
-      "pending": 9
+      "claimed": 4,
+      "completed": 46,
+      "failed_validation": 26,
+      "pending": 2
     }
   },
   "latest_stop_reason": "max_iterations",
@@ -36,11 +45,11 @@
   "loop_role": "autoencoder",
   "metric_failures": 0,
   "optimizer_policy": "autoencoder_sgd_with_codex_program_synthesis_backlog",
-  "program_synthesis_claimed": 6,
-  "program_synthesis_completed": 0,
-  "program_synthesis_pending": 9,
+  "program_synthesis_claimed": 4,
+  "program_synthesis_completed": 46,
+  "program_synthesis_pending": 2,
   "program_synthesis_pending_cap": 512,
-  "program_synthesis_seeded": 15,
+  "program_synthesis_seeded": 78,
   "program_synthesis_semantic_deduped": 0,
   "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder.jsonl",
   "queue_run_id": "uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder",
@@ -50,8 +59,8 @@
   "state_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-autoencoder.state.json",
   "test_failures": 0,
   "train_ce_improved_cycles": 0,
-  "train_cosine_improved_cycles": 7,
-  "updated_at": "2026-05-18T23:38:42+00:00",
+  "train_cosine_improved_cycles": 37,
+  "updated_at": "2026-05-19T00:33:30+00:00",
   "validation_ce_improved_cycles": 0,
-  "validation_cosine_improved_cycles": 7
+  "validation_cosine_improved_cycles": 37
 }

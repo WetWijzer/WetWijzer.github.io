@@ -1,0 +1,19 @@
+Implemented a narrow deterministic cue-rule refinement for `frame -> conditional_normative` and `frame -> temporal` conflicts by extending scope-signal lexicon used in modal-family debiasing.
+
+### Changes made
+- Added conditional scope phrase variants so frame cues don’t dominate when text uses conditional scaffolding like `subject only to`:
+  - [spacy_modal_codec.py:33](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000047-20260519_002603/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:33)
+- Added temporal pendency markers (`pending`, `while pending`, `during the pendency of`) to temporal scope detection so generic frame cues are debiased in temporal contexts:
+  - [spacy_modal_codec.py:91](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000047-20260519_002603/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:91)
+  - [spacy_modal_codec.py:119](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000047-20260519_002603/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:119)
+
+### Tests added
+- Added focused unit tests proving the new cues flip family logits away from frame when appropriate:
+  - [test_spacy_modal_codec.py:482](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000047-20260519_002603/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:482)
+  - [test_spacy_modal_codec.py:504](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000047-20260519_002603/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:504)
+
+### Verification run
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py -k "subject_only_to_scope or while_pending_scope or debiases_generic_frame_logits_when_conditional_scope_is_present or debiases_generic_frame_logits_when_temporal_scope_is_present"`  
+  - Result: 4 passed
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_frame_conditional_adaptive_ambiguity or signal_free_pair_policy_for_frame_temporal_adaptive_ambiguity or conditional_scope_family_outvoted or temporal_scope_family_outvoted"`  
+  - Result: 2 passed

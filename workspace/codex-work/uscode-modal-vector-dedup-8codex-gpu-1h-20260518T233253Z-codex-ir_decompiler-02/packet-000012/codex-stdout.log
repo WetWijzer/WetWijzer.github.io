@@ -1,0 +1,15 @@
+Implemented a deterministic IR/decompiler slot refinement for `modal.ir_decompiler` by adding compact citation↔source-id alignment profile slots and mirroring them in triple emission.
+
+- Updated [decompiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-ir_decompiler-02/worktrees/agent-codex-ir_decompiler-02-packet-000012-20260518_233406/ipfs_datasets_py/logic/modal/decompiler.py:2198) to emit:
+  - `citation_source_id_alignment_raw_relation`
+  - `citation_source_id_alignment_punctuation_relation`
+  - `citation_source_id_alignment_profile`
+  - plus typed identifier expansions for the profile.
+- Updated [codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-ir_decompiler-02/worktrees/agent-codex-ir_decompiler-02-packet-000012-20260518_233406/ipfs_datasets_py/logic/modal/codec.py:3039) with the same logic so `modal_ir_to_flogic_triples` stays slot-parity consistent.
+- Added a regression test for the cited TODO cluster sections (`49/47126.`, `12/639`, `22/127`, `10/10504`) in [test_modal_ir_decompiler_slots.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-ir_decompiler-02/worktrees/agent-codex-ir_decompiler-02-packet-000012-20260518_233406/tests/unit/optimizers/logic_theorem_optimizer/test_modal_ir_decompiler_slots.py:176).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_ir_decompiler_slots.py` (12 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "expand_alphanumeric_citation_section_slots or surface_uscode_source_id_slots"` (2 passed)
+- `python -m py_compile ipfs_datasets_py/logic/modal/decompiler.py ipfs_datasets_py/logic/modal/codec.py tests/unit/optimizers/logic_theorem_optimizer/test_modal_ir_decompiler_slots.py`

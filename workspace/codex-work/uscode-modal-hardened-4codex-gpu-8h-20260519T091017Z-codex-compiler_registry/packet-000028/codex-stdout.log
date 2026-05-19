@@ -1,0 +1,18 @@
+Implemented a scoped modal-family cue-rule refinement that raises missing target-family evidence in strong scope conflicts.
+
+- Added strong-scope competing backfill logic in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000028-20260519_122139/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py#L1691):
+  - Strong temporal scope: calendar-date / temporal-scope-phrase / temporal-within signals.
+  - Strong conditional scope: exception / conditional-scope phrase-token / statutory-reference signals.
+  - If temporal or conditional evidence is weak (`<= _COMPETING_SCOPE_BACKFILL_WEIGHT`) but competing deontic/frame evidence exists, inject moderate deterministic backfill (with stronger floor for stronger signals).
+  - Kept this narrow to avoid broad single-token drift; specifically avoided treating generic `before` condition clauses as strong conditional triggers.
+
+- Added regression coverage in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000028-20260519_122139/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py#L1539):
+  - Deontic + calendar-date scope without temporal cue now backfills temporal share.
+  - Deontic + statutory `as provided in` scope without conditional cue now backfills conditional share.
+
+- Updated compiler assertions that previously expected zero target share in those signal-only cases to reflect intentional positive backfill in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000028-20260519_122139/tests/unit_tests/logic/modal/test_modal_codec.py#L9033) and [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000028-20260519_122139/tests/unit_tests/logic/modal/test_modal_codec.py#L9588).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py -q`
+- Result: `315 passed`

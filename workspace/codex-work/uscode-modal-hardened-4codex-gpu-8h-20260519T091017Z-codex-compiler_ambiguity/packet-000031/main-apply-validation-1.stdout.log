@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0
+benchmark: 5.2.3 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/barberb/portland-laws.github.io/ipfs_datasets_py
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: mock-3.15.1, xdist-3.8.0, benchmark-5.2.3, cov-7.1.0, asyncio-1.3.0, hypothesis-6.152.1, anyio-4.13.0, timeout-2.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 342 items
+
+tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py . [  0%]
+............................................................             [ 17%]
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py . [ 18%]
+........................................................................ [ 39%]
+........................                                                 [ 46%]
+tests/unit_tests/logic/modal/test_modal_codec.py ....................... [ 52%]
+........................................................................ [ 73%]
+........................................................................ [ 95%]
+.................                                                        [100%]
+
+============================= 342 passed in 22.73s =============================

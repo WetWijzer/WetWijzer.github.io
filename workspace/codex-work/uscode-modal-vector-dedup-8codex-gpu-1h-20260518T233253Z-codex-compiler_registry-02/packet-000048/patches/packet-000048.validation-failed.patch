@@ -1,0 +1,252 @@
+diff --git a/ipfs_datasets_py/logic/modal/compiler.py b/ipfs_datasets_py/logic/modal/compiler.py
+index 59784b46..aef30cc8 100644
+--- a/ipfs_datasets_py/logic/modal/compiler.py
++++ b/ipfs_datasets_py/logic/modal/compiler.py
+@@ -27,6 +27,7 @@ from ipfs_datasets_py.optimizers.logic_theorem_optimizer.modal_registry import (
+     DEFAULT_MODAL_REGISTRY,
+     ModalLogicFamily,
+     ModalRegistry,
++    adaptive_modal_family_margin_floor,
+     is_priority_signal_free_adaptive_ambiguity_pair,
+     is_normative_modal_family,
+     signal_free_adaptive_ambiguity_targets,
+@@ -666,9 +667,13 @@ class DeterministicModalCompiler:
+         ambiguities: List[ModalCompilationAmbiguity] = []
+         for target_family, has_signal in target_signal_by_family.items():
+             is_self_pair = target_family == predicted_family
++            pair_threshold = self._adaptive_pair_margin_threshold(
++                predicted_family,
++                target_family,
++            )
+             if is_self_pair and (
+                 predicted_margin_to_runner_up is None
+-                or predicted_margin_to_runner_up > threshold
++                or predicted_margin_to_runner_up > pair_threshold
+             ):
+                 continue
+             target_share = float(family_shares.get(target_family, 0.0))
+@@ -692,7 +697,7 @@ class DeterministicModalCompiler:
+             ):
+                 continue
+             family_margin = target_share - predicted_share
+-            if family_margin > threshold:
++            if family_margin > pair_threshold:
+                 continue
+             margin_direction = "outvoted" if (
+                 family_margin < 0.0
+@@ -716,7 +721,8 @@ class DeterministicModalCompiler:
+                 else [predicted_family, target_family]
+             )
+             base_metadata = {
+-                "adaptive_family_margin_threshold": threshold,
++                "adaptive_family_margin_threshold": pair_threshold,
++                "adaptive_family_margin_threshold_base": threshold,
+                 "adaptive_margin_direction": margin_direction,
+                 "adaptive_predicted_family_source": predicted_family_source,
+                 "adaptive_policy_pair": f"{predicted_family}->{target_family}",
+@@ -900,6 +906,9 @@ class DeterministicModalCompiler:
+                 ModalLogicFamily.EPISTEMIC.value: bool(
+                     signals.get("has_epistemic_cue")
+                 ),
++                ModalLogicFamily.TEMPORAL.value: bool(
++                    signals.get("has_temporal_scope")
++                ),
+             }
+         elif predicted_family == ModalLogicFamily.ALETHIC.value:
+             target_signal_by_family = {
+@@ -935,10 +944,14 @@ class DeterministicModalCompiler:
+             competing_family,
+         ):
+             return []
++        pair_threshold = self._adaptive_pair_margin_threshold(
++            compiled_primary_family,
++            competing_family,
++        )
+         primary_share = float(family_shares.get(compiled_primary_family, 0.0))
+         competing_share = float(family_shares.get(competing_family, 0.0))
+         family_margin = primary_share - competing_share
+-        if family_margin > threshold:
++        if family_margin > pair_threshold:
+             return []
+         target_signal_by_family = self._adaptive_target_signal_by_family(
+             compiled_primary_family,
+@@ -973,7 +986,8 @@ class DeterministicModalCompiler:
+             6,
+         )
+         base_metadata = {
+-            "adaptive_family_margin_threshold": threshold,
++            "adaptive_family_margin_threshold": pair_threshold,
++            "adaptive_family_margin_threshold_base": threshold,
+             "adaptive_margin_direction": margin_direction,
+             "adaptive_predicted_family_source": "compiled_primary_family",
+             "adaptive_policy_pair": f"{compiled_primary_family}->{competing_family}",
+@@ -1030,6 +1044,19 @@ class DeterministicModalCompiler:
+             ),
+         ]
+ 
++    def _adaptive_pair_margin_threshold(
++        self,
++        predicted_family: str,
++        target_family: str,
++    ) -> float:
++        """Resolve the adaptive ambiguity threshold for a specific family pair."""
++        base_threshold = float(self.config.modal_adaptive_family_margin)
++        pair_floor = adaptive_modal_family_margin_floor(
++            predicted_family,
++            target_family,
++        )
++        return max(base_threshold, pair_floor)
++
+     def _has_frame_bm25_support(
+         self,
+         frame_selections: Sequence[FrameSelection],
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index 915465c3..480d80e0 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -156,6 +156,33 @@ PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS: Tuple[Tuple[str, str], ...
+     ),
+ )
+ 
++ADAPTIVE_MODAL_FAMILY_MARGIN_FLOORS: Mapping[Tuple[str, str], float] = {
++    (
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ): 0.2,
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.DEONTIC.value,
++    ): 0.2,
++    (
++        ModalLogicFamily.FRAME.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ): 0.2,
++    (
++        ModalLogicFamily.DEONTIC.value,
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++    ): 0.2,
++    (
++        ModalLogicFamily.DEONTIC.value,
++        ModalLogicFamily.DEONTIC.value,
++    ): 0.2,
++    (
++        ModalLogicFamily.DEONTIC.value,
++        ModalLogicFamily.TEMPORAL.value,
++    ): 0.2,
++}
++
+ 
+ class ModalSystem(Enum):
+     """Common modal systems and legal-parser profiles."""
+@@ -510,6 +537,21 @@ def is_priority_signal_free_adaptive_ambiguity_pair(
+     ) in PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS
+ 
+ 
++def adaptive_modal_family_margin_floor(
++    predicted_family: ModalLogicFamily | str,
++    target_family: ModalLogicFamily | str,
++) -> float:
++    """Return a pair-specific lower bound for adaptive ambiguity margin thresholds."""
++    resolved_predicted_family = _resolve_modal_family_name(predicted_family)
++    resolved_target_family = _resolve_modal_family_name(target_family)
++    return float(
++        ADAPTIVE_MODAL_FAMILY_MARGIN_FLOORS.get(
++            (resolved_predicted_family, resolved_target_family),
++            0.0,
++        )
++    )
++
++
+ def _resolve_modal_family_name(family: ModalLogicFamily | str) -> str:
+     if isinstance(family, ModalLogicFamily):
+         return family.value
+@@ -523,11 +565,13 @@ DEFAULT_MODAL_REGISTRY = ModalRegistry()
+ 
+ 
+ __all__ = [
++    "ADAPTIVE_MODAL_FAMILY_MARGIN_FLOORS",
+     "DEFAULT_MODAL_PROFILES",
+     "DEFAULT_MODAL_REGISTRY",
+     "NORMATIVE_MODAL_FAMILIES",
+     "PRIORITY_SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS",
+     "SIGNAL_FREE_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS",
++    "adaptive_modal_family_margin_floor",
+     "is_priority_signal_free_adaptive_ambiguity_pair",
+     "ModalLogicFamily",
+     "ModalOperatorSpec",
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+index 1e834a98..61c5baa8 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py
+@@ -357,3 +357,71 @@ def test_compiler_emits_explicit_deontic_self_pair_for_low_family_margin() -> No
+         predicted_family=ModalLogicFamily.DEONTIC.value,
+         target_family=ModalLogicFamily.DEONTIC.value,
+     )
++
++
++def test_compiler_conditional_predicted_family_includes_temporal_target_signal() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    target_signals = compiler._adaptive_target_signal_by_family(
++        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
++        signals={
++            "has_deontic_scope": False,
++            "has_deontic_cue": False,
++            "has_epistemic_cue": False,
++            "has_temporal_scope": True,
++        },
++        has_frame_scope=False,
++    )
++
++    assert target_signals.get(ModalLogicFamily.TEMPORAL.value) is True
++
++
++def test_compiler_applies_deontic_self_pair_margin_floor() -> None:
++    compiler = DeterministicModalCompiler(
++        config=ModalCompilerConfig(parser_backend="spacy")
++    )
++
++    encoding = compiler.encoder.encode(
++        "The Secretary shall submit the report by June 1, 2030.",
++        document_id="compiler-ambiguity-deontic-self-margin-floor",
++    )
++    modal_ir = compiler.ir_compiler.compile(encoding)
++    ranking = [
++        {
++            "family": ModalLogicFamily.DEONTIC.value,
++            "count": 2,
++            "share_raw": 0.55,
++            "share": 0.55,
++        },
++        {
++            "family": ModalLogicFamily.TEMPORAL.value,
++            "count": 1,
++            "share_raw": 0.36,
++            "share": 0.36,
++        },
++    ]
++    ambiguities = compiler._adaptive_family_margin_ambiguities(
++        encoding,
++        modal_ir=modal_ir,
++        ranking=ranking,
++        family_shares={
++            ModalLogicFamily.DEONTIC.value: 0.55,
++            ModalLogicFamily.TEMPORAL.value: 0.36,
++        },
++        frame_selections=(),
++        predicted_family_source="unit_test",
++    )
++
++    assert any(
++        ambiguity.ambiguity_type == "adaptive_deontic_deontic_contested_margin_low"
++        for ambiguity in ambiguities
++    )
++    assert any(
++        ambiguity.metadata.get("adaptive_family_margin_threshold") == 0.2
++        and ambiguity.metadata.get("predicted_family") == ModalLogicFamily.DEONTIC.value
++        and ambiguity.metadata.get("target_family") == ModalLogicFamily.DEONTIC.value
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type.startswith("adaptive_")
++    )

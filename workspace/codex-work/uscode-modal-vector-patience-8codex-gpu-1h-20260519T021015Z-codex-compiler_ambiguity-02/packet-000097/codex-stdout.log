@@ -1,0 +1,10 @@
+Implemented the ambiguity-policy gap for this packet by adding explicit signal-free support for `conditional_normative -> epistemic`, with focused test coverage.
+
+**Changes**
+- Added `conditional_normative -> epistemic` to signal-free adaptive ambiguity policy in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000097-20260519_022309/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:75).
+- Updated registry policy tests to assert support and ordered target list includes `epistemic` for `conditional_normative` in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000097-20260519_022309/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:105).
+- Added a compiler ambiguity test validating signal-free emission and explicit ambiguity type `adaptive_conditional_normative_epistemic_outvoted_margin_low` in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000097-20260519_022309/tests/unit_tests/logic/modal/test_modal_codec.py:3559).
+
+**Tests run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (10 passed)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_conditional_epistemic_adaptive_ambiguity or signal_free_pair_policy_for_conditional_frame_adaptive_ambiguity or signal_free_pair_policy_for_conditional_temporal_adaptive_ambiguity or signal_free_pair_policy_for_conditional_deontic_adaptive_ambiguity or signal_free_pair_policy_for_frame_epistemic_adaptive_ambiguity"` (5 passed)

@@ -1,0 +1,318 @@
+diff --git a/ipfs_datasets_py/logic/modal/compiler.py b/ipfs_datasets_py/logic/modal/compiler.py
+index 164928dc..1f86cc9c 100644
+--- a/ipfs_datasets_py/logic/modal/compiler.py
++++ b/ipfs_datasets_py/logic/modal/compiler.py
+@@ -807,23 +807,13 @@ class DeterministicModalCompiler:
+             and compiled_primary_family != predicted_family
+         ):
+             compiled_primary_targets: List[str] = [predicted_family]
+-            if compiled_primary_family == ModalLogicFamily.DEONTIC.value:
+-                # Preserve explicit deontic-vs-conditional policy coverage even when
+-                # cue ranking predicts a different top family.
+-                compiled_primary_targets.append(
+-                    ModalLogicFamily.CONDITIONAL_NORMATIVE.value
+-                )
+-            if compiled_primary_family == ModalLogicFamily.FRAME.value:
+-                # Preserve explicit frame-vs-(conditional/deontic) coverage when
+-                # adaptive logits favor a different top family.
+-                compiled_primary_targets.extend(
+-                    (
+-                        ModalLogicFamily.CONDITIONAL_NORMATIVE.value,
+-                        ModalLogicFamily.DEONTIC.value,
+-                    )
+-                )
++            compiled_primary_targets.extend(
++                signal_free_adaptive_ambiguity_targets(compiled_primary_family)
++            )
+             seen_competing_families: set[str] = set()
+             for competing_family in compiled_primary_targets:
++                if competing_family == compiled_primary_family:
++                    continue
+                 if competing_family in seen_competing_families:
+                     continue
+                 seen_competing_families.add(competing_family)
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index f3d5429b..7384b290 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -2094,6 +2094,280 @@ def test_modal_compiler_surfaces_compiled_primary_deontic_conditional_policy_amb
+     )
+ 
+ 
++def test_modal_compiler_surfaces_compiled_primary_temporal_policy_ambiguities_when_cues_predict_conditional(
++    monkeypatch,
++) -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++            modal_adaptive_family_margin=0.15,
++        )
++    )
++    monkeypatch.setattr(
++        "ipfs_datasets_py.logic.modal.compiler.modal_ambiguity_signals",
++        lambda _: {},
++    )
++    encoding = SpaCyLegalEncoding(
++        document_id="adaptive-compiled-primary-temporal-policy-doc",
++        text="Subject to this section, the agency acts.",
++        normalized_text="Subject to this section, the agency acts.",
++        tokens=[],
++        sentences=[],
++        cues=[
++            SpaCyModalCueFeature(
++                family="conditional_normative",
++                system="KD",
++                symbol="C",
++                label="condition",
++                cue="subject to",
++                start_char=0,
++                end_char=10,
++                token_indices=[],
++            ),
++        ],
++    )
++    modal_ir = ModalIRDocument(
++        document_id="adaptive-compiled-primary-temporal-policy-doc",
++        source="us_code",
++        normalized_text=encoding.normalized_text,
++        formulas=[
++            ModalIRFormula(
++                formula_id="f-temporal-1",
++                operator=ModalIROperator(
++                    family="temporal",
++                    system="LTL",
++                    symbol="F",
++                    label="eventually",
++                ),
++                predicate=ModalIRPredicate(
++                    name="agency_acts",
++                    arguments=["actor:agency"],
++                    role="temporal_scope",
++                ),
++                provenance=ModalIRProvenance(
++                    source_id="adaptive-compiled-primary-temporal-policy-doc",
++                    start_char=0,
++                    end_char=len(encoding.normalized_text),
++                    citation="19 U.S.C. 58B",
++                ),
++            ),
++        ],
++    )
++    ambiguities = compiler._adaptive_family_margin_ambiguities(
++        encoding,
++        modal_ir=modal_ir,
++        ranking=[{"family": "conditional_normative", "count": 1, "share": 1.0}],
++        family_shares={"conditional_normative": 1.0},
++    )
++
++    temporal_deontic = next(
++        ambiguity
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["temporal", "deontic"]
++    )
++    assert temporal_deontic.metadata["adaptive_predicted_family_source"] == (
++        "compiled_primary_family"
++    )
++    assert temporal_deontic.metadata["signal_free_pair_policy_applied"] is True
++    assert temporal_deontic.metadata["explicit_ambiguity_type"] == (
++        "adaptive_temporal_deontic_outvoted_margin_low"
++    )
++
++    temporal_frame = next(
++        ambiguity
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["temporal", "frame"]
++    )
++    assert temporal_frame.metadata["adaptive_predicted_family_source"] == (
++        "compiled_primary_family"
++    )
++    assert temporal_frame.metadata["signal_free_pair_policy_applied"] is True
++    assert temporal_frame.metadata["explicit_ambiguity_type"] == (
++        "adaptive_temporal_frame_outvoted_margin_low"
++    )
++
++
++def test_modal_compiler_surfaces_compiled_primary_frame_policy_ambiguities_when_cues_predict_temporal(
++    monkeypatch,
++) -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++            modal_adaptive_family_margin=0.15,
++        )
++    )
++    monkeypatch.setattr(
++        "ipfs_datasets_py.logic.modal.compiler.modal_ambiguity_signals",
++        lambda _: {},
++    )
++    encoding = SpaCyLegalEncoding(
++        document_id="adaptive-compiled-primary-frame-policy-doc",
++        text="Within 30 days after transfer.",
++        normalized_text="Within 30 days after transfer.",
++        tokens=[],
++        sentences=[],
++        cues=[
++            SpaCyModalCueFeature(
++                family="temporal",
++                system="LTL",
++                symbol="F",
++                label="eventually",
++                cue="within",
++                start_char=0,
++                end_char=6,
++                token_indices=[],
++            ),
++        ],
++    )
++    modal_ir = ModalIRDocument(
++        document_id="adaptive-compiled-primary-frame-policy-doc",
++        source="us_code",
++        normalized_text=encoding.normalized_text,
++        formulas=[
++            ModalIRFormula(
++                formula_id="f-frame-1",
++                operator=ModalIROperator(
++                    family="frame",
++                    system="FRAME_BM25",
++                    symbol="Frame",
++                    label="frame",
++                ),
++                predicate=ModalIRPredicate(
++                    name="section_transfer",
++                    arguments=["section:ref"],
++                    role="frame_scope",
++                ),
++                provenance=ModalIRProvenance(
++                    source_id="adaptive-compiled-primary-frame-policy-doc",
++                    start_char=0,
++                    end_char=len(encoding.normalized_text),
++                    citation="30 U.S.C. 2005",
++                ),
++            ),
++        ],
++    )
++    ambiguities = compiler._adaptive_family_margin_ambiguities(
++        encoding,
++        modal_ir=modal_ir,
++        ranking=[{"family": "temporal", "count": 1, "share": 1.0}],
++        family_shares={"temporal": 1.0},
++    )
++
++    frame_deontic = next(
++        ambiguity
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["frame", "deontic"]
++    )
++    assert frame_deontic.metadata["adaptive_predicted_family_source"] == (
++        "compiled_primary_family"
++    )
++    assert frame_deontic.metadata["signal_free_pair_policy_applied"] is True
++    assert frame_deontic.metadata["explicit_ambiguity_type"] == (
++        "adaptive_frame_deontic_outvoted_margin_low"
++    )
++
++    frame_conditional = next(
++        ambiguity
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["frame", "conditional_normative"]
++    )
++    assert frame_conditional.metadata["adaptive_predicted_family_source"] == (
++        "compiled_primary_family"
++    )
++    assert frame_conditional.metadata["signal_free_pair_policy_applied"] is True
++    assert frame_conditional.metadata["explicit_ambiguity_type"] == (
++        "adaptive_frame_conditional_normative_outvoted_margin_low"
++    )
++
++
++def test_modal_compiler_surfaces_compiled_primary_conditional_epistemic_policy_ambiguity_when_cues_predict_frame(
++    monkeypatch,
++) -> None:
++    compiler = DeterministicModalCompiler(
++        ModalCompilerConfig(
++            parser_backend="regex",
++            frame_score_margin=0.0,
++            modal_adaptive_family_margin=0.15,
++        )
++    )
++    monkeypatch.setattr(
++        "ipfs_datasets_py.logic.modal.compiler.modal_ambiguity_signals",
++        lambda _: {},
++    )
++    encoding = SpaCyLegalEncoding(
++        document_id="adaptive-compiled-primary-conditional-epistemic-doc",
++        text="Transferred editorial notes.",
++        normalized_text="Transferred editorial notes.",
++        tokens=[],
++        sentences=[],
++        cues=[
++            SpaCyModalCueFeature(
++                family="frame",
++                system="FRAME_BM25",
++                symbol="Frame",
++                label="frame",
++                cue="transferred",
++                start_char=0,
++                end_char=11,
++                token_indices=[],
++            ),
++        ],
++    )
++    modal_ir = ModalIRDocument(
++        document_id="adaptive-compiled-primary-conditional-epistemic-doc",
++        source="us_code",
++        normalized_text=encoding.normalized_text,
++        formulas=[
++            ModalIRFormula(
++                formula_id="f-conditional-1",
++                operator=ModalIROperator(
++                    family="conditional_normative",
++                    system="KD",
++                    symbol="C",
++                    label="condition",
++                ),
++                predicate=ModalIRPredicate(
++                    name="editorial_transfer",
++                    arguments=["section:ref"],
++                    role="condition",
++                ),
++                provenance=ModalIRProvenance(
++                    source_id="adaptive-compiled-primary-conditional-epistemic-doc",
++                    start_char=0,
++                    end_char=len(encoding.normalized_text),
++                    citation="20 U.S.C. 1234A",
++                ),
++            ),
++        ],
++    )
++    ambiguities = compiler._adaptive_family_margin_ambiguities(
++        encoding,
++        modal_ir=modal_ir,
++        ranking=[{"family": "frame", "count": 1, "share": 1.0}],
++        family_shares={"frame": 1.0},
++    )
++
++    conditional_epistemic = next(
++        ambiguity
++        for ambiguity in ambiguities
++        if ambiguity.ambiguity_type == "adaptive_family_margin_low"
++        and ambiguity.candidate_ids == ["conditional_normative", "epistemic"]
++    )
++    assert conditional_epistemic.metadata["adaptive_predicted_family_source"] == (
++        "compiled_primary_family"
++    )
++    assert conditional_epistemic.metadata["signal_free_pair_policy_applied"] is True
++    assert conditional_epistemic.metadata["explicit_ambiguity_type"] == (
++        "adaptive_conditional_normative_epistemic_contested_margin_low"
++    )
++
++
+ def test_modal_compiler_uses_signal_free_pair_policy_for_temporal_conditional_adaptive_ambiguity(
+     monkeypatch,
+ ) -> None:

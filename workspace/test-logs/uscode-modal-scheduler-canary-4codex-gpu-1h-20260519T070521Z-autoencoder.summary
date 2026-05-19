@@ -1,0 +1,59 @@
+{
+  "autoencoder_compute_backend": "torch_cuda",
+  "autoencoder_compute_device": "cuda",
+  "autoencoder_compute_device_request": "cuda",
+  "best_validation_ce": 1.2985692171195937,
+  "best_validation_cosine": 0.48389370584810687,
+  "best_validation_ir_ce": 0.884425649,
+  "best_validation_ir_cosine": 0.491597863,
+  "best_validation_ir_reconstruction": 0.2927708,
+  "best_validation_ir_text_reconstruction": 0.0,
+  "best_validation_reconstruction": 0.29875879853123066,
+  "codex_program_synthesis_execution_mode": "queued_for_external_codex_worker",
+  "cycles": 7,
+  "dataset_id": "justicedao/ipfs_uscode",
+  "final": false,
+  "latest_queue_counts": {
+    "claimed": 6,
+    "completed": 6,
+    "failed_validation": 48,
+    "pending": 55
+  },
+  "latest_role_queue_counts": {
+    "autoencoder_sgd": {
+      "completed": 6,
+      "failed_validation": 48,
+      "pending": 46
+    },
+    "program_synthesis": {
+      "claimed": 6,
+      "pending": 9
+    }
+  },
+  "latest_stop_reason": "no_validated_improvement",
+  "laws_path": "uscode_parquet/laws.parquet",
+  "log_path": "/home/barberb/portland-laws.github.io/workspace/test-logs/uscode-modal-scheduler-canary-4codex-gpu-1h-20260519T070521Z-autoencoder.jsonl",
+  "loop_role": "autoencoder",
+  "metric_failures": 0,
+  "optimizer_policy": "autoencoder_sgd_with_codex_program_synthesis_backlog",
+  "program_synthesis_claimed": 6,
+  "program_synthesis_completed": 0,
+  "program_synthesis_deduped_total": 21,
+  "program_synthesis_pending": 9,
+  "program_synthesis_pending_cap": 512,
+  "program_synthesis_preinsert_deduped": 21,
+  "program_synthesis_seeded": 15,
+  "program_synthesis_semantic_deduped": 0,
+  "queue_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-scheduler-canary-4codex-gpu-1h-20260519T070521Z-autoencoder.jsonl",
+  "queue_run_id": "uscode-modal-scheduler-canary-4codex-gpu-1h-20260519T070521Z-autoencoder",
+  "run_id": "uscode-modal-scheduler-canary-4codex-gpu-1h-20260519T070521Z-autoencoder",
+  "seed": 207158647565670,
+  "started_at": "2026-05-19T07:05:22+00:00",
+  "state_path": "/home/barberb/portland-laws.github.io/workspace/todo-queues/uscode-modal-scheduler-canary-4codex-gpu-1h-20260519T070521Z-autoencoder.state.json",
+  "test_failures": 0,
+  "train_ce_improved_cycles": 0,
+  "train_cosine_improved_cycles": 2,
+  "updated_at": "2026-05-19T07:09:01+00:00",
+  "validation_ce_improved_cycles": 0,
+  "validation_cosine_improved_cycles": 2
+}

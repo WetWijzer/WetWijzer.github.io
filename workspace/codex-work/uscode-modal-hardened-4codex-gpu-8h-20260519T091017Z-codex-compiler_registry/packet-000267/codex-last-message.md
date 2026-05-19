@@ -1,0 +1,16 @@
+Implemented a targeted `compiler_registry` cue-rule refinement in the adaptive family scorer.
+
+- Updated conditional scope phrase coverage and scoring in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000267-20260519_153723/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:34):
+  - Added extra conditional scope phrases (`as provided in`, `as provided under`, etc.).
+  - Treated `has_condition_clause` as strong conditional scope in competing-scope backfill logic ([spacy_modal_codec.py:1848](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000267-20260519_153723/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1848)).
+  - Debiased context-only frame signals (no explicit frame cue phrase) when competing non-frame scope exists ([spacy_modal_codec.py:2464](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000267-20260519_153723/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:2464)).
+  - Increased conditional logit bonus slightly when explicit conditional scope co-occurs with temporal scope ([spacy_modal_codec.py:2498](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000267-20260519_153723/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:2498)).
+
+- Added regression tests in [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_registry/worktrees/agent-codex-compiler_registry-packet-000267-20260519_153723/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:270):
+  - `test_compiler_backfills_conditional_family_for_when_clause_under_deontic_scope`
+  - `test_compiler_adaptive_logits_debias_context_only_frame_scope_for_statutory_reference`
+
+Validation run:
+
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py`
+- Result: `34 passed`

@@ -1,0 +1,59 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 5f820a06..c77f5dee 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -1840,6 +1840,7 @@ def _apply_competing_scope_backfill(
+         bool(signals.get("has_calendar_date_scope"))
+         or bool(signals.get("has_temporal_scope_phrase"))
+         or bool(signals.get("has_temporal_within_scope"))
++        or bool(signals.get("has_temporal_scope_token"))
+     )
+     has_strong_conditional_scope = (
+         bool(signals.get("has_exception_clause"))
+@@ -2022,6 +2023,7 @@ def _apply_competing_scope_backfill(
+             bool(signals.get("has_calendar_date_scope"))
+             or bool(signals.get("has_temporal_scope_phrase"))
+             or bool(signals.get("has_temporal_within_scope"))
++            or bool(signals.get("has_temporal_scope_token"))
+         ):
+             temporal_backfill = max(
+                 temporal_backfill,
+@@ -2032,7 +2034,13 @@ def _apply_competing_scope_backfill(
+             temporal_backfill,
+         )
+     if (
+-        deontic_count >= _DEONTIC_EPISTEMIC_SCOPE_BACKFILL_TRIGGER
++        (
++            deontic_count >= _DEONTIC_EPISTEMIC_SCOPE_BACKFILL_TRIGGER
++            or (
++                deontic_count >= _FRAME_MODERATE_COMPETING_SCOPE_BACKFILL_WEIGHT
++                and bool(signals.get("has_epistemic_scope_phrase"))
++            )
++        )
+         and epistemic_count <= _COMPETING_SCOPE_BACKFILL_WEIGHT
+         and bool(
+             signals.get("has_epistemic_scope")
+@@ -2071,6 +2079,7 @@ def _apply_competing_scope_backfill(
+         if (
+             bool(signals.get("has_calendar_date_scope"))
+             or bool(signals.get("has_temporal_scope_phrase"))
++            or bool(signals.get("has_temporal_scope_token"))
+         ):
+             temporal_backfill = max(
+                 temporal_backfill,
+@@ -2175,6 +2184,7 @@ def _apply_competing_scope_backfill(
+             bool(signals.get("has_calendar_date_scope"))
+             or bool(signals.get("has_temporal_scope_phrase"))
+             or bool(signals.get("has_temporal_within_scope"))
++            or bool(signals.get("has_temporal_scope_token"))
+         ):
+             temporal_backfill = max(
+                 temporal_backfill,
+@@ -2194,6 +2204,7 @@ def _apply_competing_scope_backfill(
+             bool(signals.get("has_calendar_date_scope"))
+             or bool(signals.get("has_temporal_scope_phrase"))
+             or bool(signals.get("has_temporal_within_scope"))
++            or bool(signals.get("has_temporal_scope_token"))
+         ):
+             temporal_backfill = max(
+                 temporal_backfill,

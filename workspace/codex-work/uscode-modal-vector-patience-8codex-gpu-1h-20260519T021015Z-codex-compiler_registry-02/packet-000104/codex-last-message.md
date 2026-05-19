@@ -1,0 +1,20 @@
+Implemented a narrow compiler-registry lane update for modal family cue refinement across the requested pairs.
+
+- Added missing signal-free adaptive policy coverage for `alethic -> deontic` in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000104-20260519_023956/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:33).
+- Extended alethic adaptive target-signal mapping to recognize deontic evidence in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000104-20260519_023956/ipfs_datasets_py/logic/modal/compiler.py:929).
+- Added deterministic competing-scope backfill rules for:
+  - `conditional_normative/temporal/alethic -> deontic` when statutory + deontic scope markers exist.
+  - `conditional_normative -> temporal` when temporal scope exists but temporal cues are missing.
+  in [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000104-20260519_023956/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:393) and [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000104-20260519_023956/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1316).
+
+Added/updated tests:
+
+- Registry policy expectations updated in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000104-20260519_023956/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:84).
+- New cue-backfill behavior tests in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000104-20260519_023956/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:839).
+- New adaptive alethic→deontic policy tests in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-02/worktrees/agent-codex-compiler_registry-02-packet-000104-20260519_023956/tests/unit_tests/logic/modal/test_modal_codec.py:5338).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py` -> `76 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "alethic_deontic_adaptive_ambiguity"` -> `2 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "prohibition_heading_as_adaptive_deontic_signal or unable_to_as_alethic_scope_ambiguity_signal or caps_repeated_generic_frame_cues_against_deontic_scope or caps_repeated_generic_frame_cues_against_conditional_scope or notwithstanding_as_conditional_scope_ambiguity_signal"` -> `5 passed`

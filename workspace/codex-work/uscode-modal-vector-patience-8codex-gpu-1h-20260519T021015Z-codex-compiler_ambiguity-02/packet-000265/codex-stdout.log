@@ -1,0 +1,13 @@
+Reviewed the `modal.compiler.ambiguity` family-pair policy and confirmed compiler behavior for the requested pairs is already implemented; the concrete issue in this worktree was stale registry expectations. I updated registry tests to match the active deterministic policy.
+
+Changes made:
+- Updated [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000265-20260519_030730/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py#L85):
+  - Added coverage assertion for signal-free pair `alethic -> frame`.
+  - Updated ordered target expectations:
+    - `alethic` targets now include `frame`.
+    - `conditional_normative` targets now include `dynamic`.
+
+Validation run:
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` (11 passed)
+2. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "alethic_frame"` (2 passed)
+3. `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "signal_free_pair_policy_for_temporal_deontic or signal_free_pair_policy_for_temporal_frame or signal_free_pair_policy_for_frame_deontic or signal_free_pair_policy_for_frame_temporal or signal_free_pair_policy_for_deontic_epistemic"` (5 passed)

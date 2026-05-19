@@ -1,0 +1,227 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index cf431c02..a6dd94e8 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -388,6 +388,8 @@ _DEONTIC_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _CONDITIONAL_COMPETING_SCOPE_SOFT_CAP = 3.0
+ _GENERIC_FRAME_SCOPE_BACKFILL_WEIGHT = 0.08
+ _COMPETING_SCOPE_BACKFILL_WEIGHT = 0.08
++_FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT = 0.24
++_SPARSE_CROSS_SCOPE_BACKFILL_WEIGHT = 0.16
+ _DEONTIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 3.0
+ _TEMPORAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 3.0
+ _CONDITIONAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 2.0
+@@ -1163,6 +1165,14 @@ def _weighted_modal_family_counts(
+         counts,
+         resolved_signals,
+     )
++    _apply_frame_competing_scope_backfill(
++        counts,
++        resolved_signals,
++    )
++    _apply_sparse_cross_scope_backfill(
++        counts,
++        resolved_signals,
++    )
+     return counts
+ 
+ 
+@@ -1496,6 +1506,80 @@ def _apply_competing_scope_backfill(
+         )
+ 
+ 
++def _apply_frame_competing_scope_backfill(
++    counts: Dict[str, float],
++    signals: Mapping[str, bool],
++) -> None:
++    """Strengthen competing scope support when generic frame cues dominate."""
++    frame_family = ModalLogicFamily.FRAME.value
++    deontic_family = ModalLogicFamily.DEONTIC.value
++    temporal_family = ModalLogicFamily.TEMPORAL.value
++    frame_count = float(counts.get(frame_family, 0.0))
++    if frame_count < _FRAME_DEONTIC_SCOPE_BACKFILL_TRIGGER:
++        return
++    if (
++        bool(signals.get("has_frame_scope_phrase"))
++        or bool(signals.get("has_frame_editorial_scope_phrase"))
++    ):
++        return
++    if (
++        float(counts.get(deontic_family, 0.0))
++        < _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT
++        and bool(signals.get("has_deontic_scope"))
++    ):
++        counts[deontic_family] = max(
++            float(counts.get(deontic_family, 0.0)),
++            _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        )
++    if (
++        float(counts.get(temporal_family, 0.0))
++        < _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT
++        and bool(signals.get("has_temporal_scope"))
++    ):
++        counts[temporal_family] = max(
++            float(counts.get(temporal_family, 0.0)),
++            _FRAME_COMPETING_SCOPE_BACKFILL_WEIGHT,
++        )
++
++
++def _apply_sparse_cross_scope_backfill(
++    counts: Dict[str, float],
++    signals: Mapping[str, bool],
++) -> None:
++    """Inject cross-family support for sparse deontic/temporal cue conflicts."""
++    deontic_family = ModalLogicFamily.DEONTIC.value
++    temporal_family = ModalLogicFamily.TEMPORAL.value
++    deontic_count = float(counts.get(deontic_family, 0.0))
++    temporal_count = float(counts.get(temporal_family, 0.0))
++    has_temporal_scope_competition = bool(signals.get("has_temporal_scope")) and (
++        bool(signals.get("has_temporal_scope_phrase"))
++        or bool(signals.get("has_temporal_within_scope"))
++        or bool(signals.get("has_calendar_date_scope"))
++    )
++    if (
++        deontic_count > 0.0
++        and temporal_count < _SPARSE_CROSS_SCOPE_BACKFILL_WEIGHT
++        and has_temporal_scope_competition
++    ):
++        counts[temporal_family] = max(
++            float(counts.get(temporal_family, 0.0)),
++            _SPARSE_CROSS_SCOPE_BACKFILL_WEIGHT,
++        )
++    has_deontic_scope_competition = bool(signals.get("has_deontic_scope")) and (
++        bool(signals.get("has_deontic_scope_phrase"))
++        or bool(signals.get("has_statutory_scope_reference"))
++    )
++    if (
++        temporal_count > 0.0
++        and deontic_count < _SPARSE_CROSS_SCOPE_BACKFILL_WEIGHT
++        and has_deontic_scope_competition
++    ):
++        counts[deontic_family] = max(
++            float(counts.get(deontic_family, 0.0)),
++            _SPARSE_CROSS_SCOPE_BACKFILL_WEIGHT,
++        )
++
++
+ def _is_generic_frame_cue_debias_context(
+     encoding: SpaCyLegalEncoding,
+     signals: Mapping[str, bool],
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index 542d3fdf..7dad3dcd 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -563,6 +563,113 @@ def test_spacy_codec_backfills_deontic_share_for_generic_frame_only_scope() -> N
+     assert frame_share > deontic_share
+ 
+ 
++def test_spacy_codec_strengthens_deontic_share_for_non_editorial_frame_scope_competition() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="18",
++        section="337",
++        text="Authority and jurisdiction apply, with liability for noncompliance.",
++    )
++
++    ranking = ranked_modal_families(codec.encode_sample(sample))
++
++    assert ranking[0]["family"] == "frame"
++    deontic_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "deontic"
++    )
++    frame_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "frame"
++    )
++    assert deontic_share >= 0.3
++    assert frame_share > deontic_share
++
++
++def test_spacy_codec_strengthens_temporal_share_for_non_editorial_frame_scope_competition() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="43",
++        section="2452",
++        text="Authority and jurisdiction apply before each annual review.",
++    )
++
++    ranking = ranked_modal_families(codec.encode_sample(sample))
++
++    assert ranking[0]["family"] == "frame"
++    temporal_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "temporal"
++    )
++    frame_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "frame"
++    )
++    assert temporal_share >= 0.29
++    assert frame_share > temporal_share
++
++
++def test_spacy_codec_backfills_temporal_share_for_sparse_deontic_temporal_scope_conflict() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="47",
++        section="222",
++        text="The agency shall provide written notice while pending review.",
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert not any(cue.family == "temporal" for cue in encoding.cues)
++    assert signals["has_temporal_scope"] is True
++    assert signals["has_temporal_scope_phrase"] is True
++    temporal_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "temporal"
++    )
++    assert temporal_share >= 0.1
++
++
++def test_spacy_codec_backfills_deontic_share_for_sparse_temporal_deontic_scope_conflict() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="47",
++        section="223",
++        text="Reports are due within 30 days, with liability for noncompliance.",
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert any(cue.family == "temporal" and cue.cue.lower() == "within" for cue in encoding.cues)
++    assert not any(cue.family == "deontic" for cue in encoding.cues)
++    assert signals["has_deontic_scope"] is True
++    assert signals["has_deontic_scope_phrase"] is True
++    deontic_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "deontic"
++    )
++    assert deontic_share >= 0.1
++
++
+ def test_spacy_decoder_debiases_generic_frame_logits_for_subject_only_to_scope() -> None:
+     codec = SpaCyModalCodec(
+         encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),

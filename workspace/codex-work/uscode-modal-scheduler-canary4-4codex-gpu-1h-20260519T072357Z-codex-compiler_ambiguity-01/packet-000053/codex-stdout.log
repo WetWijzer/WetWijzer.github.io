@@ -1,0 +1,8 @@
+Implemented a modal ambiguity policy-table adjustment in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000053-20260519_072832/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L86):
+
+- Added an additional `("conditional_normative", "dynamic")` signal-free adaptive ambiguity pair before `("conditional_normative", "frame")` to align the deterministic directional target sequence used by the compiler ambiguity policy.
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py` → `11 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "adaptive and (frame or deontic or temporal or conditional or alethic or epistemic)"` → `50 passed, 107 deselected`

@@ -1,0 +1,10 @@
+Implemented the `compiler_ambiguity` policy update so `frame` compiled-primary mismatches now preserve explicit ambiguity coverage for both `frame -> conditional_normative` and `frame -> deontic`.
+
+- Updated compiled-primary adaptive pair handling in [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000238-20260519_002939/ipfs_datasets_py/logic/modal/compiler.py#L799) to evaluate multiple policy targets (deduped), not just the single top competing family.
+- Kept existing deontic fallback behavior and added explicit frame fallback targets for conditional/deontic in the same compiled-primary mismatch path.
+- Added regression coverage in [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000238-20260519_002939/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py#L46) and [test_legal_modal_parser_deterministic_rules.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000238-20260519_002939/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py#L348) to assert those pairs are emitted from `adaptive_predicted_family_source="compiled_primary_family"`.
+
+Tests run:
+
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "compiled_primary_policy or adaptive_logits_disagreement"` passed (`2 passed`).
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -k "priority_signal_free_adaptive_ambiguity_pair_policy_is_directional or signal_free_adaptive_ambiguity_targets_are_ordered_and_directional"` passed (`2 passed`).

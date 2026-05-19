@@ -1,0 +1,14 @@
+Implemented a narrow compiler-registry refinement to reduce `frame/temporal -> deontic` outvoting when deontic force appears first in the clause.
+
+- Updated [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000102-20260519_031330/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:401):
+  - Added `_LEADING_DEONTIC_COMPETING_FAMILY_BONUS` and cap constants.
+  - Added `_apply_leading_deontic_competing_family_boost(...)` at [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000102-20260519_031330/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1260).
+  - Wired the new boost into `_weighted_modal_family_counts(...)` at [spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000102-20260519_031330/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py:1157).
+
+- Added regressions in [test_spacy_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-patience-8codex-gpu-1h-20260519T021015Z-codex-compiler_registry-01/worktrees/agent-codex-compiler_registry-01-packet-000102-20260519_031330/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:720):
+  - `test_spacy_codec_prioritizes_leading_deontic_force_over_dense_temporal_scope_cues`
+  - `test_spacy_decoder_prioritizes_leading_deontic_logits_for_temporal_and_frame_competition`
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py`
+- Result: `74 passed`

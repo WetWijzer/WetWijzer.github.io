@@ -1,0 +1,38 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0
+benchmark: 5.2.3 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/barberb/portland-laws.github.io/ipfs_datasets_py
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: mock-3.15.1, xdist-3.8.0, benchmark-5.2.3, cov-7.1.0, asyncio-1.3.0, hypothesis-6.152.1, anyio-4.13.0, timeout-2.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 393 items
+
+tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py . [  0%]
+............................................................             [ 15%]
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py . [ 15%]
+..............................................F......................... [ 34%]
+........................F.............................                   [ 47%]
+tests/unit_tests/logic/modal/test_modal_codec.py ....................... [ 53%]
+......F................................................................. [ 72%]
+........................................................................ [ 90%]
+......................................                                   [100%]
+
+=================================== FAILURES ===================================
+_ test_spacy_decoder_soft_caps_repeated_temporal_logits_for_deontic_competition _
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1442: in test_spacy_decoder_soft_caps_repeated_temporal_logits_for_deontic_competition
+    assert competing_logits["temporal"] < baseline_logits["temporal"]
+E   assert 6.340647180559945 < 6.0
+____ test_spacy_codec_collapses_nested_same_family_cues_for_weighted_logits ____
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:2781: in test_spacy_codec_collapses_nested_same_family_cues_for_weighted_logits
+    assert logits["deontic"] == logits["temporal"]
+E   assert 3.3675 == 3.6475
+_ test_modal_compiler_surfaces_adaptive_family_margin_ambiguity_for_temporal_conflicts _
+tests/unit_tests/logic/modal/test_modal_codec.py:1781: in test_modal_compiler_surfaces_adaptive_family_margin_ambiguity_for_temporal_conflicts
+    assert all(
+E   assert False
+E    +  where False = all(<generator object test_modal_compiler_surfaces_adaptive_family_margin_ambiguity_for_temporal_conflicts.<locals>.<genexpr> at 0xe6db483a8930>)
+=========================== short test summary info ============================
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_decoder_soft_caps_repeated_temporal_logits_for_deontic_competition
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_codec_collapses_nested_same_family_cues_for_weighted_logits
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_surfaces_adaptive_family_margin_ambiguity_for_temporal_conflicts
+======================== 3 failed, 390 passed in 25.42s ========================

@@ -1,0 +1,14 @@
+Implemented the `compiler_ambiguity` policy hardening by explicitly adding `deontic -> epistemic` to the compiler ambiguity bundle, then updated focused tests to cover the requested ambiguity directions.
+
+### Changes
+- Added `("deontic", "epistemic")` to compiler ambiguity policy pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000428-20260519_152147/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L162).
+- Updated registry expectations and directional target assertions in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000428-20260519_152147/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py#L308).
+- Expanded modal compiler ambiguity tests to include:
+  - recurrent deontic policy pair `deontic->epistemic` in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000428-20260519_152147/tests/unit_tests/logic/modal/test_modal_codec.py#L3007)
+  - sparse fallback coverage for `deontic->epistemic` and `frame->temporal` in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000428-20260519_152147/tests/unit_tests/logic/modal/test_modal_codec.py#L12791).
+
+### Tests run
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py::test_compiler_ambiguity_policy_pair_helper_matches_declared_bundle tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py::test_compiler_ambiguity_policy_targets_are_ordered_and_directional tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_emits_explicit_adaptive_ambiguity_for_recurrent_policy_pairs tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_surfaces_compiler_ambiguity_pairs_when_other_target_tables_are_sparse`  
+  Result: `4 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "deontic_epistemic or frame_temporal"`  
+  Result: `6 passed`

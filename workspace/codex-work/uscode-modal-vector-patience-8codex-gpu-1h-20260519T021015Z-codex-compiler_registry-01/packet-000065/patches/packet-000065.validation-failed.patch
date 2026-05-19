@@ -1,0 +1,232 @@
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+index a6219d69..b6e1dbfd 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py
+@@ -318,15 +318,30 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "shall",
+                     "must",
+                     "required",
++                    "is required to",
+                     "obligated",
+                     "has a duty to",
+                     "have a duty to",
++                    "requirement that",
++                    "requirements for",
+                     "under an obligation to",
+                 ),
+                 (ModalSystem.D, ModalSystem.KD),
+             ),
+             _op("P", ("permission", "permitted"), ("may", "permitted", "authorized", "allowed"), (ModalSystem.D, ModalSystem.KD)),
+-            _op("F", ("prohibition", "forbidden"), ("may not", "must not", "prohibited", "forbidden"), (ModalSystem.D, ModalSystem.KD)),
++            _op(
++                "F",
++                ("prohibition", "forbidden"),
++                (
++                    "may not",
++                    "must not",
++                    "prohibited",
++                    "is prohibited from",
++                    "forbidden",
++                    "unlawful",
++                ),
++                (ModalSystem.D, ModalSystem.KD),
++            ),
+         ),
+         semantics=ModalSemanticsSpec(serial=True),
+         description="Legal obligations, permissions, and prohibitions.",
+@@ -344,10 +359,14 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "within",
+                     "by",
+                     "effective date",
++                    "effective on",
+                     "effective on first day",
+                     "fiscal year",
+                     "calendar year",
+                     "from time to time",
++                    "during the pendency of",
++                    "period beginning on",
++                    "period ending on",
+                     "on or after",
+                     "beginning on or after",
+                     "no earlier than",
+@@ -417,6 +436,7 @@ DEFAULT_MODAL_PROFILES: Tuple[ModalParseProfile, ...] = (
+                     "provided that",
+                     "subject to",
+                     "as provided by",
++                    "as provided in",
+                     "except as otherwise provided",
+                     "except as provided in",
+                     "except as provided by",
+diff --git a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+index 82f6b485..2d6c3eb7 100644
+--- a/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
++++ b/ipfs_datasets_py/optimizers/logic_theorem_optimizer/spacy_modal_codec.py
+@@ -31,6 +31,7 @@ _CLAUSE_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_'-]*")
+ _CONDITION_PREFIXES = ("provided that", "subject to", "if", "when", "before", "upon")
+ _EXCEPTION_PREFIXES = ("except that", "except as", "unless", "except")
+ _CONDITIONAL_SCOPE_PHRASES = (
++    "as provided in",
+     "as provided by",
+     "except as provided by",
+     "in the case of",
+@@ -393,6 +394,7 @@ _CONDITIONAL_DEONTIC_SCOPE_BACKFILL_TRIGGER = 2.0
+ _CONDITIONAL_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 2.0
+ _DEONTIC_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 3.0
+ _CONDITIONAL_FRAME_SCOPE_BACKFILL_TRIGGER = 2.0
++_FRAME_CONDITIONAL_SCOPE_BACKFILL_TRIGGER = 0.5
+ _FRAME_DEONTIC_SCOPE_BACKFILL_TRIGGER = 0.5
+ _FRAME_TEMPORAL_SCOPE_BACKFILL_TRIGGER = 0.5
+ _DEONTIC_SCOPE_TOKENS = frozenset(
+@@ -1293,6 +1295,21 @@ def _apply_competing_scope_backfill(
+     conditional_count = float(counts.get(conditional_family, 0.0))
+     temporal_count = float(counts.get(temporal_family, 0.0))
+     frame_count = float(counts.get(frame_family, 0.0))
++    if (
++        frame_count >= _FRAME_CONDITIONAL_SCOPE_BACKFILL_TRIGGER
++        and conditional_count <= 0.0
++        and bool(signals.get("has_condition_or_exception_scope"))
++        and (
++            bool(signals.get("has_statutory_scope_reference"))
++            or bool(signals.get("has_conditional_scope_phrase"))
++            or bool(signals.get("has_condition_clause"))
++            or bool(signals.get("has_exception_clause"))
++        )
++    ):
++        counts[conditional_family] = max(
++            float(counts.get(conditional_family, 0.0)),
++            _COMPETING_SCOPE_BACKFILL_WEIGHT,
++        )
+     if (
+         deontic_count >= _DEONTIC_CONDITIONAL_SCOPE_BACKFILL_TRIGGER
+         and conditional_count <= 0.0
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+index d0b06db4..ba80dfbb 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py
+@@ -32,6 +32,7 @@ def test_deontic_profile_has_expected_operators_and_serial_semantics() -> None:
+     assert {"O", "P", "F"}.issubset(symbols)
+     assert {"shall", "must", "may", "prohibited"}.issubset(cue_terms)
+     assert {"has a duty to", "under an obligation to"}.issubset(cue_terms)
++    assert {"is required to", "requirement that", "is prohibited from"}.issubset(cue_terms)
+ 
+ 
+ def test_frame_profile_is_bm25_ontology_grounded() -> None:
+@@ -50,6 +51,7 @@ def test_conditional_profile_includes_terms_and_conditions_cues() -> None:
+     assert "subject to the terms and conditions" in cue_terms
+     assert "notwithstanding" in cue_terms
+     assert "except as provided by" in cue_terms
++    assert "as provided in" in cue_terms
+     assert "as provided by" in cue_terms
+ 
+ 
+@@ -62,6 +64,7 @@ def test_temporal_profile_includes_deadline_and_calendar_scope_cues() -> None:
+     assert "fiscal year" in cue_terms
+     assert "from time to time" in cue_terms
+     assert "on or after" in cue_terms
++    assert "during the pendency of" in cue_terms
+ 
+ 
+ def test_registry_serialization_is_stable_json_ready() -> None:
+diff --git a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+index 6982be31..2ffc21e0 100644
+--- a/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
++++ b/tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py
+@@ -1011,6 +1011,36 @@ def test_spacy_codec_backfills_temporal_share_for_frame_scope_with_conditional_c
+     assert temporal_share > 0.0
+ 
+ 
++def test_spacy_codec_backfills_conditional_share_for_frame_scope_with_statutory_reference() -> None:
++    codec = SpaCyModalCodec(
++        encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
++        decoder=SpaCyModalDecoder(),
++    )
++    sample = build_us_code_sample(
++        title="43",
++        section="1656",
++        text=(
++            "Authority and jurisdiction shall apply under subsection (b) "
++            "for this program."
++        ),
++    )
++    encoding = codec.encode_sample(sample)
++    signals = modal_ambiguity_signals(encoding)
++    ranking = ranked_modal_families(encoding)
++
++    assert not any(cue.family == "conditional_normative" for cue in encoding.cues)
++    assert any(cue.family == "frame" for cue in encoding.cues)
++    assert any(cue.family == "deontic" for cue in encoding.cues)
++    assert signals["has_condition_or_exception_scope"] is True
++    assert signals["has_statutory_scope_reference"] is True
++    conditional_share = next(
++        float(item["share"])
++        for item in ranking
++        if item["family"] == "conditional_normative"
++    )
++    assert conditional_share > 0.0
++
++
+ def test_spacy_codec_backfills_temporal_share_for_dense_deontic_scope_with_temporal_scope_phrase() -> None:
+     codec = SpaCyModalCodec(
+         encoder=SpaCyLegalEncoder(model_name="definitely_missing_legal_model"),
+@@ -1151,6 +1181,48 @@ def test_spacy_encoder_extracts_conditional_cue_except_as_provided_by() -> None:
+     )
+ 
+ 
++def test_spacy_encoder_extracts_conditional_cue_as_provided_in() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        "As provided in subsection (b), the Secretary shall issue a determination.",
++        document_id="sample-as-provided-in",
++    )
++
++    assert any(
++        cue.family == "conditional_normative"
++        and cue.cue.lower() == "as provided in"
++        for cue in encoding.cues
++    )
++
++
++def test_spacy_encoder_extracts_temporal_cue_during_pendency_phrase() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        "The authority remains effective during the pendency of the proceeding.",
++        document_id="sample-during-pendency",
++    )
++
++    assert any(
++        cue.family == "temporal"
++        and cue.cue.lower() == "during the pendency of"
++        for cue in encoding.cues
++    )
++
++
++def test_spacy_encoder_extracts_deontic_cue_is_required_to() -> None:
++    encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
++    encoding = encoder.encode(
++        "The agency is required to issue written notice.",
++        document_id="sample-is-required-to",
++    )
++
++    assert any(
++        cue.family == "deontic"
++        and cue.cue.lower() == "is required to"
++        for cue in encoding.cues
++    )
++
++
+ def test_spacy_codec_collapses_nested_conditional_cues_in_weighted_family_ranking() -> None:
+     encoder = SpaCyLegalEncoder(model_name="definitely_missing_legal_model")
+     encoding = encoder.encode(
+diff --git a/tests/unit_tests/logic/modal/test_modal_codec.py b/tests/unit_tests/logic/modal/test_modal_codec.py
+index 34b717d9..879afd3e 100644
+--- a/tests/unit_tests/logic/modal/test_modal_codec.py
++++ b/tests/unit_tests/logic/modal/test_modal_codec.py
+@@ -6036,7 +6036,7 @@ def test_modal_compiler_treats_as_provided_in_as_conditional_scope_ambiguity_sig
+     assert conditional_scope.candidate_ids == ["deontic", "conditional_normative"]
+     assert conditional_scope.metadata["predicted_family"] == "deontic"
+     assert conditional_scope.metadata["target_family"] == "conditional_normative"
+-    assert conditional_scope.metadata["target_share"] == 0.0
++    assert conditional_scope.metadata["target_share"] > 0.0
+     assert (
+         conditional_scope.metadata["lexical_signals"]["has_statutory_scope_reference"]
+         is True

@@ -1,0 +1,9 @@
+{
+  "compiler_ambiguity|modal.compiler.ambiguity|{\"action\":\"add_or_review_modal_ambiguity_policy\",\"family_pairs\":[\"deontic->frame\",\"frame->deontic\",\"frame->temporal\"],\"program_synthesis_scope\":\"compiler_ambiguity\",\"target_component\":\"modal.compiler.ambiguity\"}": {
+    "anchor_id": "program-f4371d99f823cfde",
+    "expires_at": "2026-05-19T15:31:45+00:00",
+    "expires_at_epoch": 1779204705.9578702,
+    "selected_count": 1,
+    "worker_id": "codex-compiler_ambiguity"
+  }
+}

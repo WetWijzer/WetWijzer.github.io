@@ -1,0 +1,11 @@
+Implemented a focused `compiler_ambiguity` policy update so `conditional_normative->conditional_normative` is treated as compiler-required, ensuring explicit adaptive ambiguity is surfaced even at tie margins.
+
+Changed files:
+- Added `conditional_normative->conditional_normative` to compiler-required adaptive pairs in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000281-20260519_135247/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:55).
+- Updated compiler-required registry expectations in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000281-20260519_135247/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:234).
+- Added a regression test for zero-margin conditional self-pair behavior in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000281-20260519_135247/tests/unit_tests/logic/modal/test_modal_codec.py:2347).
+
+Validation run:
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -k "compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pairs"` passed.
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "marks_temporal_self_pair_as_compiler_required_policy or marks_conditional_self_pair_as_compiler_required_policy or emits_explicit_ambiguity_for_required_margin_bundle_pairs"` passed.
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "required_margin_bundle_pairs or todo_evidence_margin_pairs"` passed.

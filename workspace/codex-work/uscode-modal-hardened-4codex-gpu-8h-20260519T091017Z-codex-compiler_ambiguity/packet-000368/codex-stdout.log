@@ -1,0 +1,12 @@
+Implemented the compiler ambiguity policy update so `alethic->conditional_normative` is explicitly part of the `compiler_ambiguity` bundle.
+
+- Added the policy pair in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000368-20260519_143740/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L140).
+- Updated bundle-set and helper assertions in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000368-20260519_143740/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py#L270).
+- Added/strengthened compiler ambiguity metadata assertions for alethic→conditional in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000368-20260519_143740/tests/unit_tests/logic/modal/test_modal_codec.py#L8449) (`is_compiler_ambiguity_bundle_pair` and `ambiguity_policy_bundle`).
+
+Tests run:
+
+1. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py::test_compiler_ambiguity_policy_pair_helper_matches_declared_bundle tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_compiler_uses_signal_free_pair_policy_for_alethic_conditional_adaptive_ambiguity`  
+2. `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py`
+
+Both passed.

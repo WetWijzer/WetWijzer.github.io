@@ -1,0 +1,20 @@
+Implemented a scoped `compiler_ambiguity` update to make adaptive pair ambiguity margins more explicit and better calibrated.
+
+**Changes**
+- Updated [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000014-20260518_234237/ipfs_datasets_py/logic/modal/compiler.py):
+1. Added `_adaptive_family_shares_for_missing_targets(...)` to derive softmax fallback shares from deterministic decoder logits.
+2. Wired those fallback shares into `_adaptive_family_margin_ambiguities(...)` for target families absent from cue ranking.
+3. Kept `signal_free_pair_policy_applied` semantics intact by separating target evidence share from fallback margin share.
+4. Added metadata fields on adaptive ambiguities:
+   - `target_share_source` (`family_ranking` or `adaptive_logit_fallback`)
+   - `target_share_evidence_raw`
+
+- Added regression tests in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-vector-dedup-8codex-gpu-1h-20260518T233253Z-codex-compiler_ambiguity-01/worktrees/agent-codex-compiler_ambiguity-01-packet-000014-20260518_234237/tests/unit_tests/logic/modal/test_modal_codec.py):
+1. `test_modal_compiler_uses_adaptive_share_fallback_for_signal_free_deontic_conditional_margin`
+2. `test_modal_compiler_surfaces_frame_deontic_adaptive_ambiguity`
+
+**Validation**
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "deontic_conditional_adaptive_ambiguity or adaptive_share_fallback_for_signal_free_deontic_conditional_margin or surfaces_frame_deontic_adaptive_ambiguity or signal_free_pair_policy_for_frame_deontic_adaptive_ambiguity or signal_free_pair_policy_for_deontic_conditional_adaptive_ambiguity"`  
+  Result: `5 passed`
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -k "signal_free_adaptive_ambiguity_pair_policy_covers_required_bundle_pairs or priority_signal_free_adaptive_ambiguity_pair_policy_is_directional"`  
+  Result: `2 passed`

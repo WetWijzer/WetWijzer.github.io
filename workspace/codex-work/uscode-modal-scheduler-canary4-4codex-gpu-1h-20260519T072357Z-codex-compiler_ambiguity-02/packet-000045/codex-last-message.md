@@ -1,0 +1,13 @@
+Implemented a focused `compiler_ambiguity` policy refinement: promoted two recurring adaptive family directions to priority handling so zero-margin cases are emitted as explicit `outvoted` ambiguities (`requires_rule`).
+
+**Changes**
+- Added `temporal->conditional_normative` and `deontic->deontic` to priority adaptive ambiguity pairs in [modal_registry.py#L152](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000045-20260519_075133/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py#L152).
+- Added regression tests for zero-margin priority behavior:
+  - `temporal->conditional_normative` in [test_modal_codec.py#L3750](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000045-20260519_075133/tests/unit_tests/logic/modal/test_modal_codec.py#L3750)
+  - `deontic->deontic` self-pair in [test_modal_codec.py#L4786](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-scheduler-canary4-4codex-gpu-1h-20260519T072357Z-codex-compiler_ambiguity-02/worktrees/agent-codex-compiler_ambiguity-02-packet-000045-20260519_075133/tests/unit_tests/logic/modal/test_modal_codec.py#L4786)
+
+**Tests Run**
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "zero_margin_temporal_conditional_priority_pair or zero_margin_deontic_self_pair or zero_margin_conditional_temporal_pair"`  
+  Result: `3 passed`
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "deontic_self_pair_adaptive_ambiguity_for_low_runner_up_margin or signal_free_pair_policy_for_temporal_conditional_adaptive_ambiguity or orders_priority_adaptive_targets_before_non_priority_targets"`  
+  Result: `3 passed`

@@ -1,0 +1,17 @@
+Implemented a narrow compiler-ambiguity hardening for the requested family-pair lane.
+
+**What changed**
+- Added `compiler_ambiguity_policy_targets(...)` and exported it, then used it as an explicit fallback in signal-free ambiguity support:
+  - [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000371-20260519_145234/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:834)
+  - [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000371-20260519_145234/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:865)
+- Wired compiler ambiguity-policy targets directly into adaptive target seeding and ordering (predicted-family and compiled-primary-family paths), so policy pairs are first-class in ambiguity surfacing:
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000371-20260519_145234/ipfs_datasets_py/logic/modal/compiler.py:773)
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000371-20260519_145234/ipfs_datasets_py/logic/modal/compiler.py:1009)
+  - [compiler.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000371-20260519_145234/ipfs_datasets_py/logic/modal/compiler.py:1075)
+- Added registry regression tests covering compiler-ambiguity fallback behavior and the packet’s target family pairs:
+  - [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000371-20260519_145234/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:213)
+  - [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000371-20260519_145234/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:401)
+
+**Validation run**
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -k "compiler_ambiguity_policy_pair_helper_matches_declared_bundle or compiler_ambiguity_policy_targets_cover_todo_family_pairs or signal_free_support_falls_back_to_compiler_ambiguity_policy_pairs"` → passed.
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "emits_explicit_ambiguity_for_required_margin_bundle_pairs or emits_explicit_ambiguity_for_todo_evidence_margin_pairs"` → passed.

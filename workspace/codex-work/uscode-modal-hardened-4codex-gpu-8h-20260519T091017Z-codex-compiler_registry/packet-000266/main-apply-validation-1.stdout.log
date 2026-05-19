@@ -1,0 +1,48 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0
+benchmark: 5.2.3 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/barberb/portland-laws.github.io/ipfs_datasets_py
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+plugins: mock-3.15.1, xdist-3.8.0, benchmark-5.2.3, cov-7.1.0, asyncio-1.3.0, hypothesis-6.152.1, anyio-4.13.0, timeout-2.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 392 items
+
+tests/unit/optimizers/logic_theorem_optimizer/test_modal_todo_daemon.py . [  0%]
+............................................................             [ 15%]
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py . [ 15%]
+.........................F...........F.................................. [ 34%]
+......................................................                   [ 47%]
+tests/unit_tests/logic/modal/test_modal_codec.py ....................... [ 53%]
+........................................................................ [ 72%]
+....................F.F................................................. [ 90%]
+.....................................                                    [100%]
+
+=================================== FAILURES ===================================
+____ test_spacy_codec_backfills_temporal_share_for_generic_frame_only_scope ____
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:860: in test_spacy_codec_backfills_temporal_share_for_generic_frame_only_scope
+    assert ranking[0]["family"] == "frame"
+E   AssertionError: assert 'temporal' == 'frame'
+E     
+E     - frame
+E     + temporal
+__ test_spacy_decoder_boosts_temporal_logits_from_scope_without_temporal_cues __
+tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py:1163: in test_spacy_decoder_boosts_temporal_logits_from_scope_without_temporal_cues
+    assert logits["deontic"] > logits["temporal"]
+E   assert 3.0 > 3.6599999999999997
+____ test_modal_codec_upgrades_generic_frame_temporal_scope_backfill_floor _____
+tests/unit_tests/logic/modal/test_modal_codec.py:9391: in test_modal_codec_upgrades_generic_frame_temporal_scope_backfill_floor
+    assert ranking[0]["share"] == 0.631579
+E   assert 0.571429 == 0.631579
+_ test_modal_codec_upgrades_generic_frame_conditional_and_temporal_backfill_floor _
+tests/unit_tests/logic/modal/test_modal_codec.py:9428: in test_modal_codec_upgrades_generic_frame_conditional_and_temporal_backfill_floor
+    assert ranking[1]["family"] == "conditional_normative"
+E   AssertionError: assert 'temporal' == 'conditional_normative'
+E     
+E     - conditional_normative
+E     + temporal
+=========================== short test summary info ============================
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_codec_backfills_temporal_share_for_generic_frame_only_scope
+FAILED tests/unit/optimizers/logic_theorem_optimizer/test_spacy_modal_codec.py::test_spacy_decoder_boosts_temporal_logits_from_scope_without_temporal_cues
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_upgrades_generic_frame_temporal_scope_backfill_floor
+FAILED tests/unit_tests/logic/modal/test_modal_codec.py::test_modal_codec_upgrades_generic_frame_conditional_and_temporal_backfill_floor
+======================== 4 failed, 388 passed in 25.66s ========================

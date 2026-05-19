@@ -1,0 +1,33 @@
+Implemented a narrow compiler-ambiguity hardening for the requested family-pair bundle.
+
+### What changed
+- Added a dedicated compiler-ambiguity pair bundle and helper in registry:
+  - [`modal_registry.py:140`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:140)
+  - [`modal_registry.py:823`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:823)
+- Tagged adaptive ambiguity metadata when a pair matches the `compiler_ambiguity` bundle:
+  - `is_compiler_ambiguity_bundle_pair: bool`
+  - `ambiguity_policy_bundle: "compiler_ambiguity" | None`
+  - Added in all adaptive ambiguity emission paths:
+    - [`compiler.py:884`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/ipfs_datasets_py/logic/modal/compiler.py:884)
+    - [`compiler.py:1326`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/ipfs_datasets_py/logic/modal/compiler.py:1326)
+    - [`compiler.py:1511`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/ipfs_datasets_py/logic/modal/compiler.py:1511)
+
+### Regression coverage added
+- Verified bundle tagging for:
+  - `deontic -> temporal`
+  - `deontic -> dynamic`
+  - `frame -> deontic`
+- Assertions added in:
+  - [`test_legal_modal_parser_deterministic_rules.py:243`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:243)
+  - [`test_legal_modal_parser_deterministic_rules.py:460`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:460)
+  - [`test_legal_modal_parser_deterministic_rules.py:578`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py:578)
+- Added registry helper test:
+  - [`test_modal_registry.py:270`](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000363-20260519_140613/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:270)
+
+### Tests run
+- `pytest -q ipfs_datasets_py/optimizers/logic_theorem_optimizer/test_legal_modal_parser_deterministic_rules.py -k "deontic_to_frame_and_temporal or deontic_to_dynamic or preserves_frame_to_conditional_and_deontic"`  
+  - Passed (`3 passed`)
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py -k "compiler_ambiguity_policy_pair_helper or compiler_required_adaptive_ambiguity_bundle_covers_deontic_conflict_pairs"`  
+  - Passed (`2 passed`)
+- `pytest -q tests/unit_tests/logic/modal/test_modal_codec.py -k "compiled_primary_policy_pairs_cover_compiler_ambiguity_bundle or emits_explicit_ambiguity_for_required_margin_bundle_pairs"`  
+  - Passed (`2 passed`)

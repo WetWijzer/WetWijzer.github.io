@@ -1,0 +1,10 @@
+Implemented the compiler-ambiguity policy hardening for this packet by making `temporal->temporal` a compiler-required adaptive ambiguity pair and adding regression coverage.
+
+- Added `("temporal", "temporal")` to `COMPILER_REQUIRED_ADAPTIVE_AMBIGUITY_FAMILY_PAIRS` in [modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000136-20260519_115726/ipfs_datasets_py/optimizers/logic_theorem_optimizer/modal_registry.py:95).
+- Updated compiler-required policy assertions/target ordering in [test_modal_registry.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000136-20260519_115726/tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py:188).
+- Added a focused regression test ensuring low-margin `temporal->temporal` self-pair emits explicit ambiguity and is marked compiler-required in [test_modal_codec.py](/home/barberb/portland-laws.github.io/workspace/codex-work/uscode-modal-hardened-4codex-gpu-8h-20260519T091017Z-codex-compiler_ambiguity/worktrees/agent-codex-compiler_ambiguity-packet-000136-20260519_115726/tests/unit_tests/logic/modal/test_modal_codec.py:2234).
+
+Validation run:
+
+- `pytest -q tests/unit/optimizers/logic_theorem_optimizer/test_modal_registry.py tests/unit_tests/logic/modal/test_modal_codec.py`
+- Result: `202 passed`
