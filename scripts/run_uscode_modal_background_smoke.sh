@@ -7,8 +7,12 @@ LOG="$ROOT/workspace/test-logs/${RUN_ID}.supervisor.nohup.log"
 EXTRA_CODEX_ARGS=(
   --codex-bundle-mode "${USCODE_MODAL_CODEX_BUNDLE_MODE:-vector}"
   --codex-vector-min-similarity "${USCODE_MODAL_CODEX_VECTOR_MIN_SIMILARITY:-0.72}"
+  --codex-vector-fill-min-similarity "${USCODE_MODAL_CODEX_VECTOR_FILL_MIN_SIMILARITY:-0.45}"
   --codex-vector-min-bundle-size "${USCODE_MODAL_CODEX_VECTOR_MIN_BUNDLE_SIZE:-1}"
   --codex-vector-max-bundle-wait-seconds "${USCODE_MODAL_CODEX_VECTOR_MAX_BUNDLE_WAIT_SECONDS:-0}"
+  --codex-vector-stale-drain-cooldown-seconds "${USCODE_MODAL_CODEX_VECTOR_STALE_DRAIN_COOLDOWN_SECONDS:-120}"
+  --codex-target-file-lane-lock-seconds "${USCODE_MODAL_CODEX_TARGET_FILE_LANE_LOCK_SECONDS:-1200}"
+  --codex-target-file-lane-lock-scopes "${USCODE_MODAL_CODEX_TARGET_FILE_LANE_LOCK_SCOPES:-compiler_registry}"
   --codex-task-embeddings-provider "${USCODE_MODAL_CODEX_TASK_EMBEDDINGS_PROVIDER:-local_adapter}"
   --codex-task-embeddings-batch-size "${USCODE_MODAL_CODEX_TASK_EMBEDDINGS_BATCH_SIZE:-32}"
   --codex-vector-fallback-mode "${USCODE_MODAL_CODEX_VECTOR_FALLBACK_MODE:-hash}"
@@ -31,6 +35,10 @@ fi
 CODEX_SCOPE_WORKERS="${USCODE_MODAL_CODEX_SCOPE_WORKERS:-1}"
 if [[ -n "$CODEX_SCOPE_WORKERS" ]]; then
   EXTRA_CODEX_ARGS+=(--codex-scope-workers "$CODEX_SCOPE_WORKERS")
+fi
+CODEX_SCOPE_WORKER_MAP="${USCODE_MODAL_CODEX_SCOPE_WORKER_MAP:-}"
+if [[ -n "$CODEX_SCOPE_WORKER_MAP" ]]; then
+  EXTRA_CODEX_ARGS+=(--codex-scope-worker-map "$CODEX_SCOPE_WORKER_MAP")
 fi
 
 mkdir -p "$ROOT/workspace/test-logs"
