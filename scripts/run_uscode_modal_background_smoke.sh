@@ -7,6 +7,8 @@ LOG="$ROOT/workspace/test-logs/${RUN_ID}.supervisor.nohup.log"
 EXTRA_CODEX_ARGS=(
   --codex-bundle-mode "${USCODE_MODAL_CODEX_BUNDLE_MODE:-vector}"
   --codex-vector-min-similarity "${USCODE_MODAL_CODEX_VECTOR_MIN_SIMILARITY:-0.72}"
+  --codex-vector-min-bundle-size "${USCODE_MODAL_CODEX_VECTOR_MIN_BUNDLE_SIZE:-1}"
+  --codex-vector-max-bundle-wait-seconds "${USCODE_MODAL_CODEX_VECTOR_MAX_BUNDLE_WAIT_SECONDS:-0}"
   --codex-task-embeddings-provider "${USCODE_MODAL_CODEX_TASK_EMBEDDINGS_PROVIDER:-local_adapter}"
   --codex-task-embeddings-batch-size "${USCODE_MODAL_CODEX_TASK_EMBEDDINGS_BATCH_SIZE:-32}"
   --codex-vector-fallback-mode "${USCODE_MODAL_CODEX_VECTOR_FALLBACK_MODE:-hash}"
