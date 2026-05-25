@@ -1,16 +1,77 @@
 {
-  "createdAt": "2026-05-13T10:05:20.213473Z",
+  "createdAt": "2026-05-24T16:21:27.874812Z",
   "decision": {
-    "action": "reconcile_blocked_cascade_and_restart",
-    "reason": "all selectable PP&D tasks are blocked after repeated daemon recovery attempts; append deterministic daemon-repair tasks before retrying blocked domain work",
+    "action": "invoke_codex",
+    "reason": "1 task(s) are blocked and no independent selectable task remains: Task checkbox-68: Task supervisor-20260515-069: Add validation for DevHubSurfaceMap candidates that blocks reversible draft actions when selector confidence is low, route or heading evidence is missing, required labels are ambiguous, or upload/submit/certify/schedule/cancel/payment controls are classified as reversible.",
     "severity": "warning"
   },
-  "repairKind": "blocked_cascade_replenishment",
-  "replenishedTaskLabels": [
-    "checkbox-62",
-    "checkbox-63",
-    "checkbox-64",
-    "checkbox-65"
+  "failedAgenticRepair": {
+    "changedFiles": [
+      "ppd/daemon/SUPERVISOR_REPAIR_GUIDE.md"
+    ],
+    "errors": [
+      "Validation failed in temporary worktree; candidate was not promoted."
+    ],
+    "failureKind": "validation",
+    "summary": "Add a deterministic supervisor repair guide for repeated DevHubSurfaceMap syntax-preflight failures.",
+    "validationResults": [
+      {
+        "command": [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "{ \"ok\": true, \"task_count\": 69 }"
+      },
+      {
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "ppd/tests",
+          "-p",
+          "test_*.py"
+        ],
+        "returncode": 1,
+        "stderr": "......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................ss......................sss...............................................................................................................................................................................................................................................FFF....................................................................................................",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-lc",
+          "files=$(find ppd -name '*.ts' -not -path '*/node_modules/*' -print); test -z \"$files\" || npx tsc --noEmit --target ES2020 --module ESNext --moduleResolution node --strict --skipLibCheck --types node $files"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    ]
+  },
+  "fallbackActions": [
+    "preserve failed repair diagnostics without accepting the invalid patch",
+    "run full PP&D daemon validation before restarting unattended worker attempts",
+    "restart the worker with PPD_LLM_BACKEND=llm_router after fallback validation passes",
+    "keep future retry scope narrow and fixture-first"
   ],
-  "schemaVersion": 1
+  "llmBackend": "llm_router",
+  "repairKind": "builtin_supervisor_fallback",
+  "safetyBoundaries": [
+    "no private DevHub session artifacts",
+    "no raw crawl output",
+    "no downloaded documents",
+    "no browser traces or screenshots",
+    "no consequential DevHub actions"
+  ],
+  "schemaVersion": 1,
+  "taskBoardRepair": {
+    "parkedRepeatedSyntaxLoopTasks": [],
+    "replenishedGoalTaskLabels": [],
+    "supersededTaskBoardOnlyLabels": [],
+    "taskBoardUpdated": false
+  }
 }
