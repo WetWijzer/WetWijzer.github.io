@@ -1,4 +1,4 @@
-'''Fixture-first requirement delta review queue for PP&D synthetic requirements.'''
+'''Fixture-first requirement delta review and formalization gate for PP&D requirements.'''
 
 from __future__ import annotations
 
@@ -9,7 +9,17 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple
 
-READY_HUMAN_REVIEW_STATUSES = frozenset({'accepted', 'approved', 'reviewed'})
+READY_HUMAN_REVIEW_STATUSES = frozenset({'accepted', 'approved', 'reviewed', 'human_reviewed'})
+FRESH_CITATION_STATUSES = frozenset({'current', 'fresh', 'verified'})
+SUPPORTED_PATH_STATUSES = frozenset({'supported', 'ready', 'validated'})
+SUPPORTED_PATH_KINDS = frozenset({
+    'public_html_guidance',
+    'public_pdf_guidance',
+    'public_form_guidance',
+    'devhub_public_guidance',
+    'devhub_authenticated_observation',
+    'official_guardrail_policy',
+})
 
 COMPARISON_FIELDS = (
     'source_evidence_ids',
@@ -24,7 +34,26 @@ COMPARISON_FIELDS = (
     'process_ids',
     'affected_process_ids',
     'guardrail_bundle_ids',
+    'citations',
+    'source_citations',
+    'supported_path_taxonomy',
 )
+
+
+@dataclass(frozen=True)
+class FormalizationGateResult:
+    status: str
+    reasons: Tuple[str, ...]
+    fresh_citation_ids: Tuple[str, ...]
+    supported_path_ids: Tuple[str, ...]
+
+    def as_dict(self) -> Dict[str, Any]:
+        return {
+            'status': self.status,
+            'reasons': list(self.reasons),
+            'fresh_citation_ids': list(self.fresh_citation_ids),
+            'supported_path_ids': list(self.supported_path_ids),
+        }
 
 
 @dataclass(frozen=True)
@@ -42,6 +71,7 @@ class RequirementDelta:
     guardrail_bundle_ids: Tuple[str, ...]
     human_review_status: str
     blocked_readiness_status: str
+    formalization_gate: FormalizationGateResult
     review_reason: str
 
     def as_dict(self) -> Dict[str, Any]:
@@ -59,6 +89,7 @@ class RequirementDelta:
             'guardrail_bundle_ids': list(self.guardrail_bundle_ids),
             'human_review_status': self.human_review_status,
             'blocked_readiness_status': self.blocked_readiness_status,
+            'formalization_gate': self.formalization_gate.as_dict(),
             'review_reason': self.review_reason,
         }
 
@@ -114,6 +145,13 @@ def build_requirement_delta_review_queue(
         affected_process_ids = _affected_process_ids(previous_requirement, current_requirement)
         guardrail_bundle_ids = _guardrail_bundle_ids(previous_requirement, current_requirement)
         human_review_status = _human_review_status(previous_requirement, current_requirement)
+        formalization_gate = _formalization_gate(
+            current_requirement=current_requirement,
+            previous_requirement=previous_requirement,
+            human_review_status=human_review_status,
+            affected_process_ids=affected_process_ids,
+            guardrail_bundle_ids=guardrail_bundle_ids,
+        )
         previous_source_hash = previous_sources.get(source_id)
         current_source_hash = current_sources.get(source_id)
 
@@ -135,11 +173,8 @@ def build_requirement_delta_review_queue(
                 affected_process_ids=affected_process_ids,
                 guardrail_bundle_ids=guardrail_bundle_ids,
                 human_review_status=human_review_status,
-                blocked_readiness_status=_blocked_readiness_status(
-                    human_review_status,
-                    affected_process_ids,
-                    guardrail_bundle_ids,
-                ),
+                blocked_readiness_status=formalization_gate.status,
+                formalization_gate=formalization_gate,
                 review_reason=_review_reason(
                     delta_kind,
                     source_id,
@@ -307,18 +342,103 @@ def _human_review_status(
     return 'needs_review'
 
 
-def _blocked_readiness_status(
+def _formalization_gate(
+    current_requirement: Optional[Mapping[str, Any]],
+    previous_requirement: Optional[Mapping[str, Any]],
     human_review_status: str,
     affected_process_ids: Sequence[str],
     guardrail_bundle_ids: Sequence[str],
-) -> str:
+) -> FormalizationGateResult:
+    requirement = current_requirement if current_requirement is not None else previous_requirement
+    reasons: List[str] = []
+
     if human_review_status not in READY_HUMAN_REVIEW_STATUSES:
-        return 'blocked_pending_human_review'
+        reasons.append('pending_human_review')
     if not affected_process_ids:
-        return 'blocked_missing_process_mapping'
+        reasons.append('missing_affected_process_ids')
     if not guardrail_bundle_ids:
-        return 'blocked_missing_guardrail_bundle'
-    return 'ready'
+        reasons.append('missing_guardrail_bundle_ids')
+
+    fresh_citation_ids = _fresh_citation_ids(requirement)
+    if not fresh_citation_ids:
+        reasons.append('missing_fresh_citations')
+    elif _has_stale_citation(requirement):
+        reasons.append('stale_citations')
+
+    supported_path_ids = _supported_path_ids(requirement)
+    if not supported_path_ids:
+        reasons.append('missing_supported_path_taxonomy')
+    if requirement is not None and bool(requirement.get('unsupported_path')):
+        reasons.append('unsupported_requirement_path')
+
+    if reasons:
+        return FormalizationGateResult(
+            status='blocked_' + reasons[0],
+            reasons=tuple(dict.fromkeys(reasons)),
+            fresh_citation_ids=fresh_citation_ids,
+            supported_path_ids=supported_path_ids,
+        )
+    return FormalizationGateResult(
+        status='ready',
+        reasons=(),
+        fresh_citation_ids=fresh_citation_ids,
+        supported_path_ids=supported_path_ids,
+    )
+
+
+def _fresh_citation_ids(requirement: Optional[Mapping[str, Any]]) -> Tuple[str, ...]:
+    citation_ids: List[str] = []
+    for citation in _citation_records(requirement):
+        citation_id = _citation_id(citation)
+        if citation_id and _normalised_status(citation.get('freshness_status')) in FRESH_CITATION_STATUSES:
+            citation_ids.append(citation_id)
+    return _clean_strings(citation_ids)
+
+
+def _has_stale_citation(requirement: Optional[Mapping[str, Any]]) -> bool:
+    records = _citation_records(requirement)
+    if not records:
+        return False
+    for citation in records:
+        if _normalised_status(citation.get('freshness_status')) not in FRESH_CITATION_STATUSES:
+            return True
+    return False
+
+
+def _citation_records(requirement: Optional[Mapping[str, Any]]) -> Tuple[Mapping[str, Any], ...]:
+    if requirement is None:
+        return ()
+    records: List[Mapping[str, Any]] = []
+    for field in ('citations', 'source_citations', 'citation_spans'):
+        for item in _as_list(requirement.get(field)):
+            if isinstance(item, MappingABC):
+                records.append(item)
+    return tuple(records)
+
+
+def _citation_id(citation: Mapping[str, Any]) -> str:
+    for field in ('citation_id', 'evidence_id', 'source_evidence_id', 'id'):
+        value = citation.get(field)
+        if value not in (None, ''):
+            return str(value)
+    return ''
+
+
+def _supported_path_ids(requirement: Optional[Mapping[str, Any]]) -> Tuple[str, ...]:
+    if requirement is None:
+        return ()
+    path_ids: List[str] = []
+    for index, item in enumerate(_as_list(requirement.get('supported_path_taxonomy'))):
+        if isinstance(item, MappingABC):
+            status = _normalised_status(item.get('support_status') or item.get('status'))
+            path_kind = _normalised_status(item.get('path_kind') or item.get('kind') or item.get('category'))
+            if status in SUPPORTED_PATH_STATUSES and path_kind in SUPPORTED_PATH_KINDS:
+                path_ids.append(str(item.get('path_id') or item.get('id') or path_kind))
+        else:
+            path_kind = _normalised_status(item)
+            if path_kind in SUPPORTED_PATH_KINDS:
+                path_ids.append('%s[%s]' % (path_kind, index))
+    return _clean_strings(path_ids)
 
 
 def _review_reason(
@@ -350,3 +470,9 @@ def _as_list(value: Any) -> List[Any]:
 def _clean_strings(values: Sequence[Any]) -> Tuple[str, ...]:
     cleaned = {str(value) for value in values if value not in (None, '')}
     return tuple(sorted(cleaned))
+
+
+def _normalised_status(value: Any) -> str:
+    if value is None:
+        return ''
+    return str(value).strip().lower().replace('-', '_').replace(' ', '_')

@@ -1,0 +1,129 @@
+{
+  "fixtureKind": "devhub_surface_map_candidate_validation",
+  "schemaVersion": 1,
+  "candidates": [
+    {
+      "candidate_id": "valid_residential_draft_surface",
+      "selector_confidence": 0.94,
+      "url_pattern": "https://devhub.portlandoregon.gov/permits/draft/*",
+      "page_heading": "Residential Permit Draft",
+      "fields": [
+        {
+          "id": "project_address",
+          "label": "Project address",
+          "required": true
+        },
+        {
+          "id": "project_scope",
+          "label": "Project scope",
+          "required": true
+        }
+      ],
+      "actions": [
+        {
+          "id": "save_draft",
+          "label": "Save for later",
+          "kind": "save_draft",
+          "classification": "reversible_draft_edit",
+          "reversible": true
+        },
+        {
+          "id": "review_status",
+          "label": "Review status",
+          "kind": "read_status",
+          "classification": "safe_read_only",
+          "reversible": false
+        }
+      ]
+    },
+    {
+      "candidate_id": "low_confidence_missing_context",
+      "selector_confidence": 0.61,
+      "fields": [
+        {
+          "id": "project_address",
+          "label": "Project address",
+          "required": true
+        }
+      ],
+      "actions": [
+        {
+          "id": "save_draft",
+          "label": "Save for later",
+          "kind": "save_draft",
+          "classification": "reversible_draft_edit",
+          "reversible": true
+        }
+      ]
+    },
+    {
+      "candidate_id": "ambiguous_required_labels",
+      "selector_confidence": 0.91,
+      "route_evidence": ["/permits/draft/residential"],
+      "heading_evidence": ["Residential Permit Draft"],
+      "fields": [
+        {
+          "id": "owner_name",
+          "labels": ["Name", "Applicant name"],
+          "required": true
+        },
+        {
+          "id": "contractor_name",
+          "label": "Project contact",
+          "required": true
+        },
+        {
+          "id": "applicant_name",
+          "label": "Project contact",
+          "required": true
+        }
+      ],
+      "actions": [
+        {
+          "id": "save_draft",
+          "label": "Save for later",
+          "kind": "save_draft",
+          "classification": "reversible_draft_edit",
+          "reversible": true
+        }
+      ]
+    },
+    {
+      "candidate_id": "consequential_controls_mislabeled_reversible",
+      "selector_confidence": 0.9,
+      "url_pattern": "https://devhub.portlandoregon.gov/permits/draft/*",
+      "page_heading": "Upload and Submit",
+      "fields": [
+        {
+          "id": "project_address",
+          "label": "Project address",
+          "required": true
+        }
+      ],
+      "actions": [
+        {
+          "id": "submit_application",
+          "label": "Submit application",
+          "kind": "submit_application",
+          "classification": "reversible_draft_edit",
+          "reversible": true
+        },
+        {
+          "id": "pay_fee",
+          "label": "Pay fee",
+          "kind": "pay_fee",
+          "classification": "reversible_draft_edit",
+          "reversible": true
+        }
+      ],
+      "upload_controls": [
+        {
+          "id": "upload_plans",
+          "label": "Upload plans",
+          "classification": "reversible_draft_edit",
+          "reversible": true
+        }
+      ]
+    }
+  ]
+}

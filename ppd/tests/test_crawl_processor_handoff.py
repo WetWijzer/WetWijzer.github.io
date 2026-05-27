@@ -83,3 +83,33 @@ def test_handoff_manifest_rejects_credentials_and_trace_paths() -> None:
 
     with pytest.raises(ValueError, match="privacy validation"):
         assert_valid_crawl_processor_handoff_manifest(data)
+
+
+@pytest.mark.parametrize(
+    ("argument_patch", "message"),
+    [
+        ({"rawArchivePath": "ppd/archive/raw/landing.warc"}, "raw archive path"),
+        ({"downloadedDocumentPath": "/tmp/ppd/form.pdf"}, "downloaded document path"),
+        ({"raw_body": "raw response"}, "raw body field"),
+        ({"callbackUrl": "http://127.0.0.1/private"}, "private URL"),
+        ({"status": "skipped", "contentHash": "sha256:" + "a" * 64}, "skipped captures"),
+        ({"allowLiveNetwork": True}, "side-effectful network execution flag"),
+    ],
+)
+def test_handoff_manifest_rejects_unsafe_processor_invocation_arguments(
+    argument_patch: dict[str, object],
+    message: str,
+) -> None:
+    data = _fixture()
+    data["processorJobs"][0]["arguments"].update(argument_patch)
+
+    with pytest.raises(ValueError, match=message):
+        assert_valid_crawl_processor_handoff_manifest(data)
+
+
+def test_handoff_manifest_rejects_missing_processor_version_metadata() -> None:
+    data = _fixture()
+    data["processorJobs"][0]["processor"]["version"] = ""
+
+    with pytest.raises(ValueError, match="version is required"):
+        assert_valid_crawl_processor_handoff_manifest(data)

@@ -1,0 +1,202 @@
+{
+  "plan_id": "devhub_attended_address_property_permit_form_save_plan",
+  "plan_version": "devhub-attended-reversible-draft-plan-v1",
+  "run_mode": "fixture_first_attended_devhub_reversible_draft",
+  "live_devhub_session": false,
+  "browser_launched": false,
+  "auth_state_saved": false,
+  "source_evidence": [
+    {
+      "evidence_id": "src-devhub-account-sign-in-guide",
+      "source_type": "public_guidance_fixture",
+      "source_url": "https://www.portland.gov/ppd/devhub-sign-guide",
+      "summary": "Public guidance fixture for DevHub account sign-in and manual-login handoff."
+    },
+    {
+      "evidence_id": "src-devhub-submit-permit-application-guide",
+      "source_type": "public_guidance_fixture",
+      "source_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "summary": "Public guidance fixture for permit request flow, address/property lookup, permit type choice, draft questions, and save-for-later behavior."
+    },
+    {
+      "evidence_id": "fixture-devhub-accessible-structure-redacted",
+      "source_type": "redacted_accessible_structure_fixture",
+      "source_url": "ppd/tests/fixtures/devhub/attended_reversible_draft_plan.json",
+      "summary": "Synthetic accessible-structure fixture with labels, roles, controls, and no private values."
+    }
+  ],
+  "manual_login_handoff": {
+    "requires_user_present": true,
+    "user_completes_login": true,
+    "automation_performs_login": false,
+    "stores_credentials": false,
+    "prerequisites": [
+      "user_owned_devhub_account",
+      "user_present_at_browser",
+      "manual_login_completed_before_draft",
+      "no_credentials_persisted"
+    ]
+  },
+  "synthetic_case_facts": [
+    {
+      "fact_id": "case_address",
+      "label": "Project address token",
+      "value_class": "synthetic",
+      "value_token": "synthetic_project_address_token",
+      "source_evidence_ids": ["src-devhub-submit-permit-application-guide"]
+    },
+    {
+      "fact_id": "case_property_identifier",
+      "label": "Property identifier token",
+      "value_class": "synthetic",
+      "value_token": "synthetic_property_identifier_token",
+      "source_evidence_ids": ["src-devhub-submit-permit-application-guide"]
+    },
+    {
+      "fact_id": "case_permit_type",
+      "label": "Permit type token",
+      "value_class": "synthetic",
+      "value_token": "synthetic_building_permit_request_type",
+      "source_evidence_ids": ["src-devhub-submit-permit-application-guide"]
+    },
+    {
+      "fact_id": "case_project_description",
+      "label": "Project description token",
+      "value_class": "synthetic",
+      "value_token": "synthetic_project_description_token",
+      "source_evidence_ids": ["src-devhub-submit-permit-application-guide"]
+    }
+  ],
+  "accessible_structure_fixtures": [
+    {
+      "fixture_id": "surface-address-property-search",
+      "redaction": "accessible_structure_only",
+      "contains_private_values": false,
+      "source_evidence_ids": ["fixture-devhub-accessible-structure-redacted"],
+      "landmarks": ["main", "search"],
+      "controls": [
+        {"role": "textbox", "name": "Address or property search", "value": ""},
+        {"role": "button", "name": "Search", "value": ""},
+        {"role": "radio", "name": "Synthetic property match", "value": ""}
+      ]
+    },
+    {
+      "fixture_id": "surface-permit-type-selection",
+      "redaction": "accessible_structure_only",
+      "contains_private_values": false,
+      "source_evidence_ids": ["fixture-devhub-accessible-structure-redacted"],
+      "landmarks": ["main", "form"],
+      "controls": [
+        {"role": "combobox", "name": "Permit request type", "value": ""},
+        {"role": "option", "name": "Building permit request", "value": ""}
+      ]
+    },
+    {
+      "fixture_id": "surface-form-fields-and-save",
+      "redaction": "accessible_structure_only",
+      "contains_private_values": false,
+      "source_evidence_ids": ["fixture-devhub-accessible-structure-redacted"],
+      "landmarks": ["main", "form", "navigation"],
+      "controls": [
+        {"role": "textbox", "name": "Project description", "value": ""},
+        {"role": "button", "name": "Save for later", "value": ""}
+      ]
+    }
+  ],
+  "workflow_steps": [
+    {
+      "step_id": "step-address-property-search",
+      "step_kind": "address_property_search",
+      "action_class": "reversible_draft",
+      "action_kind": "enter_search_text_and_select_redacted_property_match",
+      "reversible": true,
+      "changes_official_state": false,
+      "requires_manual_login_handoff": true,
+      "surface_fixture_id": "surface-address-property-search",
+      "uses_case_fact_ids": ["case_address", "case_property_identifier"],
+      "source_evidence_ids": ["src-devhub-submit-permit-application-guide"],
+      "preview_metadata": {
+        "preview_id": "preview-address-property-search",
+        "preview_kind": "redacted_action_preview",
+        "contains_private_values": false,
+        "may_touch_live_devhub": false,
+        "source_evidence_ids": ["src-devhub-submit-permit-application-guide"]
+      }
+    },
+    {
+      "step_id": "step-permit-type-selection",
+      "step_kind": "permit_type_selection",
+      "action_class": "reversible_draft",
+      "action_kind": "select_permit_request_type",
+      "reversible": true,
+      "changes_official_state": false,
+      "requires_manual_login_handoff": true,
+      "surface_fixture_id": "surface-permit-type-selection",
+      "uses_case_fact_ids": ["case_permit_type"],
+      "source_evidence_ids": ["src-devhub-submit-permit-application-guide"],
+      "preview_metadata": {
+        "preview_id": "preview-permit-type-selection",
+        "preview_kind": "redacted_action_preview",
+        "contains_private_values": false,
+        "may_touch_live_devhub": false,
+        "source_evidence_ids": ["src-devhub-submit-permit-application-guide"]
+      }
+    },
+    {
+      "step_id": "step-form-field-entry",
+      "step_kind": "form_field_entry",
+      "action_class": "reversible_draft",
+      "action_kind": "fill_redacted_form_fields",
+      "reversible": true,
+      "changes_official_state": false,
+      "requires_manual_login_handoff": true,
+      "surface_fixture_id": "surface-form-fields-and-save",
+      "uses_case_fact_ids": ["case_project_description"],
+      "source_evidence_ids": ["src-devhub-submit-permit-application-guide"],
+      "field_entries": [
+        {
+          "field_id": "project-description",
+          "case_fact_id": "case_project_description",
+          "field_value_redacted": true
+        }
+      ],
+      "preview_metadata": {
+        "preview_id": "preview-form-field-entry",
+        "preview_kind": "redacted_field_preview",
+        "contains_private_values": false,
+        "may_touch_live_devhub": false,
+        "source_evidence_ids": ["src-devhub-submit-permit-application-guide"]
+      }
+    },
+    {
+      "step_id": "step-save-for-later",
+      "step_kind": "save_for_later",
+      "action_class": "reversible_draft",
+      "action_kind": "save_for_later_draft",
+      "reversible": true,
+      "changes_official_state": false,
+      "requires_manual_login_handoff": true,
+      "surface_fixture_id": "surface-form-fields-and-save",
+      "uses_case_fact_ids": [],
+      "source_evidence_ids": ["src-devhub-submit-permit-application-guide"],
+      "preview_metadata": {
+        "preview_id": "preview-save-for-later",
+        "preview_kind": "save_for_later_preview_metadata",
+        "contains_private_values": false,
+        "may_touch_live_devhub": false,
+        "source_evidence_ids": ["src-devhub-submit-permit-application-guide"]
+      }
+    }
+  ],
+  "blocked_actions": [
+    {"action_class": "account_creation_automation", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true},
+    {"action_class": "captcha_automation", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true},
+    {"action_class": "certification", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true},
+    {"action_class": "final_payment_execution", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true},
+    {"action_class": "login_automation", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true},
+    {"action_class": "mfa_automation", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true},
+    {"action_class": "official_upload", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true},
+    {"action_class": "payment_detail_entry", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true},
+    {"action_class": "submission", "decision": "refuse", "may_execute": false, "requires_exact_confirmation": true}
+  ]
+}

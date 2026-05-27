@@ -1,0 +1,148 @@
+{
+  "validReview": {
+    "reviewId": "review-devhub-draft-save-001",
+    "reviewType": "post_action_hardening_review",
+    "attemptedActions": [
+      {
+        "actionId": "save-draft-address-search",
+        "actionClass": "reversible_draft",
+        "classificationSourceEvidenceIds": ["src-devhub-guide-save-for-later"],
+        "journalEventId": "journal-attempt-save-draft-address-search",
+        "outcome": "completed"
+      }
+    ],
+    "completionEvidence": [
+      {
+        "evidenceId": "evidence-visible-draft-saved-banner",
+        "actionId": "save-draft-address-search",
+        "evidenceType": "visible_confirmation",
+        "observedOutcome": "The mocked DevHub page displayed a draft-saved confirmation banner after the reversible save action.",
+        "userVisibleOutcomeEvidence": "Visible status text: Draft saved. No official submission was made.",
+        "sourceEvidenceIds": ["src-devhub-guide-save-for-later"],
+        "journalEventId": "journal-completion-save-draft-address-search"
+      }
+    ],
+    "journalEvents": [
+      {
+        "eventId": "journal-attempt-save-draft-address-search",
+        "eventType": "DevHub attempted action",
+        "redactionStatus": "redacted",
+        "metadata": {
+          "redacted": true,
+          "containsPrivateValues": false,
+          "workflow": "mocked permit draft",
+          "actionId": "save-draft-address-search"
+        },
+        "payload": {
+          "metadata": {
+            "redacted": true,
+            "containsPrivateValues": false
+          },
+          "controlLabel": "Save for later",
+          "valuePolicy": "labels-only"
+        }
+      },
+      {
+        "eventId": "journal-completion-save-draft-address-search",
+        "eventType": "completion evidence",
+        "redactionStatus": "redacted",
+        "metadata": {
+          "redacted": true,
+          "containsPrivateValues": false,
+          "workflow": "mocked permit draft",
+          "evidenceId": "evidence-visible-draft-saved-banner"
+        },
+        "payload": {
+          "metadata": {
+            "redacted": true,
+            "containsPrivateValues": false
+          },
+          "visibleOutcome": "Draft saved confirmation banner observed",
+          "privateValuesPersisted": false
+        }
+      }
+    ]
+  },
+  "invalidClickOnlyReview": {
+    "reviewId": "review-devhub-click-only-001",
+    "reviewType": "post_action_hardening_review",
+    "attemptedActions": [
+      {
+        "actionId": "click-save-for-later",
+        "actionClass": "reversible_draft",
+        "journalEventId": "journal-click-save-for-later",
+        "outcome": "completed"
+      }
+    ],
+    "completionEvidence": [
+      {
+        "evidenceId": "evidence-click-only",
+        "actionId": "click-save-for-later",
+        "evidenceType": "click_attempt",
+        "observedOutcome": "Playwright clicked the button.",
+        "journalEventId": "journal-click-save-for-later"
+      }
+    ],
+    "journalEvents": [
+      {
+        "eventId": "journal-click-save-for-later",
+        "eventType": "DevHub attempted action",
+        "redactionStatus": "redacted",
+        "metadata": {
+          "redacted": true,
+          "containsPrivateValues": false
+        },
+        "payload": {
+          "metadata": {
+            "redacted": true,
+            "containsPrivateValues": false
+          },
+          "attempt": "click"
+        }
+      }
+    ]
+  },
+  "invalidPrivateJournalReview": {
+    "reviewId": "review-devhub-private-journal-001",
+    "reviewType": "post_action_hardening_review",
+    "attemptedActions": [
+      {
+        "actionId": "save-draft-with-private-journal",
+        "actionClass": "reversible_draft",
+        "classificationSourceEvidenceIds": ["src-devhub-guide-save-for-later"],
+        "journalEventId": "journal-private-save-draft",
+        "outcome": "completed"
+      }
+    ],
+    "completionEvidence": [
+      {
+        "evidenceId": "evidence-private-journal",
+        "actionId": "save-draft-with-private-journal",
+        "evidenceType": "visible_confirmation",
+        "observedOutcome": "Draft saved banner was visible.",
+        "userVisibleOutcomeEvidence": "Visible status text: Draft saved.",
+        "sourceEvidenceIds": ["src-devhub-guide-save-for-later"],
+        "journalEventId": "journal-private-save-draft"
+      }
+    ],
+    "journalEvents": [
+      {
+        "eventId": "journal-private-save-draft",
+        "eventType": "completion evidence",
+        "redactionStatus": "unredacted",
+        "metadata": {
+          "redacted": false,
+          "containsPrivateValues": true,
+          "storage_state": "/home/example/.auth/devhub.json"
+        },
+        "payload": {
+          "metadata": {
+            "redacted": false,
+            "containsPrivateValues": true
+          },
+          "screenshot": "/home/example/devhub.png"
+        }
+      }
+    ]
+  }
+}

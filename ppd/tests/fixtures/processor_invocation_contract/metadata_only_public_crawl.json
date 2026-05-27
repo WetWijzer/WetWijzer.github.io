@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-27T08:50:00Z",
+  "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors",
+  "notes": "Fixture-only PP&D-local adapter invocation contract for approved metadata-only public crawl intentions. It records intended processor inputs without importing processors, running network IO, persisting raw bodies, downloading documents, storing traces, or storing private DevHub state.",
+  "intentToAdapterMappings": [
+    {
+      "intent": {
+        "id": "metadata-only-public-ppd-landing",
+        "kind": "metadata_only_public_crawl",
+        "sourceId": "ppd-seed-landing",
+        "approved": true,
+        "sourceUrl": "https://www.portland.gov/ppd",
+        "canonicalUrl": "https://www.portland.gov/ppd"
+      },
+      "adapterInputs": {
+        "policyPreflight": {
+          "decision": "allow",
+          "reasons": [
+            "public_ppd_allowlisted",
+            "robots_allowed",
+            "no_persist_approved"
+          ],
+          "evaluatedAt": "2026-05-27T08:49:30Z",
+          "evaluator": "ppd.crawler.policy",
+          "robotsPolicy": "allow",
+          "allowlistPolicy": "official_ppd_public_seed"
+        },
+        "rateLimitBucket": {
+          "bucketId": "public-portland-gov-metadata-only",
+          "scope": "host:www.portland.gov",
+          "maxRequestsPerMinute": 6,
+          "minDelaySeconds": 10,
+          "burstLimit": 1,
+          "robotsDelaySource": "policy_default_when_unspecified",
+          "enforcedBy": "ppd.crawler.public_crawl_scheduler"
+        },
+        "processorCapability": {
+          "name": "web_archive_capture",
+          "family": "web_archiving",
+          "moduleRef": "ipfs_datasets_py.processors.web_archiving",
+          "version": "read-only-submodule",
+          "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors",
+          "requiredCapability": "metadata_capture_without_raw_body_persistence",
+          "importPermittedInFixture": false
+        },
+        "processorInvocation": {
+          "operation": "capture_url",
+          "url": "https://www.portland.gov/ppd",
+          "canonicalUrl": "https://www.portland.gov/ppd",
+          "captureMode": "metadata_and_archive_reference",
+          "respectRobots": true,
+          "metadataOnly": true,
+          "manifestOnly": true,
+          "maxDepth": 0,
+          "persistRawBody": false,
+          "storeRawResponse": false,
+          "downloadDocuments": false,
+          "outputManifestRef": "processor_archive_manifests/metadata-only-public-ppd-landing.json"
+        },
+        "rawBodyGuarantee": {
+          "noRawBodyPersisted": true,
+          "noDownloadedDocuments": true,
+          "noBrowserTrace": true,
+          "noAuthenticatedState": true,
+          "commitSafe": true
+        }
+      }
+    },
+    {
+      "intent": {
+        "id": "metadata-only-public-ppd-forms-index",
+        "kind": "metadata_only_public_crawl",
+        "sourceId": "ppd-seed-permit-forms-index",
+        "approved": true,
+        "sourceUrl": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+        "canonicalUrl": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications"
+      },
+      "adapterInputs": {
+        "policyPreflight": {
+          "decision": "allow",
+          "reasons": [
+            "public_ppd_allowlisted",
+            "robots_allowed",
+            "no_persist_approved"
+          ],
+          "evaluatedAt": "2026-05-27T08:49:30Z",
+          "evaluator": "ppd.crawler.policy",
+          "robotsPolicy": "allow",
+          "allowlistPolicy": "official_ppd_public_seed"
+        },
+        "rateLimitBucket": {
+          "bucketId": "public-portland-gov-metadata-only",
+          "scope": "host:www.portland.gov",
+          "maxRequestsPerMinute": 6,
+          "minDelaySeconds": 10,
+          "burstLimit": 1,
+          "robotsDelaySource": "policy_default_when_unspecified",
+          "enforcedBy": "ppd.crawler.public_crawl_scheduler"
+        },
+        "processorCapability": {
+          "name": "parallel_web_archiver",
+          "family": "legal_scraper",
+          "moduleRef": "ipfs_datasets_py.processors.legal_scrapers.parallel_web_archiver",
+          "version": "read-only-submodule",
+          "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors",
+          "requiredCapability": "metadata_capture_without_raw_body_persistence",
+          "importPermittedInFixture": false
+        },
+        "processorInvocation": {
+          "operation": "legal_archive_url",
+          "url": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+          "canonicalUrl": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+          "jurisdiction": "portland-or-ppd",
+          "captureMode": "metadata_and_archive_reference",
+          "respectRobots": true,
+          "metadataOnly": true,
+          "manifestOnly": true,
+          "maxDepth": 0,
+          "persistRawBody": false,
+          "storeRawResponse": false,
+          "downloadDocuments": false,
+          "outputManifestRef": "processor_archive_manifests/metadata-only-public-ppd-forms-index.json"
+        },
+        "rawBodyGuarantee": {
+          "noRawBodyPersisted": true,
+          "noDownloadedDocuments": true,
+          "noBrowserTrace": true,
+          "noAuthenticatedState": true,
+          "commitSafe": true
+        }
+      }
+    }
+  ],
+  "processorJobs": [
+    {
+      "id": "metadata-only-public-ppd-landing",
+      "seedId": "ppd-seed-landing",
+      "sourceUrl": "https://www.portland.gov/ppd",
+      "canonicalUrl": "https://www.portland.gov/ppd",
+      "operation": "capture_url",
+      "processor": {
+        "name": "web_archive_capture",
+        "family": "web_archiving",
+        "module": "ipfs_datasets_py.processors.web_archiving",
+        "version": "read-only-submodule",
+        "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors"
+      },
+      "arguments": {
+        "url": "https://www.portland.gov/ppd",
+        "canonicalUrl": "https://www.portland.gov/ppd",
+        "captureMode": "metadata_and_archive_reference",
+        "respectRobots": true,
+        "metadataOnly": true,
+        "manifestOnly": true,
+        "maxDepth": 0,
+        "persistRawBody": false,
+        "storeRawResponse": false,
+        "downloadDocuments": false,
+        "policyPreflight": {
+          "decision": "allow",
+          "reasons": [
+            "public_ppd_allowlisted",
+            "robots_allowed",
+            "no_persist_approved"
+          ],
+          "evaluatedAt": "2026-05-27T08:49:30Z",
+          "evaluator": "ppd.crawler.policy"
+        },
+        "rateLimitBucket": {
+          "bucketId": "public-portland-gov-metadata-only",
+          "scope": "host:www.portland.gov",
+          "maxRequestsPerMinute": 6,
+          "minDelaySeconds": 10,
+          "burstLimit": 1
+        },
+        "processorCapability": {
+          "requiredCapability": "metadata_capture_without_raw_body_persistence",
+          "importPermittedInFixture": false
+        }
+      },
+      "policyDecision": {
+        "decision": "allow",
+        "reasons": [
+          "public_ppd_allowlisted",
+          "robots_allowed",
+          "no_persist_approved"
+        ],
+        "evaluatedAt": "2026-05-27T08:49:30Z",
+        "evaluator": "ppd.crawler.policy"
+      },
+      "outputManifestRef": "processor_archive_manifests/metadata-only-public-ppd-landing.json",
+      "manifestOnly": true
+    },
+    {
+      "id": "metadata-only-public-ppd-forms-index",
+      "seedId": "ppd-seed-permit-forms-index",
+      "sourceUrl": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+      "canonicalUrl": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+      "operation": "legal_archive_url",
+      "processor": {
+        "name": "parallel_web_archiver",
+        "family": "legal_scraper",
+        "module": "ipfs_datasets_py.processors.legal_scrapers.parallel_web_archiver",
+        "version": "read-only-submodule",
+        "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors"
+      },
+      "arguments": {
+        "url": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+        "canonicalUrl": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+        "jurisdiction": "portland-or-ppd",
+        "captureMode": "metadata_and_archive_reference",
+        "respectRobots": true,
+        "metadataOnly": true,
+        "manifestOnly": true,
+        "maxDepth": 0,
+        "persistRawBody": false,
+        "storeRawResponse": false,
+        "downloadDocuments": false,
+        "policyPreflight": {
+          "decision": "allow",
+          "reasons": [
+            "public_ppd_allowlisted",
+            "robots_allowed",
+            "no_persist_approved"
+          ],
+          "evaluatedAt": "2026-05-27T08:49:30Z",
+          "evaluator": "ppd.crawler.policy"
+        },
+        "rateLimitBucket": {
+          "bucketId": "public-portland-gov-metadata-only",
+          "scope": "host:www.portland.gov",
+          "maxRequestsPerMinute": 6,
+          "minDelaySeconds": 10,
+          "burstLimit": 1
+        },
+        "processorCapability": {
+          "requiredCapability": "metadata_capture_without_raw_body_persistence",
+          "importPermittedInFixture": false
+        }
+      },
+      "policyDecision": {
+        "decision": "allow",
+        "reasons": [
+          "public_ppd_allowlisted",
+          "robots_allowed",
+          "no_persist_approved"
+        ],
+        "evaluatedAt": "2026-05-27T08:49:30Z",
+        "evaluator": "ppd.crawler.policy"
+      },
+      "outputManifestRef": "processor_archive_manifests/metadata-only-public-ppd-forms-index.json",
+      "manifestOnly": true
+    }
+  ]
+}

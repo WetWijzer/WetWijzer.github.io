@@ -1,0 +1,176 @@
+{
+  "version_id": "pmv-standard-electrical-trade-draft-v2026-05-27",
+  "process_id": "process-standard-electrical-trade-permit-draft",
+  "workflow_id": "workflow-devhub-standard-electrical-trade-permit-draft-only",
+  "permit_type": "standard electrical trade permit",
+  "narrow_scope": "Synthetic draft-readiness model for starting a standard electrical trade permit in DevHub, stopping before purchase, payment, certification, upload, submission, scheduling, cancellation, or any official action.",
+  "fixture_policy": {
+    "fixture_only": true,
+    "live_source_reads_allowed": false,
+    "authenticated_devhub_reads_allowed": false,
+    "raw_source_body_persisted": false,
+    "private_session_artifacts_persisted": false
+  },
+  "source_evidence_hashes": [
+    {
+      "source_evidence_id": "ppd-src-devhub-standard-trade-guide-synthetic",
+      "source_family": "devhub_public_guidance",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-standard-trade-permits",
+      "synthetic_excerpt": true,
+      "live_read_performed": false,
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "hash_status": "current",
+      "supports_requirement_ids": [
+        "ppd-req-standard-electrical-trade-license-profile",
+        "ppd-req-standard-electrical-trade-draft-only"
+      ]
+    },
+    {
+      "source_evidence_id": "ppd-src-online-tools-overview-synthetic",
+      "source_family": "online_permitting_tools_overview",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "synthetic_excerpt": true,
+      "live_read_performed": false,
+      "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "hash_status": "current",
+      "supports_requirement_ids": [
+        "ppd-req-devhub-account-scoped-draft",
+        "ppd-req-payment-and-submission-gated"
+      ]
+    },
+    {
+      "source_evidence_id": "ppd-src-devhub-faq-synthetic",
+      "source_family": "devhub_public_faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "synthetic_excerpt": true,
+      "live_read_performed": false,
+      "content_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "hash_status": "current",
+      "supports_requirement_ids": [
+        "ppd-req-payment-and-submission-gated",
+        "ppd-req-inspection-scheduling-gated"
+      ]
+    }
+  ],
+  "current_source_hashes": {
+    "ppd-src-devhub-standard-trade-guide-synthetic": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "ppd-src-online-tools-overview-synthetic": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "ppd-src-devhub-faq-synthetic": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "process_stages": [
+    {
+      "stage_id": "stage-account-and-license-preflight",
+      "name": "Account and license preflight",
+      "source_evidence_ids": [
+        "ppd-src-devhub-standard-trade-guide-synthetic",
+        "ppd-src-online-tools-overview-synthetic"
+      ]
+    },
+    {
+      "stage_id": "stage-draft-permit-form",
+      "name": "Draft standard electrical trade permit form",
+      "source_evidence_ids": [
+        "ppd-src-devhub-standard-trade-guide-synthetic"
+      ]
+    },
+    {
+      "stage_id": "stage-payment-and-submission-boundary",
+      "name": "Payment and submission boundary",
+      "source_evidence_ids": [
+        "ppd-src-online-tools-overview-synthetic",
+        "ppd-src-devhub-faq-synthetic"
+      ]
+    }
+  ],
+  "requirement_ids": [
+    "ppd-req-standard-electrical-trade-license-profile",
+    "ppd-req-standard-electrical-trade-draft-only",
+    "ppd-req-devhub-account-scoped-draft",
+    "ppd-req-payment-and-submission-gated",
+    "ppd-req-inspection-scheduling-gated"
+  ],
+  "guardrail_bundle_ids": [
+    "guardrail-bundle-standard-electrical-trade-draft-v1",
+    "guardrail-bundle-devhub-consequential-action-gates-v1"
+  ],
+  "linked_requirement_evidence": {
+    "ppd-req-standard-electrical-trade-license-profile": [
+      "ppd-src-devhub-standard-trade-guide-synthetic"
+    ],
+    "ppd-req-standard-electrical-trade-draft-only": [
+      "ppd-src-devhub-standard-trade-guide-synthetic"
+    ],
+    "ppd-req-devhub-account-scoped-draft": [
+      "ppd-src-online-tools-overview-synthetic"
+    ],
+    "ppd-req-payment-and-submission-gated": [
+      "ppd-src-online-tools-overview-synthetic",
+      "ppd-src-devhub-faq-synthetic"
+    ],
+    "ppd-req-inspection-scheduling-gated": [
+      "ppd-src-devhub-faq-synthetic"
+    ]
+  },
+  "required_documents": [
+    {
+      "document_id": "contractor-license-profile-evidence",
+      "label": "Contractor license and DevHub profile facts",
+      "requirement_ids": [
+        "ppd-req-standard-electrical-trade-license-profile",
+        "ppd-req-devhub-account-scoped-draft"
+      ],
+      "source_evidence_ids": [
+        "ppd-src-devhub-standard-trade-guide-synthetic",
+        "ppd-src-online-tools-overview-synthetic"
+      ]
+    }
+  ],
+  "devhub_paths": [
+    {
+      "path_id": "devhub-standard-electrical-trade-draft",
+      "route": "/trade-permits/standard-electrical/draft",
+      "supported_in_devhub": true,
+      "automatable": true,
+      "automation_level": "reversible_draft"
+    },
+    {
+      "path_id": "unsupported-official-payment-or-submission",
+      "route": "/trade-permits/standard-electrical/payment-or-submit",
+      "supported_in_devhub": false,
+      "automatable": false,
+      "automation_level": "manual_only",
+      "support_status": "unsupported"
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "save-draft",
+      "label": "Save draft",
+      "action_kind": "save_draft",
+      "automation_level": "reversible_draft"
+    },
+    {
+      "action_id": "review-fees-before-payment",
+      "label": "Review fees before payment",
+      "action_kind": "open_payment_review",
+      "automation_level": "manual_only",
+      "financial_boundary_classification": "fee_payment_boundary"
+    },
+    {
+      "action_id": "submit-application",
+      "label": "Submit application",
+      "action_kind": "submit_application",
+      "automation_level": "manual_only"
+    }
+  ],
+  "readiness_status": "blocked_pending_human_review",
+  "blocked_reasons": [
+    "Synthetic source excerpts must be reconciled with a fresh public-source capture before production use.",
+    "Contractor license and profile eligibility facts are user-specific and cannot be assumed from the fixture.",
+    "Payment, purchase, certification, submission, upload, cancellation, and inspection scheduling remain exact-confirmation gated consequential actions."
+  ],
+  "version_notes": [
+    "Fixture records evidence hashes and requirement-to-evidence links without reading live public pages.",
+    "The workflow scope is limited to draft readiness for one standard electrical trade permit path."
+  ]
+}

@@ -1,0 +1,274 @@
+{
+  "plan_version": "devhub-attended-dry-run-plan-v1",
+  "plan_id": "devhub_attended_read_only_reversible_draft_plan",
+  "run_mode": "fixture_first_attended_devhub_dry_run",
+  "live_devhub_session": false,
+  "browser_launched": false,
+  "auth_state_saved": false,
+  "allowed_state_classes": [
+    "read_only",
+    "reversible_draft"
+  ],
+  "source_note": "Synthetic fixture only. No private DevHub session data, credentials, browser artifacts, raw crawl output, downloaded documents, uploads, payments, submissions, certifications, cancellation, inspection scheduling, CAPTCHA, MFA, login, or account creation automation.",
+  "surface_map_readiness": [
+    {
+      "surface_id": "devhub_home_read_only_review",
+      "state_class": "read_only",
+      "url_pattern": "https://devhub.portlandoregon.gov/*",
+      "page_heading": "DevHub Home",
+      "selector_confidence": 0.92,
+      "ready_for_dry_run": true,
+      "requires_attendance": true,
+      "requires_exact_confirmation": false,
+      "readiness_evidence": [
+        "Public DevHub guidance identifies account-scoped permit and request review.",
+        "Fixture has stable heading and landmark labels."
+      ]
+    },
+    {
+      "surface_id": "devhub_application_reversible_draft",
+      "state_class": "reversible_draft",
+      "url_pattern": "https://devhub.portlandoregon.gov/permits/draft/*",
+      "page_heading": "Permit Application Draft",
+      "selector_confidence": 0.9,
+      "ready_for_dry_run": true,
+      "requires_attendance": true,
+      "requires_exact_confirmation": false,
+      "readiness_evidence": [
+        "Required draft fields have unique labels.",
+        "Save-for-later is modeled as reversible and submission controls remain out of scope."
+      ]
+    }
+  ],
+  "action_decisions": [
+    {
+      "action_id": "review_permit_status",
+      "label": "Review permit status summary",
+      "surface_id": "devhub_home_read_only_review",
+      "action_class": "read_only",
+      "decision": "allow_read_only",
+      "may_execute_in_dry_run": true,
+      "changes_official_state": false,
+      "requires_exact_confirmation": false
+    },
+    {
+      "action_id": "compare_required_fields_to_case_gaps",
+      "label": "Compare visible draft fields to known case facts",
+      "surface_id": "devhub_application_reversible_draft",
+      "action_class": "read_only",
+      "decision": "allow_read_only",
+      "may_execute_in_dry_run": true,
+      "changes_official_state": false,
+      "requires_exact_confirmation": false
+    },
+    {
+      "action_id": "prepare_reversible_draft_values",
+      "label": "Prepare reversible draft values for user preview",
+      "surface_id": "devhub_application_reversible_draft",
+      "action_class": "reversible_draft",
+      "decision": "allow_reversible_draft",
+      "may_execute_in_dry_run": true,
+      "changes_official_state": false,
+      "requires_exact_confirmation": false
+    }
+  ],
+  "user_case_gap_analysis": {
+    "case_id": "synthetic_residential_draft_case",
+    "process_id": "residential_building_permit_fixture",
+    "known_facts": [
+      {
+        "fact_id": "property_address",
+        "status": "known_redacted"
+      },
+      {
+        "fact_id": "applicant_role",
+        "status": "known_redacted"
+      }
+    ],
+    "matched_documents": [
+      {
+        "document_id": "site_plan_pdf_placeholder",
+        "status": "fixture_metadata_only"
+      }
+    ],
+    "missing_facts": [
+      {
+        "fact_id": "contractor_license_status",
+        "reason": "DevHub options may depend on license profile metadata."
+      },
+      {
+        "fact_id": "project_scope_confirmation",
+        "reason": "Draft values need user confirmation before preview."
+      }
+    ],
+    "missing_documents": [
+      {
+        "document_id": "structural_calculations",
+        "reason": "Required document metadata is not present in the synthetic case."
+      }
+    ],
+    "stale_evidence": [],
+    "conflicting_evidence": [],
+    "required_confirmations": [
+      {
+        "confirmation_id": "attended_read_only_review",
+        "prompt_kind": "presence_confirmation"
+      }
+    ],
+    "blocked_actions": [
+      {
+        "action_id": "automate_login",
+        "action_class": "login_automation",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "automate_mfa",
+        "action_class": "mfa_automation",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "automate_captcha",
+        "action_class": "captcha_automation",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "create_devhub_account",
+        "action_class": "account_creation_automation",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "official_upload",
+        "action_class": "official_upload",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "submit_application",
+        "action_class": "submission",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "certify_application",
+        "action_class": "certification",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "schedule_inspection",
+        "action_class": "inspection_scheduling",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "cancel_request_or_inspection",
+        "action_class": "cancellation",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "enter_payment_details",
+        "action_class": "payment_detail_entry",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      },
+      {
+        "action_id": "final_payment_execution",
+        "action_class": "final_payment_execution",
+        "decision": "refuse",
+        "may_execute_in_dry_run": false,
+        "blocked_until": "manual_handoff_and_exact_confirmation",
+        "refusal_reason": "consequential_devhub_action"
+      }
+    ],
+    "next_safe_actions": [
+      {
+        "action_id": "review_status",
+        "action_class": "read_only"
+      },
+      {
+        "action_id": "prepare_preview",
+        "action_class": "reversible_draft"
+      }
+    ]
+  },
+  "preview_requirements": [
+    {
+      "preview_id": "surface_map_readiness_preview",
+      "preview_kind": "surface_map",
+      "required_before_devhub_interaction": true,
+      "contains_private_values": false,
+      "may_touch_live_devhub": false
+    },
+    {
+      "preview_id": "case_gap_preview",
+      "preview_kind": "user_case_gap",
+      "required_before_devhub_interaction": true,
+      "contains_private_values": false,
+      "may_touch_live_devhub": false
+    },
+    {
+      "preview_id": "reversible_draft_value_preview",
+      "preview_kind": "reversible_draft",
+      "required_before_devhub_interaction": true,
+      "contains_private_values": false,
+      "may_touch_live_devhub": false
+    }
+  ],
+  "journal_event_expectations": [
+    {
+      "event_type": "DevHub attended preflight",
+      "commit_safe": true,
+      "contains_private_values": false,
+      "records_browser_artifact": false
+    },
+    {
+      "event_type": "user gap analysis",
+      "commit_safe": true,
+      "contains_private_values": false,
+      "records_browser_artifact": false
+    },
+    {
+      "event_type": "reversible draft plan",
+      "commit_safe": true,
+      "contains_private_values": false,
+      "records_browser_artifact": false
+    },
+    {
+      "event_type": "local PDF preview",
+      "commit_safe": true,
+      "contains_private_values": false,
+      "records_browser_artifact": false
+    },
+    {
+      "event_type": "manual handoff",
+      "commit_safe": true,
+      "contains_private_values": false,
+      "records_browser_artifact": false
+    }
+  ]
+}

@@ -57,3 +57,29 @@ def test_unready_source_index_blocks_requirement_extraction(mutation, expected: 
     with pytest.raises(SourceIndexReadinessError) as exc_info:
         require_source_index_ready(index, now=NOW)
     assert expected in exc_info.value.failures
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        (lambda index: index.pop("official_source_anchors"), "missing official source anchor coverage"),
+        (lambda index: index["official_source_anchors"].pop(), "missing canonical URLs"),
+        (lambda index: index["official_source_anchors"][1].update({"canonical_url": index["official_source_anchors"][0]["canonical_url"]}), "duplicate canonical_url"),
+        (lambda index: index["official_source_anchors"][0].update({"canonical_url": "https://example.com/ppd"}), "unsupported host"),
+        (lambda index: index["official_source_anchors"][0].update({"freshness_status": "stale"}), "stale official source anchor freshness_status"),
+        (lambda index: index["official_source_anchors"][0].pop("freshness_status"), "missing required fields"),
+        (lambda index: index["official_source_anchors"][0].pop("owning_surface"), "missing required fields"),
+        (lambda index: index["official_source_anchors"][0].update({"canonical_url": "https://www.portland.gov/account?session=abc"}), "private or authenticated canonical_url"),
+    ],
+)
+def test_source_index_readiness_requires_safe_official_anchor_coverage(mutation, expected: str) -> None:
+    index = copy.deepcopy(_fixture("ready_source_index.json"))
+    mutation(index)
+
+    result = validate_source_index_readiness(index, now=NOW)
+
+    assert result.ready is False
+    assert any(expected in failure for failure in result.failures)
+    with pytest.raises(SourceIndexReadinessError) as exc_info:
+        require_source_index_ready(index, now=NOW)
+    assert any(expected in failure for failure in exc_info.value.failures)

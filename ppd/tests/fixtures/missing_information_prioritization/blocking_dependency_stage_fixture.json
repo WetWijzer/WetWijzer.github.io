@@ -1,0 +1,78 @@
+{
+  "fixture_id": "agent-facing-blocking-dependency-stage-prioritization-v1",
+  "case_id": "synthetic-residential-addition-redacted",
+  "process_id": "residential-building-permit-demo",
+  "next_safe_action": "prepare_reversible_local_draft_plan",
+  "facts": [
+    {
+      "fact_id": "prepared_plan_set_status",
+      "status": "missing",
+      "needed_for_next_safe_action": true,
+      "blocking_dependency_stage": "document preparation",
+      "prompt_id": "ask_prepared_plan_set_status",
+      "prompt": "Do you have a prepared plan set PDF for this PP&D request?",
+      "reason": "The reversible draft cannot map required document placeholders until the plan set status is known.",
+      "source_requirement_ids": ["req-single-pdf-plan-set"],
+      "blocked_next_safe_action": "prepare_reversible_local_draft_plan"
+    },
+    {
+      "fact_id": "property_tax_account",
+      "status": "ambiguous",
+      "needed_for_next_safe_action": true,
+      "blocking_dependency_stage": "property lookup",
+      "prompt_id": "ask_property_tax_account",
+      "prompt": "Which redacted property record should be used for the permit draft?",
+      "reason": "Two public property lookup candidates match the redacted case description, so the draft must not assume one.",
+      "source_requirement_ids": ["req-property-lookup-before-application"],
+      "blocked_next_safe_action": "prepare_reversible_local_draft_plan",
+      "current_value": "[REDACTED]"
+    },
+    {
+      "fact_id": "contractor_license_status",
+      "status": "stale",
+      "needed_for_next_safe_action": true,
+      "blocking_dependency_stage": "eligibility screening",
+      "prompt_id": "ask_contractor_license_status",
+      "prompt": "Is the contractor license status still current for this PP&D request?",
+      "reason": "Trade and fixture options can depend on current license profile facts.",
+      "source_requirement_ids": ["req-license-profile-affects-options"],
+      "blocked_next_safe_action": "prepare_reversible_local_draft_plan",
+      "observed_value": "[REDACTED]"
+    },
+    {
+      "fact_id": "owner_authorization",
+      "status": "conflicting",
+      "needed_for_next_safe_action": true,
+      "blocking_dependency_stage": "application data entry",
+      "prompt_id": "ask_owner_authorization",
+      "prompt": "Should the draft use owner authorization as confirmed or not confirmed?",
+      "reason": "The local case notes disagree, and the application data entry stage needs one consistent value.",
+      "source_requirement_ids": ["req-owner-authorization-for-application"],
+      "blocked_next_safe_action": "prepare_reversible_local_draft_plan",
+      "private_value": "[REDACTED]"
+    },
+    {
+      "fact_id": "applicant_email",
+      "status": "complete",
+      "needed_for_next_safe_action": false,
+      "blocking_dependency_stage": "application data entry",
+      "prompt_id": "do_not_ask_applicant_email",
+      "prompt": "What is the applicant email?",
+      "reason": "Complete private contact values must not be returned in agent prompts.",
+      "source_requirement_ids": ["req-contact-information"],
+      "blocked_next_safe_action": "prepare_reversible_local_draft_plan",
+      "current_value": "[REDACTED]"
+    },
+    {
+      "fact_id": "future_fee_confirmation",
+      "status": "missing",
+      "needed_for_next_safe_action": false,
+      "blocking_dependency_stage": "fee payment",
+      "prompt_id": "do_not_ask_future_fee_confirmation",
+      "prompt": "What fee payment method will be used?",
+      "reason": "Fee payment is not needed for the next reversible local draft action.",
+      "source_requirement_ids": ["req-fee-payment-gate"],
+      "blocked_next_safe_action": "fee_payment"
+    }
+  ]
+}

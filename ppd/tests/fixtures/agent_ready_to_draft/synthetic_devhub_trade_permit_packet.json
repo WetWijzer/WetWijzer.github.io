@@ -1,0 +1,123 @@
+{
+  "packet_id": "fixture-ready-to-draft-001",
+  "workflow_id": "synthetic-devhub-trade-permit-draft",
+  "workflow_name": "Synthetic DevHub Trade Permit Draft Readiness",
+  "metadata_only": true,
+  "synthetic_workflow": true,
+  "process_model_version_readiness": {
+    "status": "ready_for_fixture_draft",
+    "expected_process_model_version": "ppd-process-model-fixture-v1",
+    "version_checks": [
+      "workflow has a declared process model version",
+      "required readiness sections are present",
+      "no live crawl or authenticated action is required"
+    ],
+    "citation_ids": ["fixture-process-model-v1"]
+  },
+  "missing_information_prioritization": {
+    "status": "prioritized",
+    "priorities": [
+      {
+        "rank": 1,
+        "question": "Which permit subtype should be drafted for the synthetic trade workflow?",
+        "blocking_level": "blocks_field_mapping",
+        "resolution_owner": "human_review"
+      },
+      {
+        "rank": 2,
+        "question": "Which synthetic site metadata should be used for address and jurisdiction fields?",
+        "blocking_level": "blocks_draft_completion",
+        "resolution_owner": "fixture_author"
+      },
+      {
+        "rank": 3,
+        "question": "Which supporting-document labels are expected without storing the documents themselves?",
+        "blocking_level": "blocks_packet_confidence",
+        "resolution_owner": "agent_review"
+      }
+    ],
+    "citation_ids": ["fixture-gap-policy"]
+  },
+  "devhub_surface_map_readiness": {
+    "status": "surface_map_ready",
+    "surfaces": [
+      {
+        "surface_id": "devhub-intake-start",
+        "surface_type": "public_navigation_metadata",
+        "allowed_actions": ["read labels", "record required field names"],
+        "disallowed_actions": ["login", "submit", "upload"]
+      },
+      {
+        "surface_id": "devhub-draft-review",
+        "surface_type": "draft_metadata_checkpoint",
+        "allowed_actions": ["compare fixture fields", "record unresolved blockers"],
+        "disallowed_actions": ["certify", "pay", "finalize"]
+      }
+    ],
+    "citation_ids": ["fixture-devhub-surface-map"]
+  },
+  "reversible_draft_planning": {
+    "status": "draft_plan_ready_without_submission",
+    "draft_steps": [
+      {
+        "step_id": "collect-fixture-fields",
+        "description": "Collect synthetic metadata fields from committed fixtures only.",
+        "reversible": true,
+        "requires_submission": false
+      },
+      {
+        "step_id": "prepare-local-draft-packet",
+        "description": "Prepare a metadata-only local draft packet that can be discarded without external effects.",
+        "reversible": true,
+        "requires_submission": false
+      },
+      {
+        "step_id": "human-review-gates",
+        "description": "Stop before any certification, upload, payment, or submission action.",
+        "reversible": true,
+        "requires_submission": false
+      }
+    ],
+    "citation_ids": ["fixture-reversible-draft-policy"]
+  },
+  "action_journal_expectations": {
+    "status": "journal_expectations_ready",
+    "expected_events": [
+      "packet_loaded",
+      "process_model_version_checked",
+      "missing_information_ranked",
+      "devhub_surface_map_checked",
+      "reversible_draft_plan_created",
+      "human_review_required_before_external_action"
+    ],
+    "redacted_fields": ["private_session", "auth_state", "raw_crawl_output", "downloaded_documents"],
+    "citation_ids": ["fixture-action-journal-policy"]
+  },
+  "citations": [
+    {
+      "source_id": "fixture-process-model-v1",
+      "title": "PP&D fixture process model readiness contract",
+      "classification": "metadata"
+    },
+    {
+      "source_id": "fixture-gap-policy",
+      "title": "PP&D missing information prioritization fixture policy",
+      "classification": "metadata"
+    },
+    {
+      "source_id": "fixture-devhub-surface-map",
+      "title": "PP&D DevHub public surface map fixture",
+      "classification": "metadata"
+    },
+    {
+      "source_id": "fixture-reversible-draft-policy",
+      "title": "PP&D reversible draft planning fixture policy",
+      "classification": "metadata"
+    },
+    {
+      "source_id": "fixture-action-journal-policy",
+      "title": "PP&D action journal metadata expectations",
+      "classification": "metadata"
+    }
+  ]
+}

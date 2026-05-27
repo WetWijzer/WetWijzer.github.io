@@ -1,7 +1,7 @@
 # PP&D Daemon Task Board
 
 Status: active
-Last supervisor tranche: 2026-05-15
+Last supervisor tranche: 2026-05-27
 
 ## Worker Rules
 
@@ -87,18 +87,46 @@ Last supervisor tranche: 2026-05-15
 - [x] Task supervisor-20260515-066: Add validation that normalized public-capture assembly blocks requirement extraction when citation spans, section order, extraction confidence, content hash, source freshness, or owning surface metadata is missing or stale.
 - [x] Task supervisor-20260515-067: Add a fixture-first requirement delta review queue that reports added, removed, or changed synthetic requirements from changed source hashes and maps each delta to affected process IDs, guardrail bundle IDs, human-review status, and blocked readiness status.
 - [x] Task supervisor-20260515-068: Add a synthetic DevHub accessible-tree normalizer that converts redacted role/name/heading/route/validation-message fixtures into DevHubSurfaceMap candidates while rejecting screenshots, traces, HAR data, auth state, cookies, credentials, private values, uploads, submissions, scheduling, and payment actions.
-- [!] Task supervisor-20260515-069: Add validation for DevHubSurfaceMap candidates that blocks reversible draft actions when selector confidence is low, route or heading evidence is missing, required labels are ambiguous, or upload/submit/certify/schedule/cancel/payment controls are classified as reversible.
+- [x] Task supervisor-20260515-069: Add validation for DevHubSurfaceMap candidates that blocks reversible draft actions when selector confidence is low, route or heading evidence is missing, required labels are ambiguous, or upload/submit/certify/schedule/cancel/payment controls are classified as reversible.
 - [x] Task supervisor-20260515-070: Add a fixture-first agent readiness packet that assembles the process bundle, case gap report, normalized source evidence, crawl promotion audit, DevHub surface-map readiness, and action decision output into one cited metadata-only response for agents; reject stale evidence, uncited explanations, private values, and consequential actions without manual handoff or exact-confirmation requirements.
+- [x] Task supervisor-20260527-071: Add a fixture-first agent readiness packet validation that rejects packets with stale source evidence, missing citation spans, incomplete crawl-promotion audit status, absent DevHub surface-map readiness, or consequential action decisions lacking manual handoff or exact-confirmation requirements; use existing synthetic fixtures only.
+- [x] Task supervisor-20260527-072: Add a deterministic freshness-refresh planning fixture that converts stale or hash-changed synthetic source-index entries into metadata-only recrawl intentions with allowlist, robots/preflight, rate-limit, processor, and no-raw-body policies; do not make network requests.
+- [x] Task supervisor-20260527-073: Add validation that freshness-refresh plans refuse private or authenticated URLs, over-broad host expansion, missing crawl frequency, missing rate-limit policy, raw body output paths, and downloaded document paths before any live public crawl can be considered.
+- [x] Task supervisor-20260527-074: Add a fixture-first requirement delta formalization gate that requires human-review completion, fresh citations, supported-path taxonomy, and affected process/guardrail IDs before changed requirements can become ready.
+- [x] Task supervisor-20260527-075: Add validation that requirement deltas involving fees, deadlines, required documents, unsupported paths, upload rules, or DevHub action gates keep affected guardrail bundles blocked until refreshed process-model evidence is present.
+- [x] Task supervisor-20260527-076: Add a synthetic process-model versioning fixture that records source evidence hashes, requirement IDs, guardrail bundle IDs, readiness status, and blocked reasons for one narrow permit workflow without live source reads.
+- [x] Task supervisor-20260527-077: Add validation that process-model version records reject uncited stages, stale source hashes, unsupported DevHub paths marked automatable, missing required-document links, and fee/payment actions lacking financial-boundary classification.
+- [x] Task supervisor-20260527-078: Add a fixture-first attended DevHub dry-run plan that combines surface-map readiness, action decision classification, user case gaps, preview requirements, and journal event expectations for read-only and reversible draft states only.
+- [x] Task supervisor-20260527-079: Add validation that attended DevHub dry-run plans refuse login/MFA/CAPTCHA/account creation automation, official upload, submission, certification, inspection scheduling, cancellation, payment detail entry, and final payment execution.
+- [x] Task supervisor-20260527-080: Add a deterministic post-action hardening review fixture for safe DevHub read-only or reversible draft attempts that requires completion evidence, refused-action evidence for consequential controls, redacted journal events, and no private browser artifacts.
+- [x] Task supervisor-20260527-081: Add validation that post-action hardening reviews cannot mark a DevHub action complete based only on a click/fill attempt and must include user-visible outcome evidence, source-backed classification, and redacted journal metadata.
+- [x] Task supervisor-20260527-082: Add a narrow daemon regression test that, after a no-eligible-tasks state, accepts supervisor-only task-board backlog additions under `plan_next_tasks` while preserving all completed tasks and keeping generated status counts consistent.
+- [x] Task supervisor-20260527-083: Add a fixture-first official source anchor coverage matrix that proves every original PP&D public source anchor is represented by source ID, canonical URL, source type, owning surface, crawl frequency, processor policy, and freshness status; use synthetic metadata only and do not crawl.
+- [x] Task supervisor-20260527-084: Add validation that official source anchor coverage rejects missing anchors, duplicate canonical URLs, unsupported hosts, stale or absent freshness status, missing owning surface, and any private/authenticated URL before source-index readiness can pass.
+- [x] Task supervisor-20260527-085: Add a narrow processor invocation contract fixture that maps approved metadata-only public crawl intentions to the exact PP&D-local adapter inputs expected for ipfs_datasets_py handoff, including policy preflight, rate-limit bucket, processor capability, and no-raw-body guarantees; do not import network-dependent processors.
+- [x] Task supervisor-20260527-086: Add validation that processor invocation contracts reject raw archive paths, downloaded document paths, raw body fields, private URLs, missing processor version metadata, skipped captures with invented hashes, and any side-effectful network execution flag.
+- [x] Task supervisor-20260527-087: Add a fixture-first refreshed requirement extraction packet for changed synthetic HTML/PDF records that carries source hash deltas, citation spans, requirement types, confidence, and human-review status for fee, deadline, upload-rule, required-document, and DevHub action-gate requirements.
+- [x] Task supervisor-20260527-088: Add validation that refreshed requirement extraction packets cannot feed formal guardrails when citation spans are missing, source hashes are stale, confidence is low without human review, requirement types are unsupported, or affected process/guardrail IDs are absent.
+- [x] Task supervisor-20260527-089: Add an agent-facing missing-information prioritization fixture that orders prompts by blocking dependency stage and returns only missing, stale, ambiguous, or conflicting facts needed for the next safe action; redact private values and local paths.
+- [x] Task supervisor-20260527-090: Add validation that missing-information prioritization refuses to ask for facts already known and fresh, refuses credentials/payment details/auth state, preserves citation-backed reasons, and blocks consequential actions until required confirmations are explicit.
+- [x] Task supervisor-20260527-091: Add a fixture-first attended DevHub read-only review plan for status, fee-notice review, correction request review, attachment list review, and inspection-result review states using only redacted accessible-structure metadata and manual-login handoff prerequisites.
+- [x] Task supervisor-20260527-092: Add validation that attended DevHub read-only review plans reject screenshots, traces, HAR data, cookies, auth state, credentials, private values, official uploads, submissions, scheduling, cancellation, certification, payment detail entry, and final payment execution.
+- [x] Task supervisor-20260527-093: Add a fixture-first attended DevHub reversible draft plan for address/property search, permit-type selection, form field entry, and save-for-later using only synthetic case facts, source evidence IDs, preview metadata, manual-login handoff prerequisites, and redacted accessible-structure fixtures.
+- [x] Task supervisor-20260527-094: Add validation that attended DevHub reversible draft plans reject missing user facts, missing source evidence IDs, ambiguous selectors, absent previews, private values, local private paths, official uploads, submissions, certification, scheduling, cancellation, payment detail entry, and final payment execution.
+- [x] Task supervisor-20260527-095: Add a fixture-first agent ready-to-draft packet that combines process-model version readiness, missing-information prioritization, DevHub surface-map readiness, reversible draft planning, and action-journal expectations for one synthetic workflow; keep output citation-backed and metadata-only.
+- [!] Task supervisor-20260527-096: Add validation that agent ready-to-draft packets remain blocked when source evidence is stale, required facts are missing or conflicting, selector confidence is low, preview metadata is absent, journal checkpoints are incomplete, or consequential actions lack manual handoff and exact-confirmation gates.
+- [x] Task supervisor-20260527-097: Add a fixture-first public refresh ingestion plan that converts metadata-only refreshed capture records into source-index hash deltas, requirement-delta review items, affected process IDs, and blocked guardrail bundle IDs without live crawling or raw body storage.
+- [!] Task supervisor-20260527-098: Add validation that public refresh ingestion rejects raw bodies, downloaded document paths, private or authenticated URLs, missing citation spans, unsupported requirement types, missing affected IDs, and any attempt to mark refreshed guardrails ready before human review is complete.
 
 
 <!-- ppd-daemon-task-board:start -->
 ## Generated Status
 
-Last updated: 2026-05-25T23:43:45.500923Z
+Last updated: 2026-05-27T17:16:00.680077Z
 
-- Latest target: `Task checkbox-68: Task supervisor-20260515-069: Add validation for DevHubSurfaceMap candidates that blocks reversible draft actions when selector confidence is low, route or heading evidence is missing, required labels are ambiguous, or upload/submit/certify/schedule/cancel/payment controls are classified as reversible.`
+- Latest target: `Task checkbox-95: Task supervisor-20260527-096: Add validation that agent ready-to-draft packets remain blocked when source evidence is stale, required facts are missing or conflicting, selector confidence is low, preview metadata is absent, journal checkpoints are incomplete, or consequential actions lack manual handoff and exact-confirmation gates.`
 - Latest result: `syntax_preflight`
-- Latest summary: Add deterministic DevHubSurfaceMap candidate validation for reversible draft action safety gates.
-- Counts: `{"blocked": 1, "complete": 68, "in_progress": 0, "needed": 0}`
+- Latest summary: Add a narrow ready-to-draft guardrail validator with deterministic tests for stale evidence, missing/conflicting facts, low selector confidence, absent preview metadata, incomplete journal checkpoints, and ungated consequential actions.
+- Counts: `{"blocked": 2, "complete": 95, "in_progress": 0, "needed": 0}`
 
 <!-- ppd-daemon-task-board:end -->

@@ -1,0 +1,68 @@
+{
+  "fixture_kind": "public_refresh_ingestion_metadata_only",
+  "generated_at": "2026-05-27T00:00:00Z",
+  "capture_mode": "fixture_metadata_only",
+  "live_crawl_performed": false,
+  "raw_body_persisted": false,
+  "refreshed_captures": [
+    {
+      "capture_id": "capture-single-pdf-process-20260527",
+      "source_index_id": "source-index-html-single-pdf-process",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "previous_content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "refreshed_content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "affected_process_ids": [
+        "process-single-pdf-plan-review"
+      ],
+      "guardrail_bundle_ids": [
+        "guardrail-bundle-single-pdf-plan-review"
+      ],
+      "requirement_deltas": [
+        {
+          "requirement_id": "req-single-pdf-combined-drawings",
+          "delta_kind": "changed",
+          "review_reason": "Fixture metadata indicates the public upload rule hash changed and the existing combined drawing requirement must be reviewed before guardrail reuse.",
+          "affected_process_ids": [
+            "process-residential-building-permit"
+          ],
+          "blocked_guardrail_bundle_ids": [
+            "guardrail-bundle-residential-building-permit"
+          ]
+        },
+        {
+          "requirement_id": "req-supporting-documents-separate-pdfs",
+          "delta_kind": "added",
+          "review_reason": "Fixture metadata indicates a new supporting document requirement should enter human review before process model promotion.",
+          "affected_process_ids": [
+            "process-trade-permit-with-plan-review"
+          ],
+          "blocked_guardrail_bundle_ids": [
+            "guardrail-bundle-trade-permit-with-plan-review"
+          ]
+        }
+      ]
+    },
+    {
+      "capture_id": "capture-devhub-faq-20260527",
+      "source_index_id": "source-index-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "previous_content_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "refreshed_content_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "affected_process_ids": [
+        "process-devhub-fee-payment-review"
+      ],
+      "guardrail_bundle_ids": [
+        "guardrail-bundle-devhub-payment-action-gate"
+      ],
+      "requirement_deltas": [
+        {
+          "requirement_id": "req-devhub-payment-exact-confirmation",
+          "delta_kind": "changed",
+          "review_reason": "Fixture metadata indicates DevHub payment guidance changed, so final payment guardrails remain blocked pending review.",
+          "affected_process_ids": [],
+          "blocked_guardrail_bundle_ids": []
+        }
+      ]
+    }
+  ]
+}

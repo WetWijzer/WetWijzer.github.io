@@ -1,0 +1,159 @@
+{
+  "plan_id": "devhub_attended_read_only_account_review_plan",
+  "plan_version": "devhub-attended-read-only-review-plan-v1",
+  "run_mode": "fixture_first_attended_devhub_read_only_review",
+  "source_metadata_kind": "redacted_accessible_structure",
+  "live_devhub_session": false,
+  "browser_launched": false,
+  "private_values_persisted": false,
+  "manual_login_handoff": {
+    "required": true,
+    "requires_user_attendance": true,
+    "credentials_collected": false,
+    "auth_state_saved": false,
+    "worker_completes_mfa": false,
+    "worker_solves_captcha": false,
+    "continue_after": "authenticated_home_visible"
+  },
+  "rejected_artifacts": [
+    {"artifact_kind": "screenshots", "decision": "reject", "persisted": false, "may_capture": false, "reason": "read-only review stores redacted accessible metadata only"},
+    {"artifact_kind": "traces", "decision": "reject", "persisted": false, "may_capture": false, "reason": "browser traces may contain account-scoped private values"},
+    {"artifact_kind": "har_data", "decision": "reject", "persisted": false, "may_capture": false, "reason": "network archives may contain headers, tokens, or private request data"},
+    {"artifact_kind": "cookies", "decision": "reject", "persisted": false, "may_capture": false, "reason": "session cookies are private authentication material"},
+    {"artifact_kind": "auth_state", "decision": "reject", "persisted": false, "may_capture": false, "reason": "authenticated browser state must remain short lived and uncommitted"},
+    {"artifact_kind": "credentials", "decision": "reject", "persisted": false, "may_capture": false, "reason": "credentials are entered only by the attended user"},
+    {"artifact_kind": "private_values", "decision": "reject", "persisted": false, "may_capture": false, "reason": "committed review fixtures must contain labels and structure, not private values"}
+  ],
+  "review_states": [
+    {
+      "state_id": "review-status-redacted",
+      "review_state": "status_review",
+      "requires_manual_login_handoff": true,
+      "redacted_values_only": true,
+      "metadata_only": true,
+      "changes_official_state": false,
+      "accessible_structure": {
+        "source": "redacted_accessible_structure",
+        "contains_raw_values": false,
+        "contains_documents": false,
+        "landmarks": ["main", "navigation", "status region"],
+        "redacted_labels": ["Permit status", "Review step", "Last updated redacted date"],
+        "controls": [
+          {"role": "heading", "name": "Permit status", "selector_strategy": "role"},
+          {"role": "link", "name": "Back to permit list", "selector_strategy": "accessible_name"}
+        ]
+      },
+      "allowed_read_only_actions": [
+        {"action_id": "status-open", "action_kind": "open_review_state", "may_touch_live_devhub": false, "records_private_values": false},
+        {"action_id": "status-summarize", "action_kind": "summarize_redacted_metadata", "may_touch_live_devhub": false, "records_private_values": false}
+      ]
+    },
+    {
+      "state_id": "review-fee-notice-redacted",
+      "review_state": "fee_notice_review",
+      "requires_manual_login_handoff": true,
+      "redacted_values_only": true,
+      "metadata_only": true,
+      "changes_official_state": false,
+      "accessible_structure": {
+        "source": "redacted_accessible_structure",
+        "contains_raw_values": false,
+        "contains_documents": false,
+        "landmarks": ["main", "fees region", "notice table"],
+        "redacted_labels": ["Fee notice", "Amount due redacted", "Payment action blocked"],
+        "controls": [
+          {"role": "heading", "name": "Fee notice", "selector_strategy": "role"},
+          {"role": "button", "name": "Pay fees", "selector_strategy": "accessible_name"}
+        ]
+      },
+      "allowed_read_only_actions": [
+        {"action_id": "fee-read", "action_kind": "read_accessible_structure", "may_touch_live_devhub": false, "records_private_values": false},
+        {"action_id": "fee-summarize", "action_kind": "summarize_redacted_metadata", "may_touch_live_devhub": false, "records_private_values": false}
+      ]
+    },
+    {
+      "state_id": "review-correction-request-redacted",
+      "review_state": "correction_request_review",
+      "requires_manual_login_handoff": true,
+      "redacted_values_only": true,
+      "metadata_only": true,
+      "changes_official_state": false,
+      "accessible_structure": {
+        "source": "redacted_accessible_structure",
+        "contains_raw_values": false,
+        "contains_documents": false,
+        "landmarks": ["main", "corrections region", "review group list"],
+        "redacted_labels": ["Correction request", "Review group", "Upload action blocked"],
+        "controls": [
+          {"role": "heading", "name": "Correction request", "selector_strategy": "role"},
+          {"role": "button", "name": "Upload corrections", "selector_strategy": "accessible_name"}
+        ]
+      },
+      "allowed_read_only_actions": [
+        {"action_id": "correction-read", "action_kind": "read_accessible_structure", "may_touch_live_devhub": false, "records_private_values": false},
+        {"action_id": "correction-summarize", "action_kind": "summarize_redacted_metadata", "may_touch_live_devhub": false, "records_private_values": false}
+      ]
+    },
+    {
+      "state_id": "review-attachment-list-redacted",
+      "review_state": "attachment_list_review",
+      "requires_manual_login_handoff": true,
+      "redacted_values_only": true,
+      "metadata_only": true,
+      "changes_official_state": false,
+      "accessible_structure": {
+        "source": "redacted_accessible_structure",
+        "contains_raw_values": false,
+        "contains_documents": false,
+        "landmarks": ["main", "attachments region", "file list"],
+        "redacted_labels": ["Attachment list", "File name redacted", "Download blocked"],
+        "controls": [
+          {"role": "heading", "name": "Attachments", "selector_strategy": "role"},
+          {"role": "link", "name": "View attachment metadata", "selector_strategy": "accessible_name"}
+        ]
+      },
+      "allowed_read_only_actions": [
+        {"action_id": "attachment-read", "action_kind": "read_accessible_structure", "may_touch_live_devhub": false, "records_private_values": false},
+        {"action_id": "attachment-summarize", "action_kind": "summarize_redacted_metadata", "may_touch_live_devhub": false, "records_private_values": false}
+      ]
+    },
+    {
+      "state_id": "review-inspection-result-redacted",
+      "review_state": "inspection_result_review",
+      "requires_manual_login_handoff": true,
+      "redacted_values_only": true,
+      "metadata_only": true,
+      "changes_official_state": false,
+      "accessible_structure": {
+        "source": "redacted_accessible_structure",
+        "contains_raw_values": false,
+        "contains_documents": false,
+        "landmarks": ["main", "inspection results region", "inspection history"],
+        "redacted_labels": ["Inspection result", "Result status", "Schedule action blocked"],
+        "controls": [
+          {"role": "heading", "name": "Inspection results", "selector_strategy": "role"},
+          {"role": "button", "name": "Schedule inspection", "selector_strategy": "accessible_name"}
+        ]
+      },
+      "allowed_read_only_actions": [
+        {"action_id": "inspection-read", "action_kind": "read_accessible_structure", "may_touch_live_devhub": false, "records_private_values": false},
+        {"action_id": "inspection-summarize", "action_kind": "summarize_redacted_metadata", "may_touch_live_devhub": false, "records_private_values": false}
+      ]
+    }
+  ],
+  "blocked_consequential_actions": [
+    {"action_kind": "account_creation", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "cancellation", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "captcha_automation", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "certification", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "document_download", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "final_payment_execution", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "inspection_scheduling", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "login_automation", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "mfa_automation", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "official_upload", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "payment_detail_entry", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "raw_page_capture", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false},
+    {"action_kind": "submission", "decision": "refuse", "blocked_until": "manual_handoff_and_action_specific_confirmation", "may_execute": false}
+  ]
+}

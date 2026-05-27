@@ -1,0 +1,32 @@
+{
+  "fixture_id": "missing-information-prioritization-validation-guardrails-v1",
+  "case_id": "synthetic-ppd-case-redacted",
+  "process_id": "residential-building-permit-demo",
+  "next_safe_action": "prepare_reversible_local_draft_plan",
+  "requested_actions": ["submit_permit_application"],
+  "facts": [
+    {
+      "fact_id": "prepared_plan_set_status",
+      "status": "missing",
+      "needed_for_next_safe_action": true,
+      "prompt_id": "ask_prepared_plan_set_status",
+      "prompt": "Do you have a prepared plan set PDF for this PP&D request?",
+      "reason": "PP&D single-PDF guidance requires the plan set status before a reversible draft can map upload placeholders.",
+      "source_requirement_ids": ["req-single-pdf-plan-set"],
+      "reason_citation_ids": ["cite-submit-plans-online-single-pdf"],
+      "blocked_next_safe_action": "prepare_reversible_local_draft_plan"
+    },
+    {
+      "fact_id": "zoning_overlay_lookup",
+      "status": "complete",
+      "freshness_status": "fresh",
+      "known_value_present": true,
+      "current_value": "redacted-known-zoning-overlay",
+      "needed_for_next_safe_action": false,
+      "reason": "This public lookup was verified recently and must not be asked again.",
+      "source_requirement_ids": ["req-property-lookup-before-application"],
+      "reason_citation_ids": ["cite-portlandmaps-public-property-reference"]
+    }
+  ],
+  "required_confirmations": []
+}

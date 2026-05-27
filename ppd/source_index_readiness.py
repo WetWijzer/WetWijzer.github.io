@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Mapping, Sequence
 
+from ppd.source_anchor_matrix import SourceAnchorMatrixError, validate_anchor_matrix
+
 
 class SourceIndexReadinessError(ValueError):
     """Raised when a source index is not ready for requirement extraction."""
@@ -33,19 +35,7 @@ def validate_source_index_readiness(
     now: datetime | None = None,
     max_age_days: int = 30,
 ) -> SourceIndexReadinessResult:
-    """Return readiness failures for a materialized PP&D source index.
-
-    Expected source index shape is deliberately small and fixture-friendly:
-
-    {
-      "freshness": {"status": "fresh", "checked_at": "...Z"},
-      "owning_surface": "permit-center",
-      "processor": {"name": "...", "version": "...", "processed_at": "...Z"},
-      "sources": [
-        {"id": "...", "citation_spans": [{"start": 0, "end": 10, "text": "..."}]}
-      ]
-    }
-    """
+    """Return readiness failures for a materialized PP&D source index."""
 
     if now is None:
         now = datetime.now(timezone.utc)
@@ -70,6 +60,8 @@ def validate_source_index_readiness(
     owning_surface = source_index.get("owning_surface")
     if not isinstance(owning_surface, str) or not owning_surface.strip():
         failures.append("missing owning surface")
+
+    _validate_official_source_anchors(source_index.get("official_source_anchors"), failures)
 
     processor = _mapping(source_index.get("processor"))
     if not processor:
@@ -115,6 +107,16 @@ def require_source_index_ready(
     result = validate_source_index_readiness(source_index, now=now, max_age_days=max_age_days)
     if not result.ready:
         raise SourceIndexReadinessError(result.failures)
+
+
+def _validate_official_source_anchors(value: Any, failures: list[str]) -> None:
+    if not isinstance(value, list) or not value:
+        failures.append("missing official source anchor coverage")
+        return
+    try:
+        validate_anchor_matrix(value, require_ready_freshness=True)
+    except SourceAnchorMatrixError as exc:
+        failures.append(str(exc))
 
 
 def _mapping(value: Any) -> Mapping[str, Any] | None:

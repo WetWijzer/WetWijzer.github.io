@@ -1,0 +1,146 @@
+{
+  "cases": [
+    {
+      "name": "missing user facts",
+      "expected_code": "missing_user_facts",
+      "plan": {
+        "plan_id": "missing-user-facts",
+        "required_user_facts": [],
+        "source_evidence_ids": ["ppd-devhub-guide-submit-permit-application"],
+        "preview": {"redacted": true, "fields": [{"label": "Project address", "user_fact_id": "site_address"}]},
+        "steps": [{"action": "fill_field", "selector": "[data-testid='project-address']", "selector_confidence": "high", "value_ref": "site_address"}]
+      }
+    },
+    {
+      "name": "missing source evidence ids",
+      "expected_code": "missing_source_evidence_ids",
+      "plan": {
+        "plan_id": "missing-source-evidence",
+        "required_user_facts": ["site_address"],
+        "source_evidence_ids": [],
+        "preview": {"redacted": true, "fields": [{"label": "Project address", "user_fact_id": "site_address"}]},
+        "steps": [{"action": "fill_field", "selector": "[data-testid='project-address']", "selector_confidence": "high", "value_ref": "site_address"}]
+      }
+    },
+    {
+      "name": "ambiguous selectors",
+      "expected_code": "ambiguous_selector",
+      "plan": {
+        "plan_id": "ambiguous-selector",
+        "required_user_facts": ["site_address"],
+        "source_evidence_ids": ["ppd-devhub-guide-submit-permit-application"],
+        "preview": {"redacted": true, "fields": [{"label": "Project address", "user_fact_id": "site_address"}]},
+        "steps": [{"action": "fill_field", "selectors": ["input", "input.address"], "selector_confidence": "ambiguous", "value_ref": "site_address"}]
+      }
+    },
+    {
+      "name": "absent preview",
+      "expected_code": "absent_preview",
+      "plan": {
+        "plan_id": "absent-preview",
+        "required_user_facts": ["site_address"],
+        "source_evidence_ids": ["ppd-devhub-guide-submit-permit-application"],
+        "steps": [{"action": "fill_field", "selector": "[data-testid='project-address']", "selector_confidence": "high", "value_ref": "site_address"}]
+      }
+    },
+    {
+      "name": "private values",
+      "expected_code": "private_value",
+      "plan": {
+        "plan_id": "private-value",
+        "required_user_facts": ["site_address"],
+        "source_evidence_ids": ["ppd-devhub-guide-submit-permit-application"],
+        "preview": {"redacted": true, "fields": [{"label": "Project address", "user_fact_id": "site_address"}]},
+        "steps": [{"action": "fill_field", "selector": "[data-testid='project-address']", "selector_confidence": "high", "value": "123 Private Street"}]
+      }
+    },
+    {
+      "name": "local private paths",
+      "expected_code": "local_private_path",
+      "plan": {
+        "plan_id": "local-private-path",
+        "required_user_facts": ["site_address"],
+        "source_evidence_ids": ["ppd-submit-plans-online"],
+        "preview": {"redacted": true, "fields": [{"label": "Plan preview", "user_fact_id": "plan_set"}]},
+        "steps": [{"action": "local_preview", "selector": "[data-testid='local-preview']", "selector_confidence": "high", "local_path": "/home/example/private/plan-set.pdf"}]
+      }
+    },
+    {
+      "name": "official uploads",
+      "expected_code": "official_upload",
+      "plan": {
+        "plan_id": "official-upload",
+        "required_user_facts": ["plan_set"],
+        "source_evidence_ids": ["ppd-submit-plans-online"],
+        "preview": {"redacted": true, "fields": [{"label": "Plan set", "user_fact_id": "plan_set"}]},
+        "steps": [{"action": "upload", "selector": "[data-testid='upload']", "selector_confidence": "high", "official_record": true, "value_ref": "plan_set"}]
+      }
+    },
+    {
+      "name": "submissions",
+      "expected_code": "submission",
+      "plan": {
+        "plan_id": "submission",
+        "required_user_facts": ["permit_scope"],
+        "source_evidence_ids": ["ppd-devhub-guide-submit-permit-application"],
+        "preview": {"redacted": true, "fields": [{"label": "Scope", "user_fact_id": "permit_scope"}]},
+        "steps": [{"action": "submit_application", "selector": "button[aria-label='Submit application']", "selector_confidence": "high"}]
+      }
+    },
+    {
+      "name": "certification",
+      "expected_code": "certification",
+      "plan": {
+        "plan_id": "certification",
+        "required_user_facts": ["applicant_acknowledgement"],
+        "source_evidence_ids": ["ppd-devhub-guide-submit-permit-application"],
+        "preview": {"redacted": true, "fields": [{"label": "Acknowledgement", "user_fact_id": "applicant_acknowledgement"}]},
+        "steps": [{"action": "certify", "selector": "[data-testid='certify']", "selector_confidence": "high"}]
+      }
+    },
+    {
+      "name": "scheduling",
+      "expected_code": "scheduling",
+      "plan": {
+        "plan_id": "scheduling",
+        "required_user_facts": ["inspection_date"],
+        "source_evidence_ids": ["ppd-devhub-faqs"],
+        "preview": {"redacted": true, "fields": [{"label": "Inspection date", "user_fact_id": "inspection_date"}]},
+        "steps": [{"action": "schedule_inspection", "selector": "[data-testid='schedule-inspection']", "selector_confidence": "high"}]
+      }
+    },
+    {
+      "name": "cancellation",
+      "expected_code": "cancellation",
+      "plan": {
+        "plan_id": "cancellation",
+        "required_user_facts": ["permit_number"],
+        "source_evidence_ids": ["ppd-devhub-faqs"],
+        "preview": {"redacted": true, "fields": [{"label": "Permit number", "user_fact_id": "permit_number"}]},
+        "steps": [{"action": "cancel", "selector": "[data-testid='cancel-request']", "selector_confidence": "high"}]
+      }
+    },
+    {
+      "name": "payment detail entry",
+      "expected_code": "payment_detail_entry",
+      "plan": {
+        "plan_id": "payment-detail-entry",
+        "required_user_facts": ["fee_notice"],
+        "source_evidence_ids": ["ppd-how-pay-fees"],
+        "preview": {"redacted": true, "fields": [{"label": "Fee notice", "user_fact_id": "fee_notice"}]},
+        "steps": [{"action": "enter_payment_details", "selector": "[data-testid='payment-card']", "selector_confidence": "high", "value_ref": "payment_method"}]
+      }
+    },
+    {
+      "name": "final payment execution",
+      "expected_code": "final_payment_execution",
+      "plan": {
+        "plan_id": "final-payment-execution",
+        "required_user_facts": ["fee_notice"],
+        "source_evidence_ids": ["ppd-how-pay-fees"],
+        "preview": {"redacted": true, "fields": [{"label": "Fee notice", "user_fact_id": "fee_notice"}]},
+        "steps": [{"action": "submit_payment", "selector": "button[aria-label='Submit payment']", "selector_confidence": "high"}]
+      }
+    }
+  ]
+}

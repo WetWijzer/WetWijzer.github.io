@@ -1,0 +1,260 @@
+{
+  "reviewId": "devhub-review-safe-draft-20260527",
+  "reviewType": "post_action_hardening_review",
+  "reviewedAt": "2026-05-27T08:00:00Z",
+  "workflow": "standard-trade-permit-draft-fixture",
+  "attemptedActions": [
+    {
+      "actionId": "review_my_permits_status",
+      "actionClass": "safe_read_only",
+      "journalEventId": "journal-read-status",
+      "outcome": "completed"
+    },
+    {
+      "actionId": "fill_draft_address_search",
+      "actionClass": "reversible_draft",
+      "journalEventId": "journal-draft-address",
+      "outcome": "completed"
+    },
+    {
+      "actionId": "save_draft_before_submission",
+      "actionClass": "reversible_draft",
+      "journalEventId": "journal-save-draft",
+      "outcome": "completed"
+    }
+  ],
+  "completionEvidence": [
+    {
+      "evidenceId": "evidence-read-status-visible",
+      "actionId": "review_my_permits_status",
+      "journalEventId": "journal-completion-read-status",
+      "observedOutcome": "DevHub status area was reviewed without changing account data.",
+      "sourceEvidenceIds": ["devhub-faq-account-services", "devhub-online-tools-overview"],
+      "userVisibleConfirmation": "Visible account-scoped status text remained read-only and redacted."
+    },
+    {
+      "evidenceId": "evidence-address-draft-visible",
+      "actionId": "fill_draft_address_search",
+      "journalEventId": "journal-completion-address-draft",
+      "observedOutcome": "Address search field held a redacted draft value before any submission checkpoint.",
+      "sourceEvidenceIds": ["devhub-guide-submit-permit-application"],
+      "userVisibleConfirmation": "Draft field state was visible and reversible; no official record change was made."
+    },
+    {
+      "evidenceId": "evidence-save-draft-visible",
+      "actionId": "save_draft_before_submission",
+      "journalEventId": "journal-completion-save-draft",
+      "observedOutcome": "Save-for-later outcome was observed as a reversible draft checkpoint.",
+      "sourceEvidenceIds": ["devhub-guide-submit-permit-application"],
+      "userVisibleConfirmation": "Draft confirmation text was visible; submission controls were not activated."
+    }
+  ],
+  "refusedActionEvidence": [
+    {
+      "evidenceId": "refusal-submit-permit-request",
+      "controlId": "submit_permit_request",
+      "actionClass": "consequential_official",
+      "journalEventId": "journal-refuse-submit",
+      "refusalReason": "Submitting a permit request is an official action requiring attended exact confirmation.",
+      "requiredUserConfirmation": "User must be present and confirm the exact permit request submission."
+    },
+    {
+      "evidenceId": "refusal-certify-acknowledgement",
+      "controlId": "certify_acknowledgement",
+      "actionClass": "consequential_official",
+      "journalEventId": "journal-refuse-certify",
+      "refusalReason": "Certification or acknowledgement changes the official application posture.",
+      "requiredUserConfirmation": "User must review the certification text and perform or explicitly confirm the exact certification action."
+    },
+    {
+      "evidenceId": "refusal-official-upload",
+      "controlId": "official_upload",
+      "actionClass": "consequential_official",
+      "journalEventId": "journal-refuse-upload",
+      "refusalReason": "Uploading to the official record is consequential and cannot be automated from a fixture.",
+      "requiredUserConfirmation": "User must confirm the exact file and official upload action while attended."
+    },
+    {
+      "evidenceId": "refusal-purchase-trade-permit",
+      "controlId": "purchase_trade_permit",
+      "actionClass": "financial",
+      "journalEventId": "journal-refuse-purchase",
+      "refusalReason": "Purchasing a trade permit is a financial official action.",
+      "requiredUserConfirmation": "User must confirm purchase details and perform or explicitly confirm the purchase action."
+    },
+    {
+      "evidenceId": "refusal-schedule-inspection",
+      "controlId": "schedule_inspection",
+      "actionClass": "consequential_official",
+      "journalEventId": "journal-refuse-schedule",
+      "refusalReason": "Scheduling an inspection changes the official schedule.",
+      "requiredUserConfirmation": "User must confirm the exact inspection, date, and scheduling action."
+    },
+    {
+      "evidenceId": "refusal-cancel-or-withdraw",
+      "controlId": "cancel_or_withdraw",
+      "actionClass": "consequential_official",
+      "journalEventId": "journal-refuse-cancel",
+      "refusalReason": "Canceling or withdrawing can terminate or alter an official request.",
+      "requiredUserConfirmation": "User must confirm the exact cancellation or withdrawal action while attended."
+    },
+    {
+      "evidenceId": "refusal-extension-reactivation",
+      "controlId": "request_extension_or_reactivation",
+      "actionClass": "consequential_official",
+      "journalEventId": "journal-refuse-extension",
+      "refusalReason": "Extension or reactivation requests alter official permit lifecycle state.",
+      "requiredUserConfirmation": "User must confirm the exact extension or reactivation request."
+    },
+    {
+      "evidenceId": "refusal-enter-payment-details",
+      "controlId": "enter_payment_details",
+      "actionClass": "financial",
+      "journalEventId": "journal-refuse-payment-details",
+      "refusalReason": "Payment detail entry is financial and private.",
+      "requiredUserConfirmation": "User must enter payment details directly without agent storage."
+    },
+    {
+      "evidenceId": "refusal-submit-payment",
+      "controlId": "submit_payment",
+      "actionClass": "financial",
+      "journalEventId": "journal-refuse-submit-payment",
+      "refusalReason": "Submitting payment executes a financial transaction.",
+      "requiredUserConfirmation": "User must perform or explicitly confirm the final payment action while attended."
+    }
+  ],
+  "journalEvents": [
+    {
+      "eventId": "journal-preflight",
+      "eventType": "DevHub attended preflight",
+      "redactionStatus": "redacted",
+      "payload": {
+        "surface": "DevHub account-scoped fixture",
+        "credentialState": "[REDACTED]",
+        "privateValues": "[REDACTED]"
+      }
+    },
+    {
+      "eventId": "journal-read-status",
+      "eventType": "DevHub attempted action",
+      "redactionStatus": "redacted",
+      "payload": {
+        "actionId": "review_my_permits_status",
+        "actionClass": "safe_read_only",
+        "valueState": "[REDACTED]"
+      }
+    },
+    {
+      "eventId": "journal-draft-address",
+      "eventType": "DevHub attempted action",
+      "redactionStatus": "redacted",
+      "payload": {
+        "actionId": "fill_draft_address_search",
+        "actionClass": "reversible_draft",
+        "fieldValue": "[REDACTED]"
+      }
+    },
+    {
+      "eventId": "journal-save-draft",
+      "eventType": "DevHub attempted action",
+      "redactionStatus": "redacted",
+      "payload": {
+        "actionId": "save_draft_before_submission",
+        "actionClass": "reversible_draft",
+        "draftIdentifier": "[REDACTED]"
+      }
+    },
+    {
+      "eventId": "journal-completion-read-status",
+      "eventType": "completion evidence",
+      "redactionStatus": "redacted",
+      "payload": {
+        "evidenceId": "evidence-read-status-visible",
+        "observedState": "read-only status visible with private fields redacted"
+      }
+    },
+    {
+      "eventId": "journal-completion-address-draft",
+      "eventType": "completion evidence",
+      "redactionStatus": "redacted",
+      "payload": {
+        "evidenceId": "evidence-address-draft-visible",
+        "observedState": "draft field visible before official checkpoint"
+      }
+    },
+    {
+      "eventId": "journal-completion-save-draft",
+      "eventType": "completion evidence",
+      "redactionStatus": "redacted",
+      "payload": {
+        "evidenceId": "evidence-save-draft-visible",
+        "observedState": "save-for-later checkpoint visible"
+      }
+    },
+    {
+      "eventId": "journal-refuse-submit",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "submit_permit_request", "reason": "exact confirmation required"}
+    },
+    {
+      "eventId": "journal-refuse-certify",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "certify_acknowledgement", "reason": "exact confirmation required"}
+    },
+    {
+      "eventId": "journal-refuse-upload",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "official_upload", "reason": "official record change blocked"}
+    },
+    {
+      "eventId": "journal-refuse-purchase",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "purchase_trade_permit", "reason": "financial action blocked"}
+    },
+    {
+      "eventId": "journal-refuse-schedule",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "schedule_inspection", "reason": "official schedule change blocked"}
+    },
+    {
+      "eventId": "journal-refuse-cancel",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "cancel_or_withdraw", "reason": "official lifecycle change blocked"}
+    },
+    {
+      "eventId": "journal-refuse-extension",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "request_extension_or_reactivation", "reason": "official lifecycle change blocked"}
+    },
+    {
+      "eventId": "journal-refuse-payment-details",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "enter_payment_details", "reason": "private financial data blocked"}
+    },
+    {
+      "eventId": "journal-refuse-submit-payment",
+      "eventType": "refused action",
+      "redactionStatus": "redacted",
+      "payload": {"controlId": "submit_payment", "reason": "financial execution blocked"}
+    },
+    {
+      "eventId": "journal-hardening-review",
+      "eventType": "post-action hardening review",
+      "redactionStatus": "redacted",
+      "payload": {
+        "completionEvidenceCount": 3,
+        "refusedActionEvidenceCount": 9,
+        "privateBrowserArtifacts": "none committed"
+      }
+    }
+  ],
+  "browserArtifacts": {}
+}

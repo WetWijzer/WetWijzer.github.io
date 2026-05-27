@@ -4,6 +4,140 @@
     "checked_at": "2026-05-14T12:00:00Z"
   },
   "owning_surface": "portland-permitting-and-development",
+  "official_source_anchors": [
+    {
+      "source_id": "ppd-public-landing",
+      "canonical_url": "https://www.portland.gov/ppd",
+      "source_type": "public_html",
+      "owning_surface": "PP&D public website",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata-only source-index anchor; public HTML extraction after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-online-permitting-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "source_type": "public_html",
+      "owning_surface": "PP&D public website",
+      "crawl_frequency": "daily_or_every_few_days",
+      "processor_policy": "metadata-only source-index anchor; public HTML extraction after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "devhub-public-portal",
+      "canonical_url": "https://devhub.portlandoregon.gov",
+      "source_type": "devhub_public",
+      "owning_surface": "DevHub public portal",
+      "crawl_frequency": "daily_or_every_few_days",
+      "processor_policy": "metadata-only source-index anchor; public landing metadata only before attended authentication boundaries",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "source_type": "public_html",
+      "owning_surface": "PP&D DevHub guidance",
+      "crawl_frequency": "daily_or_every_few_days",
+      "processor_policy": "metadata-only source-index anchor; public HTML extraction after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-devhub-sign-guide",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-sign-guide",
+      "source_type": "public_html",
+      "owning_surface": "PP&D DevHub guidance",
+      "crawl_frequency": "daily_or_every_few_days",
+      "processor_policy": "metadata-only source-index anchor; public HTML extraction after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-apply-permits",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "source_type": "public_html",
+      "owning_surface": "PP&D permit guidance",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata-only source-index anchor; public HTML extraction after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-devhub-submit-permit-application-guide",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "source_type": "public_html",
+      "owning_surface": "PP&D DevHub guidance",
+      "crawl_frequency": "daily_or_every_few_days",
+      "processor_policy": "metadata-only source-index anchor; public HTML extraction after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-submit-plans-online-single-pdf",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "source_type": "public_html",
+      "owning_surface": "PP&D permit guidance",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata-only source-index anchor; future public HTML extraction with file-rule extraction after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-permit-applications-forms-index",
+      "canonical_url": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+      "source_type": "public_html",
+      "owning_surface": "PP&D forms and handouts index",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata-only source-index anchor; future public HTML extraction and linked form discovery after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-spp-file-naming-standards",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "source_type": "public_html",
+      "owning_surface": "PP&D file preparation guidance",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata-only source-index anchor; future public HTML extraction with upload and naming-rule extraction after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "ppd-how-pay-fees-pdf",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "source_type": "public_pdf",
+      "owning_surface": "PP&D fee payment guidance",
+      "crawl_frequency": "daily_or_every_few_days",
+      "processor_policy": "metadata-only source-index anchor; future public PDF extraction after policy preflight; no raw PDF committed",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    },
+    {
+      "source_id": "portlandmaps-public-reference",
+      "canonical_url": "https://www.portlandmaps.com",
+      "source_type": "external_reference",
+      "owning_surface": "Portland Maps public reference",
+      "crawl_frequency": "only_when_linked_from_ppd_guidance",
+      "processor_policy": "metadata-only source-index anchor; future external-reference capture only for public PP&D-linked references after policy preflight",
+      "freshness_status": "fresh",
+      "synthetic_metadata": true,
+      "live_crawl_performed": false
+    }
+  ],
   "processor": {
     "name": "synthetic-ppd-source-index-processor",
     "version": "1.0.0",

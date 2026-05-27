@@ -1,0 +1,146 @@
+{
+  "packet_id": "refreshed-requirement-packet-synthetic-v1",
+  "generated_at": "2026-05-27T00:00:00Z",
+  "source_change_basis": "fixture_only_synthetic_changed_records",
+  "records": [
+    {
+      "record_id": "synthetic-html-fees-deadlines-v1",
+      "document_type": "public_html",
+      "canonical_url": "https://www.portland.gov/ppd/synthetic/fees-and-deadlines",
+      "previous_source_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "refreshed_source_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "source_hash_delta": {
+        "changed": true,
+        "algorithm": "sha256",
+        "changed_fields": [
+          "normalized_text",
+          "requirements"
+        ]
+      },
+      "normalized_text": "Permit fee payment is due before permit issuance. Applicants must respond to checksheet corrections within 180 days of the request date. DevHub will not submit a payment until the user confirms the final payment action.",
+      "requirements": [
+        {
+          "requirement_id": "req-synthetic-fee-before-issuance",
+          "requirement_category": "fee",
+          "requirement_type": "fee_trigger",
+          "subject": "applicant",
+          "action": "pay",
+          "object": "permit fee before permit issuance",
+          "confidence": 0.94,
+          "human_review_status": "fixture_reviewed",
+          "citation_spans": [
+            {
+              "citation_span_id": "span-fee-before-issuance",
+              "source_field": "normalized_text",
+              "start": 0,
+              "end": 49,
+              "exact_text": "Permit fee payment is due before permit issuance."
+            }
+          ]
+        },
+        {
+          "requirement_id": "req-synthetic-checksheet-180-days",
+          "requirement_category": "deadline",
+          "requirement_type": "deadline",
+          "subject": "applicant",
+          "action": "respond",
+          "object": "checksheet corrections",
+          "deadline_or_temporal_scope": "within 180 days of the request date",
+          "confidence": 0.91,
+          "human_review_status": "needs_human_review",
+          "citation_spans": [
+            {
+              "citation_span_id": "span-checksheet-180-days",
+              "source_field": "normalized_text",
+              "start": 50,
+              "end": 126,
+              "exact_text": "Applicants must respond to checksheet corrections within 180 days of the request date."
+            }
+          ]
+        },
+        {
+          "requirement_id": "req-synthetic-devhub-payment-confirmation-gate",
+          "requirement_category": "devhub_action_gate",
+          "requirement_type": "action_gate",
+          "subject": "agent",
+          "action": "block",
+          "object": "final DevHub payment submission until exact user confirmation",
+          "confidence": 0.93,
+          "human_review_status": "fixture_reviewed",
+          "citation_spans": [
+            {
+              "citation_span_id": "span-devhub-payment-action-gate",
+              "source_field": "normalized_text",
+              "start": 127,
+              "end": 207,
+              "exact_text": "DevHub will not submit a payment until the user confirms the final payment action."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "record_id": "synthetic-pdf-upload-documents-v1",
+      "document_type": "public_pdf",
+      "canonical_url": "https://www.portland.gov/ppd/documents/synthetic-upload-rules/download",
+      "previous_source_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "refreshed_source_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_hash_delta": {
+        "changed": true,
+        "algorithm": "sha256",
+        "changed_fields": [
+          "pdf_pages",
+          "requirements"
+        ]
+      },
+      "pdf_pages": [
+        {
+          "page_number": 1,
+          "text": "Upload drawing plans as one combined PDF. Provide structural calculations as a separate supporting document."
+        }
+      ],
+      "requirements": [
+        {
+          "requirement_id": "req-synthetic-single-pdf-upload-rule",
+          "requirement_category": "upload_rule",
+          "requirement_type": "precondition",
+          "subject": "applicant",
+          "action": "upload",
+          "object": "drawing plans as one combined PDF",
+          "confidence": 0.96,
+          "human_review_status": "fixture_reviewed",
+          "citation_spans": [
+            {
+              "citation_span_id": "span-single-pdf-upload-rule",
+              "source_field": "pdf_pages[0].text",
+              "page_number": 1,
+              "start": 0,
+              "end": 41,
+              "exact_text": "Upload drawing plans as one combined PDF."
+            }
+          ]
+        },
+        {
+          "requirement_id": "req-synthetic-structural-calculations-document",
+          "requirement_category": "required_document",
+          "requirement_type": "document_requirement",
+          "subject": "applicant",
+          "action": "provide",
+          "object": "structural calculations as a separate supporting document",
+          "confidence": 0.92,
+          "human_review_status": "needs_human_review",
+          "citation_spans": [
+            {
+              "citation_span_id": "span-structural-calculations-document",
+              "source_field": "pdf_pages[0].text",
+              "page_number": 1,
+              "start": 42,
+              "end": 102,
+              "exact_text": "Provide structural calculations as a separate supporting document."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

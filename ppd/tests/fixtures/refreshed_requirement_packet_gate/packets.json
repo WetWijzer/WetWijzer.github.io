@@ -1,0 +1,97 @@
+{
+  "valid_packet": {
+    "records": [
+      {
+        "canonical_url": "https://www.portland.gov/ppd/permits/sample-trade-permit",
+        "previous_source_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "refreshed_source_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+        "current_source_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+        "requirements": [
+          {
+            "id": "req-valid-fee",
+            "requirement_type": "fee_trigger",
+            "confidence": 0.91,
+            "human_review_status": "fixture_reviewed",
+            "affected_process_ids": ["trade-permit-intake"],
+            "affected_guardrail_ids": ["trade-permit-fee-guardrail"],
+            "citation_spans": [
+              {
+                "source_field": "normalized_text",
+                "start": 0,
+                "end": 32,
+                "exact_text": "Pay fees before permit issuance."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "invalid_packet": {
+    "records": [
+      {
+        "canonical_url": "https://www.portland.gov/ppd/permits/sample-trade-permit",
+        "previous_source_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "refreshed_source_hash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "current_source_hash": "3333333333333333333333333333333333333333333333333333333333333333",
+        "requirements": [
+          {
+            "id": "req-missing-citation",
+            "requirement_type": "deadline",
+            "confidence": 0.88,
+            "human_review_status": "fixture_reviewed",
+            "affected_process_ids": ["trade-permit-intake"],
+            "affected_guardrail_ids": ["trade-permit-deadline-guardrail"],
+            "citation_spans": []
+          },
+          {
+            "id": "req-low-confidence",
+            "requirement_type": "precondition",
+            "confidence": 0.51,
+            "human_review_status": "needs_human_review",
+            "affected_process_ids": ["trade-permit-intake"],
+            "affected_guardrail_ids": ["trade-permit-precondition-guardrail"],
+            "citation_spans": [
+              {
+                "source_field": "normalized_text",
+                "start": 0,
+                "end": 21,
+                "exact_text": "Review is required."
+              }
+            ]
+          },
+          {
+            "id": "req-unsupported-type",
+            "requirement_type": "narrative_hint",
+            "confidence": 0.9,
+            "human_review_status": "fixture_reviewed",
+            "affected_process_ids": ["trade-permit-intake"],
+            "affected_guardrail_ids": ["trade-permit-hint-guardrail"],
+            "citation_spans": [
+              {
+                "source_field": "normalized_text",
+                "start": 0,
+                "end": 18,
+                "exact_text": "Bring site notes."
+              }
+            ]
+          },
+          {
+            "id": "req-missing-routing",
+            "requirement_type": "document_requirement",
+            "confidence": 0.94,
+            "human_review_status": "fixture_reviewed",
+            "citation_spans": [
+              {
+                "source_field": "normalized_text",
+                "start": 0,
+                "end": 25,
+                "exact_text": "Upload a site plan PDF."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
