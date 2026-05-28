@@ -1,0 +1,142 @@
+{
+  "packet_id": "hardening-review-synthetic-devhub-preview-001",
+  "packet_type": "devhub_post_action_hardening_review",
+  "cycle_kind": "synthetic_attended_preview",
+  "generated_from_fixture": true,
+  "action": {
+    "action_id": "synthetic-devhub-preview-address-lookup-001",
+    "surface_id": "devhub-preview-permit-start",
+    "mode": "preview_only",
+    "official_state_changed": false,
+    "description": "Synthetic preview of the visible draft summary after an attended DevHub permit-start walkthrough."
+  },
+  "source_backed_outcome_evidence": [
+    {
+      "source_id": "official-devhub-guide-submit-permit-application",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "citation": "Official DevHub permit application guide, apply for permits workflow.",
+      "supports_outcome": "DevHub permit requests can involve dynamic questions, draft review, uploaded documents, acknowledgement, and later submission steps.",
+      "observed_preview_fact": "The synthetic cycle stopped at a local preview summary before acknowledgement, upload, or submit controls."
+    },
+    {
+      "source_id": "official-online-permitting-tools-overview",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "citation": "Official online permitting tools overview, DevHub entry point and service list.",
+      "supports_outcome": "DevHub is the City of Portland online permitting system and includes account-scoped permit services.",
+      "observed_preview_fact": "The review packet treats the browser cycle as user-attended and records only commit-safe workflow metadata."
+    }
+  ],
+  "user_visible_confirmation": {
+    "text": "Preview complete. No official permit record was changed. Next actions are limited to read-only review or a local preview update.",
+    "presented_after_action": true
+  },
+  "journal_linkage": {
+    "journal_event_id": "journal-post-action-review-synthetic-devhub-preview-001",
+    "event_type": "post-action hardening review",
+    "review_packet_id": "hardening-review-synthetic-devhub-preview-001",
+    "commit_safe": true,
+    "linked_action_id": "synthetic-devhub-preview-address-lookup-001"
+  },
+  "redaction_checks": [
+    {
+      "check_id": "no_private_browser_artifacts",
+      "passed": true,
+      "findings": []
+    },
+    {
+      "check_id": "no_private_values_or_local_paths",
+      "passed": true,
+      "findings": []
+    },
+    {
+      "check_id": "official_sources_only_for_outcome_claims",
+      "passed": true,
+      "findings": []
+    }
+  ],
+  "blocked_consequential_followups": [
+    {
+      "action_id": "submit-permit-request",
+      "category": "consequential",
+      "blocked": true,
+      "requires_user_confirmation": "exact action confirmation from the attended user",
+      "reason": "Submitting a permit request can create or alter an official City record."
+    },
+    {
+      "action_id": "certify-acknowledgement",
+      "category": "consequential",
+      "blocked": true,
+      "requires_user_confirmation": "exact certification confirmation from the attended user",
+      "reason": "Acknowledgement and certification steps require human review and explicit consent."
+    },
+    {
+      "action_id": "upload-to-official-record",
+      "category": "consequential",
+      "blocked": true,
+      "requires_user_confirmation": "exact upload confirmation from the attended user",
+      "reason": "Official uploads attach documents to an account-scoped permitting workflow."
+    },
+    {
+      "action_id": "purchase-trade-permit",
+      "category": "financial",
+      "blocked": true,
+      "requires_user_confirmation": "exact purchase confirmation from the attended user",
+      "reason": "Purchasing a trade permit is an official financial workflow."
+    },
+    {
+      "action_id": "schedule-inspection",
+      "category": "consequential",
+      "blocked": true,
+      "requires_user_confirmation": "exact inspection scheduling confirmation from the attended user",
+      "reason": "Scheduling an inspection changes an official City schedule."
+    },
+    {
+      "action_id": "cancel-or-withdraw",
+      "category": "consequential",
+      "blocked": true,
+      "requires_user_confirmation": "exact cancellation or withdrawal confirmation from the attended user",
+      "reason": "Cancellation or withdrawal can alter or terminate an official request."
+    },
+    {
+      "action_id": "request-extension-or-reactivation",
+      "category": "consequential",
+      "blocked": true,
+      "requires_user_confirmation": "exact extension or reactivation confirmation from the attended user",
+      "reason": "Extension or reactivation changes official permit lifecycle state."
+    },
+    {
+      "action_id": "enter-payment-details",
+      "category": "financial",
+      "blocked": true,
+      "requires_user_confirmation": "the attended user must enter private financial values directly",
+      "reason": "Payment detail entry contains private financial data and is outside preview-only automation."
+    },
+    {
+      "action_id": "submit-payment",
+      "category": "financial",
+      "blocked": true,
+      "requires_user_confirmation": "exact fee action confirmation from the attended user",
+      "reason": "Final fee actions are financial workflows and are outside preview-only automation."
+    }
+  ],
+  "next_safe_actions": [
+    {
+      "action_id": "review-public-guide-citations",
+      "category": "read_only",
+      "label": "Review cited public PP&D guide sections",
+      "requires_attended_browser": false,
+      "changes_official_record": false,
+      "sourceEvidenceIds": ["official-devhub-guide-submit-permit-application", "official-online-permitting-tools-overview"],
+      "citation": "Official DevHub guide and online permitting tools overview support read-only source review."
+    },
+    {
+      "action_id": "render-local-preview-summary",
+      "category": "local_preview",
+      "label": "Render a local preview summary from redacted fixture facts",
+      "requires_attended_browser": false,
+      "changes_official_record": false,
+      "sourceEvidenceIds": ["official-devhub-guide-submit-permit-application"],
+      "citation": "Official DevHub guide supports draft review before acknowledgement and submission steps."
+    }
+  ]
+}

@@ -80,16 +80,24 @@ Last supervisor tranche: 2026-05-28
 - [x] Task supervisor-20260528-164: Add validation that unsupported/manual-handoff decision packets reject credential prompts, automated account/security steps, payment-entry instructions, official submission or scheduling claims, uncited handoff reasons, missing blocked-action links, private values, local private paths, and alternatives that would perform consequential actions.
 - [x] Task supervisor-20260528-165: Add a fixture-first user document-store gap-analysis packet that compares synthetic case facts and synthetic document metadata to one ProcessModel, identifying missing documents, stale evidence, conflicting facts, ambiguous facts, blocked actions, required confirmations, and next safe prompts without reading local private files or storing private paths.
 - [x] Task supervisor-20260528-166: Add validation that user document-store gap-analysis packets reject private values, local private paths, raw document content, uncited process requirements, invented freshness evidence, missing conflict/staleness explanations, premature ready-to-submit status, and consequential next actions without exact-confirmation gates.
+- [x] Task supervisor-20260528-167: Add a fixture-first agent-facing guardrail API contract packet that exposes one compiled GuardrailBundle and one UserGapAnalysis as deterministic missing-information, reversible-draft, refused-action, exact-confirmation, and citation-explanation responses for a synthetic case; use committed fixtures only and do not call live services.
+- [x] Task supervisor-20260528-168: Add validation that agent-facing guardrail API contract packets reject uncited responses, stale guardrail bundles, private values, local private paths, credentials, payment details, unsupported ready-to-submit statuses, and any upload/submission/certification/payment/scheduling action without exact-confirmation blocking.
+- [!] Task supervisor-20260528-169: Add a fixture-first reversible draft executor dry-run packet for one synthetic DevHub field-fill preview, tying allowed action classification, required user facts, selector confidence, redacted field labels, preview diffs, attendance requirement, and rollback/no-side-effect evidence without launching Playwright or saving browser artifacts.
+- [x] Task supervisor-20260528-170: Add validation that reversible draft executor dry-run packets reject private field values, missing fact provenance, low-confidence selectors, browser state, screenshots, traces, HAR data, cookies, credentials, save/continue/submit/certify/upload/payment/schedule controls, and any claim that an official DevHub state changed.
+- [x] Task supervisor-20260528-171: Add a fixture-first post-action hardening review packet for a synthetic attended DevHub preview cycle, requiring source-backed outcome evidence, user-visible confirmation text, journal linkage, redaction checks, blocked consequential follow-ups, and next safe read-only/local-preview actions only.
+- [x] Task supervisor-20260528-172: Add validation that post-action hardening review packets reject completion claims based only on clicked/filled controls, missing outcome evidence, raw authenticated text, private values, browser artifacts, payment details, official upload/submission/scheduling/cancellation/payment completion, and uncited next actions.
+- [x] Task supervisor-20260528-173: Add a fixture-first source-to-guardrail invalidation packet that maps a reviewed source freshness change to affected requirements, process stages, guardrail predicates, agent-facing cache status, and human-review prompts before any regenerated guardrail is marked current.
+- [x] Task supervisor-20260528-174: Add validation that source-to-guardrail invalidation packets reject invented source changes, missing affected IDs, stale cache statuses marked current, raw body fields, downloaded document paths, private/authenticated URLs, uncited predicate changes, and automatic promotion without human review.
 
 
 <!-- ppd-daemon-task-board:start -->
 ## Generated Status
 
-Last updated: 2026-05-28T04:22:02.768284Z
+Last updated: 2026-05-28T04:51:50.340890Z
 
-- Latest target: `Task checkbox-55: Task supervisor-20260528-161: Add a fixture-first guarded action preflight packet for one synthetic reversible DevHub draft action, linking action classification, surface registry evidence, source evidence IDs, selector confidence, required user facts, attendance requirement, preview metadata, and exact stop-before-consequential checkpoints without executing Playwright or saving authenticated artifacts.`
-- Latest result: `accepted`
-- Latest summary: Adds a fixture-first guarded action preflight packet for one synthetic reversible DevHub draft action, plus a narrow validator and fixture-backed tests.
-- Counts: `{"blocked": 0, "complete": 60, "in_progress": 0, "needed": 0}`
+- Latest target: `Task checkbox-63: Task supervisor-20260528-169: Add a fixture-first reversible draft executor dry-run packet for one synthetic DevHub field-fill preview, tying allowed action classification, required user facts, selector confidence, redacted field labels, preview diffs, attendance requirement, and rollback/no-side-effect evidence without launching Playwright or saving browser artifacts.`
+- Latest result: `syntax_preflight`
+- Latest summary: Add a fixture-first DevHub reversible draft executor dry-run packet, validator, and regression tests for one synthetic field-fill preview.
+- Counts: `{"blocked": 1, "complete": 67, "in_progress": 0, "needed": 0}`
 
 <!-- ppd-daemon-task-board:end -->

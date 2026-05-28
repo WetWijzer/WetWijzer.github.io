@@ -1,0 +1,117 @@
+{
+  "packet_id": "source-to-guardrail-invalid-single-pdf-20260528",
+  "generated_at": "2026-05-28T17:30:00Z",
+  "source_change": {
+    "source_id": "ppd-submit-plans-online",
+    "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+    "previous_freshness_status": "fresh",
+    "reviewed_freshness_status": "content_hash_changed",
+    "change_kind": "reviewed_public_guidance_hash_change",
+    "reviewed_at": "2026-05-28T17:20:00Z",
+    "review_status": "human_reviewed",
+    "reviewer_note": "Reviewed source freshness change affects Single PDF Process document preparation and upload staging guardrails.",
+    "source_evidence_ids": ["evidence-submit-plans-online-20260528-reviewed-change"]
+  },
+  "affected_requirements": [
+    {
+      "requirement_id": "req-single-pdf-drawings-together",
+      "source_id": "ppd-submit-plans-online",
+      "process_id": "process-single-pdf-plan-review",
+      "process_stage_id": "document-preparation",
+      "guardrail_predicate_ids": ["pred-single-pdf-drawing-bundle-required"],
+      "impact_summary": "The changed source may alter how drawing plans must be bundled before upload staging.",
+      "human_review_required": true
+    },
+    {
+      "requirement_id": "req-supporting-documents-separate-pdfs",
+      "source_id": "ppd-submit-plans-online",
+      "process_id": "process-single-pdf-plan-review",
+      "process_stage_id": "upload-staging",
+      "guardrail_predicate_ids": ["pred-supporting-documents-not-in-plan-set"],
+      "impact_summary": "The changed source may alter whether applications, calculations, or supporting documents stay separate from drawing plans.",
+      "human_review_required": true
+    }
+  ],
+  "affected_process_stages": [
+    {
+      "process_id": "process-single-pdf-plan-review",
+      "stage_id": "document-preparation",
+      "stage_name": "Document preparation",
+      "affected_requirement_ids": ["req-single-pdf-drawings-together"],
+      "invalidation_reason": "A reviewed freshness change landed on the source that defines plan-set preparation rules."
+    },
+    {
+      "process_id": "process-single-pdf-plan-review",
+      "stage_id": "upload-staging",
+      "stage_name": "Upload staging",
+      "affected_requirement_ids": ["req-supporting-documents-separate-pdfs"],
+      "invalidation_reason": "A reviewed freshness change landed on the source that defines separate PDF upload expectations."
+    }
+  ],
+  "guardrail_predicate_invalidations": [
+    {
+      "predicate_id": "pred-single-pdf-drawing-bundle-required",
+      "guardrail_bundle_id": "guardrail-bundle-single-pdf-plan-review",
+      "predicate_kind": "document_preparation_rule",
+      "affected_requirement_ids": ["req-single-pdf-drawings-together"],
+      "source_evidence_ids": ["evidence-submit-plans-online-20260528-reviewed-change"],
+      "previous_status": "current",
+      "invalidated_status": "invalidated_by_source_change",
+      "regenerated_guardrail_status": "regenerated_pending_human_review"
+    },
+    {
+      "predicate_id": "pred-supporting-documents-not-in-plan-set",
+      "guardrail_bundle_id": "guardrail-bundle-single-pdf-plan-review",
+      "predicate_kind": "upload_staging_rule",
+      "affected_requirement_ids": ["req-supporting-documents-separate-pdfs"],
+      "source_evidence_ids": ["evidence-submit-plans-online-20260528-reviewed-change"],
+      "previous_status": "current",
+      "invalidated_status": "invalidated_by_source_change",
+      "regenerated_guardrail_status": "regenerated_pending_human_review"
+    }
+  ],
+  "agent_cache_statuses": [
+    {
+      "cache_key": "agent-cache:process-single-pdf-plan-review:document-preparation",
+      "consumer": "agent_missing_information_api",
+      "status": "blocked_pending_human_review",
+      "stale_reason": "Source ppd-submit-plans-online changed after the cached document-preparation guardrail was marked current.",
+      "blocked_until": "human_review_resolved",
+      "affected_guardrail_predicate_ids": ["pred-single-pdf-drawing-bundle-required"]
+    },
+    {
+      "cache_key": "agent-cache:process-single-pdf-plan-review:upload-staging",
+      "consumer": "agent_action_validation_api",
+      "status": "blocked_pending_human_review",
+      "stale_reason": "Source ppd-submit-plans-online changed after the cached upload-staging guardrail was marked current.",
+      "blocked_until": "human_review_resolved",
+      "affected_guardrail_predicate_ids": ["pred-supporting-documents-not-in-plan-set"]
+    }
+  ],
+  "human_review_prompts": [
+    {
+      "prompt_id": "review-single-pdf-document-preparation-change",
+      "reviewer_role": "ppd_source_reviewer",
+      "prompt": "Review the changed Submit Plans Online guidance and confirm whether the drawing-plan single PDF predicate still matches the official source before marking any regenerated guardrail current.",
+      "required_resolution": "review_before_current_guardrail",
+      "source_id": "ppd-submit-plans-online",
+      "affected_requirement_ids": ["req-single-pdf-drawings-together"],
+      "affected_guardrail_predicate_ids": ["pred-single-pdf-drawing-bundle-required"]
+    },
+    {
+      "prompt_id": "review-single-pdf-upload-staging-change",
+      "reviewer_role": "ppd_source_reviewer",
+      "prompt": "Review the changed Submit Plans Online guidance and confirm whether supporting documents must remain separate PDFs before marking any regenerated upload-staging guardrail current.",
+      "required_resolution": "review_before_current_guardrail",
+      "source_id": "ppd-submit-plans-online",
+      "affected_requirement_ids": ["req-supporting-documents-separate-pdfs"],
+      "affected_guardrail_predicate_ids": ["pred-supporting-documents-not-in-plan-set"]
+    }
+  ],
+  "regenerated_guardrails_marked_current": false,
+  "safety_notes": [
+    "Fixture contains reviewed public-source metadata only.",
+    "No raw crawl body, authenticated DevHub state, uploads, payment details, screenshots, traces, or private user values are stored.",
+    "Agent-facing caches remain blocked until human review resolves the affected guardrail predicates."
+  ]
+}
