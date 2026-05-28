@@ -1,0 +1,235 @@
+{
+  "packet_id": "synthetic-requirement-review-packet-001",
+  "packet_type": "requirement_extraction_review_packet",
+  "fixture_metadata": {
+    "synthetic_fixture_only": true,
+    "created_for": "checkbox-37",
+    "live_crawl_used": false,
+    "authenticated_data_used": false,
+    "review_note": "Synthetic text only; not a City of Portland source."
+  },
+  "normalized_document_record": {
+    "document_id": "doc-synthetic-ppd-single-record-001",
+    "source_id": "src-synthetic-ppd-single-record-001",
+    "canonical_url": "synthetic://ppd-fixture/single-public-document-record",
+    "title": "Synthetic PP&D Intake Guide Fixture",
+    "document_type": "synthetic_public_guidance",
+    "language": "en",
+    "content_hash": "sha256:synthetic-single-record-fixture-001",
+    "extraction_confidence": 0.91,
+    "sections": [
+      {
+        "section_id": "sec-obligation",
+        "heading": "Upload Before Intake",
+        "text": "Applicants must upload a site plan before requesting intake review."
+      },
+      {
+        "section_id": "sec-prohibition",
+        "heading": "Certification Limitation",
+        "text": "Applicants must not certify the request until every required PDF has been reviewed."
+      },
+      {
+        "section_id": "sec-document-requirement",
+        "heading": "Packet Contents",
+        "text": "The packet must include a completed application form and structural drawings."
+      },
+      {
+        "section_id": "sec-fee-trigger",
+        "heading": "Plan Review Fee",
+        "text": "A plan review fee is due when staff accepts the application for review."
+      },
+      {
+        "section_id": "sec-deadline",
+        "heading": "Correction Deadline",
+        "text": "Corrections must be uploaded within 14 days after the checksheet notice date."
+      },
+      {
+        "section_id": "sec-exception",
+        "heading": "Drawing Exception",
+        "text": "Exception: detached accessory structures under 200 square feet do not require structural drawings in this synthetic fixture."
+      },
+      {
+        "section_id": "sec-action-gate",
+        "heading": "Submit Gate",
+        "text": "The applicant may not select Submit until the intake reviewer marks the draft accepted."
+      }
+    ]
+  },
+  "requirements": [
+    {
+      "requirement_id": "req-synthetic-obligation-001",
+      "requirement_type": "obligation",
+      "source_evidence_ids": ["ev-synthetic-obligation-001"],
+      "subject": "applicant",
+      "action": "upload",
+      "object": "site plan",
+      "conditions": ["before requesting intake review"],
+      "deadline_or_temporal_scope": "before intake review is requested",
+      "permit_types": ["synthetic_building_permit"],
+      "process_stage": "upload staging",
+      "confidence": 0.7,
+      "human_review_status": "needs_human_review",
+      "formalization_status": "candidate",
+      "citation_spans": [
+        {
+          "evidence_id": "ev-synthetic-obligation-001",
+          "document_id": "doc-synthetic-ppd-single-record-001",
+          "section_id": "sec-obligation",
+          "start": 0,
+          "end": 67,
+          "quote": "Applicants must upload a site plan before requesting intake review."
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-synthetic-prohibition-001",
+      "requirement_type": "prohibition",
+      "source_evidence_ids": ["ev-synthetic-prohibition-001"],
+      "subject": "applicant",
+      "action": "certify",
+      "object": "request",
+      "conditions": ["until every required PDF has been reviewed"],
+      "deadline_or_temporal_scope": "before PDF review is complete",
+      "permit_types": ["synthetic_building_permit"],
+      "process_stage": "acknowledgement/certification review",
+      "confidence": 0.69,
+      "human_review_status": "needs_human_review",
+      "formalization_status": "candidate",
+      "citation_spans": [
+        {
+          "evidence_id": "ev-synthetic-prohibition-001",
+          "document_id": "doc-synthetic-ppd-single-record-001",
+          "section_id": "sec-prohibition",
+          "start": 0,
+          "end": 83,
+          "quote": "Applicants must not certify the request until every required PDF has been reviewed."
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-synthetic-document-001",
+      "requirement_type": "document_requirement",
+      "source_evidence_ids": ["ev-synthetic-document-001"],
+      "subject": "packet",
+      "action": "include",
+      "object": "completed application form and structural drawings",
+      "conditions": [],
+      "deadline_or_temporal_scope": "at packet preparation",
+      "permit_types": ["synthetic_building_permit"],
+      "process_stage": "document preparation",
+      "confidence": 0.72,
+      "human_review_status": "needs_human_review",
+      "formalization_status": "candidate",
+      "citation_spans": [
+        {
+          "evidence_id": "ev-synthetic-document-001",
+          "document_id": "doc-synthetic-ppd-single-record-001",
+          "section_id": "sec-document-requirement",
+          "start": 0,
+          "end": 77,
+          "quote": "The packet must include a completed application form and structural drawings."
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-synthetic-fee-001",
+      "requirement_type": "fee_trigger",
+      "source_evidence_ids": ["ev-synthetic-fee-001"],
+      "subject": "applicant",
+      "action": "pay",
+      "object": "plan review fee",
+      "conditions": ["when staff accepts the application for review"],
+      "deadline_or_temporal_scope": "upon staff acceptance for review",
+      "permit_types": ["synthetic_building_permit"],
+      "process_stage": "fee payment",
+      "confidence": 0.71,
+      "human_review_status": "needs_human_review",
+      "formalization_status": "candidate",
+      "citation_spans": [
+        {
+          "evidence_id": "ev-synthetic-fee-001",
+          "document_id": "doc-synthetic-ppd-single-record-001",
+          "section_id": "sec-fee-trigger",
+          "start": 0,
+          "end": 71,
+          "quote": "A plan review fee is due when staff accepts the application for review."
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-synthetic-deadline-001",
+      "requirement_type": "deadline",
+      "source_evidence_ids": ["ev-synthetic-deadline-001"],
+      "subject": "applicant",
+      "action": "upload",
+      "object": "corrections",
+      "conditions": ["after checksheet notice date"],
+      "deadline_or_temporal_scope": "within 14 days after the checksheet notice date",
+      "permit_types": ["synthetic_building_permit"],
+      "process_stage": "corrections/checksheets",
+      "confidence": 0.73,
+      "human_review_status": "needs_human_review",
+      "formalization_status": "candidate",
+      "citation_spans": [
+        {
+          "evidence_id": "ev-synthetic-deadline-001",
+          "document_id": "doc-synthetic-ppd-single-record-001",
+          "section_id": "sec-deadline",
+          "start": 0,
+          "end": 77,
+          "quote": "Corrections must be uploaded within 14 days after the checksheet notice date."
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-synthetic-exception-001",
+      "requirement_type": "exception",
+      "source_evidence_ids": ["ev-synthetic-exception-001"],
+      "subject": "detached accessory structures under 200 square feet",
+      "action": "omit",
+      "object": "structural drawings",
+      "conditions": ["synthetic detached accessory structure under 200 square feet"],
+      "deadline_or_temporal_scope": "during document preparation",
+      "permit_types": ["synthetic_building_permit"],
+      "process_stage": "document preparation",
+      "confidence": 0.67,
+      "human_review_status": "needs_human_review",
+      "formalization_status": "candidate",
+      "citation_spans": [
+        {
+          "evidence_id": "ev-synthetic-exception-001",
+          "document_id": "doc-synthetic-ppd-single-record-001",
+          "section_id": "sec-exception",
+          "start": 0,
+          "end": 124,
+          "quote": "Exception: detached accessory structures under 200 square feet do not require structural drawings in this synthetic fixture."
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-synthetic-action-gate-001",
+      "requirement_type": "action_gate",
+      "source_evidence_ids": ["ev-synthetic-action-gate-001"],
+      "subject": "applicant",
+      "action": "select Submit",
+      "object": "draft application",
+      "conditions": ["until the intake reviewer marks the draft accepted"],
+      "deadline_or_temporal_scope": "before submission",
+      "permit_types": ["synthetic_building_permit"],
+      "process_stage": "submission",
+      "confidence": 0.68,
+      "human_review_status": "needs_human_review",
+      "formalization_status": "candidate",
+      "citation_spans": [
+        {
+          "evidence_id": "ev-synthetic-action-gate-001",
+          "document_id": "doc-synthetic-ppd-single-record-001",
+          "section_id": "sec-action-gate",
+          "start": 0,
+          "end": 87,
+          "quote": "The applicant may not select Submit until the intake reviewer marks the draft accepted."
+        }
+      ]
+    }
+  ]
+}

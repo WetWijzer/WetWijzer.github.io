@@ -1,0 +1,166 @@
+{
+  "packetId": "synthetic_pdf_form_review_packet_v1",
+  "extractionMode": "fixture_only",
+  "syntheticMetadataOnly": true,
+  "liveCrawlPerformed": false,
+  "source": {
+    "sourceId": "synthetic_ppd_form_source_001",
+    "canonicalUrl": "https://www.portland.gov/ppd/synthetic-fixture-only-form",
+    "title": "Synthetic PP&D Permit Application Review Packet",
+    "privacyClassification": "public_synthetic_metadata",
+    "rawBodyPersisted": false
+  },
+  "coverageCategories": [
+    "page_anchors",
+    "tables",
+    "checklist_items",
+    "required_document_labels",
+    "signature_certification_blocks",
+    "fillable_field_names",
+    "field_types",
+    "checkbox_radio_options",
+    "ocr_confidence_markers"
+  ],
+  "pageAnchors": [
+    {
+      "anchorId": "page-1-applicant-info",
+      "pageNumber": 1,
+      "heading": "Applicant and project information",
+      "syntheticTextSnippet": "Applicant name, project site, and permit type selections appear on page one."
+    },
+    {
+      "anchorId": "page-2-required-documents",
+      "pageNumber": 2,
+      "heading": "Required submittal documents",
+      "syntheticTextSnippet": "The document checklist lists plans, application forms, and supporting calculations."
+    },
+    {
+      "anchorId": "page-3-certification",
+      "pageNumber": 3,
+      "heading": "Certification and signature",
+      "syntheticTextSnippet": "The applicant certification block requires review before any official submission."
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "tbl-submittal-matrix",
+      "pageAnchorId": "page-2-required-documents",
+      "caption": "Synthetic required document matrix",
+      "headers": ["Document label", "Required when", "Separate PDF"],
+      "rows": [
+        ["Building plans", "Project includes plan review", "yes"],
+        ["Structural calculations", "Structural scope is declared", "yes"],
+        ["Site plan", "Exterior site work is declared", "yes"]
+      ]
+    }
+  ],
+  "checklistItems": [
+    {
+      "itemId": "chk-plans-complete",
+      "pageAnchorId": "page-2-required-documents",
+      "label": "Plans are complete and legible",
+      "required": true,
+      "evidenceKind": "synthetic_checkbox_label"
+    },
+    {
+      "itemId": "chk-owner-agent",
+      "pageAnchorId": "page-1-applicant-info",
+      "label": "Owner or authorized agent information is provided",
+      "required": true,
+      "evidenceKind": "synthetic_checkbox_label"
+    }
+  ],
+  "requiredDocumentLabels": [
+    {
+      "labelId": "doc-building-plans",
+      "pageAnchorId": "page-2-required-documents",
+      "label": "Building plans",
+      "requiredWhen": "Plan review is selected",
+      "reviewNote": "Use as a metadata label only; no file is attached in this fixture."
+    },
+    {
+      "labelId": "doc-site-plan",
+      "pageAnchorId": "page-2-required-documents",
+      "label": "Site plan",
+      "requiredWhen": "Exterior site work is selected",
+      "reviewNote": "Use as a metadata label only; no file is attached in this fixture."
+    }
+  ],
+  "signatureCertificationBlocks": [
+    {
+      "blockId": "cert-applicant-review",
+      "pageAnchorId": "page-3-certification",
+      "label": "Applicant certification",
+      "signerRole": "applicant_or_authorized_agent",
+      "requiresSignature": true,
+      "requiresDate": true,
+      "requiresAttendedConfirmation": true,
+      "automationPolicy": "review_only_stop_before_certification"
+    }
+  ],
+  "fillableFields": [
+    {
+      "fieldId": "field-applicant-name",
+      "fieldName": "applicant_name",
+      "pageAnchorId": "page-1-applicant-info",
+      "fieldType": "text",
+      "label": "Applicant name",
+      "required": true,
+      "options": []
+    },
+    {
+      "fieldId": "field-permit-type",
+      "fieldName": "permit_type",
+      "pageAnchorId": "page-1-applicant-info",
+      "fieldType": "radio",
+      "label": "Permit type",
+      "required": true,
+      "options": ["building", "trade_with_plan_review", "site_development"]
+    },
+    {
+      "fieldId": "field-document-complete",
+      "fieldName": "documents_complete_acknowledgement",
+      "pageAnchorId": "page-2-required-documents",
+      "fieldType": "checkbox",
+      "label": "Required documents are complete",
+      "required": true,
+      "options": ["checked"]
+    },
+    {
+      "fieldId": "field-signature-date",
+      "fieldName": "applicant_signature_date",
+      "pageAnchorId": "page-3-certification",
+      "fieldType": "date",
+      "label": "Signature date",
+      "required": true,
+      "options": []
+    },
+    {
+      "fieldId": "field-applicant-signature",
+      "fieldName": "applicant_signature",
+      "pageAnchorId": "page-3-certification",
+      "fieldType": "signature",
+      "label": "Applicant signature",
+      "required": true,
+      "options": []
+    }
+  ],
+  "ocrConfidenceMarkers": [
+    {
+      "markerId": "ocr-page-2-table-note",
+      "pageAnchorId": "page-2-required-documents",
+      "textRole": "table_note",
+      "confidence": 0.91,
+      "humanReviewStatus": "needs_review",
+      "reason": "Synthetic low-contrast table note marker used to exercise review workflows."
+    },
+    {
+      "markerId": "ocr-page-3-cert-note",
+      "pageAnchorId": "page-3-certification",
+      "textRole": "certification_note",
+      "confidence": 0.88,
+      "humanReviewStatus": "needs_review",
+      "reason": "Synthetic certification note marker used to keep OCR-derived text reviewable."
+    }
+  ]
+}

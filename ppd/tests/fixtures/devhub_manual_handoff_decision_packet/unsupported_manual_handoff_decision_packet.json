@@ -1,0 +1,129 @@
+{
+  "packet_id": "fixture_ppd_unsupported_manual_handoff_decision_packet_2026_05_28",
+  "fixture_only": true,
+  "triggers": [
+    {
+      "trigger_id": "mfa",
+      "cited_reason": "DevHub account access uses PortlandOregon.gov sign-in, and any MFA or security prompt must be completed by the user in the visible browser.",
+      "user_visible_handoff_text": "I cannot complete MFA or security prompts. Please handle this step directly in the live browser, then I can continue with read-only review or reversible local draft planning.",
+      "blocked_action_ids": [
+        "devhub:mfa_prompt_response",
+        "devhub:security_challenge_response"
+      ],
+      "source_evidence_ids": [
+        "ppd_source_devhub_sign_in_guide",
+        "ppd_plan_non_negotiable_boundaries"
+      ]
+    },
+    {
+      "trigger_id": "captcha",
+      "cited_reason": "The PP&D automation boundary prohibits bypassing CAPTCHA or bot-defense controls.",
+      "user_visible_handoff_text": "I cannot solve or bypass CAPTCHA. Please complete it yourself in the live browser before any further assisted read-only review.",
+      "blocked_action_ids": [
+        "devhub:captcha_solution",
+        "devhub:bot_defense_bypass"
+      ],
+      "source_evidence_ids": [
+        "ppd_plan_non_negotiable_boundaries",
+        "ppd_plan_authenticated_devhub_session_model"
+      ]
+    },
+    {
+      "trigger_id": "account_creation",
+      "cited_reason": "Account creation and account security changes are outside unattended DevHub automation and require a separate human-run process.",
+      "user_visible_handoff_text": "I cannot create or modify a PortlandOregon.gov or DevHub account. Please complete account setup directly, then return for safe review or local preview work.",
+      "blocked_action_ids": [
+        "devhub:create_account",
+        "devhub:register_account",
+        "devhub:account_security_change"
+      ],
+      "source_evidence_ids": [
+        "ppd_source_devhub_sign_in_guide",
+        "ppd_plan_authenticated_devhub_session_model"
+      ]
+    },
+    {
+      "trigger_id": "password_recovery",
+      "cited_reason": "Password recovery is an account-security workflow and the worker must not request, store, or recover credentials.",
+      "user_visible_handoff_text": "I cannot perform password recovery or ask for credentials. Please complete recovery directly through the official sign-in flow.",
+      "blocked_action_ids": [
+        "devhub:forgot_password",
+        "devhub:password_reset",
+        "devhub:credential_entry"
+      ],
+      "source_evidence_ids": [
+        "ppd_source_devhub_sign_in_guide",
+        "ppd_plan_credential_rules"
+      ]
+    },
+    {
+      "trigger_id": "final_payment_execution",
+      "cited_reason": "Fee payment is a financial workflow, and final payment execution requires separate guardrails and user action.",
+      "user_visible_handoff_text": "I can help review fee notices, but I cannot enter payment details or submit payment. Please execute payment yourself in the official surface.",
+      "blocked_action_ids": [
+        "devhub:enter_payment_details",
+        "devhub:submit_payment",
+        "devhub:save_payment_receipt"
+      ],
+      "source_evidence_ids": [
+        "ppd_source_fee_payment_guide",
+        "ppd_plan_fee_payment_guardrails"
+      ]
+    },
+    {
+      "trigger_id": "unclear_consequence_control",
+      "cited_reason": "Controls with unclear official consequences must be treated as consequential until a source-backed action classification proves they are safe and reversible.",
+      "user_visible_handoff_text": "This control could affect an official PP&D or DevHub record, and I do not have enough cited evidence to classify it as safe. Please decide this step yourself in the live surface.",
+      "blocked_action_ids": [
+        "devhub:unknown_consequence_control",
+        "devhub:unclassified_primary_action",
+        "devhub:state_transition_without_source_model"
+      ],
+      "source_evidence_ids": [
+        "ppd_plan_devhub_surface_categories",
+        "ppd_plan_exact_confirmation_boundaries"
+      ]
+    },
+    {
+      "trigger_id": "non_devhub_permit_path",
+      "cited_reason": "Official guidance says some PP&D permit types must be submitted by email or other non-DevHub paths, so DevHub cannot be assumed to cover every permit.",
+      "user_visible_handoff_text": "This permit path is not supported for DevHub automation. I can show the cited guidance and prepare a local checklist, but the official email, staff-intake, payment, certification, or submission step must be handled by you.",
+      "blocked_action_ids": [
+        "devhub:create_application_for_non_devhub_path",
+        "devhub:submit_non_devhub_permit_request",
+        "devhub:upload_non_devhub_documents"
+      ],
+      "source_evidence_ids": [
+        "ppd_source_apply_permits",
+        "ppd_source_devhub_permit_application_guide",
+        "ppd_plan_source_facts_verified_2026_05_08"
+      ]
+    }
+  ],
+  "next_safe_alternatives": [
+    {
+      "action_id": "safe:show_cited_guidance",
+      "action_type": "read_only_review",
+      "label": "Show the cited PP&D or DevHub guidance that explains why the workflow requires manual handoff.",
+      "preserves_official_state": true
+    },
+    {
+      "action_id": "safe:review_status_or_fee_notice",
+      "action_type": "read_only_review",
+      "label": "Review visible permit status, fee notice, correction request, or attachment list without changing the official record.",
+      "preserves_official_state": true
+    },
+    {
+      "action_id": "safe:prepare_local_handoff_checklist",
+      "action_type": "local_preview",
+      "label": "Prepare a local checklist or draft field map for the user to review before they act in the official surface.",
+      "preserves_official_state": true
+    },
+    {
+      "action_id": "safe:local_pdf_or_form_preview",
+      "action_type": "local_preview",
+      "label": "Generate a local PDF or form-field preview that does not upload, submit, certify, schedule, cancel, or pay.",
+      "preserves_official_state": true
+    }
+  ]
+}

@@ -7,9 +7,11 @@ Playwright session is opened.
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import PureWindowsPath
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any
+from urllib.parse import urlparse
 
 
 PRIVATE_VALUE_KEYS = {
@@ -26,8 +28,18 @@ PRIVATE_VALUE_KEYS = {
     "routing_number",
     "private_value",
     "raw_private_value",
+    "field_value",
     "secret",
     "token",
+}
+
+PRIVATE_STEP_VALUE_KEYS = {
+    "value",
+    "raw_value",
+    "field_value",
+    "default_value",
+    "input_value",
+    "payment_details",
 }
 
 LOCAL_PATH_KEYS = {
@@ -39,7 +51,36 @@ LOCAL_PATH_KEYS = {
     "upload_path",
 }
 
+BROWSER_ARTIFACT_KEYS = {
+    "browser_state": "browser_state",
+    "storage_state": "browser_state",
+    "session_state": "browser_state",
+    "cookies": "cookies",
+    "cookie": "cookies",
+    "cookie_jar": "cookies",
+    "screenshot": "screenshot",
+    "screenshots": "screenshot",
+    "screenshot_path": "screenshot",
+    "trace": "trace",
+    "traces": "trace",
+    "trace_path": "trace",
+    "har": "har_data",
+    "har_data": "har_data",
+    "har_path": "har_data",
+    "network_har": "har_data",
+}
+
 CONSEQUENTIAL_ACTIONS = {
+    "draft_persistence": {
+        "save",
+        "save_draft",
+        "save_and_continue",
+        "continue",
+        "continue_application",
+        "continue_draft",
+        "next",
+        "next_step",
+    },
     "official_upload": {
         "upload",
         "upload_correction",
@@ -94,8 +135,18 @@ ALLOWED_REVERSIBLE_ACTIONS = {
     "set_checkbox",
     "set_radio",
     "select_option",
-    "save_draft",
     "local_preview",
+}
+
+SIDE_EFFECT_WORDS = {
+    "save": "draft_persistence",
+    "continue": "draft_persistence",
+    "submit": "submission",
+    "certify": "certification",
+    "upload": "official_upload",
+    "payment": "payment_detail_entry",
+    "pay": "final_payment_execution",
+    "schedule": "scheduling",
 }
 
 
@@ -158,7 +209,7 @@ def validate_reversible_draft_plan(plan: Mapping[str, Any]) -> list[DraftPlanIss
             continue
 
         action = _normalized_text(step.get("action") or step.get("action_type") or step.get("kind"))
-        consequence = _consequential_category(action)
+        consequence = _consequential_category(action) or _step_side_effect_category(step)
         if consequence is not None:
             issues.append(
                 DraftPlanIssue(
@@ -187,13 +238,7 @@ def validate_reversible_draft_plan(plan: Mapping[str, Any]) -> list[DraftPlanIss
 
         selector_issue = _selector_issue(step)
         if selector_issue is not None:
-            issues.append(
-                DraftPlanIssue(
-                    "ambiguous_selector",
-                    selector_issue,
-                    f"{location}.selector",
-                )
-            )
+            issues.append(DraftPlanIssue("ambiguous_selector", selector_issue, f"{location}.selector"))
 
         if _step_uses_private_value(step):
             issues.append(
@@ -215,8 +260,8 @@ def validate_reversible_draft_plan(plan: Mapping[str, Any]) -> list[DraftPlanIss
             )
 
     for location, value in _walk(plan):
-        key = location.rsplit(".", 1)[-1].lower()
-        if key in PRIVATE_VALUE_KEYS and _non_empty_text(value):
+        key = _normalized_text(location.rsplit(".", 1)[-1])
+        if key in PRIVATE_VALUE_KEYS and _present(value):
             issues.append(
                 DraftPlanIssue(
                     "private_value",
@@ -232,7 +277,25 @@ def validate_reversible_draft_plan(plan: Mapping[str, Any]) -> list[DraftPlanIss
                     location,
                 )
             )
+        artifact_code = BROWSER_ARTIFACT_KEYS.get(key)
+        if artifact_code is not None and _present(value):
+            issues.append(
+                DraftPlanIssue(
+                    artifact_code,
+                    "Browser state, cookies, screenshots, traces, and HAR data must not be embedded in draft packets.",
+                    location,
+                )
+            )
+        if isinstance(value, str) and _is_live_auth_url(location, value):
+            issues.append(
+                DraftPlanIssue(
+                    "authenticated_live_url",
+                    "Live DevHub URLs requiring authentication must not be embedded in reversible draft packets.",
+                    location,
+                )
+            )
 
+    issues.extend(_authenticated_url_issues(plan))
     return _dedupe_issues(issues)
 
 
@@ -255,6 +318,14 @@ def _non_empty_text(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def _present(value: Any) -> bool:
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return bool(value.strip())
+    return True
+
+
 def _normalized_text(value: Any) -> str:
     if not isinstance(value, str):
         return ""
@@ -264,6 +335,19 @@ def _normalized_text(value: Any) -> str:
 def _consequential_category(action: str) -> str | None:
     for category, actions in CONSEQUENTIAL_ACTIONS.items():
         if action in actions:
+            return category
+    return None
+
+
+def _step_side_effect_category(step: Mapping[str, Any]) -> str | None:
+    text_parts = []
+    for key in ("action", "action_type", "kind", "label", "button_text", "aria_label", "description"):
+        value = step.get(key)
+        if isinstance(value, str):
+            text_parts.append(_normalized_text(value))
+    text = "_".join(text_parts)
+    for word, category in SIDE_EFFECT_WORDS.items():
+        if word in text:
             return category
     return None
 
@@ -280,36 +364,30 @@ def _is_official_upload_step(step: Mapping[str, Any]) -> bool:
 def _selector_issue(step: Mapping[str, Any]) -> str | None:
     selectors = step.get("selectors")
     selector = step.get("selector")
-    confidence = step.get("selector_confidence")
+    confidence = _normalized_text(step.get("selector_confidence"))
 
     if isinstance(selectors, Sequence) and not isinstance(selectors, str):
         concrete = [item for item in selectors if _non_empty_text(item)]
         if len(concrete) != 1:
             return "Each draft step must identify exactly one stable selector."
+        selector = concrete[0]
 
-    if not _non_empty_text(selector) and not (
-        isinstance(selectors, Sequence)
-        and not isinstance(selectors, str)
-        and len([item for item in selectors if _non_empty_text(item)]) == 1
-    ):
+    if not _non_empty_text(selector):
         return "Each draft step must identify one non-empty stable selector."
 
-    if confidence in {"ambiguous", "low", "unknown"}:
-        return "Low-confidence or ambiguous selectors are not allowed for reversible draft plans."
+    if confidence != "high":
+        return "Low-confidence, ambiguous, or unverified selectors are not allowed for reversible draft plans."
 
-    if selector in {"button", "input", "select", "textarea", "a", "[role=button]"}:
+    if _normalized_text(selector) in {"button", "input", "select", "textarea", "a", "[role=button]"}:
         return "Generic selectors are ambiguous and must be replaced with stable accessible or test selectors."
 
     return None
 
 
 def _step_uses_private_value(step: Mapping[str, Any]) -> bool:
-    if "value" in step and _non_empty_text(step.get("value")):
-        return True
-    if "raw_value" in step and _non_empty_text(step.get("raw_value")):
-        return True
-    if "payment_details" in step or "card_number" in step or "cvv" in step:
-        return True
+    for key in PRIVATE_STEP_VALUE_KEYS:
+        if key in step and _present(step.get(key)):
+            return True
     return False
 
 
@@ -334,6 +412,49 @@ def _looks_like_private_local_path(value: str) -> bool:
     if windows.drive and "users" in [part.lower() for part in windows.parts]:
         return True
     return False
+
+
+def _is_live_auth_url(location: str, value: str) -> bool:
+    parsed = urlparse(value.strip())
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return False
+    normalized_location = _normalized_text(location)
+    if any(marker in normalized_location for marker in ("auth", "login", "session", "live_url", "current_url")):
+        return True
+    host = parsed.netloc.lower()
+    path = parsed.path.lower()
+    if "devhub.portlandoregon.gov" not in host:
+        return False
+    return any(marker in path for marker in ("/account", "/application", "/dashboard", "/login", "/permit", "/project"))
+
+
+def _authenticated_url_issues(value: Any, location: str = "plan") -> list[DraftPlanIssue]:
+    issues: list[DraftPlanIssue] = []
+    if isinstance(value, Mapping):
+        requires_auth = any(
+            _normalized_text(key) in {"requires_auth", "auth_required", "authenticated", "login_required"} and child is True
+            for key, child in value.items()
+        )
+        for key, child in value.items():
+            child_location = f"{location}.{key}"
+            if requires_auth and isinstance(child, str) and _looks_like_url(child):
+                issues.append(
+                    DraftPlanIssue(
+                        "authenticated_live_url",
+                        "Live URLs requiring authentication must not be embedded in reversible draft packets.",
+                        child_location,
+                    )
+                )
+            issues.extend(_authenticated_url_issues(child, child_location))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            issues.extend(_authenticated_url_issues(child, f"{location}[{index}]"))
+    return issues
+
+
+def _looks_like_url(value: str) -> bool:
+    parsed = urlparse(value.strip())
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
 
 
 def _walk(value: Any, location: str = "plan") -> Iterable[tuple[str, Any]]:

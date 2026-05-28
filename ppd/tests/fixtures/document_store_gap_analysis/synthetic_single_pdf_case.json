@@ -1,0 +1,171 @@
+{
+  "case_id": "synthetic_single_pdf_gap_case",
+  "as_of": "2026-05-28",
+  "process_model": {
+    "process_id": "process_single_pdf_residential_addition_synthetic",
+    "permit_type": "residential_building_permit_with_plan_review",
+    "required_user_facts": [
+      {
+        "id": "property_address",
+        "label": "project property address",
+        "required": true,
+        "prompt": "What is the project property address for the permit request?"
+      },
+      {
+        "id": "owner_authorization",
+        "label": "owner authorization",
+        "required": true,
+        "prompt": "Can you confirm that the owner authorized this permit application?"
+      },
+      {
+        "id": "project_valuation",
+        "label": "project valuation",
+        "required": true,
+        "prompt": "What valuation should be used for the permit application?"
+      },
+      {
+        "id": "contractor_license",
+        "label": "contractor license status",
+        "required": true,
+        "prompt": "Is a licensed contractor attached to this application, or is this owner-performed work?"
+      }
+    ],
+    "required_documents": [
+      {
+        "id": "single_pdf_plan_set",
+        "name": "single PDF drawing plan set",
+        "required": true,
+        "max_age_days": 365
+      },
+      {
+        "id": "permit_application_form",
+        "name": "permit application form",
+        "required": true,
+        "max_age_days": 365
+      },
+      {
+        "id": "structural_calculations",
+        "name": "structural calculations",
+        "required": true,
+        "max_age_days": 180
+      },
+      {
+        "id": "owner_signature_authorization",
+        "name": "owner signature authorization",
+        "required": true,
+        "max_age_days": 90
+      }
+    ],
+    "action_gates": [
+      {
+        "id": "draft_application_values",
+        "name": "draft application values",
+        "classification": "draft_edit",
+        "blocks_until": [
+          "property_address",
+          "project_valuation",
+          "contractor_license"
+        ]
+      },
+      {
+        "id": "stage_uploads",
+        "name": "stage upload package",
+        "classification": "official_upload",
+        "blocks_until": [
+          "single_pdf_plan_set",
+          "permit_application_form",
+          "structural_calculations",
+          "owner_signature_authorization",
+          "owner_authorization"
+        ],
+        "required_confirmation": "I confirm these are the exact documents to stage for upload."
+      },
+      {
+        "id": "submit_application",
+        "name": "submit application",
+        "classification": "submission",
+        "blocks_until": [
+          "single_pdf_plan_set",
+          "permit_application_form",
+          "structural_calculations",
+          "owner_signature_authorization",
+          "owner_authorization",
+          "project_valuation",
+          "contractor_license"
+        ],
+        "required_confirmation": "I confirm I am ready to submit this permit application."
+      }
+    ]
+  },
+  "case_facts": [
+    {
+      "id": "property_address",
+      "status": "known",
+      "value": "[REDACTED_SYNTHETIC_ADDRESS]",
+      "source_document_id": "doc_application_form"
+    },
+    {
+      "id": "owner_authorization",
+      "status": "missing",
+      "value": null
+    },
+    {
+      "id": "project_valuation",
+      "status": "conflicting",
+      "value": "[REDACTED_SYNTHETIC_VALUE_A]",
+      "source_document_id": "doc_application_form",
+      "notes": [
+        "Application metadata and plan metadata disagree."
+      ]
+    },
+    {
+      "id": "contractor_license",
+      "status": "ambiguous",
+      "value": "[REDACTED]",
+      "source_document_id": "doc_application_form",
+      "notes": [
+        "Fixture does not establish whether the work is contractor-led or owner-performed."
+      ]
+    }
+  ],
+  "document_store_metadata": [
+    {
+      "document_id": "doc_plan_set",
+      "title": "Synthetic Residential Addition Plan Set",
+      "document_type": "drawing_plan",
+      "satisfies_document_ids": [
+        "single_pdf_plan_set"
+      ],
+      "evidence_date": "2026-05-20",
+      "content_hash": "sha256:synthetic-plan-set"
+    },
+    {
+      "document_id": "doc_application_form",
+      "title": "Synthetic Residential Permit Application",
+      "document_type": "application_form",
+      "satisfies_document_ids": [
+        "permit_application_form"
+      ],
+      "evidence_date": "2026-04-10",
+      "content_hash": "sha256:synthetic-application-form"
+    },
+    {
+      "document_id": "doc_old_structural_calcs",
+      "title": "Synthetic Structural Calculations",
+      "document_type": "calculation",
+      "satisfies_document_ids": [
+        "structural_calculations"
+      ],
+      "evidence_date": "2025-06-01",
+      "content_hash": "sha256:synthetic-structural-calcs",
+      "conflicts": [
+        {
+          "fact_id": "project_valuation",
+          "document_value": "[REDACTED_SYNTHETIC_VALUE_B]",
+          "conflicts_with": "doc_application_form",
+          "reason": "structural calculation metadata and application metadata carry different synthetic valuations"
+        }
+      ]
+    }
+  ]
+}

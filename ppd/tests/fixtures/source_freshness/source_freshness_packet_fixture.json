@@ -1,0 +1,100 @@
+{
+  "source_registry": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "source_type": "devhub_public",
+      "owning_surface": "public_ppd_guidance",
+      "allowlist_policy": "official_portland_ppd",
+      "robots_policy": "respect_robots",
+      "crawl_frequency": "daily",
+      "processor_policy": "metadata_and_normalized_text_only",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "previously_current",
+      "content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "source_id": "ppd-file-naming-standards",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "source_type": "public_html",
+      "owning_surface": "public_ppd_guidance",
+      "allowlist_policy": "official_portland_ppd",
+      "robots_policy": "respect_robots",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata_and_normalized_text_only",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "previously_current",
+      "content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "source_type": "public_pdf",
+      "owning_surface": "public_ppd_guidance",
+      "allowlist_policy": "official_portland_ppd",
+      "robots_policy": "respect_robots",
+      "crawl_frequency": "daily",
+      "processor_policy": "metadata_and_normalized_text_only",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "previously_current",
+      "content_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    }
+  ],
+  "public_capture_summaries": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "capture_status": "captured",
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "capture_finished_at": "2026-05-27T00:00:00Z",
+      "changed_topics": [
+        "DevHub action guidance",
+        "upload corrections workflow"
+      ],
+      "no_raw_body_persisted": true
+    },
+    {
+      "source_id": "ppd-file-naming-standards",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "capture_status": "captured",
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "capture_finished_at": "2026-05-27T00:00:00Z",
+      "changed_topics": [],
+      "no_raw_body_persisted": true
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "capture_status": "captured",
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "content_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "capture_finished_at": "2026-05-27T00:00:00Z",
+      "changed_topics": [
+        "fee payment instruction",
+        "final payment action gate"
+      ],
+      "no_raw_body_persisted": true
+    }
+  ],
+  "requirement_index": {
+    "ppd-devhub-faq": [
+      "REQ-DEVHUB-READONLY-001",
+      "REQ-DEVHUB-UPLOAD-GATE-002"
+    ],
+    "ppd-file-naming-standards": [
+      "REQ-FILE-NAMING-001"
+    ],
+    "ppd-fee-payment-guide": [
+      "REQ-FEE-PAYMENT-GATE-001",
+      "REQ-FEE-RECEIPT-002"
+    ]
+  }
+}

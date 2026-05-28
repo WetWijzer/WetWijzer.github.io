@@ -1,0 +1,250 @@
+{
+  "valid_packet": {
+    "schema_version": 1,
+    "packet_id": "fixture-form-field-trace-valid",
+    "generated_at": "2026-05-27T00:00:00Z",
+    "current_as_of": "2026-05-27T00:00:00Z",
+    "fixture_kind": "synthetic_redacted_form_field_requirement_trace",
+    "evidence_index": [
+      {
+        "evidence_id": "evidence:devhub-guide-submit-permit-application:2026-05-01",
+        "citation_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+        "content_hash": "sha256:valid-devhub-guide",
+        "captured_at": "2026-05-01T00:00:00Z"
+      }
+    ],
+    "fields": [
+      {
+        "field_id": "project_description",
+        "label": "Project Description",
+        "requirement_type": "required",
+        "reversible": true,
+        "selector": {
+          "strategy": "accessible_role_name",
+          "role": "textbox",
+          "name": "Project Description",
+          "stable_context": "Application Information",
+          "match_count": 1
+        },
+        "value": "[REDACTED]",
+        "evidence_ids": [
+          "evidence:devhub-guide-submit-permit-application:2026-05-01"
+        ],
+        "evidence_hash": "sha256:valid-devhub-guide",
+        "citation_spans": [
+          {
+            "evidence_id": "evidence:devhub-guide-submit-permit-application:2026-05-01",
+            "start": 120,
+            "end": 188,
+            "quote": "synthetic fixture citation for required application information"
+          }
+        ]
+      },
+      {
+        "field_id": "acknowledgement_certification",
+        "label": "Certification acknowledgement",
+        "requirement_type": "required",
+        "reversible": false,
+        "safety_class": "certification",
+        "selector": {
+          "strategy": "accessible_role_name",
+          "role": "checkbox",
+          "name": "Certification acknowledgement",
+          "stable_context": "Review and Certify",
+          "match_count": 1
+        },
+        "value": "[CHECKED_REDACTED]",
+        "evidence_ids": [
+          "evidence:devhub-guide-submit-permit-application:2026-05-01"
+        ],
+        "evidence_hash": "sha256:valid-devhub-guide",
+        "citation_spans": [
+          {
+            "evidence_id": "evidence:devhub-guide-submit-permit-application:2026-05-01",
+            "start": 240,
+            "end": 320,
+            "quote": "synthetic fixture citation for review before certification"
+          }
+        ]
+      }
+    ]
+  },
+  "invalid_packet": {
+    "schema_version": 1,
+    "packet_id": "fixture-form-field-trace-invalid",
+    "generated_at": "2026-05-27T00:00:00Z",
+    "current_as_of": "2026-05-27T00:00:00Z",
+    "fixture_kind": "synthetic_redacted_form_field_requirement_trace",
+    "evidence_index": [
+      {
+        "evidence_id": "evidence:stale-devhub-guide:2024-01-01",
+        "citation_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+        "content_hash": "sha256:old-devhub-guide",
+        "captured_at": "2024-01-01T00:00:00Z"
+      }
+    ],
+    "fields": [
+      {
+        "field_id": "uncited_owner_name",
+        "label": "Owner Name",
+        "requirement_type": "required",
+        "reversible": true,
+        "selector": {
+          "strategy": "accessible_role_name",
+          "role": "textbox",
+          "name": "Owner Name",
+          "stable_context": "Owner Information",
+          "match_count": 1
+        },
+        "value": "[REDACTED]",
+        "evidence_ids": [],
+        "citation_spans": []
+      },
+      {
+        "field_id": "private_contact_value",
+        "label": "Contact Email",
+        "requirement_type": "optional",
+        "reversible": true,
+        "selector": {
+          "strategy": "accessible_role_name",
+          "role": "textbox",
+          "name": "Contact Email",
+          "stable_context": "Contact Information",
+          "match_count": 1
+        },
+        "raw_value": "[UNSAFE_PRIVATE_VALUE_SENTINEL]",
+        "evidence_ids": [
+          "evidence:stale-devhub-guide:2024-01-01"
+        ],
+        "citation_spans": [
+          {
+            "evidence_id": "evidence:stale-devhub-guide:2024-01-01",
+            "start": 1,
+            "end": 2
+          }
+        ]
+      },
+      {
+        "field_id": "credential_storage_state",
+        "label": "Password",
+        "requirement_type": "required",
+        "reversible": false,
+        "selector": {
+          "strategy": "accessible_role_name",
+          "role": "textbox",
+          "name": "Password",
+          "stable_context": "Account Sign In",
+          "match_count": 1
+        },
+        "credential_value": "[UNSAFE_CREDENTIAL_SENTINEL]",
+        "evidence_ids": [
+          "evidence:stale-devhub-guide:2024-01-01"
+        ],
+        "citation_spans": [
+          {
+            "evidence_id": "evidence:stale-devhub-guide:2024-01-01",
+            "start": 3,
+            "end": 4
+          }
+        ]
+      },
+      {
+        "field_id": "payment_card_detail",
+        "label": "Payment Card",
+        "requirement_type": "required",
+        "reversible": false,
+        "selector": {
+          "strategy": "accessible_role_name",
+          "role": "textbox",
+          "name": "Payment Card",
+          "stable_context": "Fee Payment",
+          "match_count": 1
+        },
+        "payment_details": "[UNSAFE_PAYMENT_DETAIL_SENTINEL]",
+        "evidence_ids": [
+          "evidence:stale-devhub-guide:2024-01-01"
+        ],
+        "citation_spans": [
+          {
+            "evidence_id": "evidence:stale-devhub-guide:2024-01-01",
+            "start": 5,
+            "end": 6
+          }
+        ]
+      },
+      {
+        "field_id": "unsupported_requirement_kind",
+        "label": "Unsupported Requirement",
+        "requirement_type": "must_purchase_now",
+        "reversible": false,
+        "selector": {
+          "strategy": "accessible_role_name",
+          "role": "textbox",
+          "name": "Unsupported Requirement",
+          "stable_context": "Application Information",
+          "match_count": 1
+        },
+        "value": "[REDACTED]",
+        "evidence_ids": [
+          "evidence:stale-devhub-guide:2024-01-01"
+        ],
+        "citation_spans": [
+          {
+            "evidence_id": "evidence:stale-devhub-guide:2024-01-01",
+            "start": 7,
+            "end": 8
+          }
+        ]
+      },
+      {
+        "field_id": "ambiguous_project_address",
+        "label": "Project Address",
+        "requirement_type": "required",
+        "reversible": true,
+        "selector": {
+          "strategy": "css",
+          "role": "textbox",
+          "name": "Project Address",
+          "stable_context": "",
+          "match_count": 2
+        },
+        "value": "[REDACTED]",
+        "evidence_ids": [
+          "evidence:stale-devhub-guide:2024-01-01"
+        ],
+        "citation_spans": [
+          {
+            "evidence_id": "evidence:stale-devhub-guide:2024-01-01",
+            "start": 9,
+            "end": 10
+          }
+        ]
+      },
+      {
+        "field_id": "submit_application_certification",
+        "label": "Submit application certification",
+        "requirement_type": "required",
+        "reversible": true,
+        "safety_class": "submission",
+        "selector": {
+          "strategy": "accessible_role_name",
+          "role": "checkbox",
+          "name": "Submit application certification",
+          "stable_context": "Review and Submit",
+          "match_count": 1
+        },
+        "value": "[CHECKED_REDACTED]",
+        "evidence_ids": [
+          "evidence:stale-devhub-guide:2024-01-01"
+        ],
+        "citation_spans": [
+          {
+            "evidence_id": "evidence:stale-devhub-guide:2024-01-01",
+            "start": 11,
+            "end": 12
+          }
+        ]
+      }
+    ]
+  }
+}

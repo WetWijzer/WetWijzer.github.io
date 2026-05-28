@@ -1,0 +1,140 @@
+{
+  "packet_id": "fixture-devhub-reversible-draft-preflight-001",
+  "fixture_only": true,
+  "uses_live_devhub": false,
+  "playwright_executed": false,
+  "stores_authenticated_artifacts": false,
+  "action_classification": {
+    "action_id": "synthetic-devhub-draft-fill-contact-phone",
+    "description": "Prepare a reversible draft field value in DevHub and save draft for later user review",
+    "kind": "reversible_draft",
+    "action_class": "reversible_draft",
+    "may_execute_after_preflight": true,
+    "executes_consequential_action": false
+  },
+  "surface_registry_evidence": {
+    "surface_id": "devhub_draft",
+    "automation_mode": "attended_reversible",
+    "registry_display_name": "DevHub reversible draft form reads, fills, and saves",
+    "required_guardrails": [
+      "user present",
+      "screen reviewed",
+      "source evidence ids",
+      "selector confidence",
+      "preview or dry-run",
+      "audit event",
+      "rollback plan",
+      "no private artifacts persisted"
+    ]
+  },
+  "source_evidence_ids": [
+    "ppd-src-devhub-sign-guide-2026-05-08",
+    "ppd-src-devhub-guide-submit-permit-application-2026-05-08",
+    "ppd-src-devhub-faqs-2026-05-08"
+  ],
+  "selector_confidence": {
+    "overall": 0.92,
+    "minimum_required": 0.85,
+    "evidence": [
+      {
+        "selector": "input[name='contactPhone']",
+        "confidence": 0.93,
+        "reason": "synthetic fixture selector is stable within the mocked draft surface"
+      },
+      {
+        "selector": "button[data-action='save-draft']",
+        "confidence": 0.91,
+        "reason": "synthetic save-draft control is reversible and does not submit the application"
+      }
+    ]
+  },
+  "required_user_facts": [
+    {
+      "fact_id": "applicant_contact_phone_redacted",
+      "label": "Applicant contact phone",
+      "status": "confirmed",
+      "value_policy": "redacted_placeholder_only",
+      "source_evidence_ids": ["ppd-src-devhub-guide-submit-permit-application-2026-05-08"]
+    },
+    {
+      "fact_id": "manual_login_completed_by_user",
+      "label": "User controls DevHub login before draft assistance",
+      "status": "known",
+      "value_policy": "attendance_state_only",
+      "source_evidence_ids": ["ppd-src-devhub-sign-guide-2026-05-08"]
+    }
+  ],
+  "attendance_requirement": {
+    "requires_user_attendance": true,
+    "manual_login_handoff": true,
+    "actor": "user",
+    "credential_storage": "forbidden",
+    "session_artifact_storage": "forbidden",
+    "mfa_captcha_account_creation_automation": "forbidden"
+  },
+  "preview_metadata": {
+    "preview_only": true,
+    "contains_private_values": false,
+    "stores_file_paths": false,
+    "browser_launch_allowed": false,
+    "redaction_policy": "Only field labels, selectors, source ids, confidence scores, and redacted placeholder values may be committed.",
+    "redacted_preview_fields": [
+      {
+        "field_id": "contactPhone",
+        "label": "Contact phone",
+        "preview_value": "[REDACTED_USER_PHONE]"
+      }
+    ]
+  },
+  "stop_before_consequential_checkpoints": [
+    {
+      "checkpoint_id": "stop-before-official-upload",
+      "action_kind": "official_upload",
+      "stop_before_selector_activation": true,
+      "requires_exact_user_confirmation": true,
+      "automated_execution_allowed": false
+    },
+    {
+      "checkpoint_id": "stop-before-submit-application",
+      "action_kind": "submit_application",
+      "stop_before_selector_activation": true,
+      "requires_exact_user_confirmation": true,
+      "automated_execution_allowed": false
+    },
+    {
+      "checkpoint_id": "stop-before-certify-statement",
+      "action_kind": "certify_statement",
+      "stop_before_selector_activation": true,
+      "requires_exact_user_confirmation": true,
+      "automated_execution_allowed": false
+    },
+    {
+      "checkpoint_id": "stop-before-cancel-request",
+      "action_kind": "cancel_request",
+      "stop_before_selector_activation": true,
+      "requires_exact_user_confirmation": true,
+      "automated_execution_allowed": false
+    },
+    {
+      "checkpoint_id": "stop-before-schedule-inspection",
+      "action_kind": "schedule_inspection",
+      "stop_before_selector_activation": true,
+      "requires_exact_user_confirmation": true,
+      "automated_execution_allowed": false
+    },
+    {
+      "checkpoint_id": "stop-before-pay-fee",
+      "action_kind": "pay_fee",
+      "stop_before_selector_activation": true,
+      "requires_exact_user_confirmation": true,
+      "automated_execution_allowed": false
+    },
+    {
+      "checkpoint_id": "stop-before-enter-payment-details",
+      "action_kind": "enter_payment_details",
+      "stop_before_selector_activation": true,
+      "requires_exact_user_confirmation": true,
+      "automated_execution_allowed": false
+    }
+  ]
+}

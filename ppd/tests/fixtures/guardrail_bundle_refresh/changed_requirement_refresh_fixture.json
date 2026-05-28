@@ -1,0 +1,126 @@
+{
+  "fixture_id": "changed_requirement_guardrail_refresh_v1",
+  "current_guardrail_bundle_id": "guardrail-bundle-single-pdf-v3",
+  "draft_guardrail_bundle_id": "guardrail-bundle-single-pdf-v4-draft",
+  "draft_version": "v4-draft-2026-05-27",
+  "changed_requirements": [
+    {
+      "requirement_id": "req-fee-payment-final-submit-gate",
+      "requirement_type": "fee_trigger",
+      "change_type": "fee",
+      "review_status": "needs_review",
+      "source_evidence_ids": ["src-fee-payment-guide-change-20260527"],
+      "required_guardrail_updates": [
+        "refresh fee trigger text",
+        "keep payment-detail entry and final submit-payment blocked without exact confirmation"
+      ],
+      "predicate_deltas": [
+        {
+          "predicate_id": "pred-fee-final-submit-blocked",
+          "operation": "refresh",
+          "source_evidence_ids": ["src-fee-payment-guide-change-20260527"]
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-application-deadline-expiration-window",
+      "requirement_type": "deadline",
+      "change_type": "deadline",
+      "review_status": "needs_review",
+      "source_evidence_ids": ["src-deadline-guidance-change-20260527"],
+      "required_guardrail_updates": [
+        "refresh temporal predicate",
+        "surface stale deadline evidence before draft readiness"
+      ],
+      "predicate_deltas": [
+        {
+          "predicate_id": "pred-expiration-window-current",
+          "operation": "refresh",
+          "source_evidence_ids": ["src-deadline-guidance-change-20260527"]
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-single-pdf-upload-rule",
+      "requirement_type": "precondition",
+      "change_type": "upload_rule",
+      "review_status": "needs_review",
+      "source_evidence_ids": ["src-submit-plans-online-change-20260527"],
+      "required_guardrail_updates": [
+        "refresh upload staging predicate",
+        "block upload execution until attended exact confirmation"
+      ],
+      "predicate_deltas": [
+        {
+          "predicate_id": "pred-single-pdf-upload-staged-only",
+          "operation": "refresh",
+          "source_evidence_ids": ["src-submit-plans-online-change-20260527"]
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-structural-calculations-required-document",
+      "requirement_type": "document_requirement",
+      "change_type": "required_document",
+      "review_status": "needs_review",
+      "source_evidence_ids": ["src-forms-index-change-20260527"],
+      "required_guardrail_updates": [
+        "refresh missing document prompt",
+        "block ready-to-draft packet when document evidence is absent"
+      ],
+      "predicate_deltas": [
+        {
+          "predicate_id": "pred-structural-calculations-required",
+          "operation": "refresh",
+          "source_evidence_ids": ["src-forms-index-change-20260527"]
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-email-only-permit-unsupported-devhub-path",
+      "requirement_type": "exception",
+      "change_type": "unsupported_path",
+      "review_status": "needs_review",
+      "source_evidence_ids": ["src-apply-permits-change-20260527"],
+      "required_guardrail_updates": [
+        "refresh unsupported path refusal predicate",
+        "route user to manual PP&D instructions instead of DevHub drafting"
+      ],
+      "predicate_deltas": [
+        {
+          "predicate_id": "pred-email-only-permit-refusal",
+          "operation": "refresh",
+          "source_evidence_ids": ["src-apply-permits-change-20260527"]
+        }
+      ]
+    },
+    {
+      "requirement_id": "req-devhub-certify-and-submit-action-gate",
+      "requirement_type": "action_gate",
+      "change_type": "devhub_action_gate",
+      "surface": "devhub_authenticated",
+      "action": "certify and submit permit request",
+      "action_consequence": "consequential",
+      "review_status": "needs_review",
+      "source_evidence_ids": ["src-devhub-submit-guide-change-20260527"],
+      "required_guardrail_updates": [
+        "refresh certification action gate",
+        "require attended exact confirmation before certify or submit actions"
+      ],
+      "manual_handoff_predicates": ["pred-devhub-submit-manual-handoff"],
+      "exact_confirmation_predicates": ["pred-devhub-submit-exact-confirmation"],
+      "predicate_deltas": [
+        {
+          "predicate_id": "pred-devhub-submit-exact-confirmation",
+          "operation": "refresh",
+          "source_evidence_ids": ["src-devhub-submit-guide-change-20260527"]
+        },
+        {
+          "predicate_id": "pred-devhub-submit-manual-handoff",
+          "operation": "refresh",
+          "source_evidence_ids": ["src-devhub-submit-guide-change-20260527"]
+        }
+      ]
+    }
+  ]
+}

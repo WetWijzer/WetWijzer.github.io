@@ -1,0 +1,23 @@
+{
+  "delta_batch_id": "requirement-delta-batch-2026-05-27-fixture",
+  "deltas": [
+    {
+      "delta_id": "delta-devhub-application-certification-001",
+      "requirement_id": "req-devhub-application-certification-review",
+      "formalization_status": "formalized",
+      "human_review_status": "approved",
+      "affected_process_ids": ["building-permit-application"],
+      "affected_guardrail_ids": ["guardrail-building-permit-application-20260527-fixture"],
+      "source_evidence_ids": ["doc-ppd-devhub-faq-20260527"]
+    },
+    {
+      "delta_id": "delta-single-pdf-upload-001",
+      "requirement_id": "req-single-pdf-upload-separation",
+      "formalization_status": "formalized",
+      "human_review_status": "approved",
+      "affected_process_ids": ["building-permit-application"],
+      "affected_guardrail_ids": ["guardrail-building-permit-application-20260527-fixture"],
+      "source_evidence_ids": ["doc-ppd-submit-plans-online-20260527"]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "execution_mode": "dry_run_only",
+  "url": "https://www.portland.gov/ppd",
+  "urls": [
+    "https://www.portland.gov/ppd",
+    "https://www.portland.gov/ppd/permits/applications-forms",
+    "https://devhub.portlandoregon.gov"
+  ],
+  "source_anchors": [
+    {
+      "source_id": "ppd-seed-landing",
+      "url": "https://www.portland.gov/ppd",
+      "observed_at": "2026-05-20T00:00:00Z",
+      "evidence_kind": "public_source_anchor"
+    },
+    {
+      "source_id": "ppd-seed-applications-forms",
+      "url": "https://www.portland.gov/ppd/permits/applications-forms",
+      "observed_at": "2026-05-20T00:00:00Z",
+      "evidence_kind": "public_source_anchor"
+    },
+    {
+      "source_id": "ppd-seed-devhub-public",
+      "url": "https://devhub.portlandoregon.gov",
+      "observed_at": "2026-05-20T00:00:00Z",
+      "evidence_kind": "public_source_anchor"
+    }
+  ],
+  "robots_status": "allowed",
+  "policy_status": "approved",
+  "rate_limit": {
+    "requests_per_minute": 6,
+    "min_delay_seconds": 10
+  },
+  "processor_handoff_manifest": {
+    "schemaVersion": 1,
+    "generatedAt": "2026-05-20T12:00:00Z",
+    "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors",
+    "notes": "Fixture-only PP&D public crawl handoff. No raw responses, downloaded documents, browser traces, screenshots, credentials, or private DevHub session artifacts are included.",
+    "processorJobs": [
+      {
+        "id": "ppd-execution-gate-job-001",
+        "seedId": "ppd-seed-landing",
+        "sourceUrl": "https://www.portland.gov/ppd",
+        "canonicalUrl": "https://www.portland.gov/ppd",
+        "operation": "capture_url",
+        "processor": {
+          "name": "web_archive_capture",
+          "family": "web_archiving",
+          "module": "ipfs_datasets_py.processors.web_archiving",
+          "version": "read-only-submodule",
+          "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors"
+        },
+        "arguments": {
+          "url": "https://www.portland.gov/ppd",
+          "captureMode": "metadata_and_archive_reference",
+          "respectRobots": true,
+          "noPersistRawBody": true,
+          "storeRawResponse": false,
+          "maxDepth": 0
+        },
+        "policyDecision": {
+          "decision": "allow",
+          "reasons": [
+            "public_ppd_allowlisted",
+            "robots_allowed",
+            "no_persist_approved"
+          ],
+          "evaluatedAt": "2026-05-20T11:59:00Z",
+          "evaluator": "ppd.crawler.policy"
+        },
+        "outputManifestRef": "processor_archive_manifests/ppd-seed-landing.json",
+        "manifestOnly": true
+      },
+      {
+        "id": "ppd-execution-gate-job-002",
+        "seedId": "ppd-seed-applications-forms",
+        "sourceUrl": "https://www.portland.gov/ppd/permits/applications-forms",
+        "canonicalUrl": "https://www.portland.gov/ppd/permits/applications-forms",
+        "operation": "legal_archive_url",
+        "processor": {
+          "name": "parallel_web_archiver",
+          "family": "legal_scraper",
+          "module": "ipfs_datasets_py.processors.legal_scrapers.parallel_web_archiver",
+          "version": "read-only-submodule",
+          "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors"
+        },
+        "arguments": {
+          "url": "https://www.portland.gov/ppd/permits/applications-forms",
+          "jurisdiction": "portland-or-ppd",
+          "captureMode": "metadata_and_archive_reference",
+          "respectRobots": true,
+          "noPersistRawBody": true,
+          "storeRawResponse": false,
+          "maxDepth": 0
+        },
+        "policyDecision": {
+          "decision": "allow",
+          "reasons": [
+            "public_ppd_allowlisted",
+            "robots_allowed",
+            "no_persist_approved"
+          ],
+          "evaluatedAt": "2026-05-20T11:59:00Z",
+          "evaluator": "ppd.crawler.policy"
+        },
+        "outputManifestRef": "processor_archive_manifests/ppd-seed-applications-forms.json",
+        "manifestOnly": true
+      },
+      {
+        "id": "ppd-execution-gate-job-003",
+        "seedId": "ppd-seed-devhub-public",
+        "sourceUrl": "https://devhub.portlandoregon.gov",
+        "canonicalUrl": "https://devhub.portlandoregon.gov",
+        "operation": "capture_url",
+        "processor": {
+          "name": "url_archive_cache",
+          "family": "legal_scraper",
+          "module": "ipfs_datasets_py.processors.legal_scrapers.url_archive_cache",
+          "version": "read-only-submodule",
+          "backendPath": "ipfs_datasets_py/ipfs_datasets_py/processors"
+        },
+        "arguments": {
+          "url": "https://devhub.portlandoregon.gov",
+          "captureMode": "metadata_and_archive_reference",
+          "respectRobots": true,
+          "noPersistRawBody": true,
+          "storeRawResponse": false,
+          "maxDepth": 0
+        },
+        "policyDecision": {
+          "decision": "allow",
+          "reasons": [
+            "public_ppd_allowlisted",
+            "robots_allowed",
+            "no_persist_approved"
+          ],
+          "evaluatedAt": "2026-05-20T11:59:00Z",
+          "evaluator": "ppd.crawler.policy"
+        },
+        "outputManifestRef": "processor_archive_manifests/ppd-seed-devhub-public.json",
+        "manifestOnly": true
+      }
+    ]
+  },
+  "planned_outputs": [
+    {
+      "artifact_id": "ppd-public-crawl-dry-run-eligibility-20260520",
+      "artifact_type": "dry_run_eligibility_decision",
+      "metadata_only": true,
+      "no_raw_body_persisted": true,
+      "contains_downloaded_documents": false,
+      "contains_browser_artifacts": false
+    },
+    {
+      "artifact_id": "processor-archive-manifest-references-20260520",
+      "artifact_type": "processor_manifest_reference_set",
+      "manifest_only": true,
+      "no_raw_body_persisted": true,
+      "contains_downloaded_documents": false,
+      "contains_browser_artifacts": false
+    }
+  ]
+}

@@ -1,0 +1,230 @@
+{
+  "fixture_id": "guardrail-export-single-bundle-gap-v1",
+  "synthetic": true,
+  "guardrail_bundle": {
+    "guardrail_bundle_id": "guardrail-single-pdf-upload-staging-v1",
+    "process_id": "ppd-single-pdf-plan-review-v1",
+    "source_evidence_ids": [
+      "ev-submit-plans-online-single-pdf",
+      "ev-devhub-submit-application-guide",
+      "ev-devhub-fee-payment-guide",
+      "ev-devhub-inspection-scheduling-guide"
+    ],
+    "validation_status": "fixture_validated",
+    "deterministic_predicates": [
+      {
+        "predicate_id": "predicate-project-scope-required",
+        "predicate": "requires_missing_fact_answer",
+        "fact_id": "project_scope_summary",
+        "agent_instruction": "Ask for the project scope summary before preparing any draft upload staging checklist.",
+        "source_evidence_ids": [
+          "ev-devhub-submit-application-guide"
+        ]
+      }
+    ],
+    "reversible_action_predicates": [
+      {
+        "predicate_id": "predicate-local-upload-staging-is-reversible",
+        "action_id": "prepare-local-upload-staging-checklist",
+        "action": "prepare local upload staging checklist",
+        "classification": "reversible_draft",
+        "depends_on_missing_facts": [
+          "project_scope_summary"
+        ],
+        "depends_on_missing_documents": [
+          "single_pdf_plan_set"
+        ],
+        "agent_instruction": "Prepare only a local metadata checklist for user review; do not upload files to DevHub.",
+        "source_evidence_ids": [
+          "ev-submit-plans-online-single-pdf",
+          "ev-devhub-submit-application-guide"
+        ]
+      }
+    ],
+    "refused_action_predicates": [
+      {
+        "predicate_id": "predicate-refuse-submit-permit-request",
+        "action_id": "submit-permit-request",
+        "action": "submit permit request",
+        "classification": "submission",
+        "refusal_reason": "Submitting a permit request is an official PP&D action and requires attended user control with exact confirmation.",
+        "source_evidence_ids": [
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-refuse-upload-plans",
+        "action_id": "upload-plans-to-official-record",
+        "action": "upload plans to official record",
+        "classification": "upload_to_official_record",
+        "refusal_reason": "Uploading plans to the official DevHub record is consequential and must remain a manual attended handoff.",
+        "source_evidence_ids": [
+          "ev-submit-plans-online-single-pdf",
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-refuse-certification",
+        "action_id": "certify-application",
+        "action": "certify application acknowledgement",
+        "classification": "certification",
+        "refusal_reason": "Certification language must be reviewed and confirmed by the user before any official action.",
+        "source_evidence_ids": [
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-refuse-pay-review-fees",
+        "action_id": "pay-review-fees",
+        "action": "pay PP&D review fees",
+        "classification": "payment",
+        "refusal_reason": "Fee payment is a financial workflow and must stop before payment detail entry or final payment submission.",
+        "source_evidence_ids": [
+          "ev-devhub-fee-payment-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-refuse-schedule-inspection",
+        "action_id": "schedule-inspection",
+        "action": "schedule PP&D inspection",
+        "classification": "scheduling",
+        "refusal_reason": "Inspection scheduling makes an official appointment and requires attended user control with exact confirmation.",
+        "source_evidence_ids": [
+          "ev-devhub-inspection-scheduling-guide"
+        ]
+      }
+    ],
+    "exact_confirmation_predicates": [
+      {
+        "predicate_id": "predicate-confirm-submit-permit-request",
+        "confirmation_id": "submit-permit-request",
+        "action_id": "submit-permit-request",
+        "action": "submit permit request",
+        "confirmation_text": "I confirm that I am ready to submit this PP&D permit request in DevHub.",
+        "source_evidence_ids": [
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-confirm-upload-plans",
+        "confirmation_id": "upload-plans-to-official-record",
+        "action_id": "upload-plans-to-official-record",
+        "action": "upload plans to official record",
+        "confirmation_text": "I confirm that I am ready to upload these plans to the official DevHub record.",
+        "source_evidence_ids": [
+          "ev-submit-plans-online-single-pdf",
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-confirm-certify-application",
+        "confirmation_id": "certify-application",
+        "action_id": "certify-application",
+        "action": "certify application acknowledgement",
+        "confirmation_text": "I confirm that I am ready to certify this PP&D application acknowledgement.",
+        "source_evidence_ids": [
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-confirm-pay-review-fees",
+        "confirmation_id": "pay-review-fees",
+        "action_id": "pay-review-fees",
+        "action": "pay PP&D review fees",
+        "confirmation_text": "I confirm that I am ready to pay these PP&D review fees in DevHub.",
+        "source_evidence_ids": [
+          "ev-devhub-fee-payment-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-confirm-schedule-inspection",
+        "confirmation_id": "schedule-inspection",
+        "action_id": "schedule-inspection",
+        "action": "schedule PP&D inspection",
+        "confirmation_text": "I confirm that I am ready to schedule this PP&D inspection in DevHub.",
+        "source_evidence_ids": [
+          "ev-devhub-inspection-scheduling-guide"
+        ]
+      }
+    ]
+  },
+  "user_gap_analysis": {
+    "case_id": "case-synthetic-single-pdf-gap",
+    "process_id": "ppd-single-pdf-plan-review-v1",
+    "guardrail_bundle_id": "guardrail-single-pdf-upload-staging-v1",
+    "known_facts": [
+      {
+        "fact_id": "has_devhub_account",
+        "presence": "present",
+        "value_policy": "presence_only"
+      }
+    ],
+    "matched_documents": [],
+    "missing_facts": [
+      "project_scope_summary"
+    ],
+    "missing_documents": [
+      "single_pdf_plan_set"
+    ],
+    "stale_evidence": [],
+    "conflicting_evidence": [],
+    "required_confirmations": [
+      {
+        "confirmation_id": "submit-permit-request",
+        "action_id": "submit-permit-request"
+      },
+      {
+        "confirmation_id": "upload-plans-to-official-record",
+        "action_id": "upload-plans-to-official-record"
+      },
+      {
+        "confirmation_id": "pay-review-fees",
+        "action_id": "pay-review-fees"
+      },
+      {
+        "confirmation_id": "schedule-inspection",
+        "action_id": "schedule-inspection"
+      }
+    ],
+    "blocked_actions": [
+      {
+        "action_id": "submit-permit-request",
+        "classification": "submission",
+        "reason": "Missing project scope and plan set; final submission also requires attended exact confirmation."
+      },
+      {
+        "action_id": "upload-plans-to-official-record",
+        "classification": "upload_to_official_record",
+        "reason": "Official upload is blocked until the user is present and confirms the exact action."
+      },
+      {
+        "action_id": "certify-application",
+        "classification": "certification",
+        "reason": "Certification is blocked until the user reviews the acknowledgement and confirms it exactly."
+      },
+      {
+        "action_id": "pay-review-fees",
+        "classification": "payment",
+        "reason": "Payment is blocked until the user is present, reviews the fees, and confirms the exact payment action."
+      },
+      {
+        "action_id": "schedule-inspection",
+        "classification": "scheduling",
+        "reason": "Inspection scheduling is blocked until the user is present and confirms the exact appointment action."
+      }
+    ],
+    "next_safe_actions": [
+      {
+        "next_safe_action_id": "prepare-local-upload-staging-checklist",
+        "action_id": "prepare-local-upload-staging-checklist",
+        "classification": "reversible_draft",
+        "depends_on_missing_facts": [
+          "project_scope_summary"
+        ],
+        "depends_on_missing_documents": [
+          "single_pdf_plan_set"
+        ]
+      }
+    ]
+  }
+}

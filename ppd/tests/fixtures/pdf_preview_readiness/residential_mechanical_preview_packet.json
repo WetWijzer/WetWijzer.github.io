@@ -1,0 +1,111 @@
+{
+  "packet_id": "fixture_pdf_preview_readiness_residential_mechanical_001",
+  "workflow_id": "residential_mechanical_trade_permit_local_pdf_preview",
+  "readiness_status": "blocked_missing_facts_and_certification",
+  "preview_only": true,
+  "form_fields": [
+    {
+      "pdf_field_name": "job_site_address",
+      "label": "Job site address",
+      "fact_key": "property.site_address",
+      "required": true,
+      "requirement_trace_ids": ["evidence_apply_permits", "evidence_devhub_standard_trade"]
+    },
+    {
+      "pdf_field_name": "property_owner_name",
+      "label": "Property owner name",
+      "fact_key": "owner.legal_name",
+      "required": true,
+      "requirement_trace_ids": ["evidence_apply_permits"]
+    },
+    {
+      "pdf_field_name": "applicant_email",
+      "label": "Applicant email",
+      "fact_key": "applicant.email",
+      "required": true,
+      "requirement_trace_ids": ["evidence_devhub_account"]
+    },
+    {
+      "pdf_field_name": "contractor_license_number",
+      "label": "Contractor license number",
+      "fact_key": "contractor.license_number",
+      "required": true,
+      "requirement_trace_ids": ["evidence_devhub_standard_trade"]
+    },
+    {
+      "pdf_field_name": "mechanical_fixture_scope",
+      "label": "Mechanical fixture scope",
+      "fact_key": "work.mechanical_fixture_scope",
+      "required": true,
+      "requirement_trace_ids": ["evidence_devhub_standard_trade"]
+    }
+  ],
+  "synthetic_user_facts": {
+    "property.site_address": "1234 SE Fixture Ave, Portland, OR 97214",
+    "owner.legal_name": "Synthetic Owner Example",
+    "applicant.email": "preview.applicant@example.invalid",
+    "work.mechanical_fixture_scope": "Replace one existing residential furnace without plan review"
+  },
+  "missing_prompts": [
+    {
+      "fact_key": "contractor.license_number",
+      "prompt": "What contractor license number should be used for this local preview?",
+      "reason": "The standard trade workflow may depend on license data before fixture options can be assumed.",
+      "requirement_trace_ids": ["evidence_devhub_standard_trade"]
+    }
+  ],
+  "citation_evidence": [
+    {
+      "citation_id": "evidence_apply_permits",
+      "source_title": "Apply for permits",
+      "url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "evidence_text": "PP&D public guidance directs permit applicants to apply for permits and identify the relevant permit path before submitting materials.",
+      "evidence_type": "public_guidance_summary"
+    },
+    {
+      "citation_id": "evidence_devhub_account",
+      "source_title": "DevHub account and sign-in guide",
+      "url": "https://www.portland.gov/ppd/devhub-sign-guide",
+      "evidence_text": "DevHub online permitting services require a user account using PortlandOregon.gov credentials.",
+      "evidence_type": "public_guidance_summary"
+    },
+    {
+      "citation_id": "evidence_devhub_standard_trade",
+      "source_title": "How to use online permitting tools",
+      "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "evidence_text": "Official online permitting guidance distinguishes standard trade permits from permit requests that require plan review, and related fixture options can depend on contractor license information.",
+      "evidence_type": "public_guidance_summary"
+    },
+    {
+      "citation_id": "evidence_certification_gate",
+      "source_title": "DevHub permit application guide",
+      "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "evidence_text": "Permit application workflows can include acknowledgements, certification, uploads, save-for-later behavior, and final submission steps.",
+      "evidence_type": "public_guidance_summary"
+    }
+  ],
+  "blocked_certification_fields": [
+    {
+      "pdf_field_name": "applicant_signature",
+      "label": "Applicant signature",
+      "blocked_reason": "signature and certification field requires attended user review and exact confirmation",
+      "may_autofill": false,
+      "requirement_trace_ids": ["evidence_certification_gate"]
+    },
+    {
+      "pdf_field_name": "certification_acknowledgement_checkbox",
+      "label": "Certification acknowledgement",
+      "blocked_reason": "certification acknowledgement is consequential and cannot be auto-filled in preview mode",
+      "may_autofill": false,
+      "requirement_trace_ids": ["evidence_certification_gate"]
+    }
+  ],
+  "preview_output_metadata": {
+    "output_kind": "local_pdf_preview_packet",
+    "official_submission_ready": false,
+    "stores_private_values": false,
+    "disallowed_actions": ["upload", "submit", "certify", "pay", "schedule", "cancel"],
+    "allowed_actions": ["validate_fixture", "render_local_preview_mapping", "ask_missing_prompts"],
+    "artifact_policy": "commit_safe_fixture_only_no_raw_pdf_no_private_session_state"
+  }
+}

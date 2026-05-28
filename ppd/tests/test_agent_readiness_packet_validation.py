@@ -54,6 +54,88 @@ def test_rejects_missing_citation_spans() -> None:
     assert any("missing citation_spans" in problem for problem in result.problems)
 
 
+def test_rejects_missing_required_fact() -> None:
+    fixture = _fixture_with_spans()
+    fixture["case_gap_report"]["known_facts"] = [
+        fact for fact in fixture["case_gap_report"]["known_facts"] if fact["fact_id"] != "property_identifier"
+    ]
+
+    result = validate_agent_readiness_packet(fixture, now=_NOW)
+
+    assert result.ready is False
+    assert "required fact is not present: property_identifier" in result.problems
+
+
+def test_rejects_explicit_missing_facts() -> None:
+    fixture = _fixture_with_spans()
+    fixture["case_gap_report"]["missing_facts"] = [
+        {
+            "fact_id": "contractor_license_profile_status",
+            "source_evidence_ids": ["ev-devhub-faq"],
+        }
+    ]
+
+    result = validate_agent_readiness_packet(fixture, now=_NOW)
+
+    assert result.ready is False
+    assert "case_gap_report contains missing_facts" in result.problems
+
+
+def test_rejects_conflicting_evidence() -> None:
+    fixture = _fixture_with_spans()
+    fixture["case_gap_report"]["conflicting_evidence"] = [
+        {
+            "fact_id": "property_identifier",
+            "source_evidence_ids": ["ev-devhub-guide-submit", "ev-online-tools"],
+        }
+    ]
+
+    result = validate_agent_readiness_packet(fixture, now=_NOW)
+
+    assert result.ready is False
+    assert "case_gap_report contains conflicting_evidence" in result.problems
+
+
+def test_rejects_missing_required_document() -> None:
+    fixture = _fixture_with_spans()
+    fixture["case_gap_report"]["matched_document_ids"].remove("single_plan_pdf")
+
+    result = validate_agent_readiness_packet(fixture, now=_NOW)
+
+    assert result.ready is False
+    assert "required document is not matched: single_plan_pdf" in result.problems
+
+
+def test_rejects_low_selector_confidence() -> None:
+    fixture = _fixture_with_spans()
+    fixture["devhub_surface_map_readiness"]["selector_confidence"] = 0.42
+
+    result = validate_agent_readiness_packet(fixture, now=_NOW)
+
+    assert result.ready is False
+    assert any("selector confidence is low" in problem for problem in result.problems)
+
+
+def test_rejects_absent_preview_metadata() -> None:
+    fixture = _fixture_with_spans()
+    fixture.pop("preview_metadata")
+
+    result = validate_agent_readiness_packet(fixture, now=_NOW)
+
+    assert result.ready is False
+    assert "preview_metadata is required" in result.problems
+
+
+def test_rejects_incomplete_journal_checkpoint() -> None:
+    fixture = _fixture_with_spans()
+    fixture["action_journal_expectations"]["checkpoints"][0]["status"] = "pending"
+
+    result = validate_agent_readiness_packet(fixture, now=_NOW)
+
+    assert result.ready is False
+    assert any("journal checkpoint source_evidence_freshness is incomplete" in problem for problem in result.problems)
+
+
 def test_rejects_incomplete_crawl_promotion_audit_status() -> None:
     fixture = _fixture_with_spans()
     fixture["crawl_promotion_audit"]["promotion_status"] = "incomplete"

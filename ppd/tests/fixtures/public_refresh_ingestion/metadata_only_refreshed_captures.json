@@ -20,8 +20,14 @@
       "requirement_deltas": [
         {
           "requirement_id": "req-single-pdf-combined-drawings",
+          "requirement_type": "document_requirement",
           "delta_kind": "changed",
           "review_reason": "Fixture metadata indicates the public upload rule hash changed and the existing combined drawing requirement must be reviewed before guardrail reuse.",
+          "citation_spans": [
+            "submit-plans-online#single-pdf-process"
+          ],
+          "human_review_status": "pending_human_review",
+          "refreshed_guardrail_status": "blocked_pending_human_review",
           "affected_process_ids": [
             "process-residential-building-permit"
           ],
@@ -31,8 +37,14 @@
         },
         {
           "requirement_id": "req-supporting-documents-separate-pdfs",
+          "requirement_type": "document_requirement",
           "delta_kind": "added",
           "review_reason": "Fixture metadata indicates a new supporting document requirement should enter human review before process model promotion.",
+          "citation_spans": [
+            "submit-plans-online#supporting-documents"
+          ],
+          "human_review_status": "pending_human_review",
+          "refreshed_guardrail_status": "blocked_pending_human_review",
           "affected_process_ids": [
             "process-trade-permit-with-plan-review"
           ],
@@ -57,8 +69,14 @@
       "requirement_deltas": [
         {
           "requirement_id": "req-devhub-payment-exact-confirmation",
+          "requirement_type": "action_gate",
           "delta_kind": "changed",
           "review_reason": "Fixture metadata indicates DevHub payment guidance changed, so final payment guardrails remain blocked pending review.",
+          "citation_spans": [
+            "devhub-faqs#payment-actions"
+          ],
+          "human_review_status": "pending_human_review",
+          "refreshed_guardrail_status": "blocked_pending_human_review",
           "affected_process_ids": [],
           "blocked_guardrail_bundle_ids": []
         }

@@ -1,59 +1,103 @@
 {
   "reversible_draft_fill": {
     "action_type": "reversible_draft_fill",
+    "action_classification": "reversible_draft_preview",
     "source_evidence": [
       {
         "source_id": "ppd-devhub-guide-submit-permit-application",
-        "citation": "DevHub permit application guidance describes save-for-later behavior and dynamic application questions."
+        "citation": "DevHub permit application guidance describes dynamic application questions and draft review before final official steps."
       }
     ],
-    "user_case_facts": {
-      "case_id": "fixture-case-001",
-      "permit_type": "building permit",
-      "property_address": "1120 SW 5th Ave, Portland, OR"
+    "surface_evidence": {
+      "surface_id": "devhub-application-draft-redacted",
+      "surface_kind": "devhub_authenticated_redacted",
+      "redacted": true,
+      "contains_private_values": false,
+      "selector_basis": "accessible label fixture"
     },
     "selector_confidence": 0.94,
     "attendance": true,
-    "preview": {
+    "devhub_attended": true,
+    "preview_metadata": {
+      "preview_id": "draft-fill-preview-redacted-001",
+      "mode": "preview_only",
+      "may_mutate_devhub": false,
       "fields": [
         {
           "selector": "input[name='ProjectDescription']",
-          "proposed_value": "Replace existing deck boards in kind",
+          "label": "Project description",
+          "redacted_proposed_value": "[REDACTED DRAFT DESCRIPTION]",
           "evidence_id": "ppd-devhub-guide-submit-permit-application"
         }
       ]
     }
   },
-  "save_draft": {
-    "action_type": "save_draft",
-    "source_evidence": [
-      {
-        "source_id": "ppd-devhub-guide-submit-permit-application",
-        "citation": "Official guidance identifies save-for-later behavior before final submission."
+  "sensitive_packet_patches": [
+    {
+      "user_case_facts": {
+        "property_address": "1120 SW 5th Ave, Portland, OR"
       }
-    ],
-    "user_case_facts": {
-      "case_id": "fixture-case-001",
-      "permit_type": "building permit"
     },
-    "selector_confidence": 0.91,
-    "attendance": true,
-    "preview": {
-      "fields": [
-        {
-          "selector": "button[data-action='save-draft']",
-          "proposed_value": "save current reversible draft"
-        }
-      ]
+    {
+      "credentials": {
+        "username": "permit.user@example.com",
+        "password": "not-allowed"
+      }
+    },
+    {
+      "payment_details": {
+        "card_number": "4111 1111 1111 1111",
+        "cvv": "123"
+      }
     }
-  },
+  ],
+  "side_effect_request_patches": [
+    {
+      "action_type": "continue"
+    },
+    {
+      "action_type": "save_draft"
+    },
+    {
+      "action_label": "Submit permit request"
+    },
+    {
+      "preview_metadata": {
+        "preview_id": "bad-preview-submit",
+        "mode": "preview_only",
+        "may_mutate_devhub": false,
+        "button_text": "Upload corrections",
+        "fields": [
+          {
+            "selector": "button[data-action='upload']",
+            "label": "Upload corrections",
+            "redacted_proposed_value": "[REDACTED]"
+          }
+        ]
+      }
+    },
+    {
+      "requested_effect": "schedule inspection preview"
+    },
+    {
+      "action_label": "Certify application statement"
+    },
+    {
+      "action_label": "Payment review and fee payment"
+    }
+  ],
   "fail_closed_action_types": [
+    "continue",
+    "save",
+    "save_draft",
     "official_upload",
     "certification",
     "submission",
     "payment",
-    "cancellation",
+    "pay_fee",
+    "enter_payment_details",
     "inspection_scheduling",
+    "schedule_inspection",
     "mfa",
     "captcha",
     "account_creation"

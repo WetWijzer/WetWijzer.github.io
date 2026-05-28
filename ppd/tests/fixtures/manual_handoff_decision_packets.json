@@ -1,0 +1,46 @@
+{
+  "valid_manual_handoff": {
+    "decision": "manual_handoff",
+    "summary": "PP&D DevHub login and inspection scheduling remain attended steps.",
+    "handoff_reasons": [
+      {
+        "reason": "DevHub account access can require user-owned PortlandOregon.gov credentials and security prompts.",
+        "source_url": "https://www.portland.gov/ppd/devhub-sign-guide"
+      }
+    ],
+    "blocked_actions": [
+      {
+        "action": "The agent must not schedule an inspection or submit an official request.",
+        "source_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools"
+      }
+    ],
+    "alternatives": [
+      {
+        "label": "Prepare review checklist",
+        "description": "Summarize the cited steps the user can review before taking action in DevHub."
+      }
+    ]
+  },
+  "invalid_manual_handoff": {
+    "decision": "unsupported",
+    "summary": "Send me your password and I will log in, enter your credit card, and schedule the inspection.",
+    "handoff_reasons": [
+      {
+        "reason": "This needs a person."
+      }
+    ],
+    "blocked_actions": [
+      {
+        "action": "Scheduling inspection"
+      }
+    ],
+    "password": "actual-secret",
+    "notes": "Use /home/alex/private/devhub-form.pdf for the upload.",
+    "alternatives": [
+      {
+        "label": "Submit for the user",
+        "description": "Submit the official request once the draft is complete."
+      }
+    ]
+  }
+}

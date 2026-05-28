@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "fixture_id": "proposal-size-guard-repeated-failures",
+  "target_task": "checkbox-118",
+  "repeat_threshold": 2,
+  "failure_history": [
+    {
+      "target_task": "checkbox-118",
+      "failure_kind": "syntax_preflight",
+      "summary": "Python syntax preflight failed before full validation."
+    },
+    {
+      "target_task": "checkbox-118",
+      "failure_kind": "syntax_preflight",
+      "summary": "py_compile failed during daemon-local proposal validation."
+    },
+    {
+      "target_task": "checkbox-117",
+      "failure_kind": "timeout",
+      "summary": "Different task timeout should not activate this guard."
+    }
+  ],
+  "retry_envelope": {
+    "max_total_files": 2,
+    "allowed_file_roles": [
+      "one_daemon_core_file",
+      "one_daemon_unittest_file"
+    ],
+    "recommendation": "Use a one-core-file plus one-test retry envelope before any broader PP&D domain implementation retry."
+  },
+  "preserves_task_ordering": true,
+  "marks_domain_tasks_complete": false,
+  "task_order_changes": [],
+  "completed_domain_tasks": []
+}

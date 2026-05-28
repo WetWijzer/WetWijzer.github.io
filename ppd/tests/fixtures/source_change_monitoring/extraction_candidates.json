@@ -1,0 +1,20 @@
+[
+  {
+    "candidate_id": "candidate-fees-20260528",
+    "source_id": "building-permit-fees",
+    "candidate_hash": "sha256:changed-fees-002",
+    "changed_file_rules": ["fee_schedule_pdf_changed", "table_heading_changed"],
+    "text": "Permit fee schedule updated. Payment surcharge and valuation fee language changed.",
+    "requirement_node_ids": ["RequirementNode:PPD:fees:building-permit"],
+    "guardrail_bundle_ids": ["GuardrailBundle:PPD:fee-review"]
+  },
+  {
+    "candidate_id": "candidate-intake-20260528",
+    "source_id": "residential-permit-intake",
+    "candidate_hash": "sha256:intake-001",
+    "changed_file_rules": [],
+    "text": "Applications expire within 180 days if required corrections are not submitted before July 1.",
+    "requirement_node_ids": ["RequirementNode:PPD:intake:residential"],
+    "guardrail_bundle_ids": ["GuardrailBundle:PPD:deadline-review"]
+  }
+]

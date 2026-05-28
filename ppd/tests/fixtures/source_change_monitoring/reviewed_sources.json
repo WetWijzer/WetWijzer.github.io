@@ -1,0 +1,18 @@
+[
+  {
+    "source_id": "building-permit-fees",
+    "url": "https://www.portland.gov/ppd/fees/building-permit-fees",
+    "reviewed_hash": "sha256:reviewed-fees-001",
+    "current_hash": "sha256:changed-fees-002",
+    "last_reviewed_at": "2026-04-01",
+    "recrawl_days": 30
+  },
+  {
+    "source_id": "residential-permit-intake",
+    "url": "https://www.portland.gov/ppd/residential-permit-intake",
+    "reviewed_hash": "sha256:intake-001",
+    "current_hash": "sha256:intake-001",
+    "last_reviewed_at": "2026-05-20",
+    "recrawl_days": 30
+  }
+]

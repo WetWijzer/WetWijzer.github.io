@@ -1,0 +1,44 @@
+{
+  "packet_id": "html-review-packet-invalid-001",
+  "human_review_status": "pending_human_review",
+  "guardrail_status": "ready",
+  "source": {
+    "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online"
+  },
+  "extraction": {
+    "document_id": "doc-submit-plans-online",
+    "content_hash": "sha256:not-a-real-hash",
+    "hash_evidence": {
+      "algorithm": "sha256",
+      "value": "sha256:not-a-real-hash",
+      "derived_from": "llm_guess",
+      "status": "invented"
+    },
+    "section_order_preserved": false,
+    "raw_html": "raw source should not be stored",
+    "sections": [
+      {
+        "section_id": "sec-second",
+        "sequence": 2,
+        "heading": "Second section",
+        "excerpt": "This section is out of order and uncited."
+      },
+      {
+        "section_id": "sec-first",
+        "sequence": 1,
+        "heading": "First section",
+        "excerpt": "This section has no source id."
+      }
+    ],
+    "links": [
+      {
+        "url": "file:///private/devhub/session.html",
+        "label": "private file"
+      },
+      {
+        "url": "https://devhub.portlandoregon.gov/account/my-permits",
+        "label": "private DevHub account page"
+      }
+    ]
+  }
+}

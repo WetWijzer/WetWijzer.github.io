@@ -1,0 +1,257 @@
+{
+  "fixture_id": "action-journal-compliance-packet-v1",
+  "description": "Synthetic PP&D action journal compliance packet proving safe committed metadata for crawl, extraction, preview, attended preflight, handoff, refusal, and completion evidence events.",
+  "commit_policy": {
+    "synthetic_metadata_only": true,
+    "redacted_user_visible_summaries_only": true,
+    "private_artifacts_committed": false,
+    "raw_crawl_output_committed": false,
+    "downloaded_documents_committed": false
+  },
+  "events": [
+    {
+      "event_id": "ajc-001-public-crawl-preflight",
+      "event_type": "public crawl preflight",
+      "occurred_at": "2026-05-28T00:00:00Z",
+      "actor": "ppd-fixture-validator",
+      "source_evidence_ids": [
+        "source:ppd-home",
+        "source:online-permitting-tools"
+      ],
+      "guardrail_evidence_ids": [
+        "guardrail:public-source-allowlist",
+        "guardrail:no-private-artifacts"
+      ],
+      "user_visible_summary": "Synthetic public crawl preflight allowed only official PP&D HTTPS source anchors and blocked private or authenticated paths.",
+      "synthetic_metadata": {
+        "live_network_used": false,
+        "no_raw_body_persisted": true,
+        "allowlist_host_count": 4,
+        "robots_policy_checked": true,
+        "safe_to_run_live_later": false
+      },
+      "redaction": {
+        "raw_values_committed": false,
+        "private_artifacts_committed": false,
+        "redaction_categories": [
+          "network_payloads",
+          "raw_html"
+        ]
+      }
+    },
+    {
+      "event_id": "ajc-002-public-crawl-metadata-capture",
+      "event_type": "public crawl metadata capture",
+      "occurred_at": "2026-05-28T00:01:00Z",
+      "actor": "ppd-fixture-validator",
+      "source_evidence_ids": [
+        "source:permit-applications-index"
+      ],
+      "guardrail_evidence_ids": [
+        "guardrail:metadata-only-capture",
+        "guardrail:no-downloaded-documents"
+      ],
+      "user_visible_summary": "Synthetic crawl metadata recorded canonical URL, content class, policy result, and checksum placeholder without body text or downloaded files.",
+      "synthetic_metadata": {
+        "live_network_used": false,
+        "no_raw_body_persisted": true,
+        "http_status_example": 200,
+        "content_type_example": "text/html",
+        "checksum_placeholder_used": true
+      },
+      "redaction": {
+        "raw_values_committed": false,
+        "private_artifacts_committed": false,
+        "redaction_categories": [
+          "response_body",
+          "downloaded_files"
+        ]
+      }
+    },
+    {
+      "event_id": "ajc-003-requirement-extraction",
+      "event_type": "requirement extraction",
+      "occurred_at": "2026-05-28T00:02:00Z",
+      "actor": "ppd-fixture-validator",
+      "source_evidence_ids": [
+        "source:submit-plans-online",
+        "source:file-naming-standards"
+      ],
+      "guardrail_evidence_ids": [
+        "guardrail:citation-required",
+        "guardrail:human-review-before-formalization"
+      ],
+      "user_visible_summary": "Synthetic extraction produced source-backed requirement categories for document preparation and upload staging guardrails.",
+      "synthetic_metadata": {
+        "source_backed": true,
+        "requirement_count": 5,
+        "human_review_status": "fixture-reviewed",
+        "formalization_status": "ready-for-guardrail-fixture"
+      },
+      "redaction": {
+        "raw_values_committed": false,
+        "private_artifacts_committed": false,
+        "redaction_categories": [
+          "source_body_excerpt",
+          "private_case_facts"
+        ]
+      }
+    },
+    {
+      "event_id": "ajc-004-local-pdf-preview",
+      "event_type": "local PDF preview",
+      "occurred_at": "2026-05-28T00:03:00Z",
+      "actor": "ppd-fixture-validator",
+      "source_evidence_ids": [
+        "source:permit-forms-index"
+      ],
+      "guardrail_evidence_ids": [
+        "guardrail:local-preview-only",
+        "guardrail:no-official-action-attempt"
+      ],
+      "user_visible_summary": "Synthetic local PDF preview mapped redacted draft fields and confirmed no official upload, certification, submission, or file reference was committed.",
+      "synthetic_metadata": {
+        "private_file_reference_committed": false,
+        "official_action_attempted": false,
+        "preview_field_count": 3,
+        "redacted_field_values_only": true
+      },
+      "redaction": {
+        "raw_values_committed": false,
+        "private_artifacts_committed": false,
+        "redaction_categories": [
+          "user_form_values",
+          "pdf_binary",
+          "private_file_references"
+        ]
+      }
+    },
+    {
+      "event_id": "ajc-005-devhub-attended-preflight",
+      "event_type": "DevHub attended preflight",
+      "occurred_at": "2026-05-28T00:04:00Z",
+      "actor": "ppd-fixture-validator",
+      "source_evidence_ids": [
+        "source:devhub-sign-guide",
+        "source:devhub-faq"
+      ],
+      "guardrail_evidence_ids": [
+        "guardrail:attended-login-only",
+        "guardrail:no-browser-state"
+      ],
+      "user_visible_summary": "Synthetic DevHub attended preflight documented login handoff requirements while omitting browser state and private page values.",
+      "synthetic_metadata": {
+        "attended_required": true,
+        "browser_state_committed": false,
+        "user_completed_login_manually": true,
+        "automation_scope": "readiness-check-only"
+      },
+      "redaction": {
+        "raw_values_committed": false,
+        "private_artifacts_committed": false,
+        "redaction_categories": [
+          "private_browser_state",
+          "private_page_values",
+          "security_prompts"
+        ]
+      }
+    },
+    {
+      "event_id": "ajc-006-manual-handoff",
+      "event_type": "manual handoff",
+      "occurred_at": "2026-05-28T00:05:00Z",
+      "actor": "ppd-fixture-validator",
+      "source_evidence_ids": [
+        "source:devhub-guide-submit-permit-application"
+      ],
+      "guardrail_evidence_ids": [
+        "guardrail:exact-confirmation-required",
+        "guardrail:manual-handoff-for-official-actions"
+      ],
+      "user_visible_summary": "Synthetic manual handoff instructed the user to remain present before any acknowledgement, upload, submission, scheduling, cancellation, or financial action.",
+      "synthetic_metadata": {
+        "attended_required": true,
+        "handoff_reason": "official-action-boundary",
+        "exact_confirmation_required": true,
+        "agent_next_step": "show-checklist-only"
+      },
+      "redaction": {
+        "raw_values_committed": false,
+        "private_artifacts_committed": false,
+        "redaction_categories": [
+          "private_case_facts",
+          "consequential_inputs"
+        ]
+      }
+    },
+    {
+      "event_id": "ajc-007-refused-action",
+      "event_type": "refused action",
+      "occurred_at": "2026-05-28T00:06:00Z",
+      "actor": "ppd-fixture-validator",
+      "source_evidence_ids": [
+        "source:fee-payment-guide",
+        "source:devhub-faq"
+      ],
+      "guardrail_evidence_ids": [
+        "guardrail:refuse-financial-actions",
+        "guardrail:refuse-official-record-mutations"
+      ],
+      "user_visible_summary": "Synthetic refusal blocked final payment, official submission, upload, certification, cancellation, and inspection scheduling automation.",
+      "synthetic_metadata": {
+        "requires_manual_handoff": true,
+        "blocked_reason": "consequential-or-financial-action",
+        "refused_action_classes": [
+          "final-payment",
+          "official-submission",
+          "official-upload",
+          "certification",
+          "cancellation",
+          "inspection-scheduling"
+        ],
+        "safe_alternative": "prepare-redacted-checklist"
+      },
+      "redaction": {
+        "raw_values_committed": false,
+        "private_artifacts_committed": false,
+        "redaction_categories": [
+          "financial_inputs",
+          "official_action_inputs"
+        ]
+      }
+    },
+    {
+      "event_id": "ajc-008-completion-evidence",
+      "event_type": "completion evidence",
+      "occurred_at": "2026-05-28T00:07:00Z",
+      "actor": "ppd-fixture-validator",
+      "source_evidence_ids": [
+        "source:devhub-faq",
+        "source:submit-plans-online"
+      ],
+      "guardrail_evidence_ids": [
+        "guardrail:user-visible-evidence-only",
+        "guardrail:no-click-fill-completion-claim"
+      ],
+      "user_visible_summary": "Synthetic completion evidence confirmed only redacted user-visible outcomes and source evidence identifiers were retained.",
+      "synthetic_metadata": {
+        "completion_evidence_ids": [
+          "completion:local-preview-rendered",
+          "completion:manual-handoff-shown",
+          "completion:refusal-shown"
+        ],
+        "user_visible_outcome_confirmed": true,
+        "click_or_fill_attempt_only": false,
+        "post_action_review_required": true
+      },
+      "redaction": {
+        "raw_values_committed": false,
+        "private_artifacts_committed": false,
+        "redaction_categories": [
+          "private_outcome_details",
+          "browser_artifacts"
+        ]
+      }
+    }
+  ]
+}

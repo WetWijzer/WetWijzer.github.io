@@ -32,3 +32,20 @@ def test_source_discovery_findings_are_serializable() -> None:
         "reason_code": "allowed_public_source",
         "message": "Discovery URL is within the deterministic PP&D public source policy.",
     }
+
+
+def test_source_discovery_rejects_all_required_unsafe_frontier_conditions() -> None:
+    records = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
+
+    reason_codes = {finding.reason_code for finding in validate_discovery_records(records)}
+
+    assert "unsupported_scheme" in reason_codes
+    assert "outside_allowlist" in reason_codes
+    assert "private_authenticated" in reason_codes
+    assert "missing_source_page_evidence" in reason_codes
+    assert "missing_link_text_evidence" in reason_codes
+    assert "missing_robots_decision" in reason_codes
+    assert "missing_policy_decision" in reason_codes
+    assert "raw_body_field" in reason_codes
+    assert "downloaded_document_path" in reason_codes
+    assert "ready_without_review" in reason_codes

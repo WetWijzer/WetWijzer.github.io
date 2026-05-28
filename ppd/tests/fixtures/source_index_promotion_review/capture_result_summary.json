@@ -1,0 +1,156 @@
+{
+  "schema_version": "ppd-public-capture-summary-v1",
+  "source_index_update_candidates": [
+    {
+      "candidate_id": "source-index-candidate:devhub-faqs",
+      "manifest_id": "archive-manifest:fake:devhub-faqs",
+      "source_id": "ppd-devhub-faqs",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "requested_url": "http://www.portland.gov/ppd/devhub-faqs",
+      "title": "DevHub FAQs",
+      "page_type": "devhub_public",
+      "content_type": "text/html; charset=utf-8",
+      "http_status": 200,
+      "content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "observed_at": "2026-05-27T06:00:01Z",
+      "capture_started_at": "2026-05-27T06:00:00Z",
+      "capture_finished_at": "2026-05-27T06:00:01Z",
+      "processor_name": "ppd.fake_public_capture",
+      "processor_version": "0.1",
+      "archive_artifact_ref": "metadata-only:fixture:ppd-devhub-faqs",
+      "redirect_chain": [
+        {
+          "url": "http://www.portland.gov/ppd/devhub-faqs",
+          "status": 301,
+          "location": "https://www.portland.gov/ppd/devhub-faqs"
+        },
+        {
+          "url": "https://www.portland.gov/ppd/devhub-faqs",
+          "status": 200
+        }
+      ],
+      "citation_links": [
+        {
+          "label": "DevHub FAQs",
+          "url": "https://www.portland.gov/ppd/devhub-faqs",
+          "source_id": "ppd-devhub-faqs",
+          "content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "freshness_status": "content_hash_changed"
+        }
+      ],
+      "skipped_reason": null,
+      "no_raw_body_persisted": true,
+      "update_action": "upsert_metadata_only_record",
+      "promotion_status": "ready",
+      "human_review_status": "reviewed"
+    },
+    {
+      "candidate_id": "source-index-candidate:file-naming",
+      "manifest_id": "archive-manifest:fake:file-naming",
+      "source_id": "ppd-spp-file-naming-standards",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "requested_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "title": "Single PDF Process File Naming Standards",
+      "page_type": "public_pdf",
+      "content_type": "application/pdf",
+      "http_status": 304,
+      "content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "observed_at": "2026-05-27T06:01:01Z",
+      "capture_started_at": "2026-05-27T06:01:00Z",
+      "capture_finished_at": "2026-05-27T06:01:01Z",
+      "processor_name": "ppd.fake_public_capture",
+      "processor_version": "0.1",
+      "archive_artifact_ref": "metadata-only:fixture:ppd-spp-file-naming-standards",
+      "redirect_chain": [
+        {
+          "url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+          "status": 304
+        }
+      ],
+      "skipped_reason": "not_modified_fixture_summary",
+      "no_raw_body_persisted": true,
+      "update_action": "upsert_metadata_only_record",
+      "promotion_status": "ready",
+      "human_review_status": "reviewed"
+    }
+  ],
+  "extraction_work_items": [
+    {
+      "work_item_id": "extraction-work:devhub-faqs",
+      "source_id": "ppd-devhub-faqs",
+      "normalized_document_id": "document-fixture-ppd-devhub-faqs",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "extraction_kind": "html_metadata_and_requirement_extraction",
+      "allowed_inputs": ["capture_metadata", "normalized_document_reference"],
+      "prohibited_inputs": ["raw_public_page_body", "downloaded_pdf_path", "pdf_bytes"],
+      "human_review_required": false
+    },
+    {
+      "work_item_id": "extraction-work:file-naming",
+      "source_id": "ppd-spp-file-naming-standards",
+      "normalized_document_id": "document-fixture-ppd-spp-file-naming-standards",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "extraction_kind": "pdf_metadata_and_requirement_extraction",
+      "allowed_inputs": ["capture_metadata", "normalized_document_reference"],
+      "prohibited_inputs": ["raw_public_page_body", "downloaded_pdf_path", "pdf_bytes"],
+      "human_review_required": true,
+      "skipped_reason": "not_modified_fixture_summary"
+    }
+  ],
+  "freshness_changes": [
+    {
+      "freshness_change_id": "freshness-change:devhub-faqs",
+      "source_id": "ppd-devhub-faqs",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "previous_content_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "current_content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "status": "content_hash_changed",
+      "observed_at": "2026-05-27T06:00:01Z",
+      "recrawl_priority": "high"
+    },
+    {
+      "freshness_change_id": "freshness-change:file-naming",
+      "source_id": "ppd-spp-file-naming-standards",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "previous_content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "current_content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "status": "metadata_refreshed",
+      "observed_at": "2026-05-27T06:01:01Z",
+      "recrawl_priority": "normal"
+    }
+  ],
+  "processor_outputs": [
+    {
+      "source_id": "ppd-devhub-faqs",
+      "processor_name": "ppd.fake_public_capture",
+      "artifact_ref": "metadata-only:fixture:processor-output:ppd-devhub-faqs",
+      "metadata_only": true,
+      "no_raw_body_persisted": true
+    },
+    {
+      "source_id": "ppd-spp-file-naming-standards",
+      "processor_name": "ppd.fake_public_capture",
+      "artifact_ref": "metadata-only:fixture:processor-output:ppd-spp-file-naming-standards",
+      "metadata_only": true,
+      "no_raw_body_persisted": true
+    }
+  ],
+  "human_review_prompts": [
+    {
+      "prompt_id": "review:devhub-faqs",
+      "source_id": "ppd-devhub-faqs",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "reason": "content_hash_changed",
+      "prompt": "Review metadata-only capture before promoting source-index or requirement changes."
+    },
+    {
+      "prompt_id": "review:file-naming",
+      "source_id": "ppd-spp-file-naming-standards",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "reason": "document_extraction_review",
+      "prompt": "Confirm extracted PDF/form requirements from normalized document references only."
+    }
+  ]
+}

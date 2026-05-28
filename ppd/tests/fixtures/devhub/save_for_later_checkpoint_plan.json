@@ -1,0 +1,195 @@
+{
+  "plan_id": "devhub_save_for_later_checkpoint_plan_fixture",
+  "plan_version": "devhub-save-for-later-checkpoint-plan-v1",
+  "run_mode": "fixture_first_attended_devhub_save_for_later_checkpoint",
+  "live_devhub_session": false,
+  "browser_launched": false,
+  "auth_state_saved": false,
+  "browser_artifact_policy": {
+    "stores_auth_state": false,
+    "stores_cookies": false,
+    "stores_screenshots": false,
+    "stores_traces": false,
+    "stores_har": false,
+    "stores_downloads": false,
+    "stores_private_uploads": false,
+    "captures_payment_detail_entry": false,
+    "committed_artifacts": "none"
+  },
+  "source_evidence": [
+    {
+      "evidence_id": "SRC-DEVHUB-GUIDE-SAVE-LATER-001",
+      "source_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "source_type": "official_public_guidance",
+      "supports_checkpoint": "DevHub permit application guidance describes application entry and save-for-later behavior."
+    },
+    {
+      "evidence_id": "SRC-DEVHUB-TOOLS-OVERVIEW-001",
+      "source_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "source_type": "official_public_guidance",
+      "supports_checkpoint": "Online permitting guidance identifies DevHub as the City of Portland permitting system and ties account-scoped actions to attended use."
+    }
+  ],
+  "manual_attendance": {
+    "requires_user_present": true,
+    "requires_attended_browser": true,
+    "user_operates_login": true,
+    "automation_performs_login": false,
+    "automation_handles_mfa": false,
+    "automation_handles_captcha": false,
+    "manual_login_handoff": {
+      "handoff_required": true,
+      "user_completes_login": true,
+      "credentials_not_collected": true,
+      "mfa_captcha_user_only": true,
+      "automation_resumes_after_user_attendance": true,
+      "automation_creates_account": false,
+      "handoff_instruction": "Pause for the user to complete PortlandOregon.gov sign-in in the attended browser; resume only after the user confirms the DevHub account-scoped page is visible."
+    }
+  },
+  "checkpoints": [
+    {
+      "checkpoint_id": "checkpoint-redacted-field-entry",
+      "checkpoint_kind": "reversible_field_entry",
+      "allowed_action": "enter_redacted_field_value",
+      "uses_save_for_later_control": false,
+      "requires_manual_attendance": true,
+      "changes_official_state": false,
+      "requires_official_confirmation": false,
+      "source_evidence_ids": [
+        "SRC-DEVHUB-GUIDE-SAVE-LATER-001"
+      ],
+      "selector_metadata": {
+        "selector_id": "selector-redacted-field-entry",
+        "selector_strategy": "accessible_role",
+        "role": "textbox",
+        "accessible_name": "Synthetic redacted permit field",
+        "selector_confidence": "high",
+        "matched_element_count": 1,
+        "ambiguous_matches": 0,
+        "selector_unique": true,
+        "uses_positional_selector": false,
+        "uses_private_dom": false,
+        "uses_text_only_selector": false
+      },
+      "preview_metadata": {
+        "preview_id": "preview-redacted-field-entry",
+        "redacted": true,
+        "contains_private_values": false,
+        "may_touch_live_devhub": false,
+        "source_evidence_ids": [
+          "SRC-DEVHUB-GUIDE-SAVE-LATER-001"
+        ]
+      }
+    },
+    {
+      "checkpoint_id": "checkpoint-save-for-later-control",
+      "checkpoint_kind": "save_for_later_control",
+      "allowed_action": "activate_save_for_later_control",
+      "enters_field_values": false,
+      "requires_manual_attendance": true,
+      "changes_official_state": false,
+      "requires_official_confirmation": false,
+      "source_evidence_ids": [
+        "SRC-DEVHUB-GUIDE-SAVE-LATER-001",
+        "SRC-DEVHUB-TOOLS-OVERVIEW-001"
+      ],
+      "selector_metadata": {
+        "selector_id": "selector-save-for-later-control",
+        "selector_strategy": "accessible_role",
+        "role": "button",
+        "accessible_name": "Save for Later",
+        "selector_confidence": "high",
+        "matched_element_count": 1,
+        "ambiguous_matches": 0,
+        "selector_unique": true,
+        "uses_positional_selector": false,
+        "uses_private_dom": false,
+        "uses_text_only_selector": false
+      },
+      "preview_metadata": {
+        "preview_id": "preview-save-for-later-control",
+        "redacted": true,
+        "contains_private_values": false,
+        "may_touch_live_devhub": false,
+        "source_evidence_ids": [
+          "SRC-DEVHUB-GUIDE-SAVE-LATER-001",
+          "SRC-DEVHUB-TOOLS-OVERVIEW-001"
+        ]
+      }
+    }
+  ],
+  "action_journal_expectations": [
+    {
+      "event_type": "DevHub attended preflight",
+      "redacted": true,
+      "contains_private_values": false,
+      "expected_message": "Manual attendance and manual-login handoff confirmed before save-for-later checkpoint planning.",
+      "source_evidence_ids": [
+        "SRC-DEVHUB-TOOLS-OVERVIEW-001"
+      ]
+    },
+    {
+      "event_type": "reversible draft plan",
+      "redacted": true,
+      "contains_private_values": false,
+      "expected_message": "Redacted field-entry preview prepared separately from save-for-later control activation.",
+      "source_evidence_ids": [
+        "SRC-DEVHUB-GUIDE-SAVE-LATER-001"
+      ]
+    },
+    {
+      "event_type": "DevHub attempted action",
+      "redacted": true,
+      "contains_private_values": false,
+      "expected_message": "Save-for-later control may be activated only as attended reversible draft work.",
+      "source_evidence_ids": [
+        "SRC-DEVHUB-GUIDE-SAVE-LATER-001"
+      ]
+    }
+  ],
+  "excluded_actions": [
+    {
+      "action_class": "upload",
+      "decision": "exclude",
+      "may_execute": false,
+      "requires_separate_exact_confirmation": true
+    },
+    {
+      "action_class": "submission",
+      "decision": "exclude",
+      "may_execute": false,
+      "requires_separate_exact_confirmation": true
+    },
+    {
+      "action_class": "certification",
+      "decision": "exclude",
+      "may_execute": false,
+      "requires_separate_exact_confirmation": true
+    },
+    {
+      "action_class": "inspection_scheduling",
+      "decision": "exclude",
+      "may_execute": false,
+      "requires_separate_exact_confirmation": true
+    },
+    {
+      "action_class": "cancellation",
+      "decision": "exclude",
+      "may_execute": false,
+      "requires_separate_exact_confirmation": true
+    },
+    {
+      "action_class": "payment_detail_entry",
+      "decision": "exclude",
+      "may_execute": false,
+      "requires_separate_exact_confirmation": true
+    },
+    {
+      "action_class": "final_payment_execution",
+      "decision": "exclude",
+      "may_execute": false,
+      "requires_separate_exact_confirmation": true
+    }
+  ]
+}

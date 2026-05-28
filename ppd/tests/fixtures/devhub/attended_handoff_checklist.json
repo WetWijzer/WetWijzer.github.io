@@ -1,0 +1,79 @@
+{
+  "checklist_id": "devhub-attended-handoff-v1",
+  "manual_login_prerequisites": [
+    "user_attended_visible_browser",
+    "user_completes_portlandoregon_login",
+    "user_completes_mfa_captcha_or_security_prompts",
+    "no_credentials_requested_or_stored",
+    "no_account_creation_or_password_recovery"
+  ],
+  "permitted_read_only_scopes": [
+    "devhub_home_review",
+    "my_permits_and_requests_review",
+    "permit_detail_status_review",
+    "correction_request_review_without_document_transfer",
+    "attachment_list_review_without_downloaded_private_content",
+    "inspection_result_review"
+  ],
+  "permitted_reversible_draft_scopes": [
+    "address_or_property_search",
+    "permit_type_selection_before_final_action",
+    "form_field_draft_before_final_action",
+    "save_draft_when_available",
+    "local_preview_of_field_mapping"
+  ],
+  "redaction_requirements": [
+    "credentials",
+    "cookies_and_tokens",
+    "mfa_captcha_security_answers",
+    "private_form_values",
+    "payment_details",
+    "uploaded_document_contents",
+    "local_private_file_paths",
+    "screenshots_traces_har"
+  ],
+  "exact_confirmation_boundaries": [
+    "submit_permit_request",
+    "certify_acknowledgement",
+    "upload_to_official_record",
+    "purchase_trade_permit",
+    "schedule_inspection",
+    "cancel_withdraw_extend_or_reactivate",
+    "enter_or_submit_payment_details",
+    "change_account_or_security_settings"
+  ],
+  "abort_conditions": [
+    "captcha_or_mfa_needs_user_action",
+    "credentials_or_private_values_requested_by_worker",
+    "scope_or_consequence_unclear",
+    "official_submission_or_payment_boundary_reached",
+    "unexpected_upload_or_certification_prompt",
+    "robot_terms_or_access_control_conflict",
+    "user_absent_or_confirmation_missing"
+  ],
+  "forbidden_storage": [
+    "auth_state",
+    "browser_state",
+    "captcha",
+    "cookie",
+    "cookies",
+    "credential",
+    "credentials",
+    "har",
+    "local_private_path",
+    "mfa_secret",
+    "password",
+    "payment_detail",
+    "payment_details",
+    "private_value",
+    "private_values",
+    "raw_authenticated_html",
+    "raw_crawl_output",
+    "screenshot",
+    "session_storage",
+    "trace",
+    "upload_content"
+  ],
+  "stores_browser_state": false,
+  "stores_private_values": false
+}

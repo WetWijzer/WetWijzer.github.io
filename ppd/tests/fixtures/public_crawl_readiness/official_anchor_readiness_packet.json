@@ -1,0 +1,271 @@
+{
+  "packet_id": "ppd-public-crawl-readiness-2026-05-27-fixture-001",
+  "mode": "fixture_first_pre_live_crawl",
+  "prepared_at": "2026-05-27T00:00:00Z",
+  "official_anchor_coverage": {
+    "coverage_basis": "PP&D plan official source anchors verified before any live crawl is attempted.",
+    "anchors": [
+      {
+        "source_id": "ppd_bureau_landing_page",
+        "canonical_url": "https://www.portland.gov/ppd",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "online_permitting_tools_overview",
+        "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "devhub_public_portal",
+        "canonical_url": "https://devhub.portlandoregon.gov",
+        "source_type": "devhub_public",
+        "owning_surface": "devhub_public_portal",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "devhub_faq",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "devhub_account_sign_in_guide",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-sign-guide",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "apply_for_permits",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "devhub_permit_application_guide",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "submit_plans_online_single_pdf_process",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "permit_applications_and_forms_index",
+        "canonical_url": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "file_naming_standards_pdf_preparation",
+        "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "fee_payment_guide_download",
+        "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "source_type": "public_pdf",
+        "owning_surface": "ppd_public_website",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      },
+      {
+        "source_id": "portland_maps_public_references",
+        "canonical_url": "https://www.portlandmaps.com",
+        "source_type": "external_reference",
+        "owning_surface": "public_property_reference",
+        "coverage_status": "covered_by_fixture",
+        "live_fetch_allowed": false
+      }
+    ]
+  },
+  "dry_run_crawl_intentions": {
+    "live_crawl_enabled": false,
+    "network_access_required": false,
+    "frontier_mode": "seed_metadata_only",
+    "allowed_actions": [
+      "validate_anchor_allowlist",
+      "validate_robots_preflight_requirements",
+      "validate_rate_limit_buckets",
+      "validate_processor_contract_shape",
+      "emit_metadata_only_handoff_manifest"
+    ],
+    "blocked_actions": [
+      "http_fetch",
+      "document_download",
+      "authenticated_browser",
+      "raw_body_persistence",
+      "captcha_or_mfa_automation",
+      "payment_or_submission_action"
+    ]
+  },
+  "robots_policy_preflight": {
+    "default_decision": "block_until_robots_verified",
+    "hosts": [
+      {
+        "host": "www.portland.gov",
+        "robots_txt_url": "https://www.portland.gov/robots.txt",
+        "robots_txt_fetch_status": "pending_live_preflight",
+        "policy_decision": "block_until_robots_verified"
+      },
+      {
+        "host": "devhub.portlandoregon.gov",
+        "robots_txt_url": "https://devhub.portlandoregon.gov/robots.txt",
+        "robots_txt_fetch_status": "pending_live_preflight",
+        "policy_decision": "block_until_robots_verified"
+      },
+      {
+        "host": "www.portlandoregon.gov",
+        "robots_txt_url": "https://www.portlandoregon.gov/robots.txt",
+        "robots_txt_fetch_status": "pending_live_preflight",
+        "policy_decision": "block_until_robots_verified"
+      },
+      {
+        "host": "www.portlandmaps.com",
+        "robots_txt_url": "https://www.portlandmaps.com/robots.txt",
+        "robots_txt_fetch_status": "pending_live_preflight",
+        "policy_decision": "block_until_robots_verified"
+      }
+    ]
+  },
+  "rate_limit_buckets": [
+    {
+      "bucket_id": "portland_gov_public_guidance",
+      "host": "www.portland.gov",
+      "max_requests_per_minute": 6,
+      "minimum_delay_seconds": 10,
+      "burst_allowed": false,
+      "scope": "public guidance pages and public document URLs after robots approval"
+    },
+    {
+      "bucket_id": "devhub_public_portal_metadata",
+      "host": "devhub.portlandoregon.gov",
+      "max_requests_per_minute": 2,
+      "minimum_delay_seconds": 30,
+      "burst_allowed": false,
+      "scope": "public portal metadata only after robots approval; no authenticated crawl"
+    },
+    {
+      "bucket_id": "legacy_portlandoregon_public_references",
+      "host": "www.portlandoregon.gov",
+      "max_requests_per_minute": 3,
+      "minimum_delay_seconds": 20,
+      "burst_allowed": false,
+      "scope": "legacy public references only when linked from official PP&D guidance"
+    },
+    {
+      "bucket_id": "portland_maps_public_references",
+      "host": "www.portlandmaps.com",
+      "max_requests_per_minute": 3,
+      "minimum_delay_seconds": 20,
+      "burst_allowed": false,
+      "scope": "public property and permit references only when linked from official PP&D guidance"
+    }
+  ],
+  "processor_invocation_contracts": [
+    {
+      "contract_id": "ipfs_datasets_py_public_web_archive_dry_run",
+      "processor_name": "ipfs_datasets_py.web_archive",
+      "invocation_stage": "post_policy_preflight_only",
+      "dry_run_only": true,
+      "metadata_only": true,
+      "required_inputs": [
+        "canonical_url",
+        "source_id",
+        "source_type",
+        "owning_surface",
+        "allowlist_decision",
+        "robots_policy_decision",
+        "rate_limit_bucket_id"
+      ],
+      "allowed_outputs": [
+        "archive_manifest_stub",
+        "redirect_chain_metadata",
+        "http_header_metadata",
+        "content_type_metadata",
+        "content_hash_metadata",
+        "normalized_document_ref"
+      ],
+      "prohibited_outputs": [
+        "raw_html",
+        "raw_pdf",
+        "warc_payload",
+        "authenticated_values",
+        "cookies",
+        "browser_storage",
+        "screenshots",
+        "har_files",
+        "playwright_traces"
+      ]
+    },
+    {
+      "contract_id": "ipfs_datasets_py_pdf_text_extraction_dry_run",
+      "processor_name": "ipfs_datasets_py.pdf_extraction",
+      "invocation_stage": "after_public_document_metadata_capture_only",
+      "dry_run_only": true,
+      "metadata_only": true,
+      "required_inputs": [
+        "archive_manifest_stub",
+        "public_pdf_source_id",
+        "content_type_metadata",
+        "content_hash_metadata"
+      ],
+      "allowed_outputs": [
+        "document_record_stub",
+        "page_count_metadata",
+        "fillable_field_schema_metadata",
+        "extraction_confidence_placeholder"
+      ],
+      "prohibited_outputs": [
+        "raw_html",
+        "raw_pdf",
+        "warc_payload",
+        "authenticated_values",
+        "cookies",
+        "browser_storage",
+        "screenshots",
+        "har_files",
+        "playwright_traces"
+      ]
+    }
+  ],
+  "metadata_only_output_guarantees": {
+    "raw_body_persisted": false,
+    "credentials_persisted": false,
+    "browser_state_persisted": false,
+    "screenshots_persisted": false,
+    "har_or_trace_persisted": false,
+    "private_values_persisted": false,
+    "allowed_outputs": [
+      "source_registry_stubs",
+      "archive_manifest_stubs",
+      "processor_handoff_manifest",
+      "crawl_policy_preflight_report",
+      "validation_issues"
+    ]
+  }
+}

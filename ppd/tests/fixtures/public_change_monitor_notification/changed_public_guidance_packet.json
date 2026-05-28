@@ -1,0 +1,92 @@
+{
+  "packet_id": "public-change-monitor-notification-2026-05-27-fixture",
+  "generated_at": "2026-05-27T00:00:00Z",
+  "source_change_basis": "fixture_only_public_metadata",
+  "source_hash_changes": [
+    {
+      "source_id": "src-ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "previous_source_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "current_source_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "change_reason": "fixture metadata indicates changed upload guidance hash",
+      "source_freshness_status": "fresh",
+      "source_last_verified_at": "2026-05-27T00:00:00Z"
+    },
+    {
+      "source_id": "src-ppd-devhub-faqs",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "previous_source_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "current_source_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "change_reason": "fixture metadata indicates changed DevHub action guidance hash",
+      "source_freshness_status": "fresh",
+      "source_last_verified_at": "2026-05-27T00:00:00Z"
+    }
+  ],
+  "requirement_changes": [
+    {
+      "change_id": "chg-added-plan-review-upload-label",
+      "change_kind": "added",
+      "change_category": "document_requirement",
+      "requirement_id": "req-plan-review-upload-label-current",
+      "requirement_type": "document_requirement",
+      "source_id": "src-ppd-submit-plans-online",
+      "affected_process_ids": ["process-single-pdf-plan-review:v2026-05-27"],
+      "affected_guardrail_bundle_ids": ["guardrail-upload-staging:v2026-05-27"],
+      "human_review_status": "needs_human_review"
+    },
+    {
+      "change_id": "chg-removed-prior-filename-exception",
+      "change_kind": "removed",
+      "change_category": "file_rule",
+      "requirement_id": "req-prior-filename-exception",
+      "requirement_type": "exception",
+      "source_id": "src-ppd-submit-plans-online",
+      "affected_process_ids": ["process-document-preparation:v2026-05-27"],
+      "affected_guardrail_bundle_ids": ["guardrail-file-naming:v2026-05-27"],
+      "human_review_status": "needs_human_review"
+    },
+    {
+      "change_id": "chg-devhub-correction-action-gate",
+      "change_kind": "changed",
+      "change_category": "devhub_action_guidance",
+      "requirement_id": "req-devhub-correction-upload-action-gate",
+      "requirement_type": "action_gate",
+      "source_id": "src-ppd-devhub-faqs",
+      "affected_process_ids": ["process-corrections-upload:v2026-05-27"],
+      "affected_guardrail_bundle_ids": ["guardrail-devhub-consequential-actions:v2026-05-27"],
+      "human_review_status": "needs_human_review"
+    }
+  ],
+  "affected_versions": {
+    "process_versions": [
+      "process-single-pdf-plan-review:v2026-05-27",
+      "process-document-preparation:v2026-05-27",
+      "process-corrections-upload:v2026-05-27"
+    ],
+    "guardrail_bundle_versions": [
+      "guardrail-upload-staging:v2026-05-27",
+      "guardrail-file-naming:v2026-05-27",
+      "guardrail-devhub-consequential-actions:v2026-05-27"
+    ]
+  },
+  "blocked_readiness_reasons": [
+    "blocked_source_hash_change_pending_review",
+    "blocked_added_requirement_pending_formalization",
+    "blocked_removed_requirement_pending_retirement_review",
+    "blocked_consequential_devhub_action_gate_pending_review"
+  ],
+  "next_human_review_prompts": [
+    "Review changed public source hashes before treating affected requirements as current.",
+    "Confirm whether the added upload-label requirement changes document preparation instructions.",
+    "Confirm whether the removed filename exception should retire or replace existing file-naming guardrails.",
+    "Confirm the DevHub correction-upload action gate before allowing any draft workflow to proceed beyond read-only review."
+  ],
+  "recommendations": [
+    {
+      "recommendation_id": "rec-review-upload-label-change",
+      "summary": "Review the changed upload-label requirement before updating document preparation guardrails.",
+      "action_status": "blocked_until_human_review",
+      "human_review_required": true
+    }
+  ]
+}

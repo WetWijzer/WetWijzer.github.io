@@ -1,0 +1,26 @@
+{
+  "review_batch_id": "human-review-2026-05-27-fixture",
+  "reviews": [
+    {
+      "review_id": "review-delta-devhub-application-certification-001",
+      "subject_id": "delta-devhub-application-certification-001",
+      "subject_type": "requirement_delta",
+      "status": "approved",
+      "reviewed_at": "2026-05-27T00:00:00Z"
+    },
+    {
+      "review_id": "review-delta-single-pdf-upload-001",
+      "subject_id": "delta-single-pdf-upload-001",
+      "subject_type": "requirement_delta",
+      "status": "approved",
+      "reviewed_at": "2026-05-27T00:00:00Z"
+    },
+    {
+      "review_id": "review-process-building-permit-application-001",
+      "subject_id": "building-permit-application",
+      "subject_type": "process_model_version",
+      "status": "approved",
+      "reviewed_at": "2026-05-27T00:00:00Z"
+    }
+  ]
+}

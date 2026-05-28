@@ -1,0 +1,105 @@
+{
+  "fixture_type": "ppd_agent_preflight_decision_matrix_cases",
+  "cases": [
+    {
+      "case_id": "blocked_stale_source",
+      "expected_outcome": "blocked",
+      "packet": {
+        "crawl_readiness": {"status": "fixture_ready"},
+        "source_freshness": {"status": "stale"},
+        "process_versioning": {"status": "current"},
+        "case_gaps": {
+          "missing_facts": [],
+          "missing_documents": [],
+          "stale_evidence": [],
+          "conflicting_evidence": []
+        },
+        "action_classification": {"classification": "safe_read_only"}
+      }
+    },
+    {
+      "case_id": "read_only_ready",
+      "expected_outcome": "read-only",
+      "packet": {
+        "crawl_readiness": {"status": "fixture_ready"},
+        "source_freshness": {"status": "fresh"},
+        "process_versioning": {"status": "current"},
+        "case_gaps": {
+          "missing_facts": [],
+          "missing_documents": [],
+          "stale_evidence": [],
+          "conflicting_evidence": []
+        },
+        "action_classification": {"classification": "safe_read_only"}
+      }
+    },
+    {
+      "case_id": "local_preview_ready",
+      "expected_outcome": "local-preview",
+      "packet": {
+        "crawl_readiness": {"status": "fixture_ready"},
+        "source_freshness": {"status": "fresh"},
+        "process_versioning": {"status": "current"},
+        "case_gaps": {
+          "missing_facts": [],
+          "missing_documents": [],
+          "stale_evidence": [],
+          "conflicting_evidence": []
+        },
+        "local_preview": {"status": "metadata_only_ready"},
+        "action_classification": {"classification": "local_preview"}
+      }
+    },
+    {
+      "case_id": "reversible_draft_ready",
+      "expected_outcome": "reversible-draft",
+      "packet": {
+        "crawl_readiness": {"status": "fixture_ready"},
+        "source_freshness": {"status": "fresh"},
+        "process_versioning": {"status": "current"},
+        "case_gaps": {
+          "missing_facts": [],
+          "missing_documents": [],
+          "stale_evidence": [],
+          "conflicting_evidence": []
+        },
+        "local_preview": {"status": "metadata_only_ready"},
+        "devhub_handoff": {"status": "attended_ready"},
+        "action_classification": {"classification": "reversible_draft_edit"}
+      }
+    },
+    {
+      "case_id": "manual_handoff_for_submission",
+      "expected_outcome": "manual-handoff",
+      "packet": {
+        "crawl_readiness": {"status": "fixture_ready"},
+        "source_freshness": {"status": "fresh"},
+        "process_versioning": {"status": "current"},
+        "case_gaps": {
+          "missing_facts": [],
+          "missing_documents": [],
+          "stale_evidence": [],
+          "conflicting_evidence": []
+        },
+        "devhub_handoff": {"status": "manual_handoff_ready"},
+        "action_classification": {"classification": "submission"}
+      }
+    },
+    {
+      "case_id": "refused_for_captcha",
+      "expected_outcome": "refused",
+      "packet": {
+        "crawl_readiness": {"status": "fixture_ready"},
+        "source_freshness": {"status": "fresh"},
+        "process_versioning": {"status": "current"},
+        "case_gaps": {
+          "missing_facts": [],
+          "missing_documents": [],
+          "stale_evidence": [],
+          "conflicting_evidence": []
+        },
+        "action_classification": {"classification": "captcha"}
+      }
+    }
+  ]
+}

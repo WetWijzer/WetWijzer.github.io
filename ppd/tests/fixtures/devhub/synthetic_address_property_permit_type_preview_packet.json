@@ -1,0 +1,211 @@
+{
+  "packet_id": "devhub-synthetic-address-property-permit-type-preview-v1",
+  "packet_type": "devhub_reversible_draft_preview_packet",
+  "fixture_first": true,
+  "synthetic_only": true,
+  "live_devhub_session": false,
+  "browser_launched": false,
+  "browser_artifacts_committed": false,
+  "scenario": {
+    "scenario_id": "synthetic-address-property-permit-type-selection",
+    "purpose": "Preview a reversible draft path for address or property lookup followed by permit request type selection using mocked accessible structure only.",
+    "input_values": [
+      {
+        "fact_id": "project_location",
+        "label": "Project location",
+        "synthetic_value_id": "synthetic_project_location"
+      },
+      {
+        "fact_id": "property_match",
+        "label": "Property search result",
+        "synthetic_value_id": "synthetic_property_match"
+      },
+      {
+        "fact_id": "permit_request_type",
+        "label": "Permit request type",
+        "synthetic_value_id": "synthetic_permit_request_type"
+      }
+    ]
+  },
+  "source_evidence": [
+    {
+      "evidence_id": "public-devhub-submit-permit-guide",
+      "source_type": "public_guidance_fixture",
+      "source_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "summary": "Public guidance fixture for locating the permit application workflow and selecting a permit request type."
+    },
+    {
+      "evidence_id": "mock-accessible-structure",
+      "source_type": "mocked_accessible_roles_fixture",
+      "source_url": "ppd/tests/fixtures/devhub/synthetic_address_property_permit_type_preview_packet.json",
+      "summary": "Committed synthetic fixture containing only mocked roles, stable labels, and selector confidence metadata."
+    }
+  ],
+  "attendance_requirements": {
+    "requires_user_attendance": true,
+    "user_controls_account_entry": true,
+    "automation_may_enter_account_secrets": false,
+    "automation_may_complete_security_challenges": false,
+    "preview_may_run_without_live_site": true,
+    "consequential_actions_require_exact_confirmation": true
+  },
+  "selector_confidence": {
+    "strategy": "accessible_role_and_stable_label",
+    "confidence_label": "fixture_only_high_label_stability",
+    "minimum_confidence": "stable_label_required",
+    "uses_css_or_xpath_selectors": false,
+    "uses_pixel_coordinates": false
+  },
+  "preview_steps": [
+    {
+      "step_id": "preview-address-property-search",
+      "step_kind": "address_property_search_preview",
+      "action_class": "reversible_draft_preview",
+      "reversible": true,
+      "changes_official_record": false,
+      "requires_user_attendance": true,
+      "uses_fact_ids": [
+        "project_location",
+        "property_match"
+      ],
+      "source_evidence_ids": [
+        "public-devhub-submit-permit-guide",
+        "mock-accessible-structure"
+      ],
+      "mocked_accessible_controls": [
+        {
+          "role": "textbox",
+          "label": "Address or property search",
+          "required": true,
+          "selector_confidence": "stable_label_required"
+        },
+        {
+          "role": "button",
+          "label": "Search",
+          "required": true,
+          "selector_confidence": "stable_label_required"
+        },
+        {
+          "role": "listbox",
+          "label": "Property search results",
+          "required": true,
+          "selector_confidence": "stable_label_required"
+        },
+        {
+          "role": "option",
+          "label": "Synthetic property match",
+          "required": true,
+          "selector_confidence": "mocked_label_only"
+        }
+      ],
+      "draft_preview": {
+        "preview_id": "draft-preview-address-property-search",
+        "contains_only_synthetic_values": true,
+        "contains_raw_page_body": false,
+        "contains_browser_artifact": false,
+        "display_labels": [
+          "Address or property search",
+          "Search",
+          "Property search results",
+          "Synthetic property match"
+        ]
+      }
+    },
+    {
+      "step_id": "preview-permit-type-selection",
+      "step_kind": "permit_type_selection_preview",
+      "action_class": "reversible_draft_preview",
+      "reversible": true,
+      "changes_official_record": false,
+      "requires_user_attendance": true,
+      "uses_fact_ids": [
+        "permit_request_type"
+      ],
+      "source_evidence_ids": [
+        "public-devhub-submit-permit-guide",
+        "mock-accessible-structure"
+      ],
+      "mocked_accessible_controls": [
+        {
+          "role": "combobox",
+          "label": "Permit request type",
+          "required": true,
+          "selector_confidence": "stable_label_required"
+        },
+        {
+          "role": "option",
+          "label": "Building permit request",
+          "required": true,
+          "selector_confidence": "mocked_label_only"
+        },
+        {
+          "role": "button",
+          "label": "Continue",
+          "required": true,
+          "selector_confidence": "stable_label_required"
+        }
+      ],
+      "draft_preview": {
+        "preview_id": "draft-preview-permit-type-selection",
+        "contains_only_synthetic_values": true,
+        "contains_raw_page_body": false,
+        "contains_browser_artifact": false,
+        "display_labels": [
+          "Permit request type",
+          "Building permit request",
+          "Continue"
+        ]
+      }
+    }
+  ],
+  "blocked_actions": [
+    {
+      "action_class": "account_secret_entry",
+      "may_execute": false,
+      "reason": "User-only step."
+    },
+    {
+      "action_class": "security_challenge",
+      "may_execute": false,
+      "reason": "User-only step."
+    },
+    {
+      "action_class": "document_upload",
+      "may_execute": false,
+      "reason": "Consequential action outside preview scope."
+    },
+    {
+      "action_class": "fee_payment",
+      "may_execute": false,
+      "reason": "Consequential action outside preview scope."
+    },
+    {
+      "action_class": "inspection_scheduling",
+      "may_execute": false,
+      "reason": "Consequential action outside preview scope."
+    },
+    {
+      "action_class": "certification",
+      "may_execute": false,
+      "reason": "Consequential action outside preview scope."
+    },
+    {
+      "action_class": "submission",
+      "may_execute": false,
+      "reason": "Consequential action outside preview scope."
+    }
+  ],
+  "commit_safety": {
+    "classification": "commit_safe_mocked_metadata_only",
+    "raw_page_body_committed": false,
+    "downloaded_documents_committed": false,
+    "screenshots_committed": false,
+    "traces_committed": false,
+    "storage_state_committed": false,
+    "cookies_committed": false,
+    "credentials_committed": false,
+    "payment_data_committed": false,
+    "local_paths_committed": false,
+    "private_field_values_committed": false
+  }
+}

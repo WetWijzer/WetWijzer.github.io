@@ -1,0 +1,102 @@
+{
+  "fixtureKind": "pdf_form_extraction_review_packet_validation",
+  "valid_packet": {
+    "packet_id": "pdf.form.review.valid.synthetic",
+    "source_document_id": "doc.single_pdf.application_fixture",
+    "fields": [
+      {
+        "field_id": "field.project_address",
+        "field_type": "text",
+        "label": "Project address",
+        "page_number": 1,
+        "source_evidence_ids": [
+          "src.application.page1.address_label"
+        ],
+        "citation_spans": [
+          {
+            "source_evidence_id": "src.application.page1.address_label",
+            "page": 1,
+            "locator": "page 1 field label",
+            "excerpt": "Project address"
+          }
+        ],
+        "extracted_text": "Project address",
+        "confidence": 0.94,
+        "human_review_status": "fixture_reviewed"
+      },
+      {
+        "field_id": "field.owner_certification_block",
+        "field_type": "certification",
+        "label": "Owner certification block",
+        "page_number": 3,
+        "source_evidence_ids": [
+          "src.application.page3.certification_label"
+        ],
+        "extracted_text": "Applicant certification signature area",
+        "confidence": 0.9,
+        "human_review_status": "needs_human_review",
+        "completion_status": "not_evaluated"
+      }
+    ],
+    "text_items": [
+      {
+        "id": "text.ocr.checklist.note",
+        "text": "Checklist note from scanned page",
+        "page_number": 2,
+        "ocr_derived": true,
+        "ocr_confidence": 0.79,
+        "human_review_status": "needs_human_review",
+        "source_evidence_ids": [
+          "src.application.page2.checklist_note"
+        ]
+      }
+    ]
+  },
+  "invalid_packet": {
+    "packet_id": "pdf.form.review.invalid.synthetic",
+    "pdf_binary": "%PDF-1.7 synthetic binary that must not be committed",
+    "downloaded_file_path": "/tmp/ppd/downloads/private/application.pdf",
+    "raw_ocr_image": "data:image/png;base64,AAAA",
+    "private_value": "real user value",
+    "fields": [
+      {
+        "field_id": "field.invalid.unsupported",
+        "field_type": "wet_signature_upload",
+        "label": "Unsupported field type",
+        "page_number": 1,
+        "source_evidence_ids": [
+          "src.invalid.unsupported"
+        ],
+        "confidence": 0.88,
+        "human_review_status": "fixture_reviewed"
+      },
+      {
+        "field_id": "field.invalid.no_anchor",
+        "field_type": "text",
+        "label": "No page or citation anchor",
+        "confidence": 0.82,
+        "human_review_status": "fixture_reviewed"
+      },
+      {
+        "field_id": "field.invalid.ocr_unmarked",
+        "field_type": "textarea",
+        "label": "OCR text without marking",
+        "page_number": 2,
+        "ocr_text": "Scanned instruction text",
+        "confidence": 0.7
+      },
+      {
+        "field_id": "field.invalid.signature_claim",
+        "field_type": "signature",
+        "label": "Applicant signature",
+        "page_number": 3,
+        "source_evidence_ids": [
+          "src.invalid.signature"
+        ],
+        "signature_completed": true,
+        "confidence": 0.91,
+        "human_review_status": "fixture_reviewed"
+      }
+    ]
+  }
+}

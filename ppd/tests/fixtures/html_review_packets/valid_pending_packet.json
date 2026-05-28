@@ -1,0 +1,71 @@
+{
+  "packet_id": "html-review-packet-valid-001",
+  "human_review_status": "pending_human_review",
+  "guardrail_status": "draft",
+  "source": {
+    "source_id": "src-ppd-submit-plans-online",
+    "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+    "fetched_at": "2026-05-08T00:00:00Z",
+    "last_reviewed_at": "2026-05-08",
+    "date_evidence": [
+      {
+        "selector": "time[datetime]",
+        "text": "May 8, 2026"
+      }
+    ]
+  },
+  "extraction": {
+    "document_id": "doc-submit-plans-online",
+    "source_id": "src-ppd-submit-plans-online",
+    "content_hash": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "hash_evidence": {
+      "algorithm": "sha256",
+      "value": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "derived_from": "normalized_text",
+      "status": "computed"
+    },
+    "section_order_preserved": true,
+    "sections": [
+      {
+        "section_id": "sec-prepare-pdfs",
+        "source_id": "src-ppd-submit-plans-online",
+        "sequence": 1,
+        "heading": "Prepare PDFs",
+        "excerpt": "Applications and supporting documents are uploaded as separate PDFs.",
+        "citation_spans": [
+          {
+            "source_id": "src-ppd-submit-plans-online",
+            "selector": "#prepare-pdfs",
+            "start": 0,
+            "end": 71
+          }
+        ]
+      },
+      {
+        "section_id": "sec-submit-online",
+        "source_id": "src-ppd-submit-plans-online",
+        "sequence": 2,
+        "heading": "Submit Online",
+        "excerpt": "Use official online permitting tools for eligible permit requests.",
+        "citation_spans": [
+          {
+            "source_id": "src-ppd-submit-plans-online",
+            "selector": "#submit-online",
+            "start": 0,
+            "end": 62
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "url": "https://www.portland.gov/ppd",
+        "label": "Portland Permitting & Development"
+      },
+      {
+        "url": "https://devhub.portlandoregon.gov",
+        "label": "DevHub"
+      }
+    ]
+  }
+}

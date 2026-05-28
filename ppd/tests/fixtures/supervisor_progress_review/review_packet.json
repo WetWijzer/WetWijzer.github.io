@@ -1,0 +1,203 @@
+{
+  "packet_id": "supervisor-20260527-132-progress-review-guardrails",
+  "reviewed_at": "2026-05-27T00:00:00Z",
+  "architecture_milestones": [
+    {
+      "milestone_id": "source-registry",
+      "name": "SourceRegistry",
+      "plan_section": "Core Data Products",
+      "expected_data_products": [
+        "source_registry_fixture",
+        "source_registry_validator"
+      ]
+    },
+    {
+      "milestone_id": "archive-manifest",
+      "name": "ArchiveManifest",
+      "plan_section": "Core Data Products",
+      "expected_data_products": [
+        "archive_manifest_fixture",
+        "archive_manifest_validator"
+      ]
+    },
+    {
+      "milestone_id": "document-record",
+      "name": "DocumentRecord",
+      "plan_section": "Core Data Products",
+      "expected_data_products": [
+        "document_record_fixture",
+        "document_record_validator"
+      ]
+    },
+    {
+      "milestone_id": "requirement-node",
+      "name": "RequirementNode",
+      "plan_section": "Core Data Products",
+      "expected_data_products": [
+        "requirement_node_fixture",
+        "requirement_node_validator"
+      ]
+    },
+    {
+      "milestone_id": "process-model",
+      "name": "ProcessModel",
+      "plan_section": "Core Data Products",
+      "expected_data_products": [
+        "process_model_fixture",
+        "process_model_validator"
+      ]
+    },
+    {
+      "milestone_id": "guardrail-bundle",
+      "name": "GuardrailBundle",
+      "plan_section": "Core Data Products",
+      "expected_data_products": [
+        "guardrail_bundle_fixture",
+        "guardrail_bundle_validator"
+      ]
+    }
+  ],
+  "completed_data_products": [
+    {
+      "product_id": "fixture-source-registry-public-seeds",
+      "product_type": "source_registry_fixture",
+      "fixture_path": "ppd/tests/fixtures/source_registry/public_seed_registry.json",
+      "validated_by": "ppd source registry validation",
+      "milestone_ids": [
+        "source-registry"
+      ]
+    },
+    {
+      "product_id": "fixture-archive-manifest-no-raw-body",
+      "product_type": "archive_manifest_fixture",
+      "fixture_path": "ppd/tests/fixtures/archive_manifest/no_raw_body_manifest.json",
+      "validated_by": "ppd archive manifest validation",
+      "milestone_ids": [
+        "archive-manifest"
+      ]
+    },
+    {
+      "product_id": "fixture-document-record-public-guide",
+      "product_type": "document_record_fixture",
+      "fixture_path": "ppd/tests/fixtures/documents/public_guide_document_record.json",
+      "validated_by": "ppd document record validation",
+      "milestone_ids": [
+        "document-record"
+      ]
+    },
+    {
+      "product_id": "fixture-requirement-node-action-gate",
+      "product_type": "requirement_node_fixture",
+      "fixture_path": "ppd/tests/fixtures/requirements/action_gate_requirement_node.json",
+      "validated_by": "ppd requirement extraction validation",
+      "milestone_ids": [
+        "requirement-node",
+        "guardrail-bundle"
+      ]
+    },
+    {
+      "product_id": "fixture-process-model-submit-plans",
+      "product_type": "process_model_fixture",
+      "fixture_path": "ppd/tests/fixtures/process_models/submit_plans_process_model.json",
+      "validated_by": "ppd process model validation",
+      "milestone_ids": [
+        "process-model"
+      ]
+    }
+  ],
+  "completed_task_history": [
+    {
+      "task_id": "supervisor-20260527-131",
+      "status": "completed",
+      "completed_at": "2026-05-27T00:00:00Z",
+      "summary": "Added fixture-first supervisor progress review packet validation.",
+      "evidence_refs": [
+        "ppd/supervisor_progress_review.py",
+        "ppd/tests/test_supervisor_progress_review.py",
+        "ppd/tests/fixtures/supervisor_progress_review/review_packet.json"
+      ]
+    },
+    {
+      "task_id": "checkbox-25",
+      "status": "completed",
+      "completed_at": "2026-05-26T00:00:00Z",
+      "summary": "Preserved deterministic PP&D review fixtures before expanding supervisor guardrails.",
+      "evidence_refs": [
+        "ppd/tests/fixtures/supervisor_progress_review/review_packet.json"
+      ]
+    }
+  ],
+  "domain_completion_claims": [
+    {
+      "domain_id": "supervisor-progress-review",
+      "status": "partial",
+      "promoted_source_change_ids": []
+    },
+    {
+      "domain_id": "source-registry-validation",
+      "status": "complete",
+      "promoted_source_change_ids": [
+        "accepted-work-source-registry-validator-fixture"
+      ]
+    }
+  ],
+  "plan_next_tasks": {
+    "max_backlog_additions": 3,
+    "backlog_additions": [
+      {
+        "order": 1,
+        "task_id": "plan-next-source-registry-validator",
+        "title": "Add source registry validator fixture",
+        "reason": "The next backlog item should validate policy fields before public crawl expansion."
+      },
+      {
+        "order": 2,
+        "task_id": "plan-next-exact-confirmation-bundle",
+        "title": "Add exact confirmation guardrail bundle",
+        "reason": "The next guardrail item should block consequential DevHub actions until exact confirmation."
+      },
+      {
+        "order": 3,
+        "task_id": "plan-next-process-gap-fixture",
+        "title": "Add process gap fixture",
+        "reason": "The next fixture item should cover missing facts and documents before live DevHub workflows."
+      }
+    ]
+  },
+  "recent_failures": [
+    {
+      "kind": "syntax_preflight",
+      "summary": "Python syntax preflight failed after malformed comparison syntax in supervisor progress review validation."
+    }
+  ],
+  "syntax_preflight_recovery": {
+    "parser_clean_validation_guidance": [
+      "Run python3 -m py_compile on edited Python files before proposing supervisor progress review changes.",
+      "Treat malformed Python expressions as blocking validation errors and replace them with explicit operators such as is None, is not None, isinstance(...), or normal return expressions.",
+      "Do not place TypeScript-style type fragments inside Python control-flow or return statements."
+    ]
+  },
+  "next_missing_layers": [
+    {
+      "layer_id": "source-registry-validator-layer",
+      "layer_type": "validation",
+      "milestone_id": "source-registry",
+      "reason": "The plan needs an explicit validator fixture proving source registry entries keep allowlist, robots, freshness, privacy, and processor policy fields aligned before public crawl expansion.",
+      "recommended_fixture_path": "ppd/tests/fixtures/source_registry/invalid_policy_registry.json"
+    },
+    {
+      "layer_id": "guardrail-bundle-fixture-layer",
+      "layer_type": "guardrail",
+      "milestone_id": "guardrail-bundle",
+      "reason": "Requirement nodes are present, but the next useful layer is a deterministic guardrail bundle fixture that blocks payment, upload, submission, certification, scheduling, and cancellation actions until exact confirmation.",
+      "recommended_fixture_path": "ppd/tests/fixtures/guardrails/exact_confirmation_guardrail_bundle.json"
+    },
+    {
+      "layer_id": "process-model-gap-fixture-layer",
+      "layer_type": "fixture",
+      "milestone_id": "process-model",
+      "reason": "Process model fixtures should next include missing facts, missing documents, unsupported paths, and stale evidence examples so user gap analysis can be validated before any live DevHub workflow.",
+      "recommended_fixture_path": "ppd/tests/fixtures/process_models/user_gap_analysis_inputs.json"
+    }
+  ]
+}

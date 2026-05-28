@@ -1,0 +1,32 @@
+{
+  "refresh_id": "public-refresh-2026-05-27-fixture",
+  "generated_from": "committed metadata fixture",
+  "outputs": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "content_hash": "sha256:7e2f7d7d5b9c1a3cfixturedevhubfaqmetadataonly",
+      "normalized_document_id": "doc-ppd-devhub-faq-20260527",
+      "capture_finished_at": "2026-05-27T00:00:00Z",
+      "processor_name": "ppd-fixture-public-refresh",
+      "processor_version": "1.0",
+      "metadata_only": true,
+      "no_raw_body_persisted": true
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "content_hash": "sha256:91f6b108e4d347fixturesubmitplansmetadataonly",
+      "normalized_document_id": "doc-ppd-submit-plans-online-20260527",
+      "capture_finished_at": "2026-05-27T00:00:00Z",
+      "processor_name": "ppd-fixture-public-refresh",
+      "processor_version": "1.0",
+      "metadata_only": true,
+      "no_raw_body_persisted": true
+    }
+  ]
+}

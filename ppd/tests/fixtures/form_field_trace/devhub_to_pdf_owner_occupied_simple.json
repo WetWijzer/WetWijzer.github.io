@@ -1,0 +1,231 @@
+{
+  "packet_id": "fftrace-synthetic-owner-occupied-alteration-001",
+  "workflow_id": "synthetic-devhub-to-pdf-owner-occupied-alteration",
+  "workflow_name": "Synthetic owner-occupied residential alteration draft preview",
+  "scope": {
+    "permit_type": "Residential Building Permit",
+    "process_stage": "application data entry",
+    "narrow_workflow": "Map applicant and project facts from a synthetic DevHub intake screen to a synthetic fillable PDF permit application preview."
+  },
+  "safety": {
+    "fixture_only": true,
+    "preview_only": true,
+    "contains_private_devhub_data": false,
+    "synthetic_devhub_labels": true,
+    "synthetic_pdf_metadata": true,
+    "blocked_actions": [
+      "upload",
+      "certification",
+      "submission",
+      "payment"
+    ]
+  },
+  "source_evidence": [
+    {
+      "evidence_id": "src-ppd-devhub-guide-apply-step-data-entry",
+      "source_id": "official-ppd-devhub-submit-permit-application-guide",
+      "citation_label": "PP&D DevHub permit application guide - application questions and save-for-later workflow",
+      "evidence_kind": "public_guidance_summary"
+    },
+    {
+      "evidence_id": "src-ppd-forms-index-residential-application",
+      "source_id": "official-ppd-permit-applications-and-forms-index",
+      "citation_label": "PP&D permit applications and forms index - residential application form reference",
+      "evidence_kind": "public_guidance_summary"
+    },
+    {
+      "evidence_id": "src-ppd-submit-plans-single-pdf",
+      "source_id": "official-ppd-submit-plans-online-single-pdf-process",
+      "citation_label": "PP&D Submit Plans Online guidance - applications and supporting documents are separate PDFs",
+      "evidence_kind": "public_guidance_summary"
+    }
+  ],
+  "requirements": [
+    {
+      "requirement_id": "req-applicant-legal-name",
+      "requirement_type": "precondition",
+      "subject": "applicant",
+      "action": "provide",
+      "object": "legal name for permit application draft",
+      "source_evidence_ids": [
+        "src-ppd-devhub-guide-apply-step-data-entry",
+        "src-ppd-forms-index-residential-application"
+      ]
+    },
+    {
+      "requirement_id": "req-site-address",
+      "requirement_type": "precondition",
+      "subject": "project",
+      "action": "identify",
+      "object": "site address for the application and PDF draft",
+      "source_evidence_ids": [
+        "src-ppd-devhub-guide-apply-step-data-entry"
+      ]
+    },
+    {
+      "requirement_id": "req-work-description",
+      "requirement_type": "document_requirement",
+      "subject": "applicant",
+      "action": "describe",
+      "object": "proposed work scope",
+      "source_evidence_ids": [
+        "src-ppd-devhub-guide-apply-step-data-entry",
+        "src-ppd-submit-plans-single-pdf"
+      ]
+    },
+    {
+      "requirement_id": "req-owner-occupied-confirmation",
+      "requirement_type": "precondition",
+      "subject": "owner applicant",
+      "action": "confirm",
+      "object": "owner occupancy status before draft preview is treated as complete",
+      "source_evidence_ids": [
+        "src-ppd-devhub-guide-apply-step-data-entry"
+      ]
+    }
+  ],
+  "user_facts": [
+    {
+      "fact_id": "fact-applicant-name",
+      "label": "Applicant legal name",
+      "value": "Morgan Lee",
+      "value_status": "known_synthetic"
+    },
+    {
+      "fact_id": "fact-site-address",
+      "label": "Project site address",
+      "value": "1234 SE Example St, Portland, OR 97202",
+      "value_status": "known_synthetic"
+    },
+    {
+      "fact_id": "fact-work-description",
+      "label": "Brief project description",
+      "value": "Interior kitchen remodel with no exterior work proposed.",
+      "value_status": "known_synthetic"
+    },
+    {
+      "fact_id": "fact-owner-occupied",
+      "label": "Owner occupancy status",
+      "value": null,
+      "value_status": "missing"
+    }
+  ],
+  "missing_prompts": [
+    {
+      "prompt_id": "prompt-owner-occupied",
+      "fact_id": "fact-owner-occupied",
+      "prompt_text": "Will the owner occupy the dwelling associated with this permit application?",
+      "reason": "The synthetic DevHub field and PDF checkbox cannot be preview-filled until the user confirms occupancy status."
+    }
+  ],
+  "devhub_fields": [
+    {
+      "field_id": "devhub-applicant-name",
+      "synthetic_label": "Applicant legal name",
+      "control_type": "text",
+      "surface_id": "synthetic-devhub-residential-intake"
+    },
+    {
+      "field_id": "devhub-site-address",
+      "synthetic_label": "Project address",
+      "control_type": "address_text",
+      "surface_id": "synthetic-devhub-residential-intake"
+    },
+    {
+      "field_id": "devhub-work-description",
+      "synthetic_label": "Describe the proposed work",
+      "control_type": "textarea",
+      "surface_id": "synthetic-devhub-residential-intake"
+    },
+    {
+      "field_id": "devhub-owner-occupied",
+      "synthetic_label": "Owner occupied?",
+      "control_type": "radio",
+      "surface_id": "synthetic-devhub-residential-intake"
+    }
+  ],
+  "pdf_fields": [
+    {
+      "field_id": "pdf-applicant-name",
+      "pdf_field_name": "applicant_name",
+      "field_type": "Tx",
+      "page": 1,
+      "synthetic_document_id": "synthetic-residential-building-permit-application"
+    },
+    {
+      "field_id": "pdf-site-address",
+      "pdf_field_name": "project_site_address",
+      "field_type": "Tx",
+      "page": 1,
+      "synthetic_document_id": "synthetic-residential-building-permit-application"
+    },
+    {
+      "field_id": "pdf-work-description",
+      "pdf_field_name": "scope_of_work",
+      "field_type": "Tx",
+      "page": 1,
+      "synthetic_document_id": "synthetic-residential-building-permit-application"
+    },
+    {
+      "field_id": "pdf-owner-occupied",
+      "pdf_field_name": "owner_occupied_yes_no",
+      "field_type": "Btn",
+      "page": 1,
+      "synthetic_document_id": "synthetic-residential-building-permit-application"
+    }
+  ],
+  "field_traces": [
+    {
+      "trace_id": "trace-applicant-name",
+      "requirement_id": "req-applicant-legal-name",
+      "source_evidence_id": "src-ppd-forms-index-residential-application",
+      "devhub_field_id": "devhub-applicant-name",
+      "pdf_field_id": "pdf-applicant-name",
+      "field_source": "user_fact",
+      "user_fact_id": "fact-applicant-name",
+      "missing_prompt_id": null,
+      "value_mode": "preview_only",
+      "preview_draft_value": "Morgan Lee",
+      "trace_status": "ready_for_preview"
+    },
+    {
+      "trace_id": "trace-site-address",
+      "requirement_id": "req-site-address",
+      "source_evidence_id": "src-ppd-devhub-guide-apply-step-data-entry",
+      "devhub_field_id": "devhub-site-address",
+      "pdf_field_id": "pdf-site-address",
+      "field_source": "user_fact",
+      "user_fact_id": "fact-site-address",
+      "missing_prompt_id": null,
+      "value_mode": "preview_only",
+      "preview_draft_value": "1234 SE Example St, Portland, OR 97202",
+      "trace_status": "ready_for_preview"
+    },
+    {
+      "trace_id": "trace-work-description",
+      "requirement_id": "req-work-description",
+      "source_evidence_id": "src-ppd-submit-plans-single-pdf",
+      "devhub_field_id": "devhub-work-description",
+      "pdf_field_id": "pdf-work-description",
+      "field_source": "user_fact",
+      "user_fact_id": "fact-work-description",
+      "missing_prompt_id": null,
+      "value_mode": "preview_only",
+      "preview_draft_value": "Interior kitchen remodel with no exterior work proposed.",
+      "trace_status": "ready_for_preview"
+    },
+    {
+      "trace_id": "trace-owner-occupied",
+      "requirement_id": "req-owner-occupied-confirmation",
+      "source_evidence_id": "src-ppd-devhub-guide-apply-step-data-entry",
+      "devhub_field_id": "devhub-owner-occupied",
+      "pdf_field_id": "pdf-owner-occupied",
+      "field_source": "missing_prompt",
+      "user_fact_id": "fact-owner-occupied",
+      "missing_prompt_id": "prompt-owner-occupied",
+      "value_mode": "not_drafted",
+      "preview_draft_value": null,
+      "trace_status": "blocked_missing_fact"
+    }
+  ]
+}

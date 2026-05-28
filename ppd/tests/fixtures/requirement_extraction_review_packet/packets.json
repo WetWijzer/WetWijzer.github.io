@@ -1,0 +1,126 @@
+{
+  "fixtureKind": "requirement_extraction_review_packet_validation",
+  "valid_packet": {
+    "packet_id": "review.packet.valid.single_pdf",
+    "requirements": [
+      {
+        "requirement_id": "req.single_pdf.document_upload",
+        "requirement_type": "document_requirement",
+        "source_evidence_ids": [
+          "src.single_pdf.upload_guide.section_2"
+        ],
+        "citation_spans": [
+          {
+            "source_evidence_id": "src.single_pdf.upload_guide.section_2",
+            "locator": "Single PDF Process, section 2",
+            "excerpt": "Plans are prepared as one PDF, while applications and calculations are separate PDFs."
+          }
+        ],
+        "permit_types": [
+          "building_permit_with_plan_review"
+        ],
+        "process_stage": "document preparation",
+        "confidence": 0.91,
+        "human_review_status": "human_reviewed",
+        "formalization_status": "reviewed"
+      },
+      {
+        "requirement_id": "req.single_pdf.low_confidence_review_queue",
+        "requirement_type": "precondition",
+        "source_evidence_ids": [
+          "src.single_pdf.upload_guide.section_3"
+        ],
+        "permit_types": [
+          "building_permit_with_plan_review"
+        ],
+        "process_stage": "upload staging",
+        "confidence": 0.61,
+        "human_review_status": "needs_human_review",
+        "formalization_status": "blocked_pending_review"
+      }
+    ]
+  },
+  "invalid_packet": {
+    "packet_id": "review.packet.invalid.synthetic",
+    "raw_document_body": "Synthetic raw page body that must not be committed in review packets.",
+    "requirements": [
+      {
+        "requirement_id": "req.invalid.uncited",
+        "requirement_type": "obligation",
+        "permit_types": [
+          "building_permit_with_plan_review"
+        ],
+        "process_stage": "application data entry",
+        "confidence": 0.88,
+        "human_review_status": "human_reviewed",
+        "formalization_status": "reviewed"
+      },
+      {
+        "requirement_id": "req.invalid.low_confidence",
+        "requirement_type": "precondition",
+        "source_evidence_ids": [
+          "src.synthetic.low_confidence"
+        ],
+        "permit_types": [
+          "building_permit_with_plan_review"
+        ],
+        "process_stage": "eligibility screening",
+        "confidence": 0.42,
+        "formalization_status": "blocked_pending_review"
+      },
+      {
+        "requirement_id": "req.invalid.unsupported_type",
+        "requirement_type": "agent_guess",
+        "source_evidence_ids": [
+          "src.synthetic.unsupported"
+        ],
+        "permit_types": [
+          "building_permit_with_plan_review"
+        ],
+        "process_stage": "pre-application research",
+        "confidence": 0.82,
+        "human_review_status": "human_reviewed",
+        "formalization_status": "reviewed"
+      },
+      {
+        "requirement_id": "req.invalid.missing_links",
+        "requirement_type": "deadline",
+        "source_evidence_ids": [
+          "src.synthetic.deadline"
+        ],
+        "confidence": 0.84,
+        "human_review_status": "human_reviewed",
+        "formalization_status": "reviewed"
+      },
+      {
+        "requirement_id": "req.invalid.private_value",
+        "requirement_type": "fee_trigger",
+        "source_evidence_ids": [
+          "src.synthetic.fee"
+        ],
+        "permit_types": [
+          "building_permit_with_plan_review"
+        ],
+        "process_stage": "fee payment",
+        "confidence": 0.93,
+        "human_review_status": "human_reviewed",
+        "formalization_status": "reviewed",
+        "private_value": "[REDACTED_PRIVATE_VALUE]"
+      },
+      {
+        "requirement_id": "req.invalid.ready_before_review",
+        "requirement_type": "action_gate",
+        "source_evidence_ids": [
+          "src.synthetic.action_gate"
+        ],
+        "permit_types": [
+          "building_permit_with_plan_review"
+        ],
+        "process_stage": "submission",
+        "confidence": 0.9,
+        "human_review_status": "needs_human_review",
+        "formalization_status": "ready"
+      }
+    ]
+  }
+}

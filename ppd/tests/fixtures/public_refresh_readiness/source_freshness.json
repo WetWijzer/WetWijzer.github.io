@@ -1,0 +1,19 @@
+{
+  "freshness_batch_id": "source-freshness-2026-05-27-fixture",
+  "sources": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "freshness_status": "current",
+      "last_seen_at": "2026-05-27T00:00:00Z",
+      "content_hash": "sha256:7e2f7d7d5b9c1a3cfixturedevhubfaqmetadataonly"
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "freshness_status": "current",
+      "last_seen_at": "2026-05-27T00:00:00Z",
+      "content_hash": "sha256:91f6b108e4d347fixturesubmitplansmetadataonly"
+    }
+  ]
+}

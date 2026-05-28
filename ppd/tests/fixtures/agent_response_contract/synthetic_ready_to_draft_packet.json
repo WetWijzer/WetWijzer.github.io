@@ -1,0 +1,108 @@
+{
+  "ready_to_draft_packet": {
+    "case_id": "synthetic-sfr-adu-001",
+    "process_id": "detached-adu-building-permit-devhub",
+    "permit_type": "Detached ADU building permit",
+    "readiness": "ready_to_draft",
+    "draft_targets": [
+      "local field mapping preview",
+      "single PDF checklist preview",
+      "reversible application draft values"
+    ],
+    "known_facts": {
+      "property_address_status": "known",
+      "permit_request_type": "new single-family residence and detached ADU",
+      "plan_review_required": true,
+      "applicant_will_attend_devhub": true
+    },
+    "source_evidence": [
+      {
+        "evidence_id": "ppd-devhub-application-guide",
+        "title": "DevHub permit application guide",
+        "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+        "accessed_at": "2026-05-08",
+        "quote": "DevHub permit requests can include dynamic questions, uploads, save-for-later behavior, acknowledgement, and post-submission tracking."
+      },
+      {
+        "evidence_id": "ppd-submit-plans-online",
+        "title": "Submit Plans Online / Single PDF Process",
+        "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "accessed_at": "2026-05-08",
+        "quote": "Drawing plans are prepared together in one PDF while applications, calculations, and supporting documents are uploaded separately."
+      },
+      {
+        "evidence_id": "ppd-devhub-sign-in-guide",
+        "title": "DevHub account and sign-in guide",
+        "url": "https://www.portland.gov/ppd/devhub-sign-guide",
+        "accessed_at": "2026-05-08",
+        "quote": "Online permitting services require a DevHub user account with PortlandOregon.gov credentials and an attended sign-in flow."
+      },
+      {
+        "evidence_id": "ppd-fee-payment-guide",
+        "title": "How to pay fees",
+        "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "accessed_at": "2026-05-08",
+        "quote": "Fee payment includes payment detail entry and a final payment submission action."
+      }
+    ]
+  },
+  "refreshed_guardrail_status": {
+    "guardrail_bundle_id": "synthetic-detached-adu-guardrails",
+    "refreshed_at": "2026-05-27T00:00:00Z",
+    "validation_status": "current",
+    "gap_analysis": {
+      "missing_facts": [],
+      "missing_documents": [],
+      "stale_evidence": [],
+      "conflicting_evidence": [],
+      "required_confirmations": [
+        "Confirm the applicant is authorized to prepare the permit request for the property.",
+        "Confirm the local preview may use the current detached ADU plan set labels.",
+        "Confirm no payment, upload, certification, or submission should be performed by automation."
+      ]
+    },
+    "blocked_actions": [
+      "certify_acknowledgement",
+      "official_upload",
+      "submit_permit_request",
+      "enter_payment_details",
+      "submit_payment"
+    ],
+    "manual_handoffs": [
+      "devhub_login",
+      "mfa_or_captcha_if_present",
+      "acknowledgement_review",
+      "final_submission_review",
+      "payment_execution"
+    ],
+    "refused_actions": [
+      "certify_acknowledgement",
+      "official_upload",
+      "submit_permit_request",
+      "schedule_inspection",
+      "cancel_or_withdraw_request",
+      "submit_payment"
+    ],
+    "recommendation_evidence": {
+      "cited_ask": [
+        "ppd-devhub-application-guide",
+        "ppd-submit-plans-online"
+      ],
+      "local_preview": [
+        "ppd-submit-plans-online"
+      ],
+      "reversible_draft": [
+        "ppd-devhub-application-guide",
+        "ppd-submit-plans-online"
+      ],
+      "manual_handoff": [
+        "ppd-devhub-sign-in-guide",
+        "ppd-devhub-application-guide"
+      ],
+      "refused_action": [
+        "ppd-devhub-application-guide",
+        "ppd-fee-payment-guide"
+      ]
+    }
+  }
+}

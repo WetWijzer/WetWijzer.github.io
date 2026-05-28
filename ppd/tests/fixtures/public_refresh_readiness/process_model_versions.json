@@ -1,0 +1,16 @@
+{
+  "version_batch_id": "process-model-version-batch-2026-05-27-fixture",
+  "process_models": [
+    {
+      "process_id": "building-permit-application",
+      "permit_type": "building permit application",
+      "version": "2026.05.27-fixture",
+      "guardrail_bundle_id": "guardrail-building-permit-application-20260527-fixture",
+      "validation_status": "valid",
+      "source_evidence_ids": [
+        "doc-ppd-devhub-faq-20260527",
+        "doc-ppd-submit-plans-online-20260527"
+      ]
+    }
+  ]
+}

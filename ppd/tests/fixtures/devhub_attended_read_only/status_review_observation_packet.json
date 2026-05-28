@@ -1,0 +1,199 @@
+{
+  "packet_id": "devhub-attended-read-only-status-review-synthetic-v1",
+  "packet_type": "devhub_attended_read_only_observation_packet",
+  "fixture_first": true,
+  "synthetic_only": true,
+  "workflow": {
+    "workflow_id": "synthetic-status-review",
+    "name": "Synthetic DevHub status review",
+    "purpose": "Observe one attended, read-only status-review path after the user has completed any required sign-in outside automation.",
+    "auth_scope": "user_attended_authenticated_session",
+    "starting_condition": "User is present and has manually navigated to a DevHub page that lists their own permit or application records.",
+    "ending_condition": "Observer records only redacted structure, status labels, and navigation outcomes needed to update PP&D guardrails."
+  },
+  "linked_surfaces": {
+    "session_handoff_checklist": "#session-handoff-checklist",
+    "accessible_structure_surface_map": "#accessible-structure-surface-map",
+    "allowed_read_only_scope": "#allowed-read-only-scope",
+    "redaction_policy": "#redaction-policy",
+    "post_observation_journal_expectations": "#post-observation-journal-expectations"
+  },
+  "session_handoff_checklist": {
+    "section_id": "session-handoff-checklist",
+    "required_before_observation": [
+      "Confirm the user is present for the entire authenticated DevHub observation.",
+      "Confirm login, MFA, CAPTCHA, and account recovery are performed manually by the user only.",
+      "Confirm the observer will not store cookies, credentials, browser storage, screenshots, traces, HAR files, downloaded documents, or raw authenticated page values.",
+      "Confirm the selected workflow is status review only and does not include upload, payment, scheduling, certification, cancellation, or submission.",
+      "Confirm the observer may stop immediately if the page exposes sensitive values that cannot be safely redacted."
+    ],
+    "manual_user_actions_only": [
+      "Sign in or register",
+      "MFA or CAPTCHA completion",
+      "Selecting an account-owned permit or application when private records are visible",
+      "Opening any document, message, invoice, correction item, payment screen, upload control, or submission review screen"
+    ]
+  },
+  "accessible_structure_surface_map": {
+    "section_id": "accessible-structure-surface-map",
+    "surface_id": "devhub-status-review-synthetic",
+    "url_pattern": "https://devhub.portlandoregon.gov/*",
+    "page_heading_expectations": [
+      "Dashboard",
+      "Permits",
+      "Applications",
+      "Requests",
+      "Status"
+    ],
+    "landmarks_to_observe": [
+      "banner",
+      "navigation",
+      "main",
+      "search",
+      "status table or list",
+      "pagination or result count region",
+      "alert or validation message region"
+    ],
+    "read_only_actions_to_map": [
+      {
+        "action_id": "observe-record-list-structure",
+        "kind": "read_only_observation",
+        "expected_accessible_names": [
+          "Permit number",
+          "Application number",
+          "Status",
+          "Project name",
+          "Updated"
+        ],
+        "notes": "Record only labels and structural roles. Do not record real permit numbers, project names, addresses, or account identifiers."
+      },
+      {
+        "action_id": "observe-status-filter-labels",
+        "kind": "read_only_observation",
+        "expected_accessible_names": [
+          "Search",
+          "Filter",
+          "Sort",
+          "Status"
+        ],
+        "notes": "Record control labels and whether the control appears reversible. Do not enter search terms from the user's private records."
+      },
+      {
+        "action_id": "observe-status-detail-navigation",
+        "kind": "attended_manual_navigation_observation",
+        "expected_accessible_names": [
+          "Details",
+          "View",
+          "Back"
+        ],
+        "notes": "The user controls navigation into and out of any record detail page. Observer records only redacted headings, tabs, and status labels."
+      }
+    ],
+    "selector_confidence": "fixture_only_no_live_selectors",
+    "requires_attendance": true,
+    "requires_exact_confirmation": false
+  },
+  "allowed_read_only_scope": {
+    "section_id": "allowed-read-only-scope",
+    "allowed_observations": [
+      "Accessible role and landmark names",
+      "Page heading text when it does not contain private case data",
+      "Generic status labels such as Submitted, In Review, Corrections Requested, Issued, Closed, or Expired",
+      "Presence or absence of read-only navigation controls",
+      "Presence or absence of upload, payment, schedule, cancel, certify, or submit controls as blocked consequential surfaces",
+      "Validation or alert message templates after private values have been removed"
+    ],
+    "allowed_automation": [
+      "No browser automation in this fixture packet",
+      "Future live runs may use attended read-only observation only after this fixture validates"
+    ],
+    "blocked_actions": [
+      "Account creation",
+      "Sign-in automation",
+      "MFA or CAPTCHA automation",
+      "Credential or cookie capture",
+      "Opening or downloading private documents",
+      "Uploading files",
+      "Paying fees or entering payment details",
+      "Scheduling, rescheduling, or cancelling inspections",
+      "Certifying, acknowledging, submitting, withdrawing, cancelling, or otherwise changing an official record"
+    ]
+  },
+  "redaction_policy": {
+    "section_id": "redaction-policy",
+    "classification": "commit_safe_redacted_metadata_only",
+    "must_redact": [
+      "Names",
+      "Email addresses",
+      "Phone numbers",
+      "Mailing addresses",
+      "Site addresses",
+      "Permit numbers",
+      "Application numbers",
+      "IVR numbers",
+      "Invoice numbers",
+      "License numbers",
+      "Parcel or property identifiers",
+      "Project descriptions",
+      "Uploaded file names",
+      "Document contents",
+      "Payment information",
+      "Browser session identifiers",
+      "Local private file paths"
+    ],
+    "replacement_tokens": {
+      "person_name": "[REDACTED_PERSON]",
+      "address": "[REDACTED_ADDRESS]",
+      "permit_number": "[REDACTED_PERMIT_NUMBER]",
+      "application_number": "[REDACTED_APPLICATION_NUMBER]",
+      "document_name": "[REDACTED_DOCUMENT_NAME]",
+      "private_value": "[REDACTED_PRIVATE_VALUE]"
+    },
+    "storage_rules": [
+      "Do not commit screenshots, videos, traces, HAR files, storage state, downloaded documents, or raw authenticated HTML.",
+      "Do not persist exact private field values even when they look procedural.",
+      "Store only synthetic examples and redacted structural summaries in fixtures."
+    ]
+  },
+  "post_observation_journal_expectations": {
+    "section_id": "post-observation-journal-expectations",
+    "journal_event_type": "DevHub attended preflight",
+    "required_fields": [
+      "packet_id",
+      "workflow_id",
+      "observer_role",
+      "user_attendance_confirmed",
+      "read_only_scope_confirmed",
+      "blocked_action_surfaces_seen",
+      "redaction_policy_applied",
+      "accessible_structure_summary",
+      "guardrail_followups",
+      "completion_evidence"
+    ],
+    "completion_evidence": [
+      "Fixture packet validated before any live observation.",
+      "No private DevHub session files or raw authenticated artifacts were created.",
+      "Any future live observation journal contains only redacted metadata and blocked-action notes."
+    ],
+    "example_commit_safe_journal": {
+      "packet_id": "devhub-attended-read-only-status-review-synthetic-v1",
+      "workflow_id": "synthetic-status-review",
+      "observer_role": "attended_read_only_observer",
+      "user_attendance_confirmed": true,
+      "read_only_scope_confirmed": true,
+      "blocked_action_surfaces_seen": [
+        "upload",
+        "payment",
+        "schedule",
+        "submit"
+      ],
+      "redaction_policy_applied": true,
+      "accessible_structure_summary": "Observed dashboard-style navigation, status list/table labels, generic status text, and detail-view headings with private values redacted.",
+      "guardrail_followups": [
+        "Classify upload, payment, scheduling, certification, cancellation, and submission controls as consequential action gates.",
+        "Keep status review available as attended read-only observation only."
+      ],
+      "completion_evidence": "Synthetic packet only; no live session data captured."
+    }
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "packet_id": "synthetic-ppd-public-page-html-extraction-review",
+  "source_url": "https://www.portland.gov/ppd/synthetic-public-permit-guide",
+  "fixture_file": "synthetic_ppd_public_page.html",
+  "review_status": "fixture_first_review_required",
+  "source_order": [
+    {
+      "order": 1,
+      "kind": "title",
+      "id": "title",
+      "text": "Synthetic PP&D Public Permit Guide"
+    },
+    {
+      "order": 2,
+      "kind": "breadcrumbs",
+      "id": "breadcrumbs",
+      "items": [
+        "Home",
+        "Portland Permitting & Development",
+        "Get a Permit",
+        "Synthetic PP&D Public Permit Guide"
+      ]
+    },
+    {
+      "order": 3,
+      "kind": "heading",
+      "id": "heading-h1-synthetic-ppd-public-permit-guide",
+      "level": 1,
+      "text": "Synthetic PP&D Public Permit Guide"
+    },
+    {
+      "order": 4,
+      "kind": "visible_date",
+      "id": "date-published-may-1-2026",
+      "text": "Published May 1, 2026"
+    },
+    {
+      "order": 5,
+      "kind": "visible_date",
+      "id": "date-updated-may-8-2026",
+      "text": "Updated May 8, 2026"
+    },
+    {
+      "order": 6,
+      "kind": "heading",
+      "id": "heading-h2-before-you-apply",
+      "level": 2,
+      "text": "Before you apply"
+    },
+    {
+      "order": 7,
+      "kind": "image_alt_text",
+      "id": "image-synthetic-permit-workflow",
+      "src": "https://www.portland.gov/ppd/images/synthetic-permit-workflow.png",
+      "alt": "Diagram showing address lookup, document preparation, and permit review stages"
+    },
+    {
+      "order": 8,
+      "kind": "heading",
+      "id": "heading-h2-prepare-your-request",
+      "level": 2,
+      "text": "Prepare your request"
+    },
+    {
+      "order": 9,
+      "kind": "steps",
+      "id": "steps-prepare-your-request",
+      "items": [
+        {
+          "number": 1,
+          "text": "Confirm the property address and permit type."
+        },
+        {
+          "number": 2,
+          "text": "Prepare plan sheets, calculations, and application documents."
+        },
+        {
+          "number": 3,
+          "text": "Review acknowledgements before any official submission."
+        }
+      ]
+    },
+    {
+      "order": 10,
+      "kind": "callout",
+      "id": "callout-important-review-note",
+      "severity": "warning",
+      "heading": "Important review note",
+      "text": "Do not upload, certify, submit, or pay fees until a person confirms the official action."
+    },
+    {
+      "order": 11,
+      "kind": "heading",
+      "id": "heading-h2-documents-and-timing",
+      "level": 2,
+      "text": "Documents and timing"
+    },
+    {
+      "order": 12,
+      "kind": "table",
+      "id": "table-required-public-review-documents",
+      "caption": "Required public review documents",
+      "headers": [
+        "Document",
+        "When required",
+        "Upload note"
+      ],
+      "rows": [
+        [
+          "Application form",
+          "Every request",
+          "Upload as a separate PDF."
+        ],
+        [
+          "Plan set",
+          "Projects with plan review",
+          "Combine drawing sheets into one PDF."
+        ]
+      ]
+    },
+    {
+      "order": 13,
+      "kind": "contact",
+      "id": "contact-permit-help",
+      "name": "PP&D Permit Help",
+      "methods": [
+        {
+          "type": "phone",
+          "value": "503-823-7300"
+        },
+        {
+          "type": "email",
+          "value": "ppdpermithelp@example.invalid"
+        },
+        {
+          "type": "hours",
+          "value": "Monday through Friday, 8 a.m. to 4 p.m."
+        }
+      ]
+    },
+    {
+      "order": 14,
+      "kind": "related_links",
+      "id": "related-links",
+      "links": [
+        {
+          "text": "Apply for permits",
+          "href": "https://www.portland.gov/ppd/get-permit/apply-permits"
+        },
+        {
+          "text": "Submit plans online",
+          "href": "https://www.portland.gov/ppd/get-permit/submit-plans-online"
+        }
+      ]
+    }
+  ],
+  "visible_dates": [
+    {
+      "text": "Published May 1, 2026",
+      "normalized_date": "2026-05-01",
+      "source_order": 4
+    },
+    {
+      "text": "Updated May 8, 2026",
+      "normalized_date": "2026-05-08",
+      "source_order": 5
+    }
+  ],
+  "citation_spans": [
+    {
+      "citation_id": "cite-title",
+      "block_id": "title",
+      "source_order": 1,
+      "text": "Synthetic PP&D Public Permit Guide"
+    },
+    {
+      "citation_id": "cite-breadcrumbs",
+      "block_id": "breadcrumbs",
+      "source_order": 2,
+      "text": "Home > Portland Permitting & Development > Get a Permit > Synthetic PP&D Public Permit Guide"
+    },
+    {
+      "citation_id": "cite-heading-before-you-apply",
+      "block_id": "heading-h2-before-you-apply",
+      "source_order": 6,
+      "text": "Before you apply"
+    },
+    {
+      "citation_id": "cite-image-alt-workflow",
+      "block_id": "image-synthetic-permit-workflow",
+      "source_order": 7,
+      "text": "Diagram showing address lookup, document preparation, and permit review stages"
+    },
+    {
+      "citation_id": "cite-prepare-steps",
+      "block_id": "steps-prepare-your-request",
+      "source_order": 9,
+      "text": "Confirm the property address and permit type. Prepare plan sheets, calculations, and application documents. Review acknowledgements before any official submission."
+    },
+    {
+      "citation_id": "cite-callout-official-action",
+      "block_id": "callout-important-review-note",
+      "source_order": 10,
+      "text": "Do not upload, certify, submit, or pay fees until a person confirms the official action."
+    },
+    {
+      "citation_id": "cite-required-documents-table",
+      "block_id": "table-required-public-review-documents",
+      "source_order": 12,
+      "text": "Required public review documents: Application form; Plan set"
+    },
+    {
+      "citation_id": "cite-contact-permit-help",
+      "block_id": "contact-permit-help",
+      "source_order": 13,
+      "text": "PP&D Permit Help 503-823-7300 ppdpermithelp@example.invalid"
+    },
+    {
+      "citation_id": "cite-related-links",
+      "block_id": "related-links",
+      "source_order": 14,
+      "text": "Apply for permits; Submit plans online"
+    }
+  ]
+}

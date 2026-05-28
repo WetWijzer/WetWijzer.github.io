@@ -2,15 +2,16 @@
 
 The validator is deterministic and side-effect free. It consumes synthetic packet
 fixtures or assembled packet-shaped dictionaries and rejects readiness when the
-packet lacks fresh cited evidence, citation spans, crawl-promotion audit closure,
-DevHub surface-map readiness, or required handoff gates for consequential work.
+packet lacks fresh cited evidence, required case facts, non-conflicting gap
+analysis, validated DevHub selectors, metadata-only preview records, complete
+journal checkpoints, or required handoff gates for consequential work.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Any, Iterable, Mapping
+from typing import Any, Mapping
 
 from .packet import AgentReadinessPacketError
 
@@ -32,6 +33,24 @@ _READY_SURFACE_STATUSES = {
     "fixture_validated",
     "manual_handoff_required",
     "ready_metadata_only",
+}
+_HIGH_SELECTOR_CONFIDENCE_LABELS = {"fixture", "fixture_validated", "high", "strong", "validated"}
+_MIN_SELECTOR_CONFIDENCE = 0.8
+_COMPLETE_CHECKPOINT_STATUSES = {"complete", "completed", "fixture_validated", "validated"}
+_GATE_CHECKPOINT_STATUSES = _COMPLETE_CHECKPOINT_STATUSES | {
+    "blocked_until_user_attended",
+    "manual_handoff_required",
+    "required",
+}
+_REQUIRED_COMPLETE_CHECKPOINTS = {
+    "source_evidence_freshness",
+    "case_gap_analysis",
+    "surface_map_validation",
+    "preview_metadata_generated",
+}
+_REQUIRED_GATE_CHECKPOINTS = {
+    "manual_handoff_gate",
+    "exact_confirmation_gate",
 }
 
 
@@ -59,8 +78,11 @@ def validate_agent_readiness_packet(
 
     evidence_records = _evidence_records(packet)
     problems.extend(_source_evidence_problems(evidence_records, check_time, max_evidence_age_days))
+    problems.extend(_case_gap_readiness_problems(packet))
     problems.extend(_crawl_promotion_audit_problems(packet.get("crawl_promotion_audit")))
     problems.extend(_devhub_surface_map_readiness_problems(packet.get("devhub_surface_map_readiness")))
+    problems.extend(_preview_metadata_problems(packet.get("preview_metadata") or packet.get("local_draft_preview")))
+    problems.extend(_journal_checkpoint_problems(packet.get("action_journal_expectations")))
     problems.extend(_consequential_action_problems(packet))
 
     return AgentReadinessValidationResult(ready=not problems, problems=tuple(problems))
@@ -122,7 +144,47 @@ def _source_evidence_problems(
         else:
             for span_index, span in enumerate(spans):
                 if not isinstance(span, Mapping) or not _has_span_anchor(span):
-                    problems.append(f"source evidence {evidence_id} citation_spans[{span_index}] lacks a page or character span anchor")
+                    problems.append(
+                        f"source evidence {evidence_id} citation_spans[{span_index}] lacks a page or character span anchor"
+                    )
+    return problems
+
+
+def _case_gap_readiness_problems(packet: Mapping[str, Any]) -> list[str]:
+    case_gap = packet.get("case_gap_report")
+    process_bundle = packet.get("process_bundle")
+    if not isinstance(case_gap, Mapping):
+        return ["case_gap_report is required"]
+
+    problems: list[str] = []
+    if _non_empty_list(case_gap.get("stale_evidence")):
+        problems.append("case_gap_report contains stale_evidence")
+    if _non_empty_list(case_gap.get("conflicting_evidence")):
+        problems.append("case_gap_report contains conflicting_evidence")
+    if _non_empty_list(case_gap.get("conflicting_facts")):
+        problems.append("case_gap_report contains conflicting_facts")
+    if _non_empty_list(case_gap.get("missing_facts")):
+        problems.append("case_gap_report contains missing_facts")
+    if _non_empty_list(case_gap.get("missing_documents")):
+        problems.append("case_gap_report contains missing_documents")
+
+    if isinstance(process_bundle, Mapping):
+        required_fact_ids = _string_set(process_bundle.get("required_user_fact_ids"))
+        present_fact_ids = {
+            str(item.get("fact_id"))
+            for item in _mapping_items(case_gap.get("known_facts"))
+            if item.get("presence") == "present" and isinstance(item.get("fact_id"), str)
+        }
+        for fact_id in sorted(required_fact_ids - present_fact_ids):
+            problems.append(f"required fact is not present: {fact_id}")
+
+        required_document_ids = _string_set(process_bundle.get("required_document_ids"))
+        matched_document_ids = _string_set(case_gap.get("matched_document_ids"))
+        for document_id in sorted(required_document_ids - matched_document_ids):
+            problems.append(f"required document is not matched: {document_id}")
+    else:
+        problems.append("process_bundle is required for required fact validation")
+
     return problems
 
 
@@ -158,7 +220,8 @@ def _devhub_surface_map_readiness_problems(surface: Any) -> list[str]:
     for key in ("surface_id", "auth_scope", "url_pattern", "page_heading"):
         if not surface.get(key):
             problems.append(f"devhub_surface_map_readiness is missing {key}")
-    if not isinstance(surface.get("actions"), list) or not surface.get("actions"):
+    actions = surface.get("actions")
+    if not isinstance(actions, list) or not actions:
         problems.append("devhub_surface_map_readiness must include actions")
     if not _collect_evidence_refs(surface):
         problems.append("devhub_surface_map_readiness must cite source_evidence_ids")
@@ -166,6 +229,101 @@ def _devhub_surface_map_readiness_problems(surface: Any) -> list[str]:
         problems.append("devhub_surface_map_readiness must require attendance for official actions")
     if surface.get("requires_exact_confirmation") is not True:
         problems.append("devhub_surface_map_readiness must require exact confirmation for official actions")
+    problems.extend(_selector_confidence_problems(surface, "devhub_surface_map_readiness"))
+    return problems
+
+
+def _selector_confidence_problems(value: Any, path: str) -> list[str]:
+    problems: list[str] = []
+    if isinstance(value, Mapping):
+        if "selector_confidence" in value:
+            if not _selector_confidence_is_high(value.get("selector_confidence")):
+                problems.append(f"selector confidence is low at {path}")
+        elif path == "devhub_surface_map_readiness":
+            problems.append("devhub_surface_map_readiness is missing selector_confidence")
+        for key, child in value.items():
+            problems.extend(_selector_confidence_problems(child, f"{path}.{key}"))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            problems.extend(_selector_confidence_problems(child, f"{path}[{index}]"))
+    return problems
+
+
+def _selector_confidence_is_high(value: Any) -> bool:
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, (int, float)):
+        return float(value) >= _MIN_SELECTOR_CONFIDENCE
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in _HIGH_SELECTOR_CONFIDENCE_LABELS:
+            return True
+        try:
+            return float(normalized) >= _MIN_SELECTOR_CONFIDENCE
+        except ValueError:
+            return False
+    return False
+
+
+def _preview_metadata_problems(preview: Any) -> list[str]:
+    if not isinstance(preview, Mapping):
+        return ["preview_metadata is required"]
+
+    problems: list[str] = []
+    for key in ("preview_id", "preview_type", "generated_at"):
+        if not preview.get(key):
+            problems.append(f"preview_metadata is missing {key}")
+    if preview.get("metadata_only") is not True:
+        problems.append("preview_metadata must be metadata_only")
+    if preview.get("no_private_values") is not True:
+        problems.append("preview_metadata must confirm no_private_values")
+    if preview.get("no_official_submission") is not True:
+        problems.append("preview_metadata must confirm no_official_submission")
+    if not _collect_evidence_refs(preview):
+        problems.append("preview_metadata must cite source_evidence_ids")
+    return problems
+
+
+def _journal_checkpoint_problems(journal: Any) -> list[str]:
+    if not isinstance(journal, Mapping):
+        return ["action_journal_expectations is required"]
+
+    problems: list[str] = []
+    checkpoints = journal.get("checkpoints")
+    if not isinstance(checkpoints, list) or not checkpoints:
+        return ["action_journal_expectations.checkpoints must be non-empty"]
+
+    checkpoint_by_id: dict[str, Mapping[str, Any]] = {}
+    for index, checkpoint in enumerate(checkpoints):
+        if not isinstance(checkpoint, Mapping):
+            problems.append(f"action_journal_expectations.checkpoints[{index}] must be an object")
+            continue
+        checkpoint_id = checkpoint.get("checkpoint_id")
+        if not isinstance(checkpoint_id, str) or not checkpoint_id:
+            problems.append(f"action_journal_expectations.checkpoints[{index}] is missing checkpoint_id")
+            continue
+        checkpoint_by_id[checkpoint_id] = checkpoint
+        if not _collect_evidence_refs(checkpoint):
+            problems.append(f"journal checkpoint {checkpoint_id} must cite source_evidence_ids")
+
+    for checkpoint_id in sorted(_REQUIRED_COMPLETE_CHECKPOINTS):
+        checkpoint = checkpoint_by_id.get(checkpoint_id)
+        if checkpoint is None:
+            problems.append(f"required journal checkpoint is missing: {checkpoint_id}")
+            continue
+        status = str(checkpoint.get("status") or "").lower()
+        if status not in _COMPLETE_CHECKPOINT_STATUSES:
+            problems.append(f"journal checkpoint {checkpoint_id} is incomplete: status={status or 'missing'}")
+
+    for checkpoint_id in sorted(_REQUIRED_GATE_CHECKPOINTS):
+        checkpoint = checkpoint_by_id.get(checkpoint_id)
+        if checkpoint is None:
+            problems.append(f"required journal checkpoint is missing: {checkpoint_id}")
+            continue
+        status = str(checkpoint.get("status") or "").lower()
+        if status not in _GATE_CHECKPOINT_STATUSES:
+            problems.append(f"journal checkpoint {checkpoint_id} is incomplete: status={status or 'missing'}")
+
     return problems
 
 
@@ -252,3 +410,19 @@ def _record_id(record: Mapping[str, Any], index: int) -> str:
     if isinstance(raw, str) and raw:
         return raw
     return f"index-{index}"
+
+
+def _mapping_items(value: Any) -> list[Mapping[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, Mapping)]
+
+
+def _string_set(value: Any) -> set[str]:
+    if not isinstance(value, list):
+        return set()
+    return {item for item in value if isinstance(item, str) and item}
+
+
+def _non_empty_list(value: Any) -> bool:
+    return isinstance(value, list) and len(value) > 0

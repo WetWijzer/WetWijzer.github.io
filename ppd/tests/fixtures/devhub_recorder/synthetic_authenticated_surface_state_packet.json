@@ -1,0 +1,283 @@
+{
+  "fixture_schema": "ppd.devhub.recorder.surface_state_packet.v1",
+  "fixture_id": "synthetic_authenticated_redacted_application_review",
+  "capture_mode": "fixture_first_metadata_only",
+  "source": {
+    "captured_from": "synthetic-fixture",
+    "live_browser_used": false,
+    "playwright_launched": false,
+    "authenticated_session_material_saved": false,
+    "artifacts_saved": []
+  },
+  "privacy": {
+    "classification": "authenticated_redacted_metadata_only",
+    "private_values_persisted": false,
+    "redaction_policy": "roles-labels-required-markers-and-public-control-copy-only",
+    "allowed": [
+      "page title",
+      "URL pattern",
+      "headings",
+      "accessible roles and names",
+      "stable labels",
+      "required markers",
+      "validation message templates",
+      "dropdown option labels",
+      "conditional question triggers",
+      "upload-control hints",
+      "timeout and save-for-later text",
+      "official-action button labels"
+    ],
+    "rejected": [
+      "browser session material",
+      "screenshots",
+      "traces",
+      "HAR data",
+      "credentials",
+      "private page values",
+      "downloaded documents"
+    ]
+  },
+  "surface": {
+    "surface_id": "devhub.synthetic.application.review.redacted",
+    "auth_scope": "authenticated_attended",
+    "page_title": "DevHub - Permit Application Review",
+    "url_pattern": "https://devhub.portlandoregon.gov/permits/applications/{redacted_application_id}/review",
+    "page_heading": "Review permit application",
+    "heading_hierarchy": [
+      {
+        "level": 1,
+        "text": "Review permit application"
+      },
+      {
+        "level": 2,
+        "text": "Project information"
+      },
+      {
+        "level": 2,
+        "text": "Permit details"
+      },
+      {
+        "level": 2,
+        "text": "Documents"
+      },
+      {
+        "level": 2,
+        "text": "Acknowledgement"
+      }
+    ],
+    "accessible_roles": [
+      {
+        "role": "banner",
+        "name": "DevHub"
+      },
+      {
+        "role": "navigation",
+        "name": "Application steps"
+      },
+      {
+        "role": "main",
+        "name": "Review permit application"
+      },
+      {
+        "role": "heading",
+        "name": "Review permit application"
+      },
+      {
+        "role": "textbox",
+        "name": "Project description"
+      },
+      {
+        "role": "combobox",
+        "name": "Permit request type"
+      },
+      {
+        "role": "radio",
+        "name": "The project includes exterior work"
+      },
+      {
+        "role": "checkbox",
+        "name": "I acknowledge this draft must be reviewed before submission"
+      },
+      {
+        "role": "button",
+        "name": "Save for later"
+      },
+      {
+        "role": "button",
+        "name": "Submit request"
+      }
+    ],
+    "stable_labels": [
+      {
+        "label_id": "project_description",
+        "label_text": "Project description",
+        "selector_basis": "role+accessibleName+labelText",
+        "role": "textbox",
+        "required": true,
+        "required_marker": "required"
+      },
+      {
+        "label_id": "permit_request_type",
+        "label_text": "Permit request type",
+        "selector_basis": "role+accessibleName+labelText",
+        "role": "combobox",
+        "required": true,
+        "required_marker": "required"
+      },
+      {
+        "label_id": "exterior_work",
+        "label_text": "The project includes exterior work",
+        "selector_basis": "role+accessibleName+fieldsetLegend",
+        "role": "radio",
+        "required": true,
+        "required_marker": "required"
+      },
+      {
+        "label_id": "plan_set_upload",
+        "label_text": "Upload drawing plans PDF",
+        "selector_basis": "role+accessibleName+sectionHeading",
+        "role": "button",
+        "required": true,
+        "required_marker": "required when plan review applies"
+      }
+    ],
+    "validation_messages": [
+      {
+        "message_id": "project_description_required",
+        "linked_label_id": "project_description",
+        "text": "Enter a project description before continuing.",
+        "severity": "blocking"
+      },
+      {
+        "message_id": "permit_request_type_required",
+        "linked_label_id": "permit_request_type",
+        "text": "Select a permit request type.",
+        "severity": "blocking"
+      },
+      {
+        "message_id": "plan_pdf_required",
+        "linked_label_id": "plan_set_upload",
+        "text": "Upload drawing plans as a PDF before submitting.",
+        "severity": "blocking"
+      },
+      {
+        "message_id": "acknowledgement_required",
+        "linked_label_id": "review_acknowledgement",
+        "text": "Review and acknowledge the certification before submitting.",
+        "severity": "blocking"
+      }
+    ],
+    "dropdown_options": [
+      {
+        "field_id": "permit_request_type",
+        "label": "Permit request type",
+        "options": [
+          "Building Permit",
+          "Trade Permit with Plan Review",
+          "Solar Permit",
+          "Sign Permit"
+        ],
+        "selected_option": "[REDACTED]"
+      },
+      {
+        "field_id": "project_scope",
+        "label": "Project scope",
+        "options": [
+          "Alteration",
+          "Addition",
+          "New construction",
+          "Revision"
+        ],
+        "selected_option": "[REDACTED]"
+      }
+    ],
+    "conditional_question_triggers": [
+      {
+        "trigger_id": "exterior_work_yes",
+        "question_label": "The project includes exterior work",
+        "when_option": "Yes",
+        "reveals_labels": [
+          "Exterior work description",
+          "Upload site plan PDF"
+        ]
+      },
+      {
+        "trigger_id": "plan_review_request_type",
+        "question_label": "Permit request type",
+        "when_option_in": [
+          "Building Permit",
+          "Trade Permit with Plan Review",
+          "Solar Permit"
+        ],
+        "reveals_labels": [
+          "Upload drawing plans PDF",
+          "Upload supporting documents PDF"
+        ]
+      }
+    ],
+    "upload_controls": [
+      {
+        "control_id": "drawing_plans_pdf",
+        "accessible_name": "Upload drawing plans PDF",
+        "hint_text": "PDF only. Use one combined drawing plan PDF when the Single PDF Process applies.",
+        "accepted_file_types": [
+          "application/pdf"
+        ],
+        "required_marker": "required when plan review applies",
+        "stores_file_path": false,
+        "sample_file_name": "[REDACTED]"
+      },
+      {
+        "control_id": "supporting_documents_pdf",
+        "accessible_name": "Upload supporting documents PDF",
+        "hint_text": "Upload separate supporting PDFs when requested by the application.",
+        "accepted_file_types": [
+          "application/pdf"
+        ],
+        "required_marker": "conditional",
+        "stores_file_path": false,
+        "sample_file_name": "[REDACTED]"
+      }
+    ],
+    "timeout_and_save_text": {
+      "timeout_warning": "Your session may time out after inactivity. Save for later before stepping away.",
+      "save_for_later_button_label": "Save for later",
+      "save_for_later_confirmation": "Your draft has been saved. Return to DevHub to continue the application.",
+      "resume_link_label": "Resume application"
+    },
+    "official_action_button_labels": [
+      {
+        "label": "Submit request",
+        "action_class": "consequential_official",
+        "requires_attendance": true,
+        "requires_exact_confirmation": true
+      },
+      {
+        "label": "I certify the information is accurate",
+        "action_class": "certification_gate",
+        "requires_attendance": true,
+        "requires_exact_confirmation": true
+      },
+      {
+        "label": "Upload documents",
+        "action_class": "official_record_upload",
+        "requires_attendance": true,
+        "requires_exact_confirmation": true
+      }
+    ],
+    "safe_navigation_button_labels": [
+      "Back",
+      "Continue",
+      "Save for later"
+    ]
+  },
+  "recorder_contract": {
+    "browser_state_included": false,
+    "screenshots_included": false,
+    "traces_included": false,
+    "har_included": false,
+    "credentials_included": false,
+    "private_values_included": false,
+    "downloaded_documents_included": false
+  }
+}

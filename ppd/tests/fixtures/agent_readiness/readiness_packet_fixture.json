@@ -41,31 +41,21 @@
         "source_evidence_ids": [
           "ev-devhub-guide-submit"
         ]
-      }
-    ],
-    "matched_document_ids": [
-      "application_pdf"
-    ],
-    "missing_facts": [
+      },
       {
         "fact_id": "contractor_license_profile_status",
-        "required_for": "DevHub options can depend on account or license profile metadata.",
-        "reason": "License-related readiness must be checked before assuming a permit draft is complete.",
+        "presence": "present",
         "source_evidence_ids": [
           "ev-devhub-faq"
         ]
       }
     ],
-    "missing_documents": [
-      {
-        "status": "missing",
-        "required_for": "plan review upload staging",
-        "reason": "Single PDF guidance separates drawing plans from applications and supporting documents.",
-        "source_evidence_ids": [
-          "ev-submit-plans-online"
-        ]
-      }
+    "matched_document_ids": [
+      "application_pdf",
+      "single_plan_pdf"
     ],
+    "missing_facts": [],
+    "missing_documents": [],
     "stale_evidence": [],
     "conflicting_evidence": [],
     "required_confirmations": [
@@ -221,6 +211,7 @@
         "field_id": "property_search",
         "label": "Property search",
         "value_policy": "metadata_only",
+        "selector_confidence": "fixture",
         "source_evidence_ids": [
           "ev-devhub-guide-submit"
         ]
@@ -229,6 +220,7 @@
         "field_id": "upload_stage",
         "label": "Upload staging",
         "value_policy": "metadata_only",
+        "selector_confidence": "fixture",
         "source_evidence_ids": [
           "ev-submit-plans-online"
         ]
@@ -240,6 +232,7 @@
         "classification": "read_only",
         "requires_attendance": false,
         "requires_exact_confirmation": false,
+        "selector_confidence": "fixture",
         "reason": "Status review is read-only when no private values are copied into the packet.",
         "source_evidence_ids": [
           "ev-devhub-faq"
@@ -250,6 +243,7 @@
         "classification": "reversible_draft",
         "requires_attendance": false,
         "requires_exact_confirmation": false,
+        "selector_confidence": "fixture",
         "reason": "Draft planning is reversible before certification or official submission.",
         "source_evidence_ids": [
           "ev-devhub-guide-submit"
@@ -261,6 +255,7 @@
         "requires_attendance": true,
         "requires_manual_handoff": true,
         "requires_exact_confirmation": true,
+        "selector_confidence": "fixture",
         "reason": "Official submission requires attended manual handoff and exact confirmation.",
         "source_evidence_ids": [
           "ev-devhub-guide-submit"
@@ -280,6 +275,79 @@
     "requires_attendance": true,
     "requires_exact_confirmation": true,
     "source_evidence_ids": [
+      "ev-devhub-faq",
+      "ev-devhub-guide-submit",
+      "ev-submit-plans-online",
+      "ev-devhub-sign-guide"
+    ]
+  },
+  "preview_metadata": {
+    "preview_id": "preview-agent-readiness-fixture",
+    "preview_type": "local_pdf_draft_metadata",
+    "generated_at": "2026-05-15T00:00:00Z",
+    "metadata_only": true,
+    "no_private_values": true,
+    "no_official_submission": true,
+    "source_evidence_ids": [
+      "ev-submit-plans-online",
+      "ev-devhub-guide-submit"
+    ]
+  },
+  "action_journal_expectations": {
+    "journal_id": "journal-agent-readiness-fixture",
+    "metadata_only": true,
+    "checkpoints": [
+      {
+        "checkpoint_id": "source_evidence_freshness",
+        "status": "complete",
+        "source_evidence_ids": [
+          "ev-online-tools",
+          "ev-devhub-guide-submit"
+        ]
+      },
+      {
+        "checkpoint_id": "case_gap_analysis",
+        "status": "complete",
+        "source_evidence_ids": [
+          "ev-devhub-faq",
+          "ev-devhub-guide-submit",
+          "ev-submit-plans-online"
+        ]
+      },
+      {
+        "checkpoint_id": "surface_map_validation",
+        "status": "complete",
+        "source_evidence_ids": [
+          "ev-devhub-guide-submit",
+          "ev-devhub-sign-guide"
+        ]
+      },
+      {
+        "checkpoint_id": "preview_metadata_generated",
+        "status": "complete",
+        "source_evidence_ids": [
+          "ev-submit-plans-online"
+        ]
+      },
+      {
+        "checkpoint_id": "manual_handoff_gate",
+        "status": "required",
+        "source_evidence_ids": [
+          "ev-devhub-guide-submit",
+          "ev-devhub-sign-guide"
+        ]
+      },
+      {
+        "checkpoint_id": "exact_confirmation_gate",
+        "status": "required",
+        "source_evidence_ids": [
+          "ev-devhub-guide-submit",
+          "ev-devhub-sign-guide"
+        ]
+      }
+    ],
+    "source_evidence_ids": [
+      "ev-online-tools",
       "ev-devhub-faq",
       "ev-devhub-guide-submit",
       "ev-submit-plans-online",

@@ -1,0 +1,202 @@
+{
+  "fixture_id": "requirement-process-coverage-matrix-synthetic-v1",
+  "workflow_id": "synthetic-alteration-devhub-draft-v1",
+  "description": "Synthetic fixture-only matrix linking source-backed RequirementNode records to one permit process model. It contains no private session state, raw crawl output, uploads, payment details, or authenticated DevHub artifacts.",
+  "requirement_nodes": [
+    {
+      "requirement_id": "REQ-SYN-FACT-001",
+      "requirement_type": "precondition",
+      "subject": "applicant",
+      "action": "provide",
+      "object": "property address and project scope before permit type selection",
+      "process_stage": "eligibility_screening",
+      "source_evidence_ids": ["EV-SYN-DEVHUB-GUIDE-FACTS"],
+      "confidence": 0.92,
+      "human_review_status": "synthetic_fixture_reviewed",
+      "formalization_status": "machine_checked"
+    },
+    {
+      "requirement_id": "REQ-SYN-DOC-001",
+      "requirement_type": "document_requirement",
+      "subject": "applicant",
+      "action": "prepare",
+      "object": "plans and supporting documents as separate PDFs",
+      "process_stage": "document_preparation",
+      "source_evidence_ids": ["EV-SYN-SINGLE-PDF-DOCS"],
+      "confidence": 0.91,
+      "human_review_status": "synthetic_fixture_reviewed",
+      "formalization_status": "machine_checked"
+    },
+    {
+      "requirement_id": "REQ-SYN-FILE-001",
+      "requirement_type": "obligation",
+      "subject": "applicant",
+      "action": "name",
+      "object": "uploaded PDF files according to file preparation rules",
+      "process_stage": "upload_staging",
+      "source_evidence_ids": ["EV-SYN-FILE-NAMING"],
+      "confidence": 0.89,
+      "human_review_status": "synthetic_fixture_reviewed",
+      "formalization_status": "machine_checked"
+    },
+    {
+      "requirement_id": "REQ-SYN-FEE-001",
+      "requirement_type": "fee_trigger",
+      "subject": "applicant",
+      "action": "review",
+      "object": "fees after intake or notice before payment",
+      "process_stage": "fee_payment",
+      "source_evidence_ids": ["EV-SYN-FEE-NOTICE"],
+      "confidence": 0.9,
+      "human_review_status": "synthetic_fixture_reviewed",
+      "formalization_status": "machine_checked"
+    },
+    {
+      "requirement_id": "REQ-SYN-EXCEPTION-001",
+      "requirement_type": "exception",
+      "subject": "applicant",
+      "action": "use",
+      "object": "manual staff-directed path when DevHub request type is unavailable",
+      "process_stage": "permit_type_selection",
+      "source_evidence_ids": ["EV-SYN-MANUAL-PATH"],
+      "confidence": 0.86,
+      "human_review_status": "synthetic_fixture_reviewed",
+      "formalization_status": "machine_checked"
+    },
+    {
+      "requirement_id": "REQ-SYN-UNSUPPORTED-001",
+      "requirement_type": "prohibition",
+      "subject": "agent",
+      "action": "refuse_to_automate",
+      "object": "certification, final submission, official upload, or payment execution without attended confirmation",
+      "process_stage": "acknowledgement_certification_review",
+      "source_evidence_ids": ["EV-SYN-ACTION-GATES"],
+      "confidence": 0.88,
+      "human_review_status": "synthetic_fixture_reviewed",
+      "formalization_status": "machine_checked"
+    }
+  ],
+  "process_model": {
+    "process_id": "synthetic-alteration-devhub-draft",
+    "permit_type": "synthetic_residential_alteration_plan_review",
+    "scope": "Fixture-only permit workflow used to validate requirement coverage across PP&D process model guardrail fields.",
+    "stages": [
+      {"id": "stage-pre-application", "name": "pre-application research"},
+      {"id": "stage-property-lookup", "name": "property lookup"},
+      {"id": "stage-eligibility", "name": "eligibility screening"},
+      {"id": "stage-document-preparation", "name": "document preparation"},
+      {"id": "stage-upload-staging", "name": "upload staging", "consequential": true},
+      {"id": "stage-certification-review", "name": "acknowledgement/certification review", "consequential": true},
+      {"id": "stage-submission", "name": "submission", "consequential": true},
+      {"id": "stage-intake", "name": "prescreen/intake"},
+      {"id": "stage-fee-payment", "name": "fee payment", "consequential": true}
+    ],
+    "required_facts": [
+      {"id": "fact-property-address", "label": "Property address"},
+      {"id": "fact-project-scope", "label": "Project scope"},
+      {"id": "fact-applicant-contact", "label": "Applicant contact"}
+    ],
+    "required_documents": [
+      {"id": "doc-plan-set", "label": "Combined drawing plan set"},
+      {"id": "doc-application-form", "label": "Permit application form"},
+      {"id": "doc-supporting-calculations", "label": "Supporting calculations"}
+    ],
+    "file_rules": [
+      {"id": "file-single-plan-pdf", "label": "Drawing plans remain together as one PDF"},
+      {"id": "file-separate-supporting-pdfs", "label": "Applications, calculations, and other support documents use separate PDFs"},
+      {"id": "file-descriptive-names", "label": "PDF file names are descriptive and stable"}
+    ],
+    "fee_triggers": [
+      {"id": "fee-after-intake", "label": "Fees may be due after intake or review notice"},
+      {"id": "fee-payment-confirmation-gate", "label": "Payment execution requires attended confirmation"}
+    ],
+    "exceptions": [
+      {"id": "exception-devhub-type-unavailable", "label": "Use a staff-directed manual path when the request type is unavailable in DevHub"}
+    ],
+    "unsupported_paths": [
+      {"id": "unsupported-final-submit", "label": "Do not automate final submission"},
+      {"id": "unsupported-official-upload", "label": "Do not automate official upload to the record"},
+      {"id": "unsupported-payment-execution", "label": "Do not enter or submit payment details"}
+    ],
+    "action_gates": [
+      {"id": "gate-draft-upload-only", "label": "Upload staging is limited to reversible local draft preparation"},
+      {"id": "gate-certification-confirmation", "label": "Acknowledgement or certification requires attended exact confirmation"},
+      {"id": "gate-final-submit-confirmation", "label": "Final submission requires attended exact confirmation"},
+      {"id": "gate-payment-confirmation", "label": "Payment execution requires attended exact confirmation"}
+    ]
+  },
+  "coverage_matrix": [
+    {
+      "requirement_id": "REQ-SYN-FACT-001",
+      "evidence_ids": ["EV-SYN-DEVHUB-GUIDE-FACTS"],
+      "stage_ids": ["stage-property-lookup", "stage-eligibility"],
+      "required_fact_ids": ["fact-property-address", "fact-project-scope", "fact-applicant-contact"],
+      "required_document_ids": [],
+      "file_rule_ids": [],
+      "fee_trigger_ids": [],
+      "exception_ids": [],
+      "unsupported_path_ids": [],
+      "action_gate_ids": []
+    },
+    {
+      "requirement_id": "REQ-SYN-DOC-001",
+      "evidence_ids": ["EV-SYN-SINGLE-PDF-DOCS"],
+      "stage_ids": ["stage-document-preparation"],
+      "required_fact_ids": [],
+      "required_document_ids": ["doc-plan-set", "doc-application-form", "doc-supporting-calculations"],
+      "file_rule_ids": ["file-single-plan-pdf", "file-separate-supporting-pdfs"],
+      "fee_trigger_ids": [],
+      "exception_ids": [],
+      "unsupported_path_ids": [],
+      "action_gate_ids": []
+    },
+    {
+      "requirement_id": "REQ-SYN-FILE-001",
+      "evidence_ids": ["EV-SYN-FILE-NAMING"],
+      "stage_ids": ["stage-upload-staging"],
+      "required_fact_ids": [],
+      "required_document_ids": ["doc-plan-set"],
+      "file_rule_ids": ["file-descriptive-names"],
+      "fee_trigger_ids": [],
+      "exception_ids": [],
+      "unsupported_path_ids": ["unsupported-official-upload"],
+      "action_gate_ids": ["gate-draft-upload-only"]
+    },
+    {
+      "requirement_id": "REQ-SYN-FEE-001",
+      "evidence_ids": ["EV-SYN-FEE-NOTICE"],
+      "stage_ids": ["stage-intake", "stage-fee-payment"],
+      "required_fact_ids": [],
+      "required_document_ids": [],
+      "file_rule_ids": [],
+      "fee_trigger_ids": ["fee-after-intake", "fee-payment-confirmation-gate"],
+      "exception_ids": [],
+      "unsupported_path_ids": ["unsupported-payment-execution"],
+      "action_gate_ids": ["gate-payment-confirmation"]
+    },
+    {
+      "requirement_id": "REQ-SYN-EXCEPTION-001",
+      "evidence_ids": ["EV-SYN-MANUAL-PATH"],
+      "stage_ids": ["stage-pre-application", "stage-eligibility"],
+      "required_fact_ids": ["fact-project-scope"],
+      "required_document_ids": [],
+      "file_rule_ids": [],
+      "fee_trigger_ids": [],
+      "exception_ids": ["exception-devhub-type-unavailable"],
+      "unsupported_path_ids": [],
+      "action_gate_ids": []
+    },
+    {
+      "requirement_id": "REQ-SYN-UNSUPPORTED-001",
+      "evidence_ids": ["EV-SYN-ACTION-GATES"],
+      "stage_ids": ["stage-certification-review", "stage-submission", "stage-fee-payment"],
+      "required_fact_ids": [],
+      "required_document_ids": [],
+      "file_rule_ids": [],
+      "fee_trigger_ids": ["fee-payment-confirmation-gate"],
+      "exception_ids": [],
+      "unsupported_path_ids": ["unsupported-final-submit", "unsupported-official-upload", "unsupported-payment-execution"],
+      "action_gate_ids": ["gate-certification-confirmation", "gate-final-submit-confirmation", "gate-payment-confirmation"]
+    }
+  ]
+}

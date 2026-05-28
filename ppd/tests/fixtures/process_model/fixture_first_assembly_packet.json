@@ -1,0 +1,185 @@
+{
+  "process_id": "synthetic-residential-plan-review-intake",
+  "permit_type": "synthetic residential building permit with plan review",
+  "scope": "Fixture-only PP&D process model for reviewed requirement node assembly before DevHub submission.",
+  "guardrail_bundle_id": "guardrail-synthetic-residential-plan-review-intake",
+  "source_evidence": [
+    {
+      "evidence_id": "src-devhub-guide-apply",
+      "source_id": "devhub-submit-permit-application-guide",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+    },
+    {
+      "evidence_id": "src-single-pdf-process",
+      "source_id": "submit-plans-online-single-pdf-process",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online"
+    },
+    {
+      "evidence_id": "src-file-naming-standards",
+      "source_id": "spp-file-naming-standards-preparing-pdfs",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs"
+    },
+    {
+      "evidence_id": "src-fee-payment-guide",
+      "source_id": "how-pay-fees",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download"
+    }
+  ],
+  "requirement_node_candidates": [
+    {
+      "requirement_id": "req-fact-property-address",
+      "source_evidence_ids": ["src-devhub-guide-apply"],
+      "requirement_type": "precondition",
+      "subject": "applicant",
+      "action": "provide",
+      "object": "project property address",
+      "conditions": {
+        "required_user_fact": "property_address",
+        "fact_label": "Project property address",
+        "predicate": "requires_property_address",
+        "devhub_surface_ref": "devhub-property-search"
+      },
+      "permit_types": ["building", "residential"],
+      "process_stage": "property lookup",
+      "confidence": 0.91,
+      "human_review_status": "reviewed",
+      "formalization_status": "assembly_candidate"
+    },
+    {
+      "requirement_id": "req-fact-project-scope",
+      "source_evidence_ids": ["src-devhub-guide-apply"],
+      "requirement_type": "precondition",
+      "subject": "applicant",
+      "action": "describe",
+      "object": "project scope",
+      "conditions": {
+        "required_user_fact": "project_scope",
+        "fact_label": "Project scope",
+        "predicate": "requires_project_scope"
+      },
+      "permit_types": ["building", "residential"],
+      "process_stage": "application data entry",
+      "confidence": 0.9,
+      "human_review_status": "reviewed",
+      "formalization_status": "assembly_candidate"
+    },
+    {
+      "requirement_id": "req-doc-complete-plans",
+      "source_evidence_ids": ["src-single-pdf-process"],
+      "requirement_type": "document_requirement",
+      "subject": "applicant",
+      "action": "prepare",
+      "object": "complete drawing plans",
+      "conditions": {
+        "document_key": "complete_drawing_plans",
+        "document_label": "Complete drawing plans",
+        "file_rule": "Drawing plans are assembled together as one PDF; applications, calculations, and other supporting documents remain separate PDFs."
+      },
+      "permit_types": ["building", "residential"],
+      "process_stage": "document preparation",
+      "confidence": 0.92,
+      "human_review_status": "reviewed",
+      "formalization_status": "assembly_candidate"
+    },
+    {
+      "requirement_id": "req-file-naming",
+      "source_evidence_ids": ["src-file-naming-standards"],
+      "requirement_type": "obligation",
+      "subject": "applicant",
+      "action": "name",
+      "object": "uploaded PDF files according to PP&D file standards",
+      "conditions": {
+        "file_rule": "Use PP&D file naming standards before upload staging."
+      },
+      "permit_types": ["building", "residential"],
+      "process_stage": "upload staging",
+      "confidence": 0.88,
+      "human_review_status": "reviewed",
+      "formalization_status": "assembly_candidate"
+    },
+    {
+      "requirement_id": "req-fee-trigger-intake",
+      "source_evidence_ids": ["src-fee-payment-guide"],
+      "requirement_type": "fee_trigger",
+      "subject": "applicant",
+      "action": "pay",
+      "object": "assessed permit fees after PP&D issues a fee notice",
+      "conditions": {
+        "predicate": "fee_payment_requires_notice",
+        "devhub_surface_ref": "devhub-fees"
+      },
+      "permit_types": ["building", "residential"],
+      "process_stage": "fee payment",
+      "confidence": 0.87,
+      "human_review_status": "reviewed",
+      "formalization_status": "assembly_candidate"
+    },
+    {
+      "requirement_id": "req-deadline-corrections",
+      "source_evidence_ids": ["src-devhub-guide-apply"],
+      "requirement_type": "deadline",
+      "subject": "applicant",
+      "action": "respond",
+      "object": "PP&D correction or checksheet request",
+      "conditions": {
+        "predicate": "respond_before_review_window_expires"
+      },
+      "deadline_or_temporal_scope": "When PP&D issues a correction or checksheet response deadline for the application.",
+      "permit_types": ["building", "residential"],
+      "process_stage": "corrections/checksheets",
+      "confidence": 0.81,
+      "human_review_status": "reviewed",
+      "formalization_status": "assembly_candidate"
+    },
+    {
+      "requirement_id": "req-exception-email-only",
+      "source_evidence_ids": ["src-devhub-guide-apply"],
+      "requirement_type": "exception",
+      "subject": "applicant",
+      "action": "use",
+      "object": "non-DevHub path when official PP&D guidance excludes the permit type from DevHub",
+      "conditions": {
+        "unsupported_path": "DevHub application path for permit types that PP&D directs to email or another manual channel"
+      },
+      "permit_types": ["building", "residential"],
+      "process_stage": "permit type selection",
+      "confidence": 0.84,
+      "human_review_status": "reviewed",
+      "formalization_status": "assembly_candidate"
+    },
+    {
+      "requirement_id": "req-action-submit-confirmation",
+      "source_evidence_ids": ["src-devhub-guide-apply"],
+      "requirement_type": "action_gate",
+      "subject": "agent",
+      "action": "submit",
+      "object": "official permit application",
+      "conditions": {
+        "gate": "exact_confirmation",
+        "predicate": "requires_attended_exact_confirmation",
+        "devhub_surface_ref": "devhub-submit-application"
+      },
+      "permit_types": ["building", "residential"],
+      "process_stage": "submission",
+      "confidence": 0.95,
+      "human_review_status": "reviewed",
+      "formalization_status": "assembly_candidate"
+    },
+    {
+      "requirement_id": "req-draft-unreviewed-note",
+      "source_evidence_ids": ["src-devhub-guide-apply"],
+      "requirement_type": "precondition",
+      "subject": "applicant",
+      "action": "ignore",
+      "object": "unreviewed draft note",
+      "conditions": {
+        "required_user_fact": "unreviewed_fact"
+      },
+      "permit_types": ["building"],
+      "process_stage": "eligibility screening",
+      "confidence": 0.2,
+      "human_review_status": "needs_review",
+      "formalization_status": "draft"
+    }
+  ]
+}
