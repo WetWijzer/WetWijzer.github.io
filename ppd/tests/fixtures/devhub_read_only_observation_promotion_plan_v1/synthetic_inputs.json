@@ -1,0 +1,99 @@
+{
+  "manual_observation_reviewer_queue": [
+    {
+      "accessible_landmarks": [
+        "main",
+        "navigation",
+        "status"
+      ],
+      "attestations": {
+        "no-HAR": true,
+        "no-click-through": true,
+        "no-login-automation": true,
+        "no-payment": true,
+        "no-scheduling": true,
+        "no-screenshot": true,
+        "no-session-state": true,
+        "no-submit": true,
+        "no-trace": true,
+        "no-upload": true
+      },
+      "citations": [
+        {
+          "quote_or_note": "Synthetic read-only queue item derived from approved manual observation fixture.",
+          "source_evidence_id": "devhub-observation-synthetic-home-heading",
+          "source_label": "DevHub manual observation reviewer queue fixture"
+        }
+      ],
+      "offline_validation_commands": [
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_devhub_read_only_observation_promotion_plan_v1.py"
+        ],
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ],
+      "page_heading": "DevHub Home",
+      "queue_item_id": "devhub-manual-observation-review-v1-001",
+      "redaction_checks": [
+        "Only stable surface identifiers and synthetic labels may be proposed.",
+        "Private account values, browser artifacts, and raw authenticated values must be absent."
+      ],
+      "release_gate_decision": "manual_review_required_read_only",
+      "release_gate_reasons": [
+        "Fixture-only update proposal requires reviewer approval before any active registry work."
+      ],
+      "reviewer_owner": "ppd-devhub-readonly-reviewer",
+      "rollback_notes": [
+        "Discard the synthetic fixture proposal and keep the current surface-map fixture unchanged."
+      ],
+      "stop_before_action_gates": [
+        "Stop before credential prompts or private account values.",
+        "Stop before upload, submit, payment, scheduling, cancellation, or certification controls."
+      ],
+      "surface_id": "devhub-home-read-only",
+      "synthetic_fixture": true,
+      "title": "DevHub home read-only observation",
+      "validation_message_expectations": [
+        "Signed-in status labels remain redacted synthetic labels only.",
+        "No validation message may include private permit, account, or payment data."
+      ]
+    }
+  ],
+  "reviewer_disposition_ledger": {
+    "dispositions": [
+      {
+        "attestations": {
+          "no-HAR": true,
+          "no-click-through": true,
+          "no-login-automation": true,
+          "no-payment": true,
+          "no-scheduling": true,
+          "no-screenshot": true,
+          "no-session-state": true,
+          "no-submit": true,
+          "no-trace": true,
+          "no-upload": true
+        },
+        "citations": [
+          {
+            "source_evidence_id": "devhub-observation-synthetic-home-heading",
+            "source_label": "Approved reviewer disposition ledger fixture"
+          }
+        ],
+        "disposition_id": "reviewer-disposition-devhub-home-read-only-001",
+        "disposition_status": "approved",
+        "rationale": "Approved for a synthetic fixture update proposal only; active surface-map mutation remains out of scope.",
+        "reviewer_owner": "ppd-devhub-readonly-reviewer",
+        "rollback_note": "Remove this proposed fixture update and retain the previously committed synthetic surface-map fixture.",
+        "surface_id": "devhub-home-read-only"
+      }
+    ],
+    "ledger_version": "reviewer_disposition_ledger_v1"
+  }
+}

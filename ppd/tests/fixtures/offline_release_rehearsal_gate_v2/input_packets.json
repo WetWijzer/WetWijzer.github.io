@@ -1,0 +1,104 @@
+{
+  "inactive_promotion_candidate_packet_v2": {
+    "packet_id": "inactive-promotion-candidate-packet-v2-fixture",
+    "packet_type": "ppd.inactive_promotion_candidate_packet.v2",
+    "packet_version": "v2",
+    "fixture_first": true,
+    "offline_only": true,
+    "promotion_candidate_rows": [
+      {
+        "candidate_id": "candidate-source-registry-delta",
+        "fixture_family": "source_registry",
+        "source_evidence_ids": ["source-evidence:ppd-guide#file-rules"],
+        "rollback_plan_ref": "rollback-plan-source-registry-delta",
+        "candidate_status": "inactive_candidate_only"
+      },
+      {
+        "candidate_id": "candidate-devhub-surface-delta",
+        "fixture_family": "devhub_surface",
+        "source_evidence_ids": ["source-evidence:devhub-guide#guarded-actions"],
+        "rollback_plan_ref": "rollback-plan-devhub-surface-delta",
+        "candidate_status": "inactive_candidate_only"
+      }
+    ],
+    "prerequisite_validation_replay_inventory": [
+      {
+        "validation_ref": "validation-self-test",
+        "command": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+        "expected_result": "passes before manual release review"
+      }
+    ]
+  },
+  "guardrail_impact_replay_plan_v2": {
+    "packet_id": "guardrail-impact-replay-plan-v2-fixture",
+    "plan_type": "ppd.guardrail_impact_replay_plan.v2",
+    "plan_version": "v2",
+    "fixture_first": true,
+    "offline_only": true,
+    "ordered_replay_cases": [
+      {
+        "case_id": "replay-case-allow-reversible-review",
+        "expected_outcome": "allow",
+        "expected_guardrail_decision": "ALLOW",
+        "dependency_row_id": "dependency-source-registry-delta",
+        "impacted_requirement_refs": ["requirement:file-preparation"],
+        "impacted_process_refs": ["process:submit-plans-online"],
+        "source_evidence_ids": ["source-evidence:ppd-guide#file-rules"],
+        "citation_placeholders": [
+          {"citation_id": "citation:file-rules", "source_evidence_id": "source-evidence:ppd-guide#file-rules"}
+        ]
+      },
+      {
+        "case_id": "replay-case-block-final-action",
+        "expected_outcome": "block",
+        "expected_guardrail_decision": "BLOCK",
+        "dependency_row_id": "dependency-devhub-surface-delta",
+        "impacted_requirement_refs": ["requirement:final-action-boundary"],
+        "impacted_process_refs": ["process:devhub-attended-review"],
+        "source_evidence_ids": ["source-evidence:devhub-guide#guarded-actions"],
+        "citation_placeholders": [
+          {"citation_id": "citation:guarded-actions", "source_evidence_id": "source-evidence:devhub-guide#guarded-actions"}
+        ]
+      }
+    ],
+    "exact_offline_validation_commands": [
+      ["python3", "-m", "py_compile", "ppd/agent_readiness/guardrail_impact_replay_plan_v2.py"],
+      ["python3", "-m", "pytest", "ppd/tests/test_guardrail_impact_replay_plan_v2.py"],
+      ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+    ]
+  },
+  "guarded_agent_readiness_delta_packet_v2": {
+    "packet_id": "agent-readiness-delta-packet-v2-fixture",
+    "packet_type": "ppd.agent_readiness_delta_packet.v2",
+    "packet_version": "v2",
+    "fixture_first": true,
+    "offline_only": true,
+    "agent_schema_delta_placeholders": [
+      {
+        "delta_id": "agent-schema-delta-placeholder:replay-case-allow-reversible-review",
+        "replay_case_id": "replay-case-allow-reversible-review",
+        "placeholder_status": "pending_reviewer_acceptance",
+        "citations": [{"citation_id": "citation:file-rules"}]
+      },
+      {
+        "delta_id": "agent-schema-delta-placeholder:replay-case-block-final-action",
+        "replay_case_id": "replay-case-block-final-action",
+        "placeholder_status": "pending_reviewer_acceptance",
+        "citations": [{"citation_id": "citation:guarded-actions"}]
+      }
+    ],
+    "reviewer_acceptance_placeholders": [
+      {
+        "acceptance_id": "reviewer-acceptance-placeholder:replay-case-allow-reversible-review",
+        "replay_case_id": "replay-case-allow-reversible-review",
+        "decision": "pending_manual_review",
+        "citations": [{"citation_id": "citation:file-rules"}]
+      }
+    ],
+    "exact_offline_validation_commands": [
+      ["python3", "-m", "py_compile", "ppd/agent_readiness/agent_readiness_delta_packet_v2.py"],
+      ["python3", "-m", "pytest", "ppd/tests/test_agent_readiness_delta_packet_v2.py"],
+      ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "artifact_id": "inactive_fixture_promotion_application_dry_run_v1",
+  "version": 1,
+  "dry_run": true,
+  "mutation_scope": "inactive_fixture_promotion_only",
+  "notes": "Offline fixture-only rehearsal. It does not make official changes.",
+  "patch_manifest_rows": [
+    {
+      "patch_row_id": "patch-public-refresh-inactive-fixture",
+      "target_path": "ppd/tests/fixtures/inactive_fixture_promotion_application_dry_run_v1/public_source_refresh.json",
+      "change_type": "update_inactive_fixture",
+      "inactive_fixture_promotion_scope": true,
+      "citations": ["ppd-plan:inactive-fixture-promotion"],
+      "changed_row_evidence": {
+        "evidence_id": "evidence-public-refresh-row",
+        "citations": ["ppd-plan:source-refresh-fixture-row"]
+      }
+    }
+  ],
+  "unchanged_file_inventory": [
+    {
+      "file_path": "ppd/logic/guardrail_compiler.py",
+      "content_hash": "sha256:unchanged-guardrail-compiler-fixture",
+      "asserted_unchanged": true,
+      "citations": ["ppd-plan:inactive-fixture-boundary"]
+    }
+  ],
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "rollback_notes": [
+    {
+      "note_id": "rollback-discard-dry-run-patch",
+      "rollback_action": "Discard the inactive fixture dry-run patch rows and keep active artifacts unchanged.",
+      "local_discard_only": true,
+      "citations": ["ppd-plan:rollback-fixture-only"]
+    }
+  ]
+}

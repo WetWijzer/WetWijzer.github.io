@@ -1,0 +1,51 @@
+{
+  "packet_id": "release-promotion-decision-20260530-fixture-ledger",
+  "packet_version": "release_promotion_decision_packet_v1",
+  "fixture_families": [
+    {
+      "fixture_family": "devhub-standard-trade-permit",
+      "decision": "promote",
+      "owner": "ppd-devhub-fixtures",
+      "reviewer_role": "devhub-workflow-reviewer",
+      "required_validations": [
+        "json_schema",
+        "guardrail_review"
+      ],
+      "passed_validations": [
+        "guardrail_review",
+        "json_schema"
+      ],
+      "blocked_reasons": [],
+      "decision_rationale": "Inactive fixture preview contains only deterministic redacted workflow metadata."
+    },
+    {
+      "fixture_family": "fee-payment-guide",
+      "decision": "block",
+      "owner": "ppd-fee-fixtures",
+      "reviewer_role": "financial-guardrail-reviewer",
+      "required_validations": [
+        "json_schema",
+        "financial_guardrail_review"
+      ],
+      "passed_validations": [
+        "json_schema"
+      ],
+      "blocked_reasons": [
+        "financial workflow requires separate exact-confirmation review"
+      ],
+      "decision_rationale": "Payment-related fixtures must remain inactive until financial guardrails are independently reviewed."
+    }
+  ],
+  "validation_commands": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_fixture_promotion_diff_ledger.py"
+      ],
+      "purpose": "Validate deterministic inactive fixture promotion diff ledger generation.",
+      "required_before_promotion": true
+    }
+  ]
+}

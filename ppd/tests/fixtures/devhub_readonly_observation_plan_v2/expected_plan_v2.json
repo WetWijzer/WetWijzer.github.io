@@ -1,0 +1,105 @@
+{
+  "plan_version": "fixture-first-attended-devhub-readonly-observation-plan-v2",
+  "plan_id": "fixture-first-attended-devhub-readonly-observation-plan-v2",
+  "source_packet_version": "attended-devhub-readonly-observation-readiness-packet-v2",
+  "source_packet_id": "fixture-first-attended-devhub-readonly-observation-readiness-v2",
+  "mode": "fixture_first_synthetic_read_only_observation_plan",
+  "devhub_access": "not_opened",
+  "browser_artifacts": "not_created",
+  "official_action_scope": "blocked",
+  "ordered_synthetic_read_only_surface_rows": [
+    {
+      "order": 1,
+      "surface_row_id": "synthetic-readonly-surface-1",
+      "source_surface_group_id": "devhub-home-readonly",
+      "canonical_hosts": ["devhub.portlandoregon.gov"],
+      "observation_scope": "synthetic_read_only_surface_structure_only",
+      "allowed_observation_fields": ["page_heading", "url_path_pattern", "accessible_landmark_roles", "visible_link_names", "visible_button_names", "status_text_labels", "validation_message_labels", "attachment_list_labels", "fee_notice_labels", "inspection_result_labels", "correction_request_labels", "no_private_values_recorded"],
+      "manual_login_required_before_live_use": true,
+      "synthetic_status": "planned_not_observed",
+      "read_only_only": true,
+      "forbidden_capture_fields": ["credentials", "cookies", "tokens", "auth_state", "private_account_values", "screenshots", "traces", "har_files", "raw_authenticated_html"]
+    },
+    {
+      "order": 2,
+      "surface_row_id": "synthetic-readonly-surface-2",
+      "source_surface_group_id": "devhub-my-permits-readonly",
+      "canonical_hosts": ["devhub.portlandoregon.gov"],
+      "observation_scope": "synthetic_read_only_surface_structure_only",
+      "allowed_observation_fields": ["page_heading", "url_path_pattern", "accessible_landmark_roles", "visible_link_names", "visible_button_names", "status_text_labels", "validation_message_labels", "attachment_list_labels", "fee_notice_labels", "inspection_result_labels", "correction_request_labels", "no_private_values_recorded"],
+      "manual_login_required_before_live_use": true,
+      "synthetic_status": "planned_not_observed",
+      "read_only_only": true,
+      "forbidden_capture_fields": ["credentials", "cookies", "tokens", "auth_state", "private_account_values", "screenshots", "traces", "har_files", "raw_authenticated_html"]
+    }
+  ],
+  "manual_login_handoff_reminders": [
+    {
+      "order": 1,
+      "handoff_id": "operator-visible-browser-start",
+      "source_status": "placeholder_pending_attended_session",
+      "reminder": "User attendance is required; credentials, MFA, CAPTCHA, and security prompts remain manual.",
+      "automation_allowed": false,
+      "credential_storage_allowed": false
+    },
+    {
+      "order": 2,
+      "handoff_id": "user-completes-portlandoregon-sign-in",
+      "source_status": "placeholder_pending_user_action",
+      "reminder": "User attendance is required; credentials, MFA, CAPTCHA, and security prompts remain manual.",
+      "automation_allowed": false,
+      "credential_storage_allowed": false
+    }
+  ],
+  "allowed_observation_fields": ["page_heading", "url_path_pattern", "accessible_landmark_roles", "visible_link_names", "visible_button_names", "status_text_labels", "validation_message_labels", "attachment_list_labels", "fee_notice_labels", "inspection_result_labels", "correction_request_labels", "no_private_values_recorded"],
+  "forbidden_browser_artifact_attestations": {
+    "no_account_data_changes": true,
+    "no_auth_state_created": true,
+    "no_auth_state_read": true,
+    "no_cancellations": true,
+    "no_devhub_opened": true,
+    "no_downloads": true,
+    "no_har_files": true,
+    "no_payments": true,
+    "no_raw_authenticated_capture": true,
+    "no_scheduling": true,
+    "no_screenshots": true,
+    "no_submissions": true,
+    "no_traces": true,
+    "no_uploads": true
+  },
+  "redaction_review_placeholders": [
+    {"order": 1, "redaction_id": "credentials_and_tokens_absent", "source_status": "required_before_acceptance", "reviewer_confirmation": null, "expected_disposition": "confirm_absent_or_redacted_before_acceptance"},
+    {"order": 2, "redaction_id": "session_artifacts_absent", "source_status": "required_before_acceptance", "reviewer_confirmation": null, "expected_disposition": "confirm_absent_or_redacted_before_acceptance"},
+    {"order": 3, "redaction_id": "private_values_redacted", "source_status": "required_before_acceptance", "reviewer_confirmation": null, "expected_disposition": "confirm_absent_or_redacted_before_acceptance"},
+    {"order": 4, "redaction_id": "screenshots_traces_har_absent", "source_status": "required_before_acceptance", "reviewer_confirmation": null, "expected_disposition": "confirm_absent_or_redacted_before_acceptance"}
+  ],
+  "timeout_and_manual_handoff_notes": [
+    {
+      "order": 1,
+      "timeout_id": "attended-login-timeout",
+      "trigger": "User attendance, sign-in, MFA, CAPTCHA, or security prompt is unavailable.",
+      "handoff_required": true,
+      "operator_response": "Stop observation planning and return control to the user."
+    },
+    {
+      "order": 2,
+      "timeout_id": "consequential-control-encountered",
+      "trigger": "A control would alter official records, money movement, appointments, account settings, or filed materials.",
+      "handoff_required": true,
+      "operator_response": "Stop before the control and request a separate confirmed action plan."
+    },
+    {
+      "order": 3,
+      "timeout_id": "redaction-review-incomplete",
+      "trigger": "A reviewer cannot attest that private values and browser artifacts are absent.",
+      "handoff_required": true,
+      "operator_response": "Reject the observation packet until redaction review is complete."
+    }
+  ],
+  "exact_offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub_readonly_observation_plan_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_devhub_readonly_observation_plan_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "attestations_v1": {
+    "no_live_crawl": true,
+    "no_devhub": true,
+    "no_private_artifact": true,
+    "no_official_action": true,
+    "no_active_promotion": true
+  },
+  "release_candidate_evidence_bundle_v1": {
+    "bundle_id": "rc-evidence-bundle-v1-fixture",
+    "candidates": [
+      {
+        "candidate_id": "rc-pass-001",
+        "title": "Fixture-only public evidence refresh release candidate",
+        "evidence_ids": [
+          "rc:pass:manifest",
+          "rc:pass:tests"
+        ]
+      },
+      {
+        "candidate_id": "rc-defer-001",
+        "title": "Candidate with unresolved readiness gap",
+        "evidence_ids": [
+          "rc:defer:manifest"
+        ]
+      },
+      {
+        "candidate_id": "rc-block-001",
+        "title": "Candidate with replay blocker finding",
+        "evidence_ids": [
+          "rc:block:manifest"
+        ]
+      }
+    ]
+  },
+  "readiness_gap_report_v1": {
+    "report_id": "readiness-gap-report-v1-fixture",
+    "gaps": [
+      {
+        "candidate_id": "rc-pass-001",
+        "gap_id": "gap-pass-closed",
+        "status": "closed",
+        "evidence_ids": [
+          "gap:pass:closed"
+        ]
+      },
+      {
+        "candidate_id": "rc-defer-001",
+        "gap_id": "gap-defer-open",
+        "status": "open",
+        "evidence_ids": [
+          "gap:defer:open"
+        ]
+      },
+      {
+        "candidate_id": "rc-block-001",
+        "gap_id": "gap-block-closed",
+        "status": "closed",
+        "evidence_ids": [
+          "gap:block:closed"
+        ]
+      }
+    ]
+  },
+  "public_source_refresh_evidence_intake_packet_v1": {
+    "packet_id": "public-source-refresh-v1-fixture",
+    "refresh_evidence": [
+      {
+        "candidate_id": "rc-pass-001",
+        "source_id": "ppd-public-guidance-fixture",
+        "freshness_status": "current",
+        "evidence_ids": [
+          "public:pass:current"
+        ]
+      },
+      {
+        "candidate_id": "rc-defer-001",
+        "source_id": "ppd-public-guidance-fixture",
+        "freshness_status": "current",
+        "evidence_ids": [
+          "public:defer:current"
+        ]
+      },
+      {
+        "candidate_id": "rc-block-001",
+        "source_id": "ppd-public-guidance-fixture",
+        "freshness_status": "current",
+        "evidence_ids": [
+          "public:block:current"
+        ]
+      }
+    ]
+  },
+  "devhub_observation_evidence_intake_packet_v1": {
+    "packet_id": "devhub-observation-v1-fixture",
+    "observations": [
+      {
+        "candidate_id": "rc-pass-001",
+        "observation_id": "devhub-pass-redacted",
+        "review_status": "accepted",
+        "evidence_ids": [
+          "devhub:pass:accepted"
+        ]
+      },
+      {
+        "candidate_id": "rc-defer-001",
+        "observation_id": "devhub-defer-redacted",
+        "review_status": "accepted",
+        "evidence_ids": [
+          "devhub:defer:accepted"
+        ]
+      },
+      {
+        "candidate_id": "rc-block-001",
+        "observation_id": "devhub-block-redacted",
+        "review_status": "accepted",
+        "evidence_ids": [
+          "devhub:block:accepted"
+        ]
+      }
+    ]
+  },
+  "action_journal_replay_findings_v1": {
+    "replay_id": "action-journal-replay-v1-fixture",
+    "findings": [
+      {
+        "candidate_id": "rc-pass-001",
+        "finding_id": "journal-pass-clean",
+        "severity": "info",
+        "evidence_ids": [
+          "journal:pass:clean"
+        ]
+      },
+      {
+        "candidate_id": "rc-defer-001",
+        "finding_id": "journal-defer-clean",
+        "severity": "info",
+        "evidence_ids": [
+          "journal:defer:clean"
+        ]
+      },
+      {
+        "candidate_id": "rc-block-001",
+        "finding_id": "journal-blocker",
+        "severity": "blocker",
+        "evidence_ids": [
+          "journal:block:blocker"
+        ]
+      }
+    ]
+  }
+}

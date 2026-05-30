@@ -1,0 +1,53 @@
+{
+  "preview_id": "public_source_recrawl_inactive_patch_preview_v1",
+  "mode": "inactive_patch_preview",
+  "generated_from": "committed deterministic fixture only",
+  "inactive_public_source_patches": [
+    {
+      "order": 1,
+      "source_patch_id": "public-inactive-patch-devhub-guide-001",
+      "source_id": "ppd-devhub-guide-submit-permit-application",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "changed_requirement_ids": [
+        "req-devhub-application-save-for-later",
+        "req-devhub-application-required-uploads"
+      ],
+      "evidence_ids": [
+        "evidence-devhub-guide-visible-step-order",
+        "evidence-devhub-guide-upload-stage"
+      ],
+      "inactive_reason": "fixture preview only; no active public source patch is applied",
+      "rollback_ref": "rollback:public-source-recrawl-preview:devhub-guide-submit-permit-application"
+    },
+    {
+      "order": 2,
+      "source_patch_id": "public-inactive-patch-submit-plans-002",
+      "source_id": "ppd-submit-plans-online-single-pdf",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "changed_requirement_ids": [
+        "req-single-pdf-plan-set",
+        "req-supporting-documents-separate-pdfs"
+      ],
+      "evidence_ids": [
+        "evidence-single-pdf-process-plan-set",
+        "evidence-single-pdf-supporting-documents"
+      ],
+      "inactive_reason": "fixture preview only; no active public source patch is applied",
+      "rollback_ref": "rollback:public-source-recrawl-preview:submit-plans-online"
+    },
+    {
+      "order": 3,
+      "source_patch_id": "public-inactive-patch-fee-payment-003",
+      "source_id": "ppd-how-pay-fees",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "changed_requirement_ids": [
+        "req-fee-payment-final-submit-gate"
+      ],
+      "evidence_ids": [
+        "evidence-fee-payment-final-action"
+      ],
+      "inactive_reason": "fixture preview only; no active public source patch is applied",
+      "rollback_ref": "rollback:public-source-recrawl-preview:how-pay-fees"
+    }
+  ]
+}

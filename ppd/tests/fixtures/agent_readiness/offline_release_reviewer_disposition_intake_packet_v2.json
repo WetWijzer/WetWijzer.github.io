@@ -1,0 +1,103 @@
+{
+  "packet_type": "ppd.offline_release_reviewer_disposition_intake_packet.v2",
+  "packet_id": "fixture-offline-release-reviewer-disposition-intake-v2",
+  "fixture_only": true,
+  "reviewer_decision_rows": [
+    {
+      "reviewer_id": "release-reviewer-alpha",
+      "decision": "approved_for_offline_review",
+      "decided_at": "2026-05-30T00:00:00Z",
+      "rationale": "Fixture evidence is structured enough for an inactive offline decision artifact.",
+      "citations": ["fixture:intake-reviewer-alpha"]
+    },
+    {
+      "reviewer_id": "release-reviewer-beta",
+      "decision": "deferred",
+      "decided_at": "2026-05-30T00:00:00Z",
+      "rationale": "Manual operator review evidence remains pending before any separate release decision.",
+      "citations": ["fixture:intake-reviewer-beta"]
+    }
+  ],
+  "evidence_bundle_references": [
+    {
+      "bundle_id": "fixture-offline-release-evidence-bundle-v2",
+      "reference": "committed_fixture_evidence_bundle",
+      "reviewer_id": "release-reviewer-alpha",
+      "citations": ["fixture:evidence-bundle-reference"]
+    }
+  ],
+  "validation_transcript_review_placeholders": [
+    {
+      "transcript_id": "fixture-validation-transcript-v2",
+      "reviewer_id": "release-reviewer-alpha",
+      "review_placeholder": "pending_manual_transcript_review",
+      "citations": ["fixture:validation-transcript-review-placeholder"]
+    }
+  ],
+  "rollback_readiness_confirmations": [
+    {
+      "confirmation_id": "fixture-rollback-readiness-confirmation-v2",
+      "reviewer_id": "release-reviewer-alpha",
+      "confirmed": true,
+      "citations": ["fixture:rollback-readiness-confirmation"]
+    }
+  ],
+  "unresolved_risk_notes": [
+    {
+      "risk_id": "fixture-unresolved-risk-manual-review-pending",
+      "owner": "release-reviewer-beta",
+      "status": "carried_forward",
+      "note": "Manual operator review evidence remains pending in the inactive fixture path.",
+      "citations": ["fixture:unresolved-risk-manual-review-pending"]
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "evidence_summary_acknowledgements": [
+    {
+      "reviewer_id": "release-reviewer-alpha",
+      "acknowledged": true,
+      "citations": ["fixture:evidence-summary"]
+    }
+  ],
+  "rollback_readiness_acknowledgements": [
+    {
+      "reviewer_id": "release-reviewer-alpha",
+      "acknowledged": true,
+      "citations": ["fixture:rollback-readiness-reference"]
+    }
+  ],
+  "validation_replay_acknowledgements": [
+    {
+      "reviewer_id": "release-reviewer-alpha",
+      "acknowledged": true,
+      "citations": ["fixture:validation-replay-reference"]
+    }
+  ],
+  "unresolved_blocker_carry_forward": [
+    {
+      "blocker_id": "blocker-manual-review-pending",
+      "carry_forward_owner": "release-reviewer-beta",
+      "carry_forward_status": "deferred",
+      "carry_forward_reason": "Manual operator review evidence is still pending in the inactive fixture path.",
+      "citations": ["fixture:blocker-manual-review-pending"]
+    }
+  ],
+  "no_go_reason_placeholders": [
+    {
+      "placeholder_id": "no-go-placeholder-manual-review",
+      "applies_to_decision": "release-reviewer-beta",
+      "reason_placeholder": "Manual review placeholder remains open until a separate authorized review records a final disposition.",
+      "citations": ["fixture:no-go-placeholder-manual-review"]
+    }
+  ],
+  "mutation_flags": {
+    "artifact": false,
+    "prompt": false,
+    "promotion": false,
+    "release_state": false,
+    "fixture": false,
+    "agent_state": false
+  }
+}

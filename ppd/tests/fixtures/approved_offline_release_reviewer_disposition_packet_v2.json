@@ -1,0 +1,22 @@
+{
+  "packet_version": "approved-offline-release-reviewer-disposition-packet-v2",
+  "mode": "fixture-first-offline-only",
+  "rows": [
+    {
+      "review_order": 2,
+      "release_id": "inactive-release-2026-05-30-b",
+      "reviewer_disposition": "approved-offline",
+      "reviewer_rationale": "Offline fixture review found the inactive release candidate complete enough to queue for human promotion review.",
+      "rollback_plan_reference": "ppd/tests/fixtures/rollback-plans/inactive-release-2026-05-30-b.md",
+      "no_live_access_basis": "Derived from committed PP&D fixtures only; no crawl, login, upload, or external network action was performed."
+    },
+    {
+      "review_order": 1,
+      "release_id": "inactive-release-2026-05-30-a",
+      "reviewer_disposition": "approved-offline",
+      "reviewer_rationale": "Offline fixture review found the inactive release candidate eligible for an inactive hold decision packet.",
+      "rollback_plan_reference": "ppd/tests/fixtures/rollback-plans/inactive-release-2026-05-30-a.md",
+      "no_live_access_basis": "Derived from committed PP&D fixtures only; no crawl, login, upload, or external network action was performed."
+    }
+  ]
+}

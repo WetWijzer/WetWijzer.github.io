@@ -1,0 +1,35 @@
+{
+  "proposal_id": "guardrail-bundle-impact-proposal-v1-detached-adu",
+  "proposal_version": "v1",
+  "guardrail_bundle_id": "guardrail-detached-adu-devhub-v1",
+  "process_id": "process-detached-adu-devhub-v1",
+  "source_evidence_ids": [
+    "guardrail:attended-devhub-boundary",
+    "guardrail:exact-confirmation-submit",
+    "guardrail:no-payment-or-upload-automation"
+  ],
+  "proposed_impacts": [
+    {
+      "impact_id": "gbip-required-confirmations-submit",
+      "category": "required_confirmations",
+      "citations": [
+        "guardrail:exact-confirmation-submit"
+      ]
+    },
+    {
+      "impact_id": "gbip-blocked-actions-submit-upload-payment",
+      "category": "blocked_actions",
+      "citations": [
+        "guardrail:attended-devhub-boundary",
+        "guardrail:no-payment-or-upload-automation"
+      ]
+    },
+    {
+      "impact_id": "gbip-next-safe-actions-read-only-review",
+      "category": "next_safe_actions",
+      "citations": [
+        "guardrail:read-only-and-reversible-draft-only"
+      ]
+    }
+  ]
+}

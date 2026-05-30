@@ -1,0 +1,94 @@
+{
+  "packet_type": "ppd.supervised_offline_release_rehearsal.v1",
+  "fixture_only": true,
+  "supervised": true,
+  "attestations": {
+    "fixture_only": true,
+    "supervised_offline_only": true,
+    "no_private_or_authenticated_artifacts": true,
+    "no_raw_crawl_pdf_session_or_browser_data": true,
+    "no_live_execution_or_promotion": true,
+    "no_legal_or_permitting_outcome_guarantees": true,
+    "no_consequential_action_language": true,
+    "no_active_mutation_flags": true
+  },
+  "rehearsal_steps": [
+    {
+      "step_id": "confirm_supervised_scope",
+      "instruction": "Confirm the rehearsal uses committed fixture packets only and remains unavailable for official release activity.",
+      "citations": [
+        "fixture://supervised-offline-release-rehearsal-v1#scope"
+      ]
+    },
+    {
+      "step_id": "review_blocker_handling",
+      "instruction": "Record every blocker disposition as pending supervisor review or closed by cited fixture evidence.",
+      "citations": [
+        "fixture://supervised-offline-release-rehearsal-v1#blockers"
+      ]
+    },
+    {
+      "step_id": "inventory_expected_artifacts",
+      "instruction": "Verify expected artifacts are fixture-only summaries derived from cited rehearsal inputs.",
+      "citations": [
+        "fixture://supervised-offline-release-rehearsal-v1#artifacts"
+      ]
+    }
+  ],
+  "blocker_handling": [
+    {
+      "blocker_id": "supervisor_signoff_required",
+      "disposition": "pending_supervisor_review",
+      "citations": [
+        "fixture://supervised-offline-release-rehearsal-v1#supervisor-signoff"
+      ]
+    }
+  ],
+  "expected_fixture_artifacts": [
+    {
+      "artifact_id": "supervised_offline_release_rehearsal_report",
+      "fixture_only": true,
+      "citations": [
+        "fixture://supervised-offline-release-rehearsal-v1#report"
+      ]
+    },
+    {
+      "artifact_id": "validation_command_inventory_summary",
+      "fixture_only": true,
+      "citations": [
+        "fixture://supervised-offline-release-rehearsal-v1#commands"
+      ]
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "restore_last_passing_fixture_packet",
+      "restore_action": "Restore the last passing committed fixture packet and rerun deterministic local validation.",
+      "citations": [
+        "fixture://supervised-offline-release-rehearsal-v1#rollback"
+      ]
+    }
+  ],
+  "validation_command_inventory": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/agent_readiness/supervised_offline_release_rehearsal_v1.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_supervised_offline_release_rehearsal_v1"
+    ]
+  ],
+  "mutation_flags": {
+    "active_source_mutation": false,
+    "active_surface_registry_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  }
+}

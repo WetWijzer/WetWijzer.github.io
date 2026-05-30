@@ -1,0 +1,45 @@
+{
+  "packet_type": "fixture_first_coverage_gap_prioritization_packet_v1",
+  "packet_id": "coverage-gap-prioritization-v1:single-pdf-process-guidance",
+  "ordered_review_candidates": [
+    {
+      "priority_row_id": "priority-v1:pdfs:single-pdf-process-guidance:001",
+      "category": "pdfs",
+      "severity": "high",
+      "dependency_order": 1,
+      "affected_source_ids": [
+        "src-submit-plans-online"
+      ],
+      "affected_document_ids": [
+        "doc-single-pdf-process-guidance"
+      ],
+      "affected_requirement_ids": [
+        "req-single-pdf-document-preparation"
+      ],
+      "target_extraction_types": [
+        "sections",
+        "tables",
+        "checklist_items",
+        "fillable_field_labels",
+        "signature_certification_blocks",
+        "citation_spans"
+      ],
+      "expected_follow_up_fixture_family": "single_pdf_process_guidance",
+      "citation": {
+        "source_id": "src-submit-plans-online",
+        "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "anchor": "single-pdf-process-guidance"
+      },
+      "human_review_status": "needs_review",
+      "reviewer_owner": "ppd-document-extraction-reviewer",
+      "rollback_note": "Fixture-only prioritization row; discard downstream extraction task packets if this row changes.",
+      "offline_validation_commands": [
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ]
+    }
+  ]
+}

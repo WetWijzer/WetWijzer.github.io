@@ -1,0 +1,79 @@
+{
+  "packet_type": "ppd.inactive_fixture_promotion_candidate_packet.v2",
+  "packet_version": "v2",
+  "fixture_first": true,
+  "metadata_only": true,
+  "candidate_only": true,
+  "promotion_candidate_rows": [
+    {
+      "candidate_id": "candidate-standard-trade-fixture-001",
+      "fixture_family": "standard-trade-permit-offline-guardrails",
+      "candidate_fixture_path": "ppd/tests/fixtures/inactive_fixture_promotion_candidate_packet_v2/candidate-standard-trade-fixture-001.json",
+      "candidate_status": "blocked_pending_review",
+      "source_evidence_ids": [
+        "fixture-source:inactive-candidate-packet-v2:standard-trade"
+      ],
+      "owner_assignment_ref": "owner-standard-trade-guardrails",
+      "prerequisite_validation_ref": "replay-daemon-self-test",
+      "reviewer_approval_placeholder_ref": "approval-placeholder-candidate-standard-trade-fixture-001",
+      "no_go_reason": "Blocked until fixture-family ownership, reviewer disposition, rollback review, and offline validation are checked in a separate manual review.",
+      "rollback_plan_ref": "rollback-candidate-standard-trade-fixture-001",
+      "validation_commands": [
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ]
+    }
+  ],
+  "fixture_family_ownership_assignments": [
+    {
+      "assignment_id": "owner-standard-trade-guardrails",
+      "fixture_family": "standard-trade-permit-offline-guardrails",
+      "reviewer_owner": "ppd-fixture-reviewer",
+      "ownership_status": "assigned_pending_manual_review"
+    }
+  ],
+  "prerequisite_validation_replay_inventory": [
+    {
+      "validation_ref": "replay-daemon-self-test",
+      "command": [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ],
+      "expected_result": "passes before any separate future reviewed fixture proposal"
+    }
+  ],
+  "reviewer_approval_placeholders": [
+    {
+      "placeholder_id": "approval-placeholder-candidate-standard-trade-fixture-001",
+      "candidate_id": "candidate-standard-trade-fixture-001",
+      "approval_status": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": "",
+      "notes": ""
+    }
+  ],
+  "rollback_plan_references": [
+    {
+      "rollback_plan_ref": "rollback-candidate-standard-trade-fixture-001",
+      "candidate_id": "candidate-standard-trade-fixture-001",
+      "rollback_status": "ready_no_active_changes",
+      "plan_summary": "Discard this candidate packet and leave active PP&D fixtures, prompts, release state, artifacts, and agent state unchanged."
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "active_artifact_mutation": false,
+  "active_prompt_mutation": false,
+  "active_release_state_mutation": false,
+  "active_fixture_mutation": false,
+  "active_agent_state_mutation": false
+}

@@ -1,0 +1,89 @@
+{
+  "schema": "ppd.reviewer_disposition_ledger.v1",
+  "source_queues": [
+    "public_source_refresh_reviewer_queue_v1",
+    "devhub_manual_observation_reviewer_queue_v1",
+    "supervised_offline_release_rehearsal_v1"
+  ],
+  "fixture_first": true,
+  "records": [
+    {
+      "id": "reviewer-disposition-v1-public_source_refresh_reviewer_queue_v1-001",
+      "source_queue": "public_source_refresh_reviewer_queue_v1",
+      "source_item_id": "public-refresh-001",
+      "disposition": "approve",
+      "reviewer_owner": "ppd-source-reviewer",
+      "decision_rationale": "Fixture refresh evidence is cited and limited to public source planning metadata.",
+      "dependency_order": 1,
+      "rollback_note": "Remove the generated refresh fixture and retain the prior committed fixture set.",
+      "expected_follow_up_artifact": "ppd/tests/fixtures/public_source_refresh_reviewer_queue_v1/approved-refresh-note.json",
+      "offline_validation_command": "python3 ppd/reviewer_disposition_ledger_v1.py",
+      "citations": [
+        {
+          "label": "Public source refresh reviewer queue v1 fixture",
+          "path": "ppd/tests/fixtures/reviewer_disposition_ledger_v1/public_source_refresh_reviewer_queue_v1.json",
+          "locator": "items[0]"
+        }
+      ],
+      "attestations": {
+        "no_live": true,
+        "no_auth": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    },
+    {
+      "id": "reviewer-disposition-v1-devhub_manual_observation_reviewer_queue_v1-001",
+      "source_queue": "devhub_manual_observation_reviewer_queue_v1",
+      "source_item_id": "devhub-observation-001",
+      "disposition": "defer",
+      "reviewer_owner": "ppd-devhub-reviewer",
+      "decision_rationale": "Manual observation requires a reviewer-owned follow-up artifact before any release promotion.",
+      "dependency_order": 2,
+      "rollback_note": "Keep the observation out of release inputs until a cited manual note is committed.",
+      "expected_follow_up_artifact": "ppd/tests/fixtures/devhub_manual_observation_reviewer_queue_v1/manual-observation-note.json",
+      "offline_validation_command": "python3 ppd/reviewer_disposition_ledger_v1.py",
+      "citations": [
+        {
+          "label": "DevHub manual observation reviewer queue v1 fixture",
+          "path": "ppd/tests/fixtures/reviewer_disposition_ledger_v1/devhub_manual_observation_reviewer_queue_v1.json",
+          "locator": "items[0]"
+        }
+      ],
+      "attestations": {
+        "no_live": true,
+        "no_auth": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    },
+    {
+      "id": "reviewer-disposition-v1-supervised_offline_release_rehearsal_v1-001",
+      "source_queue": "supervised_offline_release_rehearsal_v1",
+      "source_item_id": "offline-release-rehearsal-001",
+      "disposition": "block",
+      "reviewer_owner": "ppd-release-supervisor",
+      "decision_rationale": "Release rehearsal is blocked until rollback evidence and dependency order are reviewed together.",
+      "dependency_order": 3,
+      "rollback_note": "Do not promote rehearsal outputs; rerun only against committed offline fixtures after reviewer sign-off.",
+      "expected_follow_up_artifact": "ppd/tests/fixtures/supervised_offline_release_rehearsal_v1/rollback-evidence.json",
+      "offline_validation_command": "python3 ppd/reviewer_disposition_ledger_v1.py",
+      "citations": [
+        {
+          "label": "Supervised offline release rehearsal v1 fixture",
+          "path": "ppd/tests/fixtures/reviewer_disposition_ledger_v1/supervised_offline_release_rehearsal_v1.json",
+          "locator": "items[0]"
+        }
+      ],
+      "attestations": {
+        "no_live": true,
+        "no_auth": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    }
+  ]
+}

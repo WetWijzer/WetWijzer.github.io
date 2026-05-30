@@ -1,0 +1,40 @@
+{
+  "packet_version": "public_freshness_reviewer_handoff_v1",
+  "generated_from": "fixture_only_public_review",
+  "sources": [
+    {
+      "source_id": "ppd-devhub-faqs",
+      "public_page_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "observed_public_page_title": "DevHub FAQs",
+      "visible_updated_date": "2026-05-08",
+      "affected_source_ids": ["ppd-online-permitting-tools"],
+      "affected_requirement_ids": ["REQ-DEVHUB-ACCOUNT-SERVICES", "REQ-DEVHUB-CORRECTIONS-UPLOAD-GATE"],
+      "defer_reason": "Public FAQ freshness is review-only until a policy-approved crawl refresh is scheduled.",
+      "rollback_note": "Remove the reviewer intake row; no crawl, download, processor run, or registry mutation was performed.",
+      "citations": [
+        {
+          "label": "DevHub FAQ public page metadata",
+          "url": "https://www.portland.gov/ppd/devhub-faqs",
+          "observed_field": "visible page title and visible updated date"
+        }
+      ]
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "public_page_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "observed_public_page_title": "Submit Plans Online / Single PDF Process",
+      "visible_updated_date": "2026-05-08",
+      "affected_source_ids": ["ppd-spp-file-naming-standards"],
+      "affected_requirement_ids": ["REQ-SINGLE-PDF-PLANS", "REQ-SUPPORTING-DOCUMENTS-SEPARATE-PDFS"],
+      "defer_reason": "Single PDF guidance is queued for reviewer intake before any public-source refresh run.",
+      "rollback_note": "Discard this metadata-only intake row; fixture conversion has no external side effects.",
+      "citations": [
+        {
+          "label": "Submit Plans Online public page metadata",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "observed_field": "visible page title and visible updated date"
+        }
+      ]
+    }
+  ]
+}

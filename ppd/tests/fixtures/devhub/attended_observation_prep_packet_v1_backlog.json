@@ -1,0 +1,165 @@
+{
+  "packet_version": "attended-devhub-read-only-observation-backlog-packet-v1",
+  "packet_id": "fixture-attended-devhub-readonly-backlog-for-prep-v1",
+  "attendance_mode": "manual_attended",
+  "observation_mode": "read_only",
+  "safe_read_only_classifications": [
+    {
+      "surface": "synthetic_devhub_home",
+      "classification": "safe_read_only"
+    },
+    {
+      "surface": "synthetic_permit_status_detail",
+      "classification": "safe_read_only"
+    },
+    {
+      "surface": "synthetic_fee_notice_review",
+      "classification": "safe_read_only"
+    }
+  ],
+  "redaction_requirements": [
+    "record only synthetic labels, headings, status categories, and typed placeholders",
+    "replace account, contact, location, permit, invoice, license, payment, and document values with bracketed placeholders",
+    "do not retain raw authenticated page text"
+  ],
+  "manual_attendance_checkpoints": [
+    "operator remains present before each observed navigation step",
+    "operator handles sign-in, MFA, CAPTCHA, and account prompts without agent assistance",
+    "operator reviews every recorded row before it can be used as evidence"
+  ],
+  "blocked_consequential_actions": [
+    {
+      "action": "submit application",
+      "classification": "consequential",
+      "status": "blocked"
+    },
+    {
+      "action": "upload document",
+      "classification": "consequential",
+      "status": "blocked"
+    },
+    {
+      "action": "pay fee",
+      "classification": "financial",
+      "status": "blocked"
+    },
+    {
+      "action": "schedule inspection",
+      "classification": "consequential",
+      "status": "blocked"
+    },
+    {
+      "action": "cancel request",
+      "classification": "consequential",
+      "status": "blocked"
+    },
+    {
+      "action": "certify application",
+      "classification": "consequential",
+      "status": "blocked"
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_devhub_observation_backlog_packet_v1"
+    ]
+  ],
+  "artifact_policy": {
+    "creates_auth_files": false,
+    "creates_browser_artifacts": false,
+    "creates_har_files": false,
+    "creates_screenshots": false,
+    "creates_session_state": false,
+    "creates_traces": false,
+    "captures_private_values": false,
+    "stores_downloads": false,
+    "stores_raw_crawl_output": false
+  },
+  "mutation_flags": {
+    "active_surface_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  },
+  "work_items": [
+    {
+      "id": "observe-synthetic-devhub-home",
+      "surface": "synthetic_devhub_home",
+      "classification": "safe_read_only",
+      "objective": "Observe synthetic landing labels, menu landmarks, and read-only account navigation structure.",
+      "redaction_requirements": [
+        "replace account-scoped labels with placeholders before review"
+      ],
+      "manual_attendance_checkpoints": [
+        "pause before following any link that is not needed for read-only observation"
+      ],
+      "blocked_consequential_actions": [
+        "submit application",
+        "purchase permit",
+        "start payment"
+      ],
+      "validation_commands": [
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_devhub_attended_observation_prep_packet_v1.py"
+        ]
+      ]
+    },
+    {
+      "id": "observe-synthetic-permit-status-detail",
+      "surface": "synthetic_permit_status_detail",
+      "classification": "safe_read_only",
+      "objective": "Observe synthetic status headings, review-group labels, notice presence, and attachment list structure.",
+      "redaction_requirements": [
+        "replace permit, location, contact, and document labels with placeholders before review"
+      ],
+      "manual_attendance_checkpoints": [
+        "pause before any control that could alter a draft, attachment, or official request"
+      ],
+      "blocked_consequential_actions": [
+        "upload correction document",
+        "submit revised materials",
+        "cancel request"
+      ],
+      "validation_commands": [
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_devhub_attended_observation_prep_packet_v1.py"
+        ]
+      ]
+    },
+    {
+      "id": "observe-synthetic-fee-notice-review",
+      "surface": "synthetic_fee_notice_review",
+      "classification": "safe_read_only",
+      "objective": "Observe synthetic fee notice presence, balance labels, and read-only help text without entering payment details.",
+      "redaction_requirements": [
+        "replace invoice, balance, and payment-related values with placeholders before review"
+      ],
+      "manual_attendance_checkpoints": [
+        "pause before any payment, purchase, or checkout control"
+      ],
+      "blocked_consequential_actions": [
+        "pay fee",
+        "purchase permit",
+        "submit payment"
+      ],
+      "validation_commands": [
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_devhub_attended_observation_prep_packet_v1.py"
+        ]
+      ]
+    }
+  ]
+}

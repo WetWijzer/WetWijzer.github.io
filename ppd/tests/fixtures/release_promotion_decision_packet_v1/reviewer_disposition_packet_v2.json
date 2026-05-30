@@ -1,0 +1,27 @@
+{
+  "packet_type": "reviewer_disposition_packet",
+  "version": 2,
+  "reviewer_rows": [
+    {
+      "id": "fixture-integrity",
+      "subject": "Committed fixture packet integrity",
+      "disposition": "approved",
+      "citations": ["ppd/tests/fixtures/release_promotion_decision_packet_v1/release_rehearsal_gate_v2.json"],
+      "rationale": "Reviewer accepts fixture-only evidence."
+    },
+    {
+      "id": "manual-release-signoff",
+      "subject": "Manual release signoff",
+      "disposition": "defer",
+      "citations": ["ppd/tests/fixtures/release_promotion_decision_packet_v1/reviewer_disposition_packet_v2.json"],
+      "rationale": "Human signoff placeholders must remain pending."
+    },
+    {
+      "id": "devhub-boundary",
+      "subject": "DevHub and official action boundary",
+      "disposition": "approved",
+      "citations": ["docs/PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md"],
+      "rationale": "Reviewer confirms no live, private, or official workflow is promoted."
+    }
+  ]
+}

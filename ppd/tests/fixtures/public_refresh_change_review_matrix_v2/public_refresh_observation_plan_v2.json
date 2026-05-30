@@ -1,0 +1,66 @@
+{
+  "plan_id": "fixture-public-refresh-observation-plan-v2-001",
+  "plan_version": "public_refresh_observation_plan_v2",
+  "capture_mode": "fixture_first_offline",
+  "live_source_fetch_performed": false,
+  "raw_body_persisted": false,
+  "pdf_downloaded": false,
+  "active_source_registry_changed": false,
+  "formal_guardrails_updated": false,
+  "exact_offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/public_refresh_change_review_matrix_v2.py"],
+    ["python3", "-m", "py_compile", "ppd/tests/test_public_refresh_change_review_matrix_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_public_refresh_change_review_matrix_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "observations": [
+    {
+      "observation_id": "obs-stale-fee-payment-guide",
+      "source_id": "src-fee-payment-guide",
+      "source_title": "How to pay fees",
+      "public_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "status": "stale_source",
+      "change_summary": "Fixture indicates the last observed metadata is older than the review threshold; defer recrawl until an offline public refresh packet is approved.",
+      "affected_requirement_ids": ["placeholder-req-fee-payment-action-gate"],
+      "affected_guardrail_ids": ["placeholder-guardrail-payment-exact-confirmation"],
+      "reviewer_disposition_placeholder": "reviewer_disposition_pending_recrawl_deferral_review",
+      "recrawl_deferral_reason": "deferred_until_offline_fee_payment_source_refresh_is_scheduled"
+    },
+    {
+      "observation_id": "obs-changed-submit-plans-online",
+      "source_id": "src-submit-plans-online",
+      "source_title": "Submit Plans Online / Single PDF Process",
+      "public_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "status": "changed",
+      "change_summary": "Synthetic fixture hash changed for source metadata that may affect document preparation requirements.",
+      "affected_requirement_ids": ["placeholder-req-single-pdf-process", "placeholder-req-supporting-documents-separate-pdfs"],
+      "affected_guardrail_ids": ["placeholder-guardrail-document-preparation"],
+      "reviewer_disposition_placeholder": "reviewer_disposition_pending_changed_document_rule_review",
+      "recrawl_deferral_reason": "not_deferred_change_requires_human_review_before_promotion"
+    },
+    {
+      "observation_id": "obs-skipped-devhub-public-portal",
+      "source_id": "src-devhub-public-portal",
+      "source_title": "DevHub public portal",
+      "public_url": "https://devhub.portlandoregon.gov",
+      "status": "skipped",
+      "change_summary": "Fixture skips portal capture because authenticated or browser-only paths are outside this offline review matrix.",
+      "affected_requirement_ids": ["placeholder-req-devhub-attended-login-boundary"],
+      "affected_guardrail_ids": ["placeholder-guardrail-devhub-attendance"],
+      "reviewer_disposition_placeholder": "reviewer_disposition_pending_skip_reason_acceptance",
+      "recrawl_deferral_reason": "deferred_public_portal_requires_separate_readonly_observation_packet"
+    },
+    {
+      "observation_id": "obs-unchanged-devhub-faq",
+      "source_id": "src-devhub-faq",
+      "source_title": "DevHub FAQs",
+      "public_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "status": "unchanged",
+      "change_summary": "Synthetic fixture hash is unchanged for account-scoped service descriptions.",
+      "affected_requirement_ids": ["placeholder-req-devhub-account-services"],
+      "affected_guardrail_ids": ["placeholder-guardrail-devhub-consequential-actions"],
+      "reviewer_disposition_placeholder": "reviewer_disposition_pending_no_change_confirmation",
+      "recrawl_deferral_reason": "not_deferred_fixture_indicates_no_source_hash_change"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "process_model_impact_proposal_v1": {
+    "proposal_id": "process_model_impact_proposal_v1:detached-adu-demo",
+    "fixture_path": "ppd/tests/fixtures/process_model_impact_proposal_v1/valid_proposal.json",
+    "affected_process_ids": ["process-detached-adu-devhub-v1"],
+    "impact_rows": [
+      {
+        "row_id": "pmip-row-required-documents",
+        "impact_category": "required_documents",
+        "summary": "Carry detached ADU document preparation impacts into readiness review.",
+        "affected_process_ids": ["process-detached-adu-devhub-v1"],
+        "affected_requirement_ids": ["req-spp-single-pdf"],
+        "citations": ["ppd-source-submit-plans-online", "ppd-source-file-naming-standards"]
+      }
+    ],
+    "rollback_note": "Discard process impact proposal fixture output and rerun offline review.",
+    "offline_validation_commands": [["python3", "-m", "pytest", "ppd/tests/test_process_model_impact_proposal_v1.py"]]
+  },
+  "guardrail_bundle_impact_proposal_v1": {
+    "proposal_id": "guardrail_bundle_impact_proposal_v1:detached-adu-demo",
+    "fixture_path": "ppd/tests/fixtures/fixture_first_guardrail_bundle_impact_proposal_v1/source_packets.json",
+    "affected_guardrail_bundle_ids": ["guardrail-detached-adu-devhub-v1"],
+    "impact_rows": [
+      {
+        "row_id": "gbip-row-exact-confirmation",
+        "impact_category": "exact_confirmation",
+        "summary": "Keep final official action gates blocked pending attended confirmation.",
+        "affected_guardrail_bundle_ids": ["guardrail-detached-adu-devhub-v1"],
+        "affected_process_ids": ["process-detached-adu-devhub-v1"],
+        "affected_requirement_ids": ["req-devhub-acknowledgement"],
+        "citations": ["guardrail:exact-confirmation-final-action", "ppd-source-devhub-guide"]
+      }
+    ],
+    "rollback_note": "Discard guardrail impact proposal fixture output and rerun offline review.",
+    "offline_validation_commands": [["python3", "-m", "pytest", "ppd/tests/test_fixture_first_guardrail_bundle_impact_proposal_v1.py"]]
+  },
+  "user_gap_analysis_impact_proposal_v1": {
+    "proposal_id": "user_gap_analysis_impact_proposal_v1:case-demo-adu-001",
+    "fixture_path": "ppd/tests/fixtures/user_gap_analysis_impact_proposal_v1/user_gap_analysis.json",
+    "affected_case_ids": ["case-demo-adu-001"],
+    "affected_process_ids": ["process-detached-adu-devhub-v1"],
+    "affected_guardrail_bundle_ids": ["guardrail-detached-adu-devhub-v1"],
+    "impact_rows": [
+      {
+        "row_id": "ugaip-row-missing-documents",
+        "impact_category": "missing_documents",
+        "summary": "Require reviewer inspection of missing document expectations before readiness.",
+        "affected_case_ids": ["case-demo-adu-001"],
+        "affected_process_ids": ["process-detached-adu-devhub-v1"],
+        "affected_guardrail_bundle_ids": ["guardrail-detached-adu-devhub-v1"],
+        "citations": ["gap:missing-site-plan", "ppd-source-submit-plans-online"]
+      }
+    ],
+    "unresolved_blocker_rows": [
+      {
+        "blocker_id": "blocker-missing-site-plan-fixture",
+        "summary": "Site plan fixture coverage remains a manual review blocker for promotion readiness.",
+        "status": "unresolved",
+        "citations": ["gap:missing-site-plan"]
+      }
+    ],
+    "rollback_note": "Discard user gap impact proposal fixture output and rerun offline review.",
+    "offline_validation_commands": [["python3", "-m", "pytest", "ppd/tests/test_user_gap_analysis_impact_proposal_v1.py"]]
+  },
+  "agent_response_delta_proposal_v1": {
+    "proposal_id": "agent_response_delta_proposal_v1:case-demo-adu-001",
+    "fixture_path": "ppd/tests/fixtures/agent_response_delta_proposal_v1/guarded_agent_response_acceptance_packet_v1.json",
+    "affected_fixture_families": ["guardrail_bundle_impact_proposal_v1", "user_gap_analysis_impact_proposal_v1", "guarded_agent_response_acceptance_packet_v1", "agent_response_delta_proposal_v1"],
+    "proposed_deltas": [
+      {
+        "delta_id": "ardp-row-blocked-action",
+        "delta_category": "blocked_action",
+        "expected_outcome": "block",
+        "summary": "Agent response fixture must block final official action language and offer a next safe offline review step.",
+        "citations": ["agent-response:block-final-action", "guardrail:exact-confirmation-final-action"]
+      }
+    ],
+    "rollback_note": "Discard agent response delta proposal fixture output and rerun offline review.",
+    "offline_validation_commands": [["python3", "-m", "pytest", "ppd/tests/test_agent_response_delta_proposal_v1.py"]]
+  },
+  "offline_acceptance_rehearsal_summary_v1": {
+    "packet_id": "offline_acceptance_rehearsal_summary_v1:detached-adu-demo",
+    "fixture_path": "ppd/tests/fixtures/promotion_readiness_checklist_v2/source_packets.json",
+    "packet_version": "offline-acceptance-rehearsal-summary-v1",
+    "acceptance_rows": [
+      {
+        "id": "acceptance-offline-command-inventory",
+        "summary": "Offline validation command inventory is present for promotion readiness review.",
+        "citations": ["offline-summary:validation-command-inventory"]
+      }
+    ],
+    "manual_review_blockers": [
+      {
+        "id": "manual-review-attestation-confirmation",
+        "summary": "Human reviewer must confirm offline attestations before any later release decision.",
+        "status": "manual_review_required",
+        "citations": ["offline-summary:attestations"]
+      }
+    ],
+    "rollback_checkpoints": [
+      {
+        "checkpoint_id": "rollback-offline-summary-fixture",
+        "rollback_scope": "Retain fixture-only review packet and rerun offline validation from committed fixtures.",
+        "citations": ["offline-summary:rollback-checkpoint"]
+      }
+    ],
+    "validation_command_inventory": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+    "attestations": {
+      "fixture_first": true,
+      "offline_only": true,
+      "no_live_crawl": true,
+      "no_devhub_session": true,
+      "no_private_artifact": true,
+      "no_official_action": true,
+      "no_active_promotion": true
+    }
+  }
+}

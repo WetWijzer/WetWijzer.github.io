@@ -3,7 +3,7 @@
 This module converts committed PP&D guardrail, gap-analysis, blocked-action,
 and offline readiness-adapter fixture outputs into deterministic cited
 explanation templates. It never calls an LLM, opens DevHub, reads private user
-files, or performs an official PP&D action.
+files, mutates live agent state, or performs an official PP&D action.
 """
 
 from __future__ import annotations
@@ -29,11 +29,15 @@ REQUIRED_ATTESTATIONS = (
     "no_private_data",
     "no_official_action",
 )
+SUPPORTED_PROCESS_IDS = frozenset({"ppd-single-pdf-plan-review-v1"})
+SUPPORTED_GUARDRAIL_BUNDLE_IDS = frozenset({"guardrail-explanation-single-pdf-v1"})
 
 _PRIVATE_KEYS = {
     "access_token",
     "account_number",
     "auth_state",
+    "authenticated_fact",
+    "authenticated_facts",
     "bank_account",
     "card_number",
     "cookie",
@@ -50,7 +54,10 @@ _PRIVATE_KEYS = {
     "payment_details",
     "payment_method",
     "phone",
+    "private_fact",
+    "private_facts",
     "private_value",
+    "private_values",
     "raw_value",
     "refresh_token",
     "routing_number",
@@ -63,19 +70,81 @@ _PRIVATE_KEYS = {
 }
 _RAW_KEYS = {
     "body",
+    "browser_artifact",
+    "browser_artifacts",
+    "browser_trace",
+    "document_artifact",
     "downloaded_document",
+    "downloaded_documents",
+    "dom_snapshot",
     "har",
     "html",
     "page_text",
     "raw_body",
     "raw_crawl_output",
+    "raw_document",
+    "raw_documents",
+    "raw_dom",
     "raw_html",
+    "raw_session",
     "raw_text",
     "screenshot",
+    "session_artifact",
+    "session_artifacts",
     "trace",
 }
+_MUTATION_KEYS = {
+    "active_agent_state_mutation",
+    "active_guardrail_mutation",
+    "active_prompt_mutation",
+    "active_release_state_mutation",
+    "active_source_mutation",
+    "active_surface_registry_mutation",
+    "agent_state_mutation_active",
+    "guardrail_mutation_active",
+    "prompt_mutation_active",
+    "release_state_mutation_active",
+    "source_mutation_active",
+    "surface_registry_mutation_active",
+}
+_PRIVATE_CLASSIFICATIONS = {
+    "account_private",
+    "authenticated",
+    "case_private",
+    "devhub_authenticated",
+    "devhub_authenticated_private",
+    "private",
+    "private_case",
+    "private_case_fact",
+    "private_fact",
+    "user_private",
+}
 _PRIVATE_PATH_RE = re.compile(r"(file://|/home/|/users/|/var/folders/|/tmp/|\\users\\|[a-z]:\\)", re.IGNORECASE)
-_CONSEQUENTIAL_CLASSES = {"submission", "upload", "upload_to_official_record", "payment", "financial", "scheduling", "inspection_scheduling", "certification", "cancellation"}
+_AUTHENTICATED_URL_RE = re.compile(r"\b(devhub\.portlandoregon\.gov/.+/(account|dashboard|my|secure|session|signin|login)|auth|token|session)\b", re.IGNORECASE)
+_PRIVATE_FACT_RE = re.compile(r"\b(private|authenticated|account-scoped|credential|cookie|session|payment detail|card number|applicant email|phone number)\b", re.IGNORECASE)
+_GUARANTEE_RE = re.compile(
+    r"\b(guarantee[sd]?\s+(approval|issuance|permit|legal|compliance|outcome)|"
+    r"(approval|permit|issuance|legal outcome)\s+(is\s+)?(certain|guaranteed|assured)|"
+    r"will\s+be\s+approved|permit\s+will\s+issue|cannot\s+be\s+denied|no\s+legal\s+risk|legally\s+sufficient)\b",
+    re.IGNORECASE,
+)
+_FINAL_ACTION_RE = re.compile(
+    r"\b(click|press|select|choose|complete|execute|perform|confirm|approve|authorize|go ahead and|proceed with)\s+"
+    r"(the\s+)?(final\s+)?(submit|submission|payment|upload|schedule|scheduling|cancel|cancellation)\b|"
+    r"\b(final\s+(submission|payment|upload|scheduling|cancellation)\s+(is|was|will be)\s+(done|complete|allowed|approved|scheduled|cancelled|canceled))\b",
+    re.IGNORECASE,
+)
+_CONSEQUENTIAL_CLASSES = {
+    "submission",
+    "upload",
+    "upload_to_official_record",
+    "payment",
+    "financial",
+    "scheduling",
+    "inspection_scheduling",
+    "certification",
+    "cancellation",
+}
 
 
 class GuardrailToAgentExplanationPacketError(ValueError):
@@ -162,6 +231,8 @@ def validate_guardrail_to_agent_explanation_packet(packet: Mapping[str, Any]) ->
     for key in ("fixture_first", "metadata_only"):
         if packet.get(key) is not True:
             errors.append(f"{key} must be true")
+    errors.extend(_supported_id_problems(packet, "packet"))
+
     attestations = packet.get("attestations")
     if not isinstance(attestations, Mapping):
         errors.append("attestations must be an object")
@@ -208,13 +279,16 @@ def validate_guardrail_to_agent_explanation_packet(packet: Mapping[str, Any]) ->
         elif citation_ids and not refs.issubset(citation_ids):
             errors.append(f"{prefix}.citation_ids must reference citation_index")
         if template.get("kind") == "blocked_official_actions":
-            for action in _mapping_items(template.get("actions")):
+            for action_index, action in enumerate(_mapping_items(template.get("actions"))):
+                action_prefix = f"{prefix}.actions[{action_index}]"
                 if action.get("status") != "blocked":
                     errors.append(f"{prefix}.actions must remain blocked")
                 if action.get("requires_exact_confirmation") is not True:
                     errors.append(f"{prefix}.actions must require exact confirmation")
                 if action.get("official_action_executed") is not False:
                     errors.append(f"{prefix}.actions must attest official_action_executed false")
+                if not _text(action.get("reason")):
+                    errors.append(f"{action_prefix}.reason is required for blocked-action rationale")
         if template.get("kind") == "reversible_draft_limits":
             for action in _mapping_items(template.get("actions")):
                 if action.get("may_upload") is not False or action.get("may_submit") is not False:
@@ -282,7 +356,7 @@ def _reversible_draft_template(bundle: Mapping[str, Any], gap: Mapping[str, Any]
                 "may_submit": False,
                 "may_certify": False,
                 "may_pay": False,
-                "limits": "Local draft or checklist only; stop before official upload, certification, submission, scheduling, cancellation, or payment.",
+                "limits": "Local draft or checklist only; stop before consequential official actions.",
             }
         )
     return {
@@ -339,6 +413,8 @@ def _input_problems(bundle: Mapping[str, Any], gap: Mapping[str, Any], blocked_a
     for key in ("case_id", "process_id", "guardrail_bundle_id"):
         if not _text(gap.get(key)):
             problems.append(f"user_gap_analysis.{key} is required")
+    problems.extend(_supported_id_problems(bundle, "guardrail_bundle"))
+    problems.extend(_supported_id_problems(gap, "user_gap_analysis"))
     if bundle.get("process_id") != gap.get("process_id"):
         problems.append("guardrail_bundle and user_gap_analysis process_id values must match")
     if bundle.get("guardrail_bundle_id") != gap.get("guardrail_bundle_id"):
@@ -379,6 +455,14 @@ def _input_problems(bundle: Mapping[str, Any], gap: Mapping[str, Any], blocked_a
             problems.append(f"blocked_action_fixtures missing {action_id}")
         if _text(item.get("classification")) not in _CONSEQUENTIAL_CLASSES:
             problems.append(f"blocked action {action_id} must be consequential")
+        if not _text(item.get("reason")):
+            problems.append(f"blocked action {action_id} requires a rationale")
+    for item in blocked_actions:
+        if not _text(item.get("reason") or item.get("refusal_reason")):
+            problems.append(f"blocked_action_fixtures[{_text(item.get('action_id'))}] requires a rationale")
+    for item in _mapping_items(bundle.get("refused_action_predicates")):
+        if not _text(item.get("refusal_reason") or item.get("reason")):
+            problems.append(f"refused_action_predicates[{_text(item.get('action_id'))}] requires a rationale")
     for item in _mapping_items(gap.get("next_safe_actions")):
         classification = _text(item.get("classification"))
         if classification in _CONSEQUENTIAL_CLASSES:
@@ -444,24 +528,56 @@ def _text(value: Any) -> str:
     return value.strip() if isinstance(value, str) else ""
 
 
+def _supported_id_problems(value: Mapping[str, Any], path: str) -> list[str]:
+    problems: list[str] = []
+    process_id = _text(value.get("process_id"))
+    guardrail_bundle_id = _text(value.get("guardrail_bundle_id"))
+    if process_id and process_id not in SUPPORTED_PROCESS_IDS:
+        problems.append(f"{path}.process_id is unsupported: {process_id}")
+    if guardrail_bundle_id and guardrail_bundle_id not in SUPPORTED_GUARDRAIL_BUNDLE_IDS:
+        problems.append(f"{path}.guardrail_bundle_id is unsupported: {guardrail_bundle_id}")
+    return problems
+
+
 def _unsafe_tree_problems(value: Any, path: str = "packet") -> list[str]:
     problems: list[str] = []
     if isinstance(value, Mapping):
         for key, child in value.items():
             key_text = str(key)
-            key_lower = key_text.lower()
+            normalized_key = _normalize_key(key_text)
             child_path = f"{path}.{key_text}"
-            if key_lower in _PRIVATE_KEYS:
+            if normalized_key in _PRIVATE_KEYS:
                 problems.append(f"{child_path} is a private value field")
-            if key_lower in _RAW_KEYS:
-                problems.append(f"{child_path} is a raw or live artifact field")
+            if normalized_key in _RAW_KEYS:
+                problems.append(f"{child_path} is a raw document, session, or browser artifact field")
+            if normalized_key in _MUTATION_KEYS and _truthy(child):
+                problems.append(f"{child_path} must not set active prompt, guardrail, source, surface-registry, release-state, or agent-state mutation flags")
+            if normalized_key in {"privacy_classification", "data_classification", "source_type", "fact_scope", "evidence_scope"} and _text(child).lower() in _PRIVATE_CLASSIFICATIONS:
+                problems.append(f"{child_path} must not include private or authenticated facts")
             problems.extend(_unsafe_tree_problems(child, child_path))
     elif isinstance(value, list):
         for index, child in enumerate(value):
             problems.extend(_unsafe_tree_problems(child, f"{path}[{index}]"))
-    elif isinstance(value, str) and _PRIVATE_PATH_RE.search(value):
-        problems.append(f"{path} contains a private local path")
+    elif isinstance(value, str):
+        if _PRIVATE_PATH_RE.search(value):
+            problems.append(f"{path} contains a private local path")
+        if _AUTHENTICATED_URL_RE.search(value):
+            problems.append(f"{path} contains a private or authenticated artifact reference")
+        if _GUARANTEE_RE.search(value):
+            problems.append(f"{path} must not guarantee legal or permitting outcomes")
+        if _FINAL_ACTION_RE.search(value):
+            problems.append(f"{path} must not include final submission, payment, upload, scheduling, or cancellation instructions")
+        if path.endswith(".known_facts") and _PRIVATE_FACT_RE.search(value):
+            problems.append(f"{path} must not include private or authenticated facts")
     return problems
+
+
+def _normalize_key(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
+
+
+def _truthy(value: Any) -> bool:
+    return value not in (False, None, "", [], {})
 
 
 def _dedupe(items: Iterable[str]) -> list[str]:

@@ -5,7 +5,9 @@ import unittest
 
 from ppd.devhub_readonly_observation_rehearsal_v1_validation import (
     ObservationRehearsalValidationError,
+    assert_valid_devhub_observation_evidence_intake_packet_v1,
     assert_valid_devhub_readonly_observation_rehearsal_v1,
+    validate_devhub_observation_evidence_intake_packet_v1,
     validate_devhub_readonly_observation_rehearsal_v1,
 )
 
@@ -51,7 +53,7 @@ def valid_packet() -> dict:
         )
 
     return {
-        "packet_version": "devhub-readonly-observation-rehearsal-v1",
+        "packet_version": "devhub-observation-evidence-intake-packet-v1",
         "ui_observations": [
             {
                 "surface_id": "devhub-home-readonly-fixture",
@@ -84,7 +86,9 @@ class DevHubReadonlyObservationRehearsalV1ValidationTest(unittest.TestCase):
     def test_valid_packet_passes(self) -> None:
         packet = valid_packet()
         self.assertEqual([], validate_devhub_readonly_observation_rehearsal_v1(packet))
+        self.assertEqual([], validate_devhub_observation_evidence_intake_packet_v1(packet))
         assert_valid_devhub_readonly_observation_rehearsal_v1(packet)
+        assert_valid_devhub_observation_evidence_intake_packet_v1(packet)
 
     def test_assert_raises_with_violation_details(self) -> None:
         packet = valid_packet()
@@ -107,9 +111,21 @@ class DevHubReadonlyObservationRehearsalV1ValidationTest(unittest.TestCase):
 
         self.assertIn("missing_redaction_requirement", violation_codes(packet))
 
+    def test_rejects_missing_redaction_fields(self) -> None:
+        packet = valid_packet()
+        packet["redaction_requirements"][0].pop("enforced")
+
+        self.assertIn("missing_redaction_requirement", violation_codes(packet))
+
     def test_rejects_missing_attendance_checkpoints(self) -> None:
         packet = valid_packet()
         packet["attendance_checkpoints"] = packet["attendance_checkpoints"][:-1]
+
+        self.assertIn("missing_attendance_checkpoint", violation_codes(packet))
+
+    def test_rejects_missing_attendance_fields(self) -> None:
+        packet = valid_packet()
+        packet["attendance_checkpoints"][0].pop("requires_user_attendance")
 
         self.assertIn("missing_attendance_checkpoint", violation_codes(packet))
 
@@ -133,13 +149,31 @@ class DevHubReadonlyObservationRehearsalV1ValidationTest(unittest.TestCase):
                 packet["ui_observations"][0][key] = value
                 self.assertIn(expected_code, violation_codes(packet))
 
-    def test_rejects_write_capable_actions(self) -> None:
+    def test_rejects_write_capable_action_evidence(self) -> None:
         packet = valid_packet()
         packet["ui_observations"][0]["observed_actions"] = [
             {"action_class": "write_capable", "action_summary": "press a DevHub button"}
         ]
 
         self.assertIn("write_capable_action", violation_codes(packet))
+
+    def test_rejects_automated_login_captcha_mfa_and_account_creation_handling(self) -> None:
+        prohibited_cases = (
+            {"automated_login": True},
+            {"captcha_automation": "solve CAPTCHA challenge"},
+            {"mfa_automation": "handle MFA prompt"},
+            {"account_creation": "create account before observation"},
+            {"evidence_summary": "Fixture would automate login before the observation."},
+            {"evidence_summary": "Fixture would solve CAPTCHA during sign-in."},
+            {"evidence_summary": "Fixture would perform MFA for the user."},
+            {"evidence_summary": "Fixture would automate account creation."},
+        )
+
+        for prohibited in prohibited_cases:
+            with self.subTest(prohibited=prohibited):
+                packet = valid_packet()
+                packet["ui_observations"][0].update(prohibited)
+                self.assertIn("prohibited_auth_automation", violation_codes(packet))
 
     def test_rejects_official_action_language(self) -> None:
         prohibited_terms = (

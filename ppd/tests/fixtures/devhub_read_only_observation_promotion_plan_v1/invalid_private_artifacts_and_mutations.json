@@ -1,0 +1,38 @@
+{
+  "plan_version": "devhub_read_only_observation_promotion_plan_v1",
+  "scope": "devhub",
+  "mode": "read_only_observation",
+  "redaction": {
+    "browser_artifacts_allowed": true
+  },
+  "attendance": {
+    "required": false,
+    "automated_login_allowed": true,
+    "automated_captcha_mfa_allowed": true
+  },
+  "mutations": {
+    "devhub": true,
+    "surface_registry": true,
+    "guardrail": true,
+    "prompt": true,
+    "release_state": true,
+    "agent_state": true
+  },
+  "account_email": "private@example.test",
+  "trace_path": "private-devhub-trace.zip",
+  "screenshot_path": "private-devhub-home.png",
+  "har_path": "devhub-session.har",
+  "evidence": [
+    {
+      "surface_id": "submit_application",
+      "evidence_type": "screenshot",
+      "action_category": "consequential_official",
+      "observed_action": "click submit application and upload plans",
+      "write_capable": true
+    }
+  ],
+  "notes": [
+    "automated login handles MFA and CAPTCHA",
+    "certification, submission, payment, upload, scheduling, and cancellation are available in this plan"
+  ]
+}

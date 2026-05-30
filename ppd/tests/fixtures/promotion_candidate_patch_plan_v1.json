@@ -1,0 +1,97 @@
+{
+  "id": "promotion-candidate-patch-plan-v1",
+  "version": 1,
+  "status": "inactive_fixture_only",
+  "purpose": "Fixture-first candidate patch plan for reviewer assessment before any active PP&D promotion mutation.",
+  "consumes": [
+    "promotion-readiness-checklist-v2",
+    "process-model-impact-proposal-v1",
+    "guardrail-bundle-impact-proposal-v1",
+    "user-gap-analysis-impact-proposal-v1",
+    "agent-response-delta-proposal-v1"
+  ],
+  "non_mutation_scope": {
+    "active_process_models": false,
+    "active_guardrail_bundles": false,
+    "prompts": false,
+    "release_state": false,
+    "agent_state": false,
+    "live_sources": false,
+    "devhub_artifacts": false
+  },
+  "dependency_gates": [
+    {
+      "id": "gate-readiness-checklist",
+      "requires": "promotion-readiness-checklist-v2",
+      "state": "blocked_until_reviewer_approved",
+      "evidence": ["promotion-readiness-checklist-v2:all-required-items-reviewed"]
+    },
+    {
+      "id": "gate-impact-proposals",
+      "requires": "process-model-impact-proposal-v1 + guardrail-bundle-impact-proposal-v1 + user-gap-analysis-impact-proposal-v1 + agent-response-delta-proposal-v1",
+      "state": "blocked_until_cross_impact_reviewed",
+      "evidence": ["process-model-impact-proposal-v1:impact-summary", "guardrail-bundle-impact-proposal-v1:impact-summary", "user-gap-analysis-impact-proposal-v1:gap-summary", "agent-response-delta-proposal-v1:delta-summary"]
+    },
+    {
+      "id": "gate-fixture-validation",
+      "requires": "deterministic fixture validation commands pass locally",
+      "state": "blocked_until_validation_passes",
+      "evidence": ["validation:pytest-promotion-candidate-patch-plan-v1", "validation:ppd-daemon-self-test"]
+    }
+  ],
+  "inactive_fixture_update_rows": [
+    {
+      "order": 1,
+      "id": "row-process-model-candidate",
+      "target_kind": "process_model_fixture_candidate",
+      "affected_fixture_family_id": "process-model-impact-proposal-v1-fixtures",
+      "active_mutation": false,
+      "candidate_action": "stage inactive fixture row describing process model changes only after readiness gates pass",
+      "citations": ["process-model-impact-proposal-v1:recommended-candidate-change", "promotion-readiness-checklist-v2:process-model-readiness"],
+      "dependency_gates": ["gate-readiness-checklist", "gate-impact-proposals"],
+      "reviewer_owner": "ppd-process-model-reviewer",
+      "rollback_note": "Remove this inactive candidate row; no active process model state is changed by the fixture."
+    },
+    {
+      "order": 2,
+      "id": "row-guardrail-bundle-candidate",
+      "target_kind": "guardrail_bundle_fixture_candidate",
+      "affected_fixture_family_id": "guardrail-bundle-impact-proposal-v1-fixtures",
+      "active_mutation": false,
+      "candidate_action": "stage inactive fixture row describing guardrail bundle changes only after impact review",
+      "citations": ["guardrail-bundle-impact-proposal-v1:recommended-candidate-change", "promotion-readiness-checklist-v2:guardrail-readiness"],
+      "dependency_gates": ["gate-readiness-checklist", "gate-impact-proposals"],
+      "reviewer_owner": "ppd-guardrail-reviewer",
+      "rollback_note": "Remove this inactive candidate row; no active guardrail bundle is changed by the fixture."
+    },
+    {
+      "order": 3,
+      "id": "row-user-gap-candidate",
+      "target_kind": "user_gap_fixture_candidate",
+      "affected_fixture_family_id": "user-gap-analysis-impact-proposal-v1-fixtures",
+      "active_mutation": false,
+      "candidate_action": "stage inactive fixture row mapping known user gaps to candidate review coverage",
+      "citations": ["user-gap-analysis-impact-proposal-v1:gap-summary", "promotion-readiness-checklist-v2:user-gap-readiness"],
+      "dependency_gates": ["gate-impact-proposals"],
+      "reviewer_owner": "ppd-user-impact-reviewer",
+      "rollback_note": "Remove this inactive candidate row; no user-facing prompt or release behavior is changed by the fixture."
+    },
+    {
+      "order": 4,
+      "id": "row-agent-response-delta-candidate",
+      "target_kind": "agent_response_delta_fixture_candidate",
+      "affected_fixture_family_id": "agent-response-delta-proposal-v1-fixtures",
+      "active_mutation": false,
+      "candidate_action": "stage inactive fixture row for expected response deltas and reviewer comparison",
+      "citations": ["agent-response-delta-proposal-v1:delta-summary", "promotion-readiness-checklist-v2:agent-response-readiness"],
+      "dependency_gates": ["gate-impact-proposals", "gate-fixture-validation"],
+      "reviewer_owner": "ppd-agent-response-reviewer",
+      "rollback_note": "Remove this inactive candidate row; no prompt, agent state, or release state is changed by the fixture."
+    }
+  ],
+  "validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/promotion_candidate_patch_plan_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_promotion_candidate_patch_plan_v1.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "combined_inactive_fixture_promotion_rehearsal_fixture_manifest.v2",
+  "mode": "offline_fixture_rehearsal_only",
+  "inputs": {
+    "public_source_refresh_inactive_patch_preview_v3": {
+      "fixture_dir": "public_source_refresh_patch_preview_v3",
+      "builder": "ppd.public_source_refresh_patch_preview_v3.build_preview_from_fixture_paths"
+    },
+    "devhub_observed_surface_inactive_patch_preview_v2": {
+      "fixture_dir": "devhub_inactive_patch_preview_v2",
+      "builder": "ppd.devhub_inactive_patch_preview_v2.build_preview_v2"
+    },
+    "guarded_agent_release_reviewer_checklist_v1": {
+      "fixture_path": "guarded_agent_release_reviewer_checklist_v1/input_packets.json",
+      "builder": "ppd.agent_readiness.guarded_agent_release_reviewer_checklist_v1.load_guarded_agent_release_reviewer_checklist_fixture"
+    },
+    "agent_behavior_dry_run_scenario_matrix_v1": {
+      "fixture_path": "agent_behavior_dry_run_matrix_v1.json",
+      "validator": "ppd.agent_behavior_dry_run_matrix_v1.validate_agent_behavior_dry_run_matrix_v1"
+    }
+  },
+  "expected_gate_order": [
+    "public-source-inactive-preview",
+    "devhub-observed-surface-inactive-preview",
+    "guarded-agent-release-reviewer-checklist",
+    "agent-behavior-dry-run-matrix",
+    "combined-manual-handoff"
+  ],
+  "validation_replay_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "non_mutation_attestations": [
+    "no_fixture_promotion",
+    "no_public_source_network_run",
+    "no_devhub_session_use",
+    "no_prompt_changes",
+    "no_release_state_mutation",
+    "no_official_actions"
+  ]
+}

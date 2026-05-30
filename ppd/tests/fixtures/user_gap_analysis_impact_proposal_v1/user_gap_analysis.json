@@ -1,0 +1,123 @@
+{
+  "case_id": "case-demo-adu-001",
+  "process_id": "process-detached-adu-devhub-v1",
+  "guardrail_bundle_id": "guardrail-detached-adu-devhub-v1",
+  "known_facts": {
+    "project_address": "123 Example Ave",
+    "permit_goal": "detached ADU permit request"
+  },
+  "required_user_facts": [
+    {
+      "fact_id": "fact-owner-name",
+      "label": "Owner legal name",
+      "status": "required",
+      "source_evidence_ids": [
+        "process:detached-adu:required-facts"
+      ]
+    },
+    {
+      "fact_id": "fact-contractor-license",
+      "label": "Contractor license or owner-builder status",
+      "status": "required",
+      "source_evidence_ids": [
+        "process:detached-adu:license-sensitive-facts"
+      ]
+    }
+  ],
+  "matched_documents": [
+    {
+      "document_id": "doc-property-tax-lot-summary",
+      "title": "Property tax lot summary",
+      "status": "matched",
+      "source_evidence_ids": [
+        "user-doc:property-summary:2026-05-29"
+      ]
+    }
+  ],
+  "missing_facts": [
+    {
+      "fact_id": "fact-owner-phone",
+      "label": "Owner phone number",
+      "reason": "Required contact field is not available in fixture facts.",
+      "source_evidence_ids": [
+        "process:detached-adu:required-facts"
+      ]
+    }
+  ],
+  "missing_documents": [
+    {
+      "document_id": "doc-site-plan-pdf",
+      "title": "Site plan PDF",
+      "reason": "Required plan document is absent from matched document fixture.",
+      "source_evidence_ids": [
+        "process:detached-adu:required-documents",
+        "ppd-source:submit-plans-online"
+      ]
+    }
+  ],
+  "stale_evidence": [
+    {
+      "evidence_id": "user-doc:property-summary:2025-02-01",
+      "reason": "Property evidence predates the fixture freshness threshold.",
+      "source_evidence_ids": [
+        "freshness:property-summary:max-age-policy"
+      ]
+    }
+  ],
+  "conflicting_evidence": [
+    {
+      "evidence_id": "conflict-owner-name",
+      "reason": "Owner name differs between uploaded worksheet and property summary.",
+      "source_evidence_ids": [
+        "user-doc:owner-worksheet",
+        "user-doc:property-summary:2026-05-29"
+      ]
+    }
+  ],
+  "required_confirmations": [
+    {
+      "confirmation_id": "confirm-submit-boundary",
+      "action": "submit_permit_request",
+      "required_confirmation": "User must attend and explicitly confirm the exact submission action.",
+      "source_evidence_ids": [
+        "guardrail:exact-confirmation-submit"
+      ]
+    }
+  ],
+  "blocked_actions": [
+    {
+      "action": "submit_permit_request",
+      "blocked_reason": "Submission is consequential and cannot be automated from fixture review.",
+      "source_evidence_ids": [
+        "guardrail:exact-confirmation-submit",
+        "guardrail:attended-devhub-boundary"
+      ]
+    },
+    {
+      "action": "upload_official_correction",
+      "blocked_reason": "Official upload requires attended user confirmation.",
+      "source_evidence_ids": [
+        "guardrail:no-payment-or-upload-automation"
+      ]
+    }
+  ],
+  "next_safe_actions": [
+    {
+      "action": "ask_for_missing_owner_phone",
+      "safe_action_type": "missing_information_request",
+      "reason": "Asking for a missing contact fact is reversible and does not touch DevHub state.",
+      "source_evidence_ids": [
+        "process:detached-adu:required-facts"
+      ]
+    },
+    {
+      "action": "draft_local_document_checklist",
+      "safe_action_type": "local_draft",
+      "reason": "A local checklist can be generated from fixtures without upload or submission.",
+      "source_evidence_ids": [
+        "process:detached-adu:required-documents",
+        "guardrail:read-only-and-reversible-draft-only"
+      ]
+    }
+  ]
+}

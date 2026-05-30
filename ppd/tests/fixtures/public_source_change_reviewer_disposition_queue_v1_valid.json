@@ -1,0 +1,62 @@
+{
+  "version": "public_source_change_reviewer_disposition_queue_v1",
+  "reviewer_decision_rows": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "disposition": "changed",
+      "impact_references": [
+        {
+          "source_evidence_id": "evidence-devhub-faq-2026-05-08",
+          "citation": "DevHub FAQ public guidance, verified 2026-05-08"
+        }
+      ],
+      "promotion_blocked": false,
+      "review_notes": "Public guidance changed and remains citation-backed."
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "disposition": "unchanged",
+      "impact_references": [
+        {
+          "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online"
+        }
+      ],
+      "promotion_blocked": false,
+      "review_notes": "No changed process impact identified from normalized public text."
+    },
+    {
+      "source_id": "ppd-file-naming-standards",
+      "disposition": "needs_review",
+      "impact_references": [
+        {
+          "citation": "File naming standards public page normalized text"
+        }
+      ],
+      "promotion_blocked": true,
+      "blocked_promotion_reason": "Human review is required before promotion because the changed guidance may affect file-rule extraction."
+    }
+  ],
+  "buckets": {
+    "changed": ["ppd-devhub-faq"],
+    "unchanged": ["ppd-submit-plans-online"],
+    "needs_review": ["ppd-file-naming-standards"]
+  },
+  "rollback_checkpoints": [
+    "Restore the previous normalized manifest pointer before promotion.",
+    "Keep the prior guardrail bundle selected until review passes."
+  ],
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "mutation_flags": {
+    "active_source_mutation": false,
+    "active_document_mutation": false,
+    "active_requirement_mutation": false,
+    "active_process_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_release_state_mutation": false,
+    "active_prompt_mutation": false,
+    "active_fixture_mutation": false,
+    "active_agent_state_mutation": false
+  }
+}

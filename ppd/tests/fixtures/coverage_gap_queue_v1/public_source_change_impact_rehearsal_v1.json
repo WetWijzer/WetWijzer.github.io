@@ -1,0 +1,20 @@
+{
+  "packet_id": "public-source-change-impact-rehearsal-v1-fixture-001",
+  "impacts": [
+    {
+      "change_id": "impact-fee-schedule-001",
+      "affected_source_ids": ["src-fee-schedule"],
+      "impact_summary": "Fee schedule trigger wording changed in rehearsal fixture."
+    },
+    {
+      "change_id": "impact-review-timeline-001",
+      "affected_source_ids": ["src-review-timeline"],
+      "impact_summary": "Review deadline wording changed in rehearsal fixture."
+    },
+    {
+      "change_id": "impact-inspection-gates-001",
+      "affected_source_ids": ["src-inspection-gates"],
+      "impact_summary": "Inspection action gate wording changed in rehearsal fixture."
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "schema_version": "devhub_observation_redaction_acceptance_packet_v2",
+  "packet_id": "redaction-packet-v2-synthetic-devhub-readonly-observation-plan-v2",
+  "source_plan": {
+    "schema_version": "attended_devhub_read_only_observation_plan_v2",
+    "plan_id": "synthetic-devhub-readonly-observation-plan-v2",
+    "mode": "attended_read_only_observation",
+    "surface_id": "devhub.synthetic.readonly.permit-status",
+    "synthetic_fixture_only": true
+  },
+  "generated_at": "1970-01-01T00:00:00Z",
+  "reviewer_redaction_checks": [
+    {
+      "order": 1,
+      "check_id": "field-redaction-page_heading",
+      "check_type": "field_redaction",
+      "expected_result": "keep",
+      "review_instruction": "Confirm page_heading stores synthetic_literal_allowed."
+    },
+    {
+      "order": 2,
+      "check_id": "field-redaction-permit_number_value",
+      "check_type": "field_redaction",
+      "expected_result": "drop",
+      "review_instruction": "Confirm permit_number_value stores label_and_class_only."
+    },
+    {
+      "order": 3,
+      "check_id": "field-redaction-status_column_label",
+      "check_type": "field_redaction",
+      "expected_result": "keep",
+      "review_instruction": "Confirm status_column_label stores synthetic_literal_allowed."
+    },
+    {
+      "order": 4,
+      "check_id": "field-redaction-site_address_value",
+      "check_type": "field_redaction",
+      "expected_result": "drop",
+      "review_instruction": "Confirm site_address_value stores label_and_class_only."
+    },
+    {
+      "order": 5,
+      "check_id": "action-boundary-observe_status_labels",
+      "check_type": "action_boundary",
+      "expected_result": "read_only",
+      "review_instruction": "Confirm observe_status_labels does not cross the read-only boundary."
+    },
+    {
+      "order": 6,
+      "check_id": "action-boundary-submit_application",
+      "check_type": "action_boundary",
+      "expected_result": "blocked_or_review_required",
+      "review_instruction": "Confirm submit_application does not cross the read-only boundary."
+    },
+    {
+      "order": 7,
+      "check_id": "artifact-exclusion",
+      "check_type": "artifact_exclusion",
+      "expected_result": "no_private_artifacts_stored",
+      "review_instruction": "Confirm the packet contains no screenshots, traces, HAR files, auth state, private values, account identifiers, uploads, submissions, payments, scheduling, cancellations, or active surface-map changes."
+    }
+  ],
+  "field_level_decisions": [
+    {
+      "order": 1,
+      "field_id": "page_heading",
+      "label": "Permit status",
+      "field_class": "public_ui_label",
+      "decision": "keep",
+      "stored_representation": "synthetic_literal_allowed",
+      "reason": "Synthetic heading text is safe to retain for reviewer ordering."
+    },
+    {
+      "order": 2,
+      "field_id": "permit_number_value",
+      "label": "Permit number",
+      "field_class": "case_number",
+      "decision": "drop",
+      "stored_representation": "label_and_class_only",
+      "reason": "Case numbers can identify an account-scoped record, so only the label and class may be retained."
+    },
+    {
+      "order": 3,
+      "field_id": "status_column_label",
+      "label": "Status",
+      "field_class": "public_ui_label",
+      "decision": "keep",
+      "stored_representation": "synthetic_literal_allowed",
+      "reason": "Column label is not a private page value and supports reviewer comprehension."
+    },
+    {
+      "order": 4,
+      "field_id": "site_address_value",
+      "label": "Site address",
+      "field_class": "address",
+      "decision": "drop",
+      "stored_representation": "label_and_class_only",
+      "reason": "Address-like values can identify a property or account-scoped record."
+    }
+  ],
+  "private_value_exclusion_attestations": [
+    {
+      "attestation_id": "synthetic-fixture-only",
+      "status": "confirmed",
+      "statement": "Plan synthetic-devhub-readonly-observation-plan-v2 is a synthetic fixture and contains no live DevHub page values."
+    },
+    {
+      "attestation_id": "private-field-values-excluded",
+      "status": "confirmed",
+      "statement": "Private or account-identifying fields are represented only by field id, label, class, and drop decision.",
+      "covered_field_ids": [
+        "permit_number_value",
+        "site_address_value"
+      ]
+    },
+    {
+      "attestation_id": "private-artifacts-excluded",
+      "status": "confirmed",
+      "statement": "No screenshots, traces, HAR files, auth state, uploads, submissions, payment artifacts, scheduling artifacts, cancellation artifacts, or active surface-map updates are included."
+    }
+  ],
+  "action_boundary_confirmations": [
+    {
+      "order": 1,
+      "action_id": "observe_status_labels",
+      "action_type": "review_permit_status_labels",
+      "read_only_confirmed": true,
+      "consequential_action_blocked": false,
+      "confirmation": "Reviewer may inspect labels only; no click changes state."
+    },
+    {
+      "order": 2,
+      "action_id": "submit_application",
+      "action_type": "submit",
+      "read_only_confirmed": false,
+      "consequential_action_blocked": true,
+      "confirmation": "Submission is outside this packet and remains blocked."
+    }
+  ],
+  "unresolved_risk_notes": [
+    {
+      "risk_id": "consequential-action-present",
+      "severity": "blocked",
+      "note": "One or more planned actions are consequential or outside read-only scope and must remain blocked."
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/devhub/observation_redaction_acceptance_packet_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_observation_redaction_acceptance_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

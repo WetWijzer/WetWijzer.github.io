@@ -1,0 +1,42 @@
+{
+  "replay_plan_version": "v1",
+  "plan_id": "invalid-prohibited-content",
+  "active_guardrail_mutation": true,
+  "scenarios": [
+    {
+      "scenario_id": "prohibited-content",
+      "description": "The replay claims live execution, says the permit approval is guaranteed, and says the agent will submit the application.",
+      "citations": ["ppd-devhub-guide-submit-permit-application#dynamic-questions"],
+      "expected_outcome": "block",
+      "auth_state_file": "private-auth-state.json",
+      "raw_crawl_output": "downloaded_data/source.pdf",
+      "replay_notes": "released to production after live execution",
+      "missing_information_prompt_expectation": {
+        "expected_prompts": ["Ask for missing property facts."],
+        "allows_guessing": false
+      },
+      "reversible_draft_boundary_checks": {
+        "draft_only": true,
+        "official_side_effects": false,
+        "stops_before_actions": ["submit", "certify", "upload", "pay", "schedule", "cancel"]
+      },
+      "blocked_action_expectations": {
+        "expected_blocked_actions": ["application submission"],
+        "requires_exact_confirmation_before_consequential_action": true
+      },
+      "devhub_attendance_gate_checks": {
+        "attended_login_required": true,
+        "manual_mfa_captcha_only": true,
+        "blocks_unattended_official_actions": true
+      },
+      "journal_safety_checks": {
+        "commit_safe_only": true,
+        "forbidden_artifacts": ["credentials", "cookies", "session_state", "screenshots", "traces", "har", "private_values", "payment_details", "local_private_paths"]
+      },
+      "rollback_verification": {
+        "rollback_checked": true,
+        "official_state_unchanged": true
+      }
+    }
+  ]
+}

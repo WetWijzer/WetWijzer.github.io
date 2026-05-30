@@ -1,0 +1,38 @@
+{
+  "manifest_id": "manifest_fixture_active_001",
+  "manifest_version": "active_promotion_application_manifest_v1",
+  "generated_from": "fixture_only",
+  "applications": [
+    {
+      "application_id": "agent_readiness_smoke",
+      "promotion_target": "agent_readiness_fixture_candidate",
+      "requested_action": "review_only",
+      "expected_replay_status": "passed",
+      "required_evidence_ids": [
+        "ev_manifest_integrity",
+        "ev_replay_passed",
+        "ev_rollback_plan"
+      ],
+      "rollback_readiness": {
+        "confirmed": true,
+        "method": "fixture_rollback_plan_review",
+        "evidence_id": "ev_rollback_plan"
+      }
+    },
+    {
+      "application_id": "agent_readiness_release_guard",
+      "promotion_target": "agent_readiness_fixture_candidate",
+      "requested_action": "review_only",
+      "expected_replay_status": "passed",
+      "required_evidence_ids": [
+        "ev_guarded_replay",
+        "ev_rollback_drill"
+      ],
+      "rollback_readiness": {
+        "confirmed": false,
+        "method": "fixture_rollback_drill_required",
+        "evidence_id": "ev_rollback_drill"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "ledger_version": "reviewer_disposition_ledger_v1",
+  "ledger_id": "fixture-reviewer-disposition-ledger-invalid-v1",
+  "active_source_registry_mutation": true,
+  "dispositions": [
+    {
+      "disposition_id": "disp-uncited-ownerless",
+      "reviewer_owner": "",
+      "status": "accepted",
+      "rationale": "",
+      "citations": [],
+      "blocker_status": "unresolved",
+      "artifact_refs": [
+        {
+          "artifact_id": "devhub-session-trace",
+          "path": "private/session/browser-trace.har",
+          "privacy_classification": "authenticated"
+        }
+      ]
+    },
+    {
+      "disposition_id": "disp-unsafe-claims",
+      "reviewer_owner": "ppd-fixture-reviewer",
+      "status": "accepted",
+      "rationale": "Live execution completed and promotion completed. Permit will be approved after we submit the application and upload corrections.",
+      "citations": [
+        "ppd-devhub-faqs"
+      ],
+      "prompt_mutation": "active",
+      "release_state_mutation": true
+    }
+  ]
+}

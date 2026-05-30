@@ -1,0 +1,27 @@
+{
+  "packet_type": "release_rehearsal_gate",
+  "version": 2,
+  "gate_rows": [
+    {
+      "id": "fixture-integrity",
+      "subject": "Committed fixture packet integrity",
+      "status": "passed",
+      "citations": ["ppd/tests/fixtures/release_rehearsal_gate_v2/input-fixture.json"],
+      "rationale": "Fixture packet is deterministic and locally replayable."
+    },
+    {
+      "id": "manual-release-signoff",
+      "subject": "Manual release signoff",
+      "status": "warning",
+      "citations": ["ppd/release_rehearsal_gate_v2.py"],
+      "rationale": "Release signoff remains a manual checkpoint."
+    },
+    {
+      "id": "devhub-boundary",
+      "subject": "DevHub and official action boundary",
+      "status": "passed",
+      "citations": ["docs/PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md"],
+      "rationale": "Fixture replay does not authenticate to DevHub or submit official actions."
+    }
+  ]
+}

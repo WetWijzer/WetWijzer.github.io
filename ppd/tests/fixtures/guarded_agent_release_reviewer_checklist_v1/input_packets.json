@@ -1,0 +1,98 @@
+{
+  "guarded_agent_release_readiness_packet_v1": {
+    "packet_type": "ppd.guarded_agent_release_readiness_packet.v1",
+    "agent_facing_readiness_rows": [
+      {
+        "row_id": "readiness-missing-information",
+        "readiness_signal": "Missing-information behavior is covered by fixture evidence.",
+        "citations": ["readiness:missing-information"]
+      }
+    ],
+    "release_blockers": [
+      {
+        "blocker_id": "official-agent-actions-blocked",
+        "blocked_release_area": "official agent actions",
+        "reason": "Manual review remains required for official action boundaries.",
+        "citations": ["readiness:blocker-official-actions"]
+      }
+    ],
+    "rollback_checkpoints": [
+      {
+        "checkpoint_id": "readiness-no-mutation",
+        "citations": ["readiness:rollback"]
+      }
+    ],
+    "human_handoff_notes": [
+      {
+        "note_id": "readiness-handoff",
+        "citations": ["readiness:handoff"]
+      }
+    ]
+  },
+  "release_promotion_decision_packet_v1": {
+    "packet_id": "fixture-release-promotion-decision-v1",
+    "packet_version": "release_promotion_decision_packet_v1",
+    "decision_rows": [
+      {
+        "decision_id": "decision-defer-agent-release",
+        "decision": "defer",
+        "citations": ["release:decision-defer"]
+      }
+    ],
+    "manual_signoff_placeholders": [
+      {
+        "role": "release supervisor",
+        "placeholder": "pending manual review",
+        "citations": ["release:manual-signoff"]
+      }
+    ],
+    "release_blockers": [
+      {
+        "blocker_id": "manual-signoff-required",
+        "area": "release review",
+        "reason": "Manual signoff is still pending.",
+        "citations": ["release:blocker-manual-signoff"]
+      }
+    ],
+    "rollback_checkpoints": [
+      {
+        "checkpoint_id": "release-state-unchanged",
+        "citations": ["release:rollback"]
+      }
+    ]
+  },
+  "public_source_refresh_plan_v2": {
+    "packet_id": "fixture-public-source-refresh-plan-v2",
+    "plan_version": "ppd_public_source_refresh_plan_v2",
+    "source_refresh_candidates": [
+      {
+        "candidate_id": "source-refresh-001",
+        "source_id": "ppd-devhub-faq",
+        "citations": ["public-source:devhub-faq-refresh"]
+      }
+    ],
+    "rollback_notes": [
+      {
+        "note_id": "public-source-rollback",
+        "citations": ["public-source:rollback"]
+      }
+    ]
+  },
+  "devhub_observed_surface_update_plan_v2": {
+    "packet_id": "fixture-devhub-observed-surface-update-plan-v2",
+    "plan_version": "devhub_observed_surface_update_plan_v2",
+    "surface_update_candidates": [
+      {
+        "candidate_id": "devhub-surface-001",
+        "surface_id": "trade-permit-dashboard",
+        "citations": ["devhub:surface-dashboard"]
+      }
+    ],
+    "rollback_notes": [
+      {
+        "note_id": "devhub-surface-rollback",
+        "citations": ["devhub:rollback"]
+      }
+    ]
+  }
+}

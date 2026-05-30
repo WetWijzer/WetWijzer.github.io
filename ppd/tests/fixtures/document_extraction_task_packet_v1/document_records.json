@@ -1,0 +1,85 @@
+{
+  "fixture_id": "document-records:single-pdf-process-guidance:v1",
+  "documents": [
+    {
+      "document_id": "doc-single-pdf-process-guidance",
+      "source_id": "src-submit-plans-online",
+      "title": "Submit Plans Online - Single PDF Process Guidance",
+      "document_type": "public_html_guidance_with_pdf_instructions",
+      "extraction_family": "single_pdf_process_guidance",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "sections": [
+        {
+          "section_id": "sec-single-pdf-overview",
+          "heading": "Single PDF process",
+          "fixture_only_text": "Drawing plans belong together in one PDF while supporting documents remain separate PDFs."
+        }
+      ],
+      "tables": [
+        {
+          "table_id": "tbl-upload-document-types",
+          "caption": "Document upload grouping expectations"
+        }
+      ],
+      "checklist_items": [
+        {
+          "checklist_item_id": "checklist-prepare-plan-set",
+          "label": "Prepare drawing plans as a single combined PDF"
+        }
+      ],
+      "form_fields": [
+        {
+          "field_id": "field-project-number-label",
+          "label": "Project or permit number",
+          "field_type": "text"
+        }
+      ],
+      "signature_certification_blocks": [
+        {
+          "block_id": "sig-applicant-certification-review",
+          "label": "Applicant certification or acknowledgement block"
+        }
+      ],
+      "citation_spans": [
+        {
+          "citation_span_id": "span-single-pdf-sections",
+          "target_type": "sections",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "anchor": "single-pdf-process-sections"
+        },
+        {
+          "citation_span_id": "span-single-pdf-tables",
+          "target_type": "tables",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "anchor": "document-upload-table"
+        },
+        {
+          "citation_span_id": "span-single-pdf-checklist-items",
+          "target_type": "checklist_items",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "anchor": "prepare-pdfs-checklist"
+        },
+        {
+          "citation_span_id": "span-single-pdf-fillable-field-labels",
+          "target_type": "fillable_field_labels",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "anchor": "application-field-labels"
+        },
+        {
+          "citation_span_id": "span-single-pdf-signature-certification-blocks",
+          "target_type": "signature_certification_blocks",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "anchor": "certification-review-blocks"
+        },
+        {
+          "citation_span_id": "span-single-pdf-citation-spans",
+          "target_type": "citation_spans",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "anchor": "citation-span-inventory"
+        }
+      ],
+      "content_hash": "fixture-only-single-pdf-process-guidance-v1",
+      "extraction_confidence": "fixture_review_needed"
+    }
+  ]
+}

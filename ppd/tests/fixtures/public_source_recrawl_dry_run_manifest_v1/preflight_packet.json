@@ -1,0 +1,68 @@
+{
+  "packet_version": "public_source_recrawl_preflight_review_packet_v1",
+  "packet_id": "public-recrawl-preflight-review-20260530-dry-run-manifest-fixture",
+  "summary": "Offline-only review packet for deterministic public PP&D source recrawl dry-run manifest construction.",
+  "candidate_preflight_rows": [
+    {
+      "source_id": "ppd-online-permitting-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "official_anchor_citation": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "expected_content_type": "text/html",
+      "robots_decision_placeholder": "Reviewer must record robots result before processor handoff.",
+      "policy_decision_placeholder": "Reviewer must record PP&D allowlist and policy decision before processor handoff.",
+      "processor_handoff_dry_run_prerequisites": [
+        "Run PP&D-local policy preflight in dry-run mode.",
+        "Confirm processor handoff manifest plan contains metadata-only output references."
+      ],
+      "raw_body_persistence_exclusion_check": "No raw response body may be persisted in committed artifacts.",
+      "download_exclusion_check": "No downloaded documents may be committed from this preflight packet.",
+      "reviewer_approval_placeholder": "Pending named reviewer approval before any handoff.",
+      "validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ]
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "official_anchor_citation": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "expected_content_type": "application/pdf",
+      "robots_decision_placeholder": "Reviewer must record robots result before processor handoff.",
+      "policy_decision_placeholder": "Reviewer must record PP&D allowlist and policy decision before processor handoff.",
+      "processor_handoff_dry_run_prerequisites": [
+        "Run PP&D-local policy preflight in dry-run mode.",
+        "Confirm PDF handling remains metadata-only until a reviewed capture packet exists."
+      ],
+      "raw_body_persistence_exclusion_check": "No raw response body may be persisted in committed artifacts.",
+      "download_exclusion_check": "No downloaded documents may be committed from this preflight packet.",
+      "reviewer_approval_placeholder": "Pending named reviewer approval before any handoff.",
+      "validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ]
+    },
+    {
+      "source_id": "ppd-devhub-public-portal",
+      "canonical_url": "https://devhub.portlandoregon.gov",
+      "official_anchor_citation": "https://devhub.portlandoregon.gov",
+      "expected_content_type": "text/html",
+      "robots_decision_placeholder": "Reviewer must record robots result before processor handoff.",
+      "policy_decision_placeholder": "Reviewer must record PP&D allowlist and policy decision before processor handoff.",
+      "processor_handoff_dry_run_prerequisites": [
+        "Keep this row as a synthetic skip until a separate reviewer approves public portal access.",
+        "Confirm no account-scoped workflow is represented by this row."
+      ],
+      "raw_body_persistence_exclusion_check": "No raw response body may be persisted in committed artifacts.",
+      "download_exclusion_check": "No downloaded documents may be committed from this preflight packet.",
+      "reviewer_approval_placeholder": "Pending named reviewer approval before any handoff.",
+      "validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ]
+    }
+  ],
+  "active_artifact_mutation": false,
+  "active_prompt_mutation": false,
+  "active_release_state_mutation": false,
+  "active_guardrail_mutation": false,
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

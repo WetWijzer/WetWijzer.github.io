@@ -1,0 +1,20 @@
+{
+  "packet_version": "public_source_change_impact_rehearsal_v1",
+  "generated_from": "fixture_only_change_impact_rehearsal",
+  "impacts": [
+    {
+      "source_id": "ppd-devhub-faqs",
+      "affected_source_ids": ["ppd-devhub-faqs", "ppd-devhub-guide-submit-permit-application"],
+      "affected_requirement_ids": ["REQ-DEVHUB-ACCOUNT-SERVICES", "REQ-DEVHUB-FEE-PAYMENT-GATE"],
+      "defer_reason": "Impact rehearsal requires human freshness review because DevHub account services and payment guidance are consequential workflows.",
+      "rollback_note": "Delete the rehearsal-derived row and keep existing guardrails unchanged; no registry mutation was attempted."
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "affected_source_ids": ["ppd-submit-plans-online", "ppd-spp-file-naming-standards"],
+      "affected_requirement_ids": ["REQ-SINGLE-PDF-PLANS", "REQ-FILE-NAMING-STANDARDS"],
+      "defer_reason": "Impact rehearsal requires reviewer confirmation before changing upload or file preparation requirements.",
+      "rollback_note": "Delete the rehearsal-derived row and leave current file-preparation guardrails intact."
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "packet_version": "fixture_first_public_source_refresh_evidence_intake_v1",
+  "input_packet_versions": [
+    "public_freshness_reviewer_handoff_v1",
+    "public_source_change_impact_rehearsal_v1"
+  ],
+  "generated_from": "committed_ppd_test_fixtures_only",
+  "attestations": {
+    "fixture_first": true,
+    "metadata_only": true,
+    "no_recrawl": true,
+    "no_download": true,
+    "no_processor": true,
+    "no_raw_body": true,
+    "no_registry_mutation": true
+  },
+  "rows": [
+    {
+      "intake_row_id": "public-refresh-intake-v1-001",
+      "source_id": "ppd-devhub-faqs",
+      "public_page_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "observed_public_page_title": "DevHub FAQs",
+      "visible_updated_date": "2026-05-08",
+      "affected_source_ids": [
+        "ppd-devhub-faqs",
+        "ppd-devhub-guide-submit-permit-application",
+        "ppd-online-permitting-tools"
+      ],
+      "affected_requirement_ids": [
+        "REQ-DEVHUB-ACCOUNT-SERVICES",
+        "REQ-DEVHUB-CORRECTIONS-UPLOAD-GATE",
+        "REQ-DEVHUB-FEE-PAYMENT-GATE"
+      ],
+      "citations": [
+        {
+          "label": "DevHub FAQ public page metadata",
+          "url": "https://www.portland.gov/ppd/devhub-faqs",
+          "observed_field": "visible page title and visible updated date"
+        }
+      ],
+      "defer_reason": "Impact rehearsal requires human freshness review because DevHub account services and payment guidance are consequential workflows.",
+      "rollback_note": "Delete the rehearsal-derived row and keep existing guardrails unchanged; no registry mutation was attempted.",
+      "attestations": {
+        "fixture_first": true,
+        "metadata_only": true,
+        "no_recrawl": true,
+        "no_download": true,
+        "no_processor": true,
+        "no_raw_body": true,
+        "no_registry_mutation": true
+      },
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/extraction/public_source_refresh_evidence_intake.py"],
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ]
+    },
+    {
+      "intake_row_id": "public-refresh-intake-v1-002",
+      "source_id": "ppd-submit-plans-online",
+      "public_page_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "observed_public_page_title": "Submit Plans Online / Single PDF Process",
+      "visible_updated_date": "2026-05-08",
+      "affected_source_ids": [
+        "ppd-spp-file-naming-standards",
+        "ppd-submit-plans-online"
+      ],
+      "affected_requirement_ids": [
+        "REQ-FILE-NAMING-STANDARDS",
+        "REQ-SINGLE-PDF-PLANS",
+        "REQ-SUPPORTING-DOCUMENTS-SEPARATE-PDFS"
+      ],
+      "citations": [
+        {
+          "label": "Submit Plans Online public page metadata",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "observed_field": "visible page title and visible updated date"
+        }
+      ],
+      "defer_reason": "Impact rehearsal requires reviewer confirmation before changing upload or file preparation requirements.",
+      "rollback_note": "Delete the rehearsal-derived row and leave current file-preparation guardrails intact.",
+      "attestations": {
+        "fixture_first": true,
+        "metadata_only": true,
+        "no_recrawl": true,
+        "no_download": true,
+        "no_processor": true,
+        "no_raw_body": true,
+        "no_registry_mutation": true
+      },
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/extraction/public_source_refresh_evidence_intake.py"],
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ]
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/extraction/public_source_refresh_evidence_intake.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

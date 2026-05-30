@@ -1,0 +1,130 @@
+{
+  "packet_type": "ppd.devhub.attended_observation_dry_run_runbook.v1",
+  "runbook_id": "fixture-first-attended-devhub-observation-dry-run-runbook-v1",
+  "source_handoff_checklist": {
+    "packet_type": "ppd.devhub.attended_observation_handoff_checklist.v1",
+    "packet_id": "attended-devhub-observation-handoff-checklist-v1-fixture",
+    "converted_fixture_first": true
+  },
+  "fixture_first": true,
+  "offline_only": true,
+  "live_devhub_session": false,
+  "browser_launched": false,
+  "browser_automation_performed": false,
+  "auth_state_saved": false,
+  "manual_login_boundaries": {
+    "reviewer_attends_login": true,
+    "manual_login_only": true,
+    "automation_may_enter_credentials": false,
+    "automation_may_handle_captcha": false,
+    "automation_may_handle_mfa": false,
+    "automation_may_create_account": false,
+    "stop_if_reviewer_absent": true
+  },
+  "dry_run_steps": [
+    {
+      "step_id": "prepare-fixture-packet",
+      "sequence": 1,
+      "manual_only": true,
+      "may_touch_live_devhub": false,
+      "may_change_official_state": false,
+      "reviewer_actions": [
+        "Open the committed handoff checklist fixture and this runbook fixture.",
+        "Confirm the dry run is fixture-first and offline before any attended browser work is considered."
+      ],
+      "expected_evidence": ["Checklist packet id", "Runbook packet id", "Offline-only flags"]
+    },
+    {
+      "step_id": "manual-login-boundary-review",
+      "sequence": 2,
+      "manual_only": true,
+      "may_touch_live_devhub": false,
+      "may_change_official_state": false,
+      "reviewer_actions": [
+        "Confirm any future DevHub login is performed by the reviewer only.",
+        "Confirm automation does not enter credentials, solve CAPTCHA, complete MFA, create accounts, or store session state."
+      ],
+      "expected_evidence": ["Manual login boundary", "No session-state attestation"]
+    },
+    {
+      "step_id": "observe-read-only-devhub-home-readonly",
+      "sequence": 3,
+      "surface_id": "devhub-home-readonly",
+      "manual_only": true,
+      "may_touch_live_devhub": false,
+      "may_change_official_state": false,
+      "reviewer_actions": [
+        "Review only headings, labels, landmarks, and redacted field categories listed in the fixture.",
+        "Record pass or fail against expected labels without retaining raw page values.",
+        "Stop before any consequential, financial, upload, scheduling, certification, cancellation, or account-control action."
+      ],
+      "expected_evidence": ["Visible labels", "Redaction states", "Stop-before-action check"]
+    },
+    {
+      "step_id": "final-redaction-and-rollback-review",
+      "sequence": 4,
+      "manual_only": true,
+      "may_touch_live_devhub": false,
+      "may_change_official_state": false,
+      "surface_ids_reviewed": ["devhub-home-readonly"],
+      "reviewer_actions": [
+        "Confirm no private values, browser artifacts, screenshots, downloaded documents, payment details, or private file paths are present.",
+        "Apply rollback notes if any evidence item fails redaction or stop-gate review."
+      ],
+      "expected_evidence": ["Redaction checklist complete", "Rollback decision"]
+    }
+  ],
+  "read_only_page_evidence_expectations": [
+    {
+      "surface_id": "devhub-home-readonly",
+      "read_only_only": true,
+      "expected_visible_labels": ["DevHub Home", "My Permits & Requests", "Account display name"],
+      "raw_values_allowed": false,
+      "screenshots_allowed": false,
+      "page_evidence_allowed": ["visible_heading", "visible_label", "accessible_landmark", "redacted_field_category"],
+      "page_evidence_disallowed": ["raw_account_value", "permit_number_value", "session_state", "screenshot", "downloaded_document"]
+    }
+  ],
+  "redaction_checklist": [
+    {"check_id": "no_auth_state", "must_be_absent": true, "commit_safe": true, "reviewer_action": "Confirm this artifact or value class is absent from committed dry-run evidence."},
+    {"check_id": "no_cookies", "must_be_absent": true, "commit_safe": true, "reviewer_action": "Confirm this artifact or value class is absent from committed dry-run evidence."},
+    {"check_id": "no_har_or_traces", "must_be_absent": true, "commit_safe": true, "reviewer_action": "Confirm this artifact or value class is absent from committed dry-run evidence."},
+    {"check_id": "no_screenshots", "must_be_absent": true, "commit_safe": true, "reviewer_action": "Confirm this artifact or value class is absent from committed dry-run evidence."},
+    {"check_id": "no_raw_authenticated_values", "must_be_absent": true, "commit_safe": true, "reviewer_action": "Confirm this artifact or value class is absent from committed dry-run evidence."},
+    {"check_id": "no_downloaded_documents", "must_be_absent": true, "commit_safe": true, "reviewer_action": "Confirm this artifact or value class is absent from committed dry-run evidence."},
+    {"check_id": "no_private_file_paths", "must_be_absent": true, "commit_safe": true, "reviewer_action": "Confirm this artifact or value class is absent from committed dry-run evidence."},
+    {"check_id": "no_payment_details", "must_be_absent": true, "commit_safe": true, "reviewer_action": "Confirm this artifact or value class is absent from committed dry-run evidence."}
+  ],
+  "stop_before_action_gates": [
+    {"gate_id": "stop-before-upload-corrections", "action_kind": "upload", "action_id": "upload-corrections", "classification": "consequential_upload", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-submit-application", "action_kind": "submit", "action_id": "submit-application", "classification": "consequential_submission", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-pay-fees", "action_kind": "payment", "action_id": "pay-fees", "classification": "financial_payment", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-schedule-inspection", "action_kind": "scheduling", "action_id": "schedule-inspection", "classification": "consequential_scheduling", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-captcha", "action_kind": "captcha", "action_id": "captcha", "classification": "required_attended_dry_run_stop_gate", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-mfa", "action_kind": "mfa", "action_id": "mfa", "classification": "required_attended_dry_run_stop_gate", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-account_creation", "action_kind": "account_creation", "action_id": "account_creation", "classification": "required_attended_dry_run_stop_gate", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-click_through", "action_kind": "click_through", "action_id": "click_through", "classification": "required_attended_dry_run_stop_gate", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-certification", "action_kind": "certification", "action_id": "certification", "classification": "required_attended_dry_run_stop_gate", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."},
+    {"gate_id": "stop-before-cancellation", "action_kind": "cancellation", "action_id": "cancellation", "classification": "required_attended_dry_run_stop_gate", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false, "reviewer_instruction": "Stop the dry run before this action and require a separate attended handoff with exact user confirmation."}
+  ],
+  "rollback_notes": [
+    {"note_id": "rollback-close-attended-browser", "manual_only": true, "commit_safe": true, "note": "If a consequential or financial control is reached, stop observation and close the attended browser without saving or confirming any official action."},
+    {"note_id": "rollback-discard-redaction-failure", "manual_only": true, "commit_safe": true, "note": "Discard the dry-run packet if it contains a private value, browser artifact, downloaded document, payment detail, upload path, or private file path."},
+    {"note_id": "rollback-close-review-only-session", "manual_only": true, "commit_safe": true, "note": "If the reviewer sees a consequential control, stop observation and close the attended browser without saving or confirming any official action."}
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub/attended_observation_dry_run_runbook_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_attended_observation_dry_run_runbook_v1.py"]
+  ],
+  "attestations": {
+    "no_captcha_automation": true,
+    "no_mfa_automation": true,
+    "no_account_creation": true,
+    "no_click_through": true,
+    "no_session_state": true,
+    "no_upload": true,
+    "no_submit": true,
+    "no_payment": true,
+    "no_scheduling": true
+  }
+}

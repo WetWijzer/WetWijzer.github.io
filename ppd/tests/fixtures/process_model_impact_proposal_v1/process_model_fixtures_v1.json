@@ -1,0 +1,66 @@
+{
+  "fixture_set_id": "process-model-fixtures-v1",
+  "fixture_version": "process_model_fixtures_v1",
+  "process_models": [
+    {
+      "process_id": "process-building-plan-review-fixture",
+      "permit_type": "building_plan_review",
+      "scope": "Building permit request that requires plan review and document upload staging.",
+      "eligibility_rules": [],
+      "required_user_facts": [],
+      "required_documents": [],
+      "file_rules": [],
+      "fees": [],
+      "stages": [
+        "pre-application research",
+        "account setup or manual login",
+        "property lookup",
+        "permit type selection",
+        "eligibility screening",
+        "document preparation",
+        "application data entry",
+        "upload staging",
+        "acknowledgement/certification review",
+        "submission",
+        "prescreen/intake",
+        "fee payment",
+        "plan review",
+        "corrections/checksheets",
+        "approval/issuance",
+        "inspections",
+        "closeout, cancellation, expiration, extension, or reactivation"
+      ],
+      "deadlines": [],
+      "exceptions": [],
+      "unsupported_paths": [],
+      "devhub_surface_refs": ["devhub-permit-application-fixture"],
+      "guardrail_bundle_id": "guardrail-building-plan-review-fixture"
+    },
+    {
+      "process_id": "process-standard-trade-fixture",
+      "permit_type": "standard_trade",
+      "scope": "Standard trade permit workflow that may be purchased through DevHub when eligible.",
+      "eligibility_rules": [],
+      "required_user_facts": [],
+      "required_documents": [],
+      "file_rules": [],
+      "fees": [],
+      "stages": [
+        "account setup or manual login",
+        "property lookup",
+        "permit type selection",
+        "eligibility screening",
+        "application data entry",
+        "acknowledgement/certification review",
+        "submission",
+        "fee payment",
+        "inspections"
+      ],
+      "deadlines": [],
+      "exceptions": [],
+      "unsupported_paths": [],
+      "devhub_surface_refs": ["devhub-standard-trade-fixture"],
+      "guardrail_bundle_id": "guardrail-standard-trade-fixture"
+    }
+  ]
+}

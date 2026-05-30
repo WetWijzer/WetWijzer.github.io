@@ -1,0 +1,25 @@
+{
+  "packet_type": "ppd.post_promotion_regression_rehearsal.v1",
+  "packet_version": "v1",
+  "mode": "offline_regression_rehearsal_only",
+  "overall_status": "pass",
+  "source_evidence_ids": [
+    "regression-rehearsal:offline:self-test",
+    "regression-rehearsal:offline:guardrail-smoke"
+  ],
+  "regression_rows": [
+    {
+      "row_id": "self-test-replay",
+      "status": "pass",
+      "source_evidence_ids": ["regression-rehearsal:offline:self-test"]
+    },
+    {
+      "row_id": "guardrail-smoke-replay",
+      "status": "pass",
+      "source_evidence_ids": ["regression-rehearsal:offline:guardrail-smoke"]
+    }
+  ],
+  "active_fixture_promotion": false,
+  "active_release_state_mutation": false,
+  "official_action_performed": false
+}

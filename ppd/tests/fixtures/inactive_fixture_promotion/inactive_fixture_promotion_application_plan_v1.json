@@ -1,0 +1,277 @@
+{
+  "artifact_id": "inactive_fixture_promotion_application_plan_v1",
+  "artifact_type": "fixture_first_application_plan",
+  "version": 1,
+  "status": "review_ready",
+  "scope": {
+    "mode": "inactive_fixture_only",
+    "active_source_editing": false,
+    "live_crawl_required": false,
+    "authenticated_automation_required": false,
+    "raw_public_body_persistence": false,
+    "private_devhub_artifact_persistence": false
+  },
+  "consumes": [
+    {
+      "artifact_id": "combined_inactive_fixture_promotion_rehearsal_v2",
+      "required": true,
+      "purpose": "Provides the rehearsed inactive fixture promotion order, dry-run results, and family-level promotion intent."
+    },
+    {
+      "artifact_id": "inactive_fixture_promotion_diff_ledger_v1",
+      "required": true,
+      "purpose": "Provides expected inactive fixture additions, replacements, removals, and checksum-sensitive review rows."
+    },
+    {
+      "artifact_id": "public_source_refresh_inactive_patch_preview_v3",
+      "required": true,
+      "purpose": "Provides public-source inactive patch candidates and source-refresh dependency signals."
+    },
+    {
+      "artifact_id": "devhub_observed_surface_inactive_patch_preview_v2",
+      "required": true,
+      "purpose": "Provides observed DevHub surface inactive patch candidates without storing private session state."
+    }
+  ],
+  "application_principles": [
+    "Apply fixture changes before any implementation changes.",
+    "Keep all promoted rows inactive until fixture validation and reviewer ownership gates pass.",
+    "Prefer replacements that preserve existing fixture-family contracts over shared contract edits.",
+    "Do not promote private DevHub session files, auth state, traces, screenshots, HAR files, raw crawl output, or downloaded documents.",
+    "Do not edit active public corpus, TypeScript logic daemon ledgers, source logic, process, guardrail, prompt, release-state, or agent-state artifacts."
+  ],
+  "affected_fixture_family_rows": [
+    {
+      "family_id": "public_source_refresh",
+      "row_group": "inactive_patch_preview_v3",
+      "source_input": "public_source_refresh_inactive_patch_preview_v3",
+      "target_fixture_area": "ppd/tests/fixtures/public_source_refresh/",
+      "allowed_operations": ["add_inactive_fixture", "replace_inactive_fixture", "add_expected_manifest_row"],
+      "blocked_operations": ["edit_public_corpus", "persist_raw_download", "start_live_crawl"],
+      "reviewer_owner": "public-source-refresh-reviewer",
+      "review_focus": "source registry metadata, allowlist decisions, freshness status, and no raw body persistence"
+    },
+    {
+      "family_id": "devhub_observed_surface",
+      "row_group": "inactive_patch_preview_v2",
+      "source_input": "devhub_observed_surface_inactive_patch_preview_v2",
+      "target_fixture_area": "ppd/tests/fixtures/devhub_observed_surface/",
+      "allowed_operations": ["add_redacted_inactive_surface_fixture", "replace_redacted_inactive_surface_fixture", "add_expected_surface_row"],
+      "blocked_operations": ["store_auth_state", "store_trace", "store_screenshot", "store_har", "automate_login", "automate_mfa", "automate_captcha"],
+      "reviewer_owner": "devhub-surface-reviewer",
+      "review_focus": "redaction policy, attended-only boundaries, selector confidence, and exact-confirmation flags"
+    },
+    {
+      "family_id": "inactive_promotion_diff_ledger",
+      "row_group": "diff_ledger_v1",
+      "source_input": "inactive_fixture_promotion_diff_ledger_v1",
+      "target_fixture_area": "ppd/tests/fixtures/inactive_fixture_promotion/",
+      "allowed_operations": ["add_diff_expectation", "replace_inactive_diff_expectation", "add_checksum_row"],
+      "blocked_operations": ["edit_typescript_logic_daemon_ledger", "mark_task_board_complete_without_validation"],
+      "reviewer_owner": "fixture-ledger-reviewer",
+      "review_focus": "deterministic row ordering, checksum stability, and family-to-file mapping"
+    },
+    {
+      "family_id": "combined_rehearsal",
+      "row_group": "combined_rehearsal_v2",
+      "source_input": "combined_inactive_fixture_promotion_rehearsal_v2",
+      "target_fixture_area": "ppd/tests/fixtures/inactive_fixture_promotion/",
+      "allowed_operations": ["add_application_plan", "add_rehearsal_alignment_expectation"],
+      "blocked_operations": ["apply_active_patch", "rewrite_shared_contract", "edit_daemon_state"],
+      "reviewer_owner": "promotion-supervisor-reviewer",
+      "review_focus": "plan ordering, dependency gates, rollback checkpoints, and offline validation coverage"
+    }
+  ],
+  "dependency_gates": [
+    {
+      "gate_id": "gate_001_input_artifacts_present",
+      "required_before_step": "step_001_inventory_inputs",
+      "must_pass": true,
+      "offline_check": "Confirm all four consumed artifact identifiers are represented in fixture metadata or fixture-index rows."
+    },
+    {
+      "gate_id": "gate_002_inactive_only_paths",
+      "required_before_step": "step_003_stage_fixture_replacements",
+      "must_pass": true,
+      "offline_check": "Confirm target paths are under ppd/tests/fixtures/ and do not overlap active source, public corpus, daemon state, or release-state paths."
+    },
+    {
+      "gate_id": "gate_003_no_private_devhub_material",
+      "required_before_step": "step_004_stage_devhub_surface_rows",
+      "must_pass": true,
+      "offline_check": "Confirm DevHub fixtures contain redacted observed-surface metadata only and exclude cookies, auth state, screenshots, traces, HAR content, private values, and local private paths."
+    },
+    {
+      "gate_id": "gate_004_public_refresh_no_raw_body",
+      "required_before_step": "step_005_stage_public_refresh_rows",
+      "must_pass": true,
+      "offline_check": "Confirm public refresh fixtures contain metadata, patch previews, normalized expectations, or checksums only, with no raw downloaded body persistence."
+    },
+    {
+      "gate_id": "gate_005_reviewer_ownership_assigned",
+      "required_before_step": "step_007_ready_for_review",
+      "must_pass": true,
+      "offline_check": "Confirm each affected fixture family row has exactly one reviewer_owner and a non-empty review_focus."
+    },
+    {
+      "gate_id": "gate_006_offline_validation_defined",
+      "required_before_step": "step_008_validation_handoff",
+      "must_pass": true,
+      "offline_check": "Confirm exact validation_commands are present and contain no live crawl, authenticated browser, payment, upload, submission, scheduling, cancellation, CAPTCHA, MFA, or account-creation actions."
+    }
+  ],
+  "ordered_application_steps": [
+    {
+      "step_id": "step_001_inventory_inputs",
+      "order": 1,
+      "action": "Inventory the four consumed inactive artifacts and map their rows to fixture families.",
+      "inputs": ["combined_inactive_fixture_promotion_rehearsal_v2", "inactive_fixture_promotion_diff_ledger_v1", "public_source_refresh_inactive_patch_preview_v3", "devhub_observed_surface_inactive_patch_preview_v2"],
+      "outputs": ["family_row_inventory"],
+      "dependency_gates": ["gate_001_input_artifacts_present"],
+      "rollback_checkpoint": "rollback_001_before_any_fixture_write",
+      "reviewer_owner": "promotion-supervisor-reviewer"
+    },
+    {
+      "step_id": "step_002_sort_application_order",
+      "order": 2,
+      "action": "Sort inactive fixture rows into deterministic application order: ledger expectations, public refresh rows, DevHub observed-surface rows, combined rehearsal alignment rows.",
+      "inputs": ["family_row_inventory"],
+      "outputs": ["ordered_family_row_plan"],
+      "dependency_gates": ["gate_002_inactive_only_paths"],
+      "rollback_checkpoint": "rollback_001_before_any_fixture_write",
+      "reviewer_owner": "fixture-ledger-reviewer"
+    },
+    {
+      "step_id": "step_003_stage_fixture_replacements",
+      "order": 3,
+      "action": "Stage inactive fixture additions or replacements under ppd/tests/fixtures while preserving existing family naming and deterministic ordering.",
+      "inputs": ["ordered_family_row_plan", "inactive_fixture_promotion_diff_ledger_v1"],
+      "outputs": ["staged_inactive_fixture_rows"],
+      "dependency_gates": ["gate_002_inactive_only_paths"],
+      "rollback_checkpoint": "rollback_002_after_diff_ledger_rows",
+      "reviewer_owner": "fixture-ledger-reviewer"
+    },
+    {
+      "step_id": "step_004_stage_devhub_surface_rows",
+      "order": 4,
+      "action": "Stage redacted inactive DevHub observed-surface fixture rows and exact-confirmation metadata only.",
+      "inputs": ["devhub_observed_surface_inactive_patch_preview_v2", "staged_inactive_fixture_rows"],
+      "outputs": ["staged_redacted_devhub_surface_rows"],
+      "dependency_gates": ["gate_003_no_private_devhub_material"],
+      "rollback_checkpoint": "rollback_003_after_devhub_rows",
+      "reviewer_owner": "devhub-surface-reviewer"
+    },
+    {
+      "step_id": "step_005_stage_public_refresh_rows",
+      "order": 5,
+      "action": "Stage inactive public source refresh fixture rows with metadata-only patch preview expectations and no raw body persistence.",
+      "inputs": ["public_source_refresh_inactive_patch_preview_v3", "staged_inactive_fixture_rows"],
+      "outputs": ["staged_public_refresh_rows"],
+      "dependency_gates": ["gate_004_public_refresh_no_raw_body"],
+      "rollback_checkpoint": "rollback_004_after_public_refresh_rows",
+      "reviewer_owner": "public-source-refresh-reviewer"
+    },
+    {
+      "step_id": "step_006_align_combined_rehearsal",
+      "order": 6,
+      "action": "Compare staged rows to the combined rehearsal v2 ordering and record inactive-only alignment expectations.",
+      "inputs": ["combined_inactive_fixture_promotion_rehearsal_v2", "staged_redacted_devhub_surface_rows", "staged_public_refresh_rows"],
+      "outputs": ["combined_rehearsal_alignment_expectations"],
+      "dependency_gates": ["gate_005_reviewer_ownership_assigned"],
+      "rollback_checkpoint": "rollback_005_after_rehearsal_alignment",
+      "reviewer_owner": "promotion-supervisor-reviewer"
+    },
+    {
+      "step_id": "step_007_ready_for_review",
+      "order": 7,
+      "action": "Assign final reviewer owners and hold the staged inactive fixture set for review without marking task-board completion manually.",
+      "inputs": ["combined_rehearsal_alignment_expectations", "affected_fixture_family_rows"],
+      "outputs": ["review_ready_inactive_fixture_set"],
+      "dependency_gates": ["gate_005_reviewer_ownership_assigned"],
+      "rollback_checkpoint": "rollback_006_before_validation_handoff",
+      "reviewer_owner": "promotion-supervisor-reviewer"
+    },
+    {
+      "step_id": "step_008_validation_handoff",
+      "order": 8,
+      "action": "Run exact offline validation commands and allow the daemon to mark the selected task complete only after validation passes.",
+      "inputs": ["review_ready_inactive_fixture_set"],
+      "outputs": ["offline_validation_result"],
+      "dependency_gates": ["gate_006_offline_validation_defined"],
+      "rollback_checkpoint": "rollback_007_after_failed_validation",
+      "reviewer_owner": "promotion-supervisor-reviewer"
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "rollback_001_before_any_fixture_write",
+      "restore_scope": "No staged fixture changes exist yet; abort application plan and keep consumed inputs unchanged.",
+      "trigger_conditions": ["missing_required_input_artifact", "ambiguous_fixture_family_mapping"]
+    },
+    {
+      "checkpoint_id": "rollback_002_after_diff_ledger_rows",
+      "restore_scope": "Remove only newly staged inactive diff-ledger expectation rows.",
+      "trigger_conditions": ["checksum_mismatch", "non_deterministic_row_order", "path_outside_ppd_tests_fixtures"]
+    },
+    {
+      "checkpoint_id": "rollback_003_after_devhub_rows",
+      "restore_scope": "Remove staged DevHub observed-surface fixture rows and preserve unrelated fixture families.",
+      "trigger_conditions": ["private_devhub_material_detected", "auth_state_detected", "trace_or_screenshot_detected", "exact_confirmation_metadata_missing"]
+    },
+    {
+      "checkpoint_id": "rollback_004_after_public_refresh_rows",
+      "restore_scope": "Remove staged public source refresh rows and any dependent rehearsal alignment rows.",
+      "trigger_conditions": ["raw_public_body_detected", "live_crawl_dependency_detected", "allowlist_policy_missing"]
+    },
+    {
+      "checkpoint_id": "rollback_005_after_rehearsal_alignment",
+      "restore_scope": "Remove combined rehearsal alignment expectations while retaining independently valid inactive fixture rows for re-review.",
+      "trigger_conditions": ["rehearsal_order_conflict", "unowned_fixture_family_row", "dependency_gate_failure"]
+    },
+    {
+      "checkpoint_id": "rollback_006_before_validation_handoff",
+      "restore_scope": "Return to review-ready staged fixtures and correct reviewer ownership or validation command metadata.",
+      "trigger_conditions": ["reviewer_owner_missing", "offline_validation_command_missing", "blocked_action_in_validation_command"]
+    },
+    {
+      "checkpoint_id": "rollback_007_after_failed_validation",
+      "restore_scope": "Revert only the staged inactive fixture rows from this plan and keep active source untouched.",
+      "trigger_conditions": ["daemon_self_test_failure", "pytest_failure", "syntax_validation_failure"]
+    }
+  ],
+  "reviewer_owner_assignments": [
+    {
+      "reviewer_owner": "promotion-supervisor-reviewer",
+      "owned_items": ["combined rehearsal alignment", "application ordering", "dependency gates", "validation handoff"]
+    },
+    {
+      "reviewer_owner": "fixture-ledger-reviewer",
+      "owned_items": ["diff ledger rows", "checksum expectations", "deterministic fixture ordering"]
+    },
+    {
+      "reviewer_owner": "public-source-refresh-reviewer",
+      "owned_items": ["public refresh inactive rows", "metadata-only source expectations", "no raw body persistence"]
+    },
+    {
+      "reviewer_owner": "devhub-surface-reviewer",
+      "owned_items": ["redacted DevHub observed-surface rows", "attended-only boundaries", "exact confirmation flags"]
+    }
+  ],
+  "exact_offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "pytest", "ppd/tests", "-q"]
+  ],
+  "blocked_validation_behaviors": [
+    "live_public_crawl",
+    "authenticated_devhub_browser_session",
+    "captcha_automation",
+    "mfa_automation",
+    "account_creation",
+    "payment_entry_or_submission",
+    "permit_submission",
+    "official_upload",
+    "inspection_scheduling",
+    "permit_or_request_cancellation"
+  ],
+  "completion_rule": "The selected task may be marked complete by the daemon only after the implementation, fixtures, and offline validation pass; this fixture does not manually mark any task-board checkbox complete."
+}

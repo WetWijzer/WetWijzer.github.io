@@ -1,0 +1,170 @@
+{
+  "combined_promotion_dependency_packet_v1": {
+    "packet_version": "combined-promotion-dependency-packet-v1",
+    "fixture_first": true,
+    "offline_only": true,
+    "dependency_rows": [
+      {
+        "id": "dependency.guardrail-replay-before-agent-delta",
+        "summary": "Guardrail replay rows must be reviewed before agent-facing readiness deltas are accepted.",
+        "disposition": "accepted_for_rehearsal",
+        "citations": [
+          "fixture:combined-promotion-dependency-packet-v1#dependency.guardrail-replay-before-agent-delta"
+        ]
+      },
+      {
+        "id": "dependency.action-journal-before-release-note",
+        "summary": "Action journal replay findings must remain commit-safe before release handoff language is reviewed.",
+        "disposition": "accepted_for_rehearsal",
+        "citations": [
+          "fixture:combined-promotion-dependency-packet-v1#dependency.action-journal-before-release-note"
+        ]
+      }
+    ],
+    "manual_review_blockers": [
+      {
+        "id": "blocker.human-review-required-for-offline-summary",
+        "summary": "Reviewer must confirm that cited rows remain fixture-only and do not imply active release approval.",
+        "disposition": "manual_review_required",
+        "citations": [
+          "fixture:combined-promotion-dependency-packet-v1#blocker.human-review-required-for-offline-summary"
+        ]
+      }
+    ],
+    "rollback_checkpoints": [
+      {
+        "id": "rollback.dependency-packet-retire-candidate",
+        "summary": "If a dependency citation is withdrawn, retire only the candidate summary row and keep active PP&D state unchanged.",
+        "disposition": "available",
+        "citations": [
+          "fixture:combined-promotion-dependency-packet-v1#rollback.dependency-packet-retire-candidate"
+        ]
+      }
+    ],
+    "validation_command_inventory": [
+      ["python3", "-m", "pytest", "ppd/tests/test_combined_promotion_dependency_packet_v1.py"]
+    ]
+  },
+  "guardrail_regression_replay_queue_v1": {
+    "packet_version": "guardrail-regression-replay-queue-v1",
+    "fixture_first": true,
+    "offline_only": true,
+    "replay_queue": [
+      {
+        "id": "replay.stale-evidence-block",
+        "summary": "Replay expects stale public evidence to block next-action advice until refreshed fixture evidence is reviewed.",
+        "expected_outcome": "block",
+        "citations": [
+          "fixture:guardrail-regression-replay-queue-v1#replay.stale-evidence-block"
+        ]
+      },
+      {
+        "id": "replay.exact-confirmation-block",
+        "summary": "Replay expects missing exact confirmation to remain blocked for consequential action fixtures.",
+        "expected_outcome": "block",
+        "citations": [
+          "fixture:guardrail-regression-replay-queue-v1#replay.exact-confirmation-block"
+        ]
+      }
+    ],
+    "unresolved_deferrals": [
+      {
+        "id": "deferral.await-reviewer-disposition",
+        "summary": "Reviewer disposition remains deferred for rows that cite retired fixture identifiers.",
+        "disposition": "deferred",
+        "citations": [
+          "fixture:guardrail-regression-replay-queue-v1#deferral.await-reviewer-disposition"
+        ]
+      }
+    ],
+    "rollback_checkpoints": [
+      {
+        "id": "rollback.replay-queue-removal",
+        "summary": "Remove only the candidate replay row from the offline queue if its fixture citation is invalidated.",
+        "disposition": "available",
+        "citations": [
+          "fixture:guardrail-regression-replay-queue-v1#rollback.replay-queue-removal"
+        ]
+      }
+    ],
+    "offline_validation_commands": [
+      ["python3", "-m", "pytest", "ppd/tests/test_guardrail_regression_replay_queue_v1.py"]
+    ]
+  },
+  "agent_readiness_delta_packet_v1": {
+    "packet_version": "agent-readiness-delta-packet-v1",
+    "fixture_first": true,
+    "offline_only": true,
+    "next_safe_action_expectations": [
+      {
+        "id": "delta.safe-read-only-explanation",
+        "summary": "Agent may explain cited read-only status expectations without suggesting official DevHub changes.",
+        "disposition": "accepted_for_rehearsal",
+        "citations": [
+          "fixture:agent-readiness-delta-packet-v1#delta.safe-read-only-explanation"
+        ]
+      }
+    ],
+    "blocked_action_expectations": [
+      {
+        "id": "delta.block-official-action-without-attendance",
+        "summary": "Agent must block fixture rows that lack exact attended confirmation for consequential actions.",
+        "disposition": "accepted_for_rehearsal",
+        "citations": [
+          "fixture:agent-readiness-delta-packet-v1#delta.block-official-action-without-attendance"
+        ]
+      }
+    ],
+    "rollback_notes": [
+      {
+        "id": "rollback.agent-delta-candidate-only",
+        "summary": "Rollback leaves prompt and agent state unchanged and removes only the candidate delta packet from review.",
+        "disposition": "available",
+        "citations": [
+          "fixture:agent-readiness-delta-packet-v1#rollback.agent-delta-candidate-only"
+        ]
+      }
+    ],
+    "offline_validation_commands": [
+      ["python3", "-m", "pytest", "ppd/tests/test_agent_readiness_delta_packet_v1.py"]
+    ]
+  },
+  "action_journal_replay_findings_v1": {
+    "packet_version": "action-journal-replay-findings-v1",
+    "fixture_first": true,
+    "offline_only": true,
+    "replay_findings": [
+      {
+        "id": "journal.commit-safe-event-coverage",
+        "summary": "Replay found cited commit-safe coverage for public preflight, requirement extraction, user gap analysis, reversible preview, read-only observation, and refusal events.",
+        "disposition": "accepted_for_rehearsal",
+        "citations": [
+          "fixture:action-journal-replay-findings-v1#journal.commit-safe-event-coverage"
+        ]
+      }
+    ],
+    "manual_review_blockers": [
+      {
+        "id": "blocker.journal-reviewer-signoff",
+        "summary": "Journal replay requires reviewer signoff before its findings are used in a later release handoff.",
+        "disposition": "manual_review_required",
+        "citations": [
+          "fixture:action-journal-replay-findings-v1#blocker.journal-reviewer-signoff"
+        ]
+      }
+    ],
+    "rollback_checkpoints": [
+      {
+        "id": "rollback.journal-finding-removal",
+        "summary": "If a replay finding loses citation support, remove the candidate finding and rerun offline journal validation.",
+        "disposition": "available",
+        "citations": [
+          "fixture:action-journal-replay-findings-v1#rollback.journal-finding-removal"
+        ]
+      }
+    ],
+    "offline_validation_commands": [
+      ["python3", "-m", "pytest", "ppd/tests/test_action_journal_replay_findings_v1.py"]
+    ]
+  }
+}

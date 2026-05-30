@@ -1,0 +1,90 @@
+{
+  "preview_version": "devhub_observed_surface_inactive_patch_preview_v1",
+  "scope": "inactive_observed_surface_patch_preview",
+  "mutation_flags": [
+    "inactive_preview_only",
+    "fixture_first",
+    "no_live_devhub_access",
+    "no_active_surface_mutation",
+    "no_guardrail_mutation",
+    "no_prompt_mutation",
+    "no_release_state_mutation"
+  ],
+  "disposition_rows": [
+    {
+      "surface_id": "devhub-home-inactive-readonly-v1",
+      "disposition": "approved",
+      "reviewer": "fixture-reviewer",
+      "evidence_ref": "fixture:reviewer-disposition:devhub-home-inactive-readonly-v1"
+    }
+  ],
+  "inactive_surface_map_delta_previews": [
+    {
+      "surface_id": "devhub-home-inactive-readonly-v1",
+      "surface_state": "inactive",
+      "read_only": true,
+      "before": {
+        "observed_surface_ref": "prior-placeholder"
+      },
+      "after": {
+        "observed_surface_ref": "review-placeholder"
+      },
+      "delta_summary": "Fixture-only inactive observed surface metadata placeholder update.",
+      "evidence_ref": "fixture:surface-delta:devhub-home-inactive-readonly-v1"
+    }
+  ],
+  "selector_confidence_placeholders": [
+    {
+      "surface_id": "devhub-home-inactive-readonly-v1",
+      "selector_confidence": "needs-review",
+      "evidence_ref": "fixture:selector-confidence:devhub-home-inactive-readonly-v1"
+    }
+  ],
+  "accessible_role_name_evidence_placeholders": [
+    {
+      "surface_id": "devhub-home-inactive-readonly-v1",
+      "role_name_evidence": "placeholder-only accessible role/name review row",
+      "evidence_ref": "fixture:accessible-role-name:devhub-home-inactive-readonly-v1"
+    }
+  ],
+  "redacted_field_inventory_placeholders": [
+    {
+      "surface_id": "devhub-home-inactive-readonly-v1",
+      "redacted_field_inventory": "placeholder-only inventory; no values retained",
+      "evidence_ref": "fixture:redacted-field-inventory:devhub-home-inactive-readonly-v1"
+    }
+  ],
+  "action_classification_references": [
+    {
+      "surface_id": "devhub-home-inactive-readonly-v1",
+      "action_classification": "safe_read_only_review_placeholder",
+      "evidence_ref": "fixture:action-classification:devhub-home-inactive-readonly-v1"
+    }
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "surface_id": "devhub-home-inactive-readonly-v1",
+      "reviewer_signoff": "pending-human-review-placeholder",
+      "evidence_ref": "fixture:reviewer-signoff:devhub-home-inactive-readonly-v1"
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/devhub_observed_surface_inactive_patch_preview_v1.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_devhub_observed_surface_inactive_patch_preview_v1"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

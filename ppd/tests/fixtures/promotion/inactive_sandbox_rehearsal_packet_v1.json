@@ -1,0 +1,26 @@
+{
+  "packet_id": "inactive-sandbox-rehearsal-20260530-819",
+  "packet_version": "inactive_promotion_sandbox_rehearsal_packet_v1",
+  "rehearsal_state": "inactive_sandbox",
+  "source_fixture": "ppd/tests/fixtures/promotion/inactive_sandbox_rehearsal_packet_v1.json",
+  "release_state_before": "fixture-only-inactive",
+  "validation_evidence": [
+    "schema fixture loaded",
+    "sandbox rehearsal rows normalized",
+    "nonmutation flags asserted"
+  ],
+  "rollback_inputs": [
+    "previous release-state label recorded",
+    "active artifact inventory placeholder recorded",
+    "human rollback owner placeholder recorded"
+  ],
+  "requested_actions": [
+    "fixture_promotion_apply",
+    "active_artifact_write",
+    "release_state_update",
+    "prompt_change",
+    "live_source_crawl",
+    "devhub_access",
+    "official_action"
+  ]
+}

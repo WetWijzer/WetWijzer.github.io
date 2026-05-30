@@ -1,0 +1,32 @@
+{
+  "ledger_id": "approved-reviewer-disposition-ledger-v1-fixture",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "items": [
+    {
+      "disposition_id": "disp-001",
+      "queue_item_id": "queue-apply-permits-001",
+      "disposition": "approved",
+      "reviewer": "fixture-reviewer",
+      "reviewed_at": "2026-05-30T00:00:00Z",
+      "approved_action": "propose_source_freshness_metadata_patch",
+      "source_id": "src-ppd-apply-permits",
+      "requirement_ids": [
+        "req-devhub-application-path"
+      ],
+      "notes": "Visible title and date review are approved for proposal-only freshness metadata update."
+    },
+    {
+      "disposition_id": "disp-002",
+      "queue_item_id": "queue-devhub-faq-001",
+      "disposition": "needs_changes",
+      "reviewer": "fixture-reviewer",
+      "reviewed_at": "2026-05-30T00:00:00Z",
+      "approved_action": "none",
+      "source_id": "src-ppd-devhub-faq",
+      "requirement_ids": [
+        "req-devhub-account-services"
+      ],
+      "notes": "Not approved and must not produce a proposed patch row."
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": "inactive-fixture-promotion-diff-ledger-v1",
+  "ledger_state": "inactive",
+  "promotion_state": "blocked",
+  "file_diffs": [
+    {
+      "path": "ppd/tests/fixtures/devhub_standard_trade_fixture/fixture.json",
+      "fixture_family": "devhub_standard_trade_fixture",
+      "file_level_diff_summary": "Adds deterministic fixture evidence for standard trade permit readiness without activating promotion."
+    }
+  ],
+  "fixture_family_readiness": [
+    {
+      "fixture_family": "devhub_standard_trade_fixture",
+      "readiness_status": "review_ready",
+      "readiness_evidence": [
+        {
+          "summary": "The fixture contains only committed synthetic metadata and cites the PP&D DevHub public guide anchor used for readiness review.",
+          "citations": [
+            {
+              "source_id": "ppd-plan-official-source-anchor-devhub-guide-submit-permit-application",
+              "locator": "PP&D plan Official Source Anchors"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "blocked_promotions": [
+    {
+      "fixture_family": "devhub_standard_trade_fixture",
+      "explanation": "Promotion remains blocked until a reviewer verifies citations and separately approves any fixture activation."
+    }
+  ],
+  "review": {
+    "reviewer_owner": "ppd-fixture-reviewer",
+    "rollback_note": "Remove the fixture family and this ledger if readiness review fails."
+  },
+  "mutation_flags": {
+    "fixture_mutation_enabled": false,
+    "prompt_mutation_enabled": false,
+    "process_mutation_enabled": false,
+    "guardrail_mutation_enabled": false,
+    "release_state_mutation_enabled": false,
+    "agent_state_mutation_enabled": false
+  }
+}

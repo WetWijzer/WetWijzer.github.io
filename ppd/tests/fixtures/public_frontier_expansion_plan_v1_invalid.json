@@ -1,0 +1,57 @@
+{
+  "version": "public_crawl_frontier_expansion_plan_v1",
+  "processor_completed": true,
+  "mutate_source_registry": true,
+  "candidates": [
+    {
+      "url": "http://www.portland.gov/ppd/devhub-faqs",
+      "allow_skip_decision": "allow"
+    },
+    {
+      "url": "https://malicious.example/ppd",
+      "source_page_url": "https://www.portland.gov/ppd",
+      "citations": ["fixture-citation"],
+      "allow_skip_decision": "allow"
+    },
+    {
+      "url": "https://devhub.portlandoregon.gov/account/my-permits?session=abc123",
+      "source_page_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "citations": ["fixture-citation"],
+      "allow_skip_decision": "allow",
+      "storage_state": "/tmp/devhub-state.json"
+    },
+    {
+      "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "source_page_url": "https://www.portland.gov/ppd",
+      "citations": ["fixture-citation"],
+      "allow_skip_decision": "skip",
+      "raw_body": "downloaded bytes would not be allowed here"
+    },
+    {
+      "url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "source_page_url": "https://www.portland.gov/ppd",
+      "citations": ["fixture-citation"],
+      "allow_skip_decision": "allow",
+      "notes": "This plan guarantees permit approval after the crawl."
+    },
+    {
+      "url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "source_page_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "source_evidence_ids": ["fixture-citation"],
+      "decision": "skip"
+    },
+    {
+      "url": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+      "source_page_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "citations": ["fixture-citation"],
+      "archive_artifact_ref": "public/raw/archive.warc.gz"
+    },
+    {
+      "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "source_page_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "citations": ["fixture-citation"],
+      "allow_skip_decision": "allow",
+      "writes_guardrails": true
+    }
+  ]
+}

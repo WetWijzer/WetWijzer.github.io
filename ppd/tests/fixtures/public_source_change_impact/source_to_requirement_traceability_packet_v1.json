@@ -1,0 +1,30 @@
+{
+  "packet_id": "source-to-requirement-traceability-packet-v1-fixture",
+  "fixture_only": true,
+  "sources": [
+    {
+      "source_id": "PPD-SRC-PORTLAND-ZONING-001",
+      "title": "Portland zoning code public source fixture",
+      "document_sections": ["33.110.220", "33.110.225"],
+      "requirement_ids": ["PPD-REQ-ZONING-SETBACKS", "PPD-REQ-ZONING-HEIGHT"],
+      "process_stages": ["source-identification", "requirement-mapping", "reviewer-handoff"],
+      "guardrail_bundle_ids": ["PPD-GUARDRAIL-PUBLIC-SOURCE-V1", "PPD-GUARDRAIL-NO-LIVE-CRAWL-V1"],
+      "citations": ["fixture://portland-zoning-code#33.110.220", "fixture://portland-zoning-code#33.110.225"]
+    },
+    {
+      "source_id": "PPD-SRC-PORTLAND-PERMIT-002",
+      "title": "Portland permit procedure public source fixture",
+      "document_sections": ["Permit intake checklist", "Completeness review"],
+      "requirement_ids": ["PPD-REQ-PERMIT-INTAKE", "PPD-REQ-PERMIT-COMPLETENESS"],
+      "process_stages": ["source-identification", "freshness-review", "rollback-rehearsal"],
+      "guardrail_bundle_ids": ["PPD-GUARDRAIL-PUBLIC-SOURCE-V1", "PPD-GUARDRAIL-NO-REGISTRY-MUTATION-V1"],
+      "citations": ["fixture://portland-permit-procedure#intake", "fixture://portland-permit-procedure#completeness"]
+    }
+  ],
+  "attestations": {
+    "no_live_crawl": true,
+    "no_download": true,
+    "no_raw_body": true,
+    "no_active_registry_mutation": true
+  }
+}

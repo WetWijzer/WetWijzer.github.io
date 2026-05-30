@@ -1,0 +1,33 @@
+{
+  "ledger_version": "ppd-readiness-ledger-v1",
+  "readiness_rows": [
+    {
+      "row_id": "uncited-missing-refs",
+      "readiness_claim": "agent readiness row lacks required references",
+      "fixture_version_claim": {
+        "fixture_id": "ppd/tests/fixtures/readiness_ledger_v1/invalid_readiness_ledger_v1.json",
+        "fixture_version": "2026-04-01",
+        "freshness_status": "stale",
+        "last_verified_at": "2026-04-01T00:00:00Z"
+      }
+    },
+    {
+      "row_id": "unsafe-artifacts-and-guarantees",
+      "source_evidence_ids": ["ppd-source-devhub-faq"],
+      "readiness_packet_ref": "packet://ppd/readiness/example",
+      "validator_ref": "ppd.agent_readiness.readiness_ledger_v1.validate_readiness_ledger_v1",
+      "manual_review_blockers": ["operator_review_required"],
+      "fixture_version_claim": {
+        "fixture_id": "ppd/tests/fixtures/readiness_ledger_v1/invalid_readiness_ledger_v1.json",
+        "fixture_version": "2026-05-29",
+        "freshness_status": "current",
+        "last_verified_at": "2026-05-29T00:00:00Z"
+      },
+      "private_artifact_ref": "devhub-authenticated/private-artifact/session-storage.json",
+      "raw_pdf_bytes_ref": "data:application/pdf;base64,JVBERi0x",
+      "release_state_mutation_enabled": true,
+      "active_mutation_flags": ["guardrail"],
+      "operator_note": "This would guarantee approval, which is not allowed."
+    }
+  ]
+}

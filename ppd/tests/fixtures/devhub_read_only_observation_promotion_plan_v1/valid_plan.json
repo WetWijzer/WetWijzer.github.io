@@ -1,0 +1,36 @@
+{
+  "plan_version": "devhub_read_only_observation_promotion_plan_v1",
+  "scope": "devhub",
+  "mode": "read_only_observation",
+  "redaction": {
+    "redacts_private_values": true,
+    "browser_artifacts_allowed": false
+  },
+  "attendance": {
+    "required": true,
+    "automated_login_allowed": false,
+    "automated_captcha_mfa_allowed": false
+  },
+  "mutations": {
+    "devhub": false,
+    "surface_registry": false,
+    "guardrail": false,
+    "prompt": false,
+    "release_state": false,
+    "agent_state": false
+  },
+  "evidence": [
+    {
+      "surface_id": "devhub_home_redacted_observation",
+      "evidence_type": "redacted_dom_summary",
+      "action_category": "safe_read_only",
+      "observed_action": "review redacted page heading and navigation labels",
+      "write_capable": false,
+      "private_values": "redacted"
+    }
+  ],
+  "notes": [
+    "Attended browser observation only.",
+    "No screenshots, traces, HAR files, storage state, credentials, or private page values are retained."
+  ]
+}

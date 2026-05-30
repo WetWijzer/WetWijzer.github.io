@@ -1,0 +1,46 @@
+{
+  "packet_version": "inactive-release-activation-checklist-v2",
+  "mode": "inactive-fixture-only",
+  "release_id": "inactive-release-2026-05-30-a",
+  "activation_prerequisites": [
+    {
+      "prerequisite_id": "offline-validation-replay",
+      "description": "Replay committed offline validation before any separate human activation decision.",
+      "status": "pending",
+      "required_before": "any_release_activation"
+    }
+  ],
+  "human_approval_placeholders": [
+    {
+      "approval_id": "human-approval-placeholder-1",
+      "status": "not-approved",
+      "required_before_activation": true,
+      "approval_record": null
+    }
+  ],
+  "rollback_confirmations": [
+    {
+      "rollback_confirmation_id": "rollback-confirmation-1",
+      "rollback_plan_reference": "fixture:rollback-plan-reference",
+      "confirmation_status": "pending-human-confirmation"
+    }
+  ],
+  "validation_transcript_placeholders": [
+    {
+      "transcript_placeholder_id": "validation-transcript-placeholder-1",
+      "expected_command_group": "offline-self-test",
+      "status": "placeholder-only",
+      "transcript": null
+    }
+  ],
+  "no_live_access_attestations": [
+    {
+      "attestation_id": "no-live-access-1",
+      "attested": true,
+      "basis": "Fixture-only packet assembled from committed offline review data."
+    }
+  ],
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

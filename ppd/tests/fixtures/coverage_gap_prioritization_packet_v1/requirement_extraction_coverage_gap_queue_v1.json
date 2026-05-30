@@ -1,0 +1,147 @@
+{
+  "queue_version": "requirement_extraction_coverage_gap_queue_v1",
+  "queue_id": "fixture-coverage-gap-queue-v1-20260530",
+  "generated_from_fixture": true,
+  "gaps": [
+    {
+      "gap_id": "gap-action-gate-submit-certification",
+      "category": "action_gates",
+      "severity": "critical",
+      "dependency_stage": "guardrail_bundle",
+      "requirement_id": "req-devhub-certification-gate-pending",
+      "permit_type": "building permit with plan review",
+      "process_stage": "acknowledgement/certification review",
+      "coverage_reason": "Certification and final submission gates need cited fixture coverage before guardrail promotion.",
+      "missing_detail": "Extract the exact source-backed distinction between reversible draft work and attended certification/submission actions.",
+      "dependencies": ["source_record", "requirement_node", "guardrail_bundle"],
+      "source_evidence": [
+        {
+          "source_id": "ppd-devhub-guide-submit-permit-application",
+          "title": "DevHub permit application guide",
+          "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+          "citation": "Guide describes online permit application steps including acknowledgements, upload, and submission flow."
+        }
+      ]
+    },
+    {
+      "gap_id": "gap-fee-trigger-payment-final-submit",
+      "category": "fee_triggers",
+      "severity": "high",
+      "dependency_stage": "requirement_node",
+      "requirement_id": "req-fee-payment-trigger-pending",
+      "permit_type": "all fee-bearing permits",
+      "process_stage": "fee payment",
+      "coverage_reason": "Payment-trigger extraction must separate fee due notices from payment-detail entry and final payment submission.",
+      "missing_detail": "Add fixture evidence for fee payment trigger wording and the attended final payment boundary.",
+      "dependencies": ["source_record", "document_record"],
+      "source_evidence": [
+        {
+          "source_id": "ppd-how-pay-fees-pdf",
+          "title": "How to pay fees",
+          "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+          "citation": "Fee payment guide is the official source anchor for payment workflow extraction."
+        }
+      ]
+    },
+    {
+      "gap_id": "gap-file-rule-single-pdf-supporting-docs",
+      "category": "file_rules",
+      "severity": "high",
+      "dependency_stage": "document_record",
+      "requirement_id": "req-single-pdf-file-rule-pending",
+      "permit_type": "plan review permits",
+      "process_stage": "document preparation",
+      "coverage_reason": "Single PDF and supporting document file rules need fixture-first extraction coverage before process model use.",
+      "missing_detail": "Create follow-up fixtures for plans in one PDF and applications/calculations/supporting documents as separate PDFs.",
+      "dependencies": ["source_record", "document_record"],
+      "source_evidence": [
+        {
+          "source_id": "ppd-submit-plans-online",
+          "title": "Submit Plans Online / Single PDF Process",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "citation": "Single PDF guidance describes drawing plan and supporting document upload expectations."
+        }
+      ]
+    },
+    {
+      "gap_id": "gap-deadline-corrections-review-window",
+      "category": "deadlines",
+      "severity": "medium",
+      "dependency_stage": "requirement_node",
+      "requirement_id": "req-corrections-deadline-pending",
+      "permit_type": "permits with checksheets",
+      "process_stage": "corrections/checksheets",
+      "coverage_reason": "Deadline and temporal scope extraction lacks a review candidate for corrections follow-up wording.",
+      "missing_detail": "Add cited fixture rows for correction response timing and stale-evidence handling.",
+      "dependencies": ["source_record"],
+      "source_evidence": [
+        {
+          "source_id": "ppd-upload-corrections-guide",
+          "title": "Upload corrections guide",
+          "url": "https://www.portland.gov/ppd",
+          "citation": "Official guidance treats correction uploads as authenticated status-dependent workflow steps."
+        }
+      ]
+    },
+    {
+      "gap_id": "gap-form-standard-trade-license-fixtures",
+      "category": "forms",
+      "severity": "medium",
+      "dependency_stage": "requirement_node",
+      "requirement_id": "req-standard-trade-license-form-fields-pending",
+      "permit_type": "standard trade permits",
+      "process_stage": "application data entry",
+      "coverage_reason": "Form-field extraction should account for contractor license facts before draft readiness.",
+      "missing_detail": "Add fixtures for profile/license-dependent fixture options in standard trade permit forms.",
+      "dependencies": ["source_record", "requirement_node"],
+      "source_evidence": [
+        {
+          "source_id": "ppd-online-permitting-tools",
+          "title": "Online permitting tools overview",
+          "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+          "citation": "Online permitting guidance links standard trade permit and DevHub workflows."
+        }
+      ]
+    },
+    {
+      "gap_id": "gap-pdf-application-calculation-supporting-docs",
+      "category": "pdfs",
+      "severity": "medium",
+      "dependency_stage": "document_record",
+      "requirement_id": "req-supporting-pdf-document-classes-pending",
+      "permit_type": "plan review permits",
+      "process_stage": "document preparation",
+      "coverage_reason": "PDF extraction coverage needs document-class candidates for applications, calculations, and supporting documents.",
+      "missing_detail": "Create fixture family that distinguishes plan PDFs from application, calculation, and other supporting PDFs.",
+      "dependencies": ["source_record", "document_record"],
+      "source_evidence": [
+        {
+          "source_id": "ppd-spp-file-naming-standards",
+          "title": "File naming standards and PDF preparation",
+          "url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+          "citation": "File naming and PDF preparation guidance anchors PDF class extraction."
+        }
+      ]
+    },
+    {
+      "gap_id": "gap-permit-type-exception-email-only-paths",
+      "category": "permit_type_exceptions",
+      "severity": "high",
+      "dependency_stage": "process_model",
+      "requirement_id": "req-email-only-permit-exception-pending",
+      "permit_type": "permit types not supported by DevHub",
+      "process_stage": "permit type selection",
+      "coverage_reason": "Permit-type exceptions need ordered review before DevHub process models assume online coverage.",
+      "missing_detail": "Add source-backed fixtures for permit types that require email or other non-DevHub submission paths.",
+      "dependencies": ["source_record", "requirement_node", "process_model"],
+      "source_evidence": [
+        {
+          "source_id": "ppd-apply-for-permits",
+          "title": "Apply for permits",
+          "url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+          "citation": "Apply for permits guidance distinguishes online and alternate submission paths."
+        }
+      ]
+    }
+  ]
+}

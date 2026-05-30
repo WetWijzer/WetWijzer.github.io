@@ -1,0 +1,26 @@
+{
+  "version": "public_crawl_frontier_expansion_plan_v1",
+  "generated_by": "deterministic_test_fixture",
+  "candidates": [
+    {
+      "url": "https://www.portland.gov/ppd/devhub-faqs",
+      "source_page_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "link_text": "DevHub frequently asked questions",
+      "citations": [
+        {
+          "source_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+          "evidence_id": "fixture-public-tools-devhub-faq-link"
+        }
+      ],
+      "allow_skip_decision": "allow"
+    },
+    {
+      "url": "https://example.com/not-ppd",
+      "source_page_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "link_text": "External non-PPD page",
+      "source_evidence_ids": ["fixture-public-faq-external-link"],
+      "allow_skip_decision": "skip",
+      "skip_reason": "outside allowlist"
+    }
+  ]
+}

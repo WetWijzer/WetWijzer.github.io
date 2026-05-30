@@ -1,0 +1,39 @@
+{
+  "ledger_version": "reviewer_disposition_ledger_v1",
+  "ledger_id": "fixture-reviewer-disposition-ledger-valid-v1",
+  "dispositions": [
+    {
+      "disposition_id": "disp-public-guide-gap-safe",
+      "reviewer_owner": "ppd-fixture-reviewer",
+      "status": "accepted_with_blocker",
+      "rationale": "The disposition records a source-grounded offline review finding and keeps the open question blocked for human review.",
+      "citations": [
+        {
+          "source_id": "ppd-devhub-guide-submit-permit-application",
+          "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+        }
+      ],
+      "blocker_status": "unresolved",
+      "blocker_handling": {
+        "status": "blocked",
+        "rationale": "The reviewer cannot resolve the missing owner fact from public fixture evidence, so the disposition remains blocked.",
+        "citations": [
+          "ppd-devhub-guide-submit-permit-application"
+        ]
+      },
+      "artifact_refs": [
+        {
+          "artifact_id": "normalized-public-guide-fixture",
+          "privacy_classification": "public",
+          "raw_body_persisted": false
+        }
+      ],
+      "source_registry_mutation": false,
+      "surface_registry_mutation": false,
+      "guardrail_mutation": false,
+      "release_state_mutation": false,
+      "prompt_mutation": false,
+      "agent_state_mutation": false
+    }
+  ]
+}

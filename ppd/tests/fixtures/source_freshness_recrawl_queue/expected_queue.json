@@ -1,0 +1,113 @@
+[
+  {
+    "candidate_id": "recrawl:pcc-title-33",
+    "anchor_id": "pcc-title-33",
+    "title": "Portland City Code Title 33 Planning and Zoning",
+    "official_source_url": "https://www.portland.gov/code/33",
+    "source_family": "code",
+    "source_family_priority": 10,
+    "queue_reason": "changed",
+    "freshness": {
+      "last_checked_utc": "2026-05-30T00:00:00Z",
+      "last_seen_utc": "2026-05-29T00:00:00Z",
+      "observed_digest": "sha256:fixture-title-33-new",
+      "processor_digest": "sha256:fixture-title-33-old",
+      "is_stale": false,
+      "changed_since_processor": true
+    },
+    "evidence_placeholders": {
+      "stale_or_changed": "Fixture digest differs from processor dry-run digest.",
+      "raw_response_body_stored": false,
+      "downloaded_document_stored": false
+    },
+    "robots_policy_preflight": {
+      "status": "not_run_fixture_only",
+      "robots_txt_url": "https://www.portland.gov/robots.txt",
+      "policy_notes": "Reviewer must run approved preflight before any live crawl."
+    },
+    "processor_handoff_dry_run": {
+      "status": "not_submitted",
+      "target_processor": "ppd-code-processor",
+      "dry_run_reference": "dry-run://ppd/source-freshness-recrawl/pcc-title-33"
+    },
+    "reviewer_approval": {
+      "status": "pending",
+      "approved_by": null,
+      "approved_at_utc": null
+    }
+  },
+  {
+    "candidate_id": "recrawl:trn-admin-rule-streets",
+    "anchor_id": "trn-admin-rule-streets",
+    "title": "Transportation Administrative Rules for Streets",
+    "official_source_url": "https://www.portland.gov/transportation/administrative-rules",
+    "source_family": "administrative_rule",
+    "source_family_priority": 30,
+    "queue_reason": "stale",
+    "freshness": {
+      "last_checked_utc": "2026-05-30T00:00:00Z",
+      "last_seen_utc": "2026-03-01T00:00:00Z",
+      "observed_digest": "sha256:fixture-trn-rules",
+      "processor_digest": "sha256:fixture-trn-rules",
+      "is_stale": true,
+      "changed_since_processor": false
+    },
+    "evidence_placeholders": {
+      "stale_or_changed": "Fixture last_seen_utc exceeds freshness threshold.",
+      "raw_response_body_stored": false,
+      "downloaded_document_stored": false
+    },
+    "robots_policy_preflight": {
+      "status": "not_run_fixture_only",
+      "robots_txt_url": "https://www.portland.gov/robots.txt",
+      "policy_notes": "Reviewer must run approved preflight before any live crawl."
+    },
+    "processor_handoff_dry_run": {
+      "status": "not_submitted",
+      "target_processor": "ppd-rule-processor",
+      "dry_run_reference": "dry-run://ppd/source-freshness-recrawl/trn-admin-rule-streets"
+    },
+    "reviewer_approval": {
+      "status": "pending",
+      "approved_by": null,
+      "approved_at_utc": null
+    }
+  },
+  {
+    "candidate_id": "recrawl:bds-fee-schedule",
+    "anchor_id": "bds-fee-schedule",
+    "title": "BDS Fee Schedule",
+    "official_source_url": "https://www.portland.gov/bds/fees",
+    "source_family": "fee_schedule",
+    "source_family_priority": 40,
+    "queue_reason": "changed",
+    "freshness": {
+      "last_checked_utc": "2026-05-30T00:00:00Z",
+      "last_seen_utc": "2026-05-01T00:00:00Z",
+      "observed_digest": "sha256:fixture-fees-new",
+      "processor_digest": "sha256:fixture-fees-old",
+      "is_stale": true,
+      "changed_since_processor": true
+    },
+    "evidence_placeholders": {
+      "stale_or_changed": "Fixture indicates stale source and digest drift.",
+      "raw_response_body_stored": false,
+      "downloaded_document_stored": false
+    },
+    "robots_policy_preflight": {
+      "status": "not_run_fixture_only",
+      "robots_txt_url": "https://www.portland.gov/robots.txt",
+      "policy_notes": "Reviewer must run approved preflight before any live crawl."
+    },
+    "processor_handoff_dry_run": {
+      "status": "not_submitted",
+      "target_processor": "ppd-fee-processor",
+      "dry_run_reference": "dry-run://ppd/source-freshness-recrawl/bds-fee-schedule"
+    },
+    "reviewer_approval": {
+      "status": "pending",
+      "approved_by": null,
+      "approved_at_utc": null
+    }
+  }
+]

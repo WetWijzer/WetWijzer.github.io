@@ -1,0 +1,29 @@
+{
+  "plan_version": "post_promotion_guarded_agent_replay_plan_v1",
+  "plan_id": "synthetic-post-promotion-guarded-agent-replay-plan-v1",
+  "rollback_checkpoint_reference": "rollback-checkpoint:ppd-fixture-first-post-promotion-guarded-replay-v1",
+  "scenarios": [
+    {
+      "order": 2,
+      "scenario_id": "guarded-agent-blocks-official-submission",
+      "expected_guarded_outcome": "block",
+      "cited_scenario_references": [
+        "plan:official-action-prohibition",
+        "guardrail:no-submission-certification-or-upload"
+      ],
+      "prior_mismatch_id": "mismatch-carry-forward-002",
+      "prior_mismatch_summary": "Prior plan required explicit official-action block evidence.",
+      "carry_forward_required": true
+    },
+    {
+      "order": 1,
+      "scenario_id": "guarded-agent-allows-offline-fixture-validation",
+      "expected_guarded_outcome": "pass",
+      "cited_scenario_references": [
+        "plan:fixture-first-validation",
+        "guardrail:no-live-agent-run"
+      ],
+      "carry_forward_required": false
+    }
+  ]
+}

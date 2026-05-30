@@ -1,0 +1,52 @@
+{
+  "checklist_id": "inactive-release-activation-checklist-v2",
+  "status": "inactive",
+  "release": "attended-devhub-readonly-observation-readiness-v2",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "activation_items": [
+    {
+      "item_id": "attended-session-prerequisites",
+      "title": "Confirm ordered attended-session prerequisites",
+      "source_scope": "devhub_read_only_surfaces",
+      "readiness_gate": "manual_review_required"
+    },
+    {
+      "item_id": "manual-login-handoff-placeholders",
+      "title": "Prepare manual-login handoff placeholders",
+      "source_scope": "user_attended_login_only",
+      "readiness_gate": "user_attendance_required"
+    },
+    {
+      "item_id": "readonly-surface-observation-placeholders",
+      "title": "Prepare read-only surface observation placeholders",
+      "source_scope": "account_scoped_read_only_metadata",
+      "readiness_gate": "placeholder_review_required"
+    },
+    {
+      "item_id": "redaction-checklist-placeholders",
+      "title": "Prepare redaction checklist placeholders",
+      "source_scope": "commit_safe_metadata_only",
+      "readiness_gate": "redaction_review_required"
+    },
+    {
+      "item_id": "action-boundary-reminders",
+      "title": "Confirm action-boundary reminders",
+      "source_scope": "blocked_consequential_actions",
+      "readiness_gate": "operator_acknowledgement_required"
+    }
+  ],
+  "source_groups": [
+    {
+      "source_group_id": "devhub_home_readonly",
+      "canonical_hosts": ["devhub.portlandoregon.gov"]
+    },
+    {
+      "source_group_id": "devhub_permits_requests_readonly",
+      "canonical_hosts": ["devhub.portlandoregon.gov"]
+    },
+    {
+      "source_group_id": "devhub_status_messages_readonly",
+      "canonical_hosts": ["devhub.portlandoregon.gov"]
+    }
+  ]
+}

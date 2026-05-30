@@ -1,0 +1,134 @@
+{
+  "browser_or_session_artifacts_created": false,
+  "devhub_opened": false,
+  "manual_follow_up_notes": [
+    {
+      "note_id": "manual-follow-up-synthetic_observation_step_01",
+      "note_status": "placeholder_only_pending_reviewer",
+      "required_manual_checks": [
+        "confirm redaction placeholders remain value-free",
+        "confirm action refs remain read-only",
+        "confirm no surface-map mutation is requested"
+      ],
+      "reviewer_notes": null,
+      "source_manifest_step_id": "synthetic_observation_step_01",
+      "surface_id": "devhub_home_attended_redacted"
+    }
+  ],
+  "mode": "offline_fixture_only",
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/devhub/read_only_observation_reviewer_disposition_packet_v1.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_read_only_observation_reviewer_disposition_packet_v1.py"
+    ]
+  ],
+  "official_actions_allowed": false,
+  "ordered_reviewer_observations": [
+    {
+      "approved_reason_codes": [
+        "APPROVED_OFFLINE_FIXTURE_ONLY",
+        "APPROVED_READ_ONLY_ACTION_REFS_ONLY",
+        "APPROVED_NO_PRIVATE_VALUES_STORED"
+      ],
+      "blocked_confirmation_ref": "blocked-consequential-actions-v1",
+      "hold_reason_codes": [
+        "HOLD_PENDING_HUMAN_REDACTION_CONFIRMATION"
+      ],
+      "manual_follow_up_note_ref": "manual-follow-up-synthetic_observation_step_01",
+      "observation_id": "reviewer-observation-01",
+      "observation_order": 1,
+      "read_only_action_classification_refs": [
+        "read_only:view_devhub_home"
+      ],
+      "redaction_placeholder_refs": [
+        "redaction-signed_in_account_indicator",
+        "redaction-my_permits_requests_link"
+      ],
+      "reviewer_disposition": "approve_read_only_with_placeholders",
+      "source_manifest_step_id": "synthetic_observation_step_01",
+      "surface_id": "devhub_home_attended_redacted",
+      "surface_label": "DevHub Home",
+      "surface_map_delta_placeholder_ref": "surface-delta-synthetic_observation_step_01"
+    }
+  ],
+  "packet_id": "devhub_attended_observation_reviewer_disposition_packet_v1_fixture",
+  "private_values_stored": false,
+  "read_only_surface_map_delta_placeholders": [
+    {
+      "delta_id": "surface-delta-synthetic_observation_step_01",
+      "delta_status": "placeholder_only_no_active_surface_map_change",
+      "field_delta_placeholders": [
+        {
+          "expected_accessible_name": "signed-in account indicator",
+          "expected_accessible_role": "text",
+          "field_key": "signed_in_account_indicator",
+          "observed_selector": null,
+          "observed_state": null
+        },
+        {
+          "expected_accessible_name": "My Permits & Requests",
+          "expected_accessible_role": "link",
+          "field_key": "my_permits_requests_link",
+          "observed_selector": null,
+          "observed_state": null
+        }
+      ],
+      "proposed_delta": null,
+      "registry_mutation_allowed": false,
+      "source_manifest_step_id": "synthetic_observation_step_01",
+      "surface_id": "devhub_home_attended_redacted"
+    }
+  ],
+  "redaction_confirmation_placeholders": [
+    {
+      "confirmation_status": "pending_human_confirmation",
+      "field_key": "signed_in_account_indicator",
+      "placeholder_id": "redaction-signed_in_account_indicator",
+      "redaction_reason": "account_identity_private_value",
+      "reviewer_confirmation": null,
+      "stored_value": null
+    },
+    {
+      "confirmation_status": "pending_human_confirmation",
+      "field_key": "my_permits_requests_link",
+      "placeholder_id": "redaction-my_permits_requests_link",
+      "redaction_reason": "navigation_label_only_no_private_value_expected",
+      "reviewer_confirmation": null,
+      "stored_value": null
+    }
+  ],
+  "blocked_consequential_action_confirmations": [
+    {
+      "blocked_action_categories": [
+        "certification",
+        "payment",
+        "purchase",
+        "schedule",
+        "submit",
+        "upload",
+        "withdraw"
+      ],
+      "confirmation_id": "blocked-consequential-actions-v1",
+      "confirmation_status": "blocked_by_policy",
+      "manual_stop_checkpoint_refs": [
+        "stop_before_auth_boundary",
+        "stop_before_private_value_capture",
+        "stop_before_reversible_draft_action",
+        "stop_before_official_action"
+      ],
+      "official_action_allowed": false
+    }
+  ],
+  "schema_version": "devhub_read_only_observation_reviewer_disposition_packet_v1",
+  "source_manifest_id": "devhub_attended_observation_dry_run_manifest_v1_fixture",
+  "source_manifest_schema_version": "devhub_read_only_observation_dry_run_manifest_v1",
+  "surface_map_mutation_allowed": false
+}

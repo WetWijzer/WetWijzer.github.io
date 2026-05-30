@@ -1,0 +1,154 @@
+{
+  "reviewer_disposition_packet_v2": {
+    "packet_version": "reviewer_disposition_packet_v2",
+    "disposition_rows": [
+      {
+        "artifact_id": "inactive-preview-alpha",
+        "title": "Fixture promotion patch for inactive alpha source",
+        "disposition": "approve",
+        "reviewer_owner": "ppd-reviewer-a",
+        "rationale": [
+          "fixture evidence supports offline rehearsal readiness"
+        ],
+        "citations": [
+          "reviewer:alpha:approved"
+        ]
+      },
+      {
+        "artifact_id": "inactive-preview-beta",
+        "title": "Fixture promotion patch for inactive beta source",
+        "disposition": "block",
+        "reviewer_owner": "ppd-reviewer-b",
+        "rationale": [
+          "reviewer disposition carries unresolved blocker"
+        ],
+        "citations": [
+          "reviewer:beta:blocker"
+        ]
+      }
+    ],
+    "exact_validation_commands": [
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ]
+    ],
+    "rollback_checkpoints": [
+      {
+        "artifact_id": "inactive-preview-alpha",
+        "checkpoint": "restore alpha inactive fixture baseline before any later supervised release",
+        "citation": "reviewer:alpha:rollback"
+      },
+      {
+        "artifact_id": "inactive-preview-beta",
+        "checkpoint": "keep beta inactive fixture blocked until reviewer reconciliation",
+        "citation": "reviewer:beta:rollback"
+      }
+    ]
+  },
+  "inactive_promotion_patch_preview_v1": {
+    "id": "inactive-promotion-patch-preview-v1",
+    "version": 1,
+    "preview_rows": [
+      {
+        "id": "preview-row-alpha",
+        "artifact_id": "inactive-preview-alpha",
+        "source_evidence": [
+          "preview:alpha:source-evidence"
+        ],
+        "citation": "preview:alpha:citation"
+      },
+      {
+        "id": "preview-row-beta",
+        "artifact_id": "inactive-preview-beta",
+        "source_evidence": [
+          "preview:beta:source-evidence"
+        ],
+        "citation": "preview:beta:citation"
+      }
+    ],
+    "validation_inventory": [
+      [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_promotion_patch_preview_v1.py"
+      ]
+    ],
+    "rollback_checkpoints": [
+      "restore inactive preview fixture family before future supervised release rehearsal"
+    ]
+  },
+  "action_journal_acceptance_packet_v1": {
+    "packet_version": "action-journal-acceptance-packet-v1",
+    "offline_validation_commands": [
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ]
+    ],
+    "journal_events": [
+      {
+        "event_id": "journal-alpha-clean",
+        "event_type": "public_crawl_preflight",
+        "citations": [
+          "journal:alpha:clean"
+        ]
+      }
+    ]
+  },
+  "public_source_refresh_evidence_intake_packet_v1": {
+    "packet_version": "public_source_refresh_evidence_intake_packet_v1",
+    "offline_validation_commands": [
+      [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_public_source_refresh_evidence_intake.py"
+      ]
+    ],
+    "intake_rows": [
+      {
+        "row_id": "public-alpha-current",
+        "citations": [
+          "public:alpha:current"
+        ]
+      },
+      {
+        "row_id": "public-beta-current",
+        "citations": [
+          "public:beta:current"
+        ]
+      }
+    ]
+  },
+  "devhub_observation_evidence_intake_packet_v1": {
+    "packet_version": "devhub_observation_evidence_intake_packet_v1",
+    "offline_validation_commands": [
+      [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_devhub_observation_evidence_packet.py"
+      ]
+    ],
+    "observations": [
+      {
+        "observation_id": "devhub-alpha-redacted",
+        "review_status": "accepted",
+        "evidence_ids": [
+          "devhub:alpha:redacted"
+        ]
+      },
+      {
+        "observation_id": "devhub-beta-redacted",
+        "review_status": "accepted",
+        "evidence_ids": [
+          "devhub:beta:redacted"
+        ]
+      }
+    ]
+  }
+}

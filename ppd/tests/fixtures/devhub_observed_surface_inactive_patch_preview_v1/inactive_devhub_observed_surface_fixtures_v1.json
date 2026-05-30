@@ -1,0 +1,63 @@
+{
+  "version": "inactive-devhub-observed-surface-fixtures-v1",
+  "surfaces": [
+    {
+      "surface_id": "inactive-devhub-home-permit-search",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "state": "inactive",
+      "observed_fields": {
+        "label": "Permit search",
+        "selector": "input[name='q']",
+        "validation_message": "Enter a search value.",
+        "redaction_policy": "Redact private account and permit values.",
+        "attendance_gate": "manual-review-recorded",
+        "selector_confidence_note": "Selector is plausible but under-scoped."
+      },
+      "observation_evidence_ids": [
+        "obs-home-label-redacted",
+        "obs-home-selector-redacted"
+      ],
+      "blocked_actions": []
+    },
+    {
+      "surface_id": "inactive-devhub-correction-upload",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "state": "inactive",
+      "observed_fields": {
+        "label": "Upload correction",
+        "selector": "button.upload-correction",
+        "validation_message": "Choose a file.",
+        "redaction_policy": "Do not store files or private document names.",
+        "attendance_gate": "manual-review-recorded",
+        "selector_confidence_note": "Upload selector is intentionally blocked for read-only preview."
+      },
+      "observation_evidence_ids": [
+        "obs-upload-label-redacted",
+        "obs-upload-blocked-action-redacted"
+      ],
+      "blocked_actions": [
+        {
+          "action_id": "upload-correction",
+          "reason": "Official correction uploads are consequential and cannot be preview-applied."
+        }
+      ]
+    },
+    {
+      "surface_id": "inactive-permit-detail-status",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_b.json",
+      "state": "inactive",
+      "observed_fields": {
+        "label": "Permit status",
+        "selector": "section.status-summary",
+        "validation_message": "Status is visible for read-only review.",
+        "redaction_policy": "Redact private record identifiers.",
+        "attendance_gate": "manual-review-recorded",
+        "selector_confidence_note": "No reviewer disposition requested for this surface."
+      },
+      "observation_evidence_ids": [
+        "obs-status-summary-redacted"
+      ],
+      "blocked_actions": []
+    }
+  ]
+}

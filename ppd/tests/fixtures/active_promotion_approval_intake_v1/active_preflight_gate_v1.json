@@ -1,0 +1,46 @@
+{
+  "packet_type": "ppd.active_promotion_preflight_gate.v1",
+  "packet_id": "fixture-active-promotion-preflight-gate-v1-for-approval-intake",
+  "final_go_no_go_rows": [
+    {
+      "row_id": "final-no-go-fixture-row",
+      "decision": "no_go",
+      "reason": "Fixture remains offline and inactive until manual review is complete.",
+      "citations": ["fixture-active-preflight-citation"]
+    },
+    {
+      "row_id": "active-boundary-blocked-row",
+      "decision": "blocked",
+      "reason": "Active mutation boundaries remain blocked for reviewer intake.",
+      "citations": ["fixture-active-mutation-blocker-citation"]
+    }
+  ],
+  "human_approval_placeholders": [
+    {
+      "placeholder_id": "human-approval-placeholder-fixture",
+      "required_actor": "human_reviewer",
+      "status": "manual_confirmation_required"
+    }
+  ],
+  "active_mutation_blocker_inventory": [
+    {
+      "blocker_id": "block-active-mutation-fixture",
+      "blocked_surface": "active promotion state",
+      "status": "blocked"
+    }
+  ],
+  "validation_replay_checklist": [
+    {
+      "check_id": "replay-daemon-self-test",
+      "command": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+      "status": "pending_offline_replay"
+    }
+  ],
+  "rollback_readiness_summary": {
+    "status": "available",
+    "summary": "Discard the offline fixture packet; no active state is changed."
+  },
+  "release_state_nonmutation_notes": [
+    "Release state remains unchanged by this fixture-first preflight packet."
+  ]
+}

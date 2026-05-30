@@ -1,0 +1,32 @@
+{
+  "packet_id": "inactive-release-decision-packet-v2-fixture",
+  "schema_version": "inactive_release_decision_packet.v2",
+  "release_items": [
+    {
+      "order": 2,
+      "artifact_id": "inactive-beta",
+      "title": "Inactive beta release candidate",
+      "decision": "hold",
+      "readiness": "not_ready",
+      "unresolved_blockers": ["missing reviewer handoff owner"],
+      "no_go_reasons": ["rollback rehearsal owner not assigned"],
+      "prerequisite_validation_commands": [
+        "python3 ppd/daemon/ppd_daemon.py --self-test"
+      ],
+      "reviewer_handoff_placeholder": "reviewer_handoff_pending: inactive-beta"
+    },
+    {
+      "order": 1,
+      "artifact_id": "inactive-alpha",
+      "title": "Inactive alpha release candidate",
+      "decision": "conditional_go",
+      "readiness": "needs_review",
+      "unresolved_holds": ["awaiting legal review"],
+      "prerequisite_validation_commands": [
+        "python3 ppd/daemon/ppd_daemon.py --self-test",
+        "python3 -m pytest ppd/tests/test_release_readiness_digest.py"
+      ],
+      "reviewer_handoff_placeholder": "reviewer_handoff_pending: inactive-alpha"
+    }
+  ]
+}

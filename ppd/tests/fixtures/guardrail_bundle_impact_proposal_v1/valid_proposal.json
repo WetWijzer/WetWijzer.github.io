@@ -1,0 +1,47 @@
+{
+  "proposal_id": "guardrail_bundle_impact_proposal_v1:detached-adu-demo",
+  "proposal_version": "v1",
+  "fixture_first": true,
+  "affected_guardrail_bundle_ids": ["guardrail-detached-adu-devhub-v1"],
+  "affected_process_ids": ["process-detached-adu-devhub-v1"],
+  "affected_requirement_ids": ["requirement-submit-plans-single-pdf", "requirement-exact-confirmation-submit"],
+  "reviewer_owner": "fixture-guardrail-reviewer",
+  "rollback_note": "Discard this proposal packet and leave active guardrails, requirements, process models, prompts, release state, and agent state unchanged.",
+  "dependency_order": ["gbip-v1-predicate", "gbip-v1-explanation-template"],
+  "proposed_impacts": [
+    {
+      "impact_id": "gbip-v1-predicate",
+      "category": "predicate",
+      "summary": "Propose a cited predicate impact for exact-confirmation review only.",
+      "citations": ["source:ppd-devhub-guide:submit-permit-application", "requirement:requirement-exact-confirmation-submit"],
+      "affected_guardrail_bundle_ids": ["guardrail-detached-adu-devhub-v1"],
+      "affected_process_ids": ["process-detached-adu-devhub-v1"],
+      "affected_requirement_ids": ["requirement-exact-confirmation-submit"],
+      "dependency_order": 1,
+      "reviewer_owner": "fixture-guardrail-reviewer",
+      "rollback_note": "Drop this row before compilation if citation continuity or reviewer approval is missing."
+    },
+    {
+      "impact_id": "gbip-v1-explanation-template",
+      "category": "explanation_template",
+      "summary": "Propose a cited explanation-template impact for missing document review only.",
+      "citations": ["source:ppd-single-pdf-process", "requirement:requirement-submit-plans-single-pdf"],
+      "affected_guardrail_bundle_ids": ["guardrail-detached-adu-devhub-v1"],
+      "affected_process_ids": ["process-detached-adu-devhub-v1"],
+      "affected_requirement_ids": ["requirement-submit-plans-single-pdf"],
+      "dependency_order": 2,
+      "reviewer_owner": "fixture-guardrail-reviewer",
+      "rollback_note": "Drop this row before compilation if citation continuity or reviewer approval is missing."
+    }
+  ],
+  "mutation_policy": {
+    "mutates_sources": false,
+    "mutates_documents": false,
+    "mutates_requirements": false,
+    "mutates_process_models": false,
+    "mutates_guardrails": false,
+    "mutates_prompts": false,
+    "mutates_release_state": false,
+    "mutates_agent_state": false
+  }
+}

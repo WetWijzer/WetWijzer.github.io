@@ -1,0 +1,41 @@
+{
+  "version": "human-release-handoff-packet-v1",
+  "packet_id": "fixture-human-release-handoff-v1-safe",
+  "recommendations": [
+    {
+      "summary": "Keep the release human reviewed and limited to deterministic fixture validation.",
+      "citations": [
+        "ppd-plan:non-negotiable-boundaries",
+        "ppd-plan:repository-boundary"
+      ]
+    }
+  ],
+  "inspectable_fixture_families": [
+    "release_handoff_packet_v1"
+  ],
+  "unresolved_blockers_disclosed": true,
+  "unresolved_blockers": [],
+  "rollback_checklist": [
+    "Remove the proposed PP&D-only validator files if validation fails."
+  ],
+  "post_apply_validation_checklist": [
+    "Run the PP&D daemon self-test.",
+    "Confirm the handoff packet validator rejects unsafe fixture variants."
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "release_handoff_packet_v1_fixture",
+      "path": "ppd/tests/fixtures/release_handoff_packet_v1/valid_packet.json",
+      "privacy_classification": "synthetic",
+      "auth_scope": "none"
+    }
+  ],
+  "mutation_flags": {
+    "source-registry": false,
+    "surface-registry": false,
+    "guardrail": false,
+    "prompt": false,
+    "release-state": false,
+    "agent-state": false
+  }
+}

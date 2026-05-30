@@ -1,0 +1,24 @@
+{
+  "fixture_id": "fixture_first_guardrail_bundle_impact_proposal_v1_source_packets",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "reviewer_owner": "ppd-guardrail-reviewer",
+  "input_fixture_paths": {
+    "process_model_impact_proposal_v1": "../process_model_impact_proposal_v1/valid_proposal.json",
+    "requirement_formalization_candidate_packet_v1": "../requirement_formalization_candidate_packet_v1/valid_packet.json",
+    "guardrail_bundle_fixtures": [
+      "../formal_logic/archived_ppd_residential_permit_guardrails.json"
+    ]
+  },
+  "expected_affected_guardrail_bundle_ids": [
+    "archived_ppd_residential_permit_guardrails_v1"
+  ],
+  "expected_impact_types": [
+    "proposed_predicate",
+    "explanation_template",
+    "exact_confirmation",
+    "refused_action",
+    "reversible_action",
+    "temporal_rule"
+  ],
+  "scope_note": "Fixture-only impact proposal inputs. These paths point at committed PP&D test fixtures and do not reference private DevHub artifacts, raw crawl output, prompts, process model state, release state, or agent state."
+}

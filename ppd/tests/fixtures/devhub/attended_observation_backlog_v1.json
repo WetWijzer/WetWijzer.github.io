@@ -1,0 +1,103 @@
+{
+  "packet_version": "devhub-attended-readonly-observation-backlog-v1",
+  "fixture_kind": "synthetic_devhub_surface_observations",
+  "fixture_id": "synthetic-devhub-readonly-observations-20260530-v1",
+  "packet_id": "devhub-attended-readonly-observation-backlog-20260530-v1",
+  "defaults": {
+    "redaction_requirements": [
+      "replace permit numbers, application numbers, IVR numbers, addresses, names, emails, phone numbers, account identifiers, invoice numbers, and private document labels with typed placeholders",
+      "record only UI structure, visible label categories, and synthetic status categories",
+      "do not store screenshots, traces, HAR files, browser storage, cookies, auth state, raw authenticated HTML, or private field values"
+    ],
+    "manual_attendance_checkpoints": [
+      "user opens DevHub in a visible browser and completes login, MFA, CAPTCHA, or security prompts manually",
+      "observer pauses before any button or link that could submit, certify, upload, pay, schedule, cancel, withdraw, extend, reactivate, or change account settings",
+      "observer confirms the next step remains read-only before recording any redacted surface structure"
+    ],
+    "offline_validation_commands": [
+      ["python3", "-m", "py_compile", "ppd/devhub/attended_observation_backlog.py"],
+      ["python3", "-m", "pytest", "ppd/tests/test_devhub_attended_observation_backlog.py"],
+      ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+    ]
+  },
+  "synthetic_surfaces": [
+    {
+      "surface_id": "devhub_home",
+      "objective": "Observe the authenticated home surface navigation and read-only account-scoped entry points using synthetic labels only.",
+      "allowed_observations": ["observe_accessible_structure"],
+      "safe_read_only_evidence_needs": [
+        "presence of page heading or equivalent home landmark",
+        "presence of navigation categories for permits, requests, payments, inspections, or messages without opening consequential workflows"
+      ],
+      "blocked_consequential_actions": [
+        "submit permit request",
+        "purchase trade permit",
+        "enter payment details",
+        "schedule inspection",
+        "change account_security settings"
+      ]
+    },
+    {
+      "surface_id": "my_permits_requests",
+      "objective": "Observe the list structure for permits and requests without storing private identifiers or opening official action controls.",
+      "allowed_observations": ["observe_accessible_structure", "observe_status_text"],
+      "safe_read_only_evidence_needs": [
+        "redacted table or list column labels",
+        "synthetic status category vocabulary such as draft, under review, corrections, issued, or closed"
+      ],
+      "blocked_consequential_actions": [
+        "submit draft application",
+        "upload correction to official record",
+        "cancel or withdraw request",
+        "request extension or reactivation"
+      ]
+    },
+    {
+      "surface_id": "permit_detail_status",
+      "objective": "Observe permit detail status regions and messages in a redacted read-only manner.",
+      "allowed_observations": ["observe_accessible_structure", "observe_status_text", "observe_correction_request_presence"],
+      "safe_read_only_evidence_needs": [
+        "redacted status region labels",
+        "presence or absence of correction request sections without correction text",
+        "review group status categories without private reviewer notes"
+      ],
+      "blocked_consequential_actions": [
+        "certify acknowledgement",
+        "submit permit request",
+        "upload correction to official record",
+        "cancel or withdraw permit"
+      ]
+    },
+    {
+      "surface_id": "fee_notice_review",
+      "objective": "Observe whether fee notice review surfaces expose read-only fee status cues while blocking financial actions.",
+      "allowed_observations": ["observe_accessible_structure", "observe_fee_notice_presence"],
+      "safe_read_only_evidence_needs": [
+        "presence of fee notice or balance due category without amount capture",
+        "labels for payment information sections without opening payment entry"
+      ],
+      "blocked_consequential_actions": [
+        "enter payment details",
+        "submit payment",
+        "save payment receipt",
+        "purchase trade permit"
+      ]
+    },
+    {
+      "surface_id": "attachments_and_inspections_review",
+      "objective": "Observe attachment list and inspection result structures without downloads, uploads, scheduling, or private document capture.",
+      "allowed_observations": ["observe_attachment_list_structure", "observe_inspection_result_presence"],
+      "safe_read_only_evidence_needs": [
+        "attachment category labels without filenames or downloads",
+        "inspection result category labels without private notes",
+        "presence of upload or schedule controls only as blocked-action evidence"
+      ],
+      "blocked_consequential_actions": [
+        "upload document to official record",
+        "schedule inspection",
+        "cancel inspection",
+        "submit inspection request"
+      ]
+    }
+  ]
+}

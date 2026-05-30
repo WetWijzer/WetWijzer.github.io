@@ -1,0 +1,36 @@
+{
+  "proposal_id": "process-model-impact-proposal-v1-detached-adu",
+  "proposal_version": "v1",
+  "process_id": "process-detached-adu-devhub-v1",
+  "guardrail_bundle_id": "guardrail-detached-adu-devhub-v1",
+  "source_evidence_ids": [
+    "ppd-source:apply-permits",
+    "ppd-source:devhub-submit-permit-application",
+    "ppd-source:submit-plans-online"
+  ],
+  "proposed_impacts": [
+    {
+      "impact_id": "pmip-required-facts-address-owner",
+      "category": "required_user_facts",
+      "citations": [
+        "process:detached-adu:required-facts",
+        "ppd-source:apply-permits"
+      ]
+    },
+    {
+      "impact_id": "pmip-missing-documents-site-plan",
+      "category": "missing_documents",
+      "citations": [
+        "process:detached-adu:required-documents",
+        "ppd-source:submit-plans-online"
+      ]
+    },
+    {
+      "impact_id": "pmip-next-safe-actions-draft-plan",
+      "category": "next_safe_actions",
+      "citations": [
+        "process:detached-adu:reversible-draft-actions"
+      ]
+    }
+  ]
+}

@@ -1,9 +1,9 @@
-"""Validation for DevHub read-only observation rehearsal v1 packets.
+"""Validation for DevHub read-only observation evidence intake packet v1.
 
 These packets are offline review artifacts. They may describe redacted, cited UI
 observations, but they must not contain private account values, browser/session
-artifacts, write-capable actions, consequential action language, or active state
-mutation flags.
+artifacts, write-capable actions, consequential action language, automated auth
+handling, or active state mutation flags.
 """
 
 from __future__ import annotations
@@ -63,8 +63,24 @@ PRIVATE_VALUE_KEY_PARTS = (
     "permit_number",
     "ivr_number",
     "license_number",
+    "account_id",
+    "username",
+    "password",
     "email",
     "phone",
+)
+
+AUTH_AUTOMATION_KEY_PARTS = (
+    "automated_login",
+    "login_automation",
+    "captcha_automation",
+    "automated_captcha",
+    "mfa_automation",
+    "automated_mfa",
+    "account_creation",
+    "create_account",
+    "register_account",
+    "password_recovery",
 )
 
 PRIVATE_VALUE_PATTERNS = (
@@ -103,6 +119,12 @@ WRITE_ACTION_PATTERNS = (
     re.compile(r"\bwrite[-_ ]?capable\b", re.IGNORECASE),
 )
 
+AUTH_AUTOMATION_TEXT_RE = re.compile(
+    r"\b(?:automate|automated|auto[- ]?complete|script|bypass|solve|handle|perform)\b.{0,50}\b(?:login|sign[- ]?in|captcha|mfa|multi[- ]?factor|one[- ]?time code|otp|account creation|create account|register account|password recovery)\b|"
+    r"\b(?:login|sign[- ]?in|captcha|mfa|multi[- ]?factor|one[- ]?time code|otp|account creation|create account|register account|password recovery)\b.{0,50}\b(?:automate|automated|auto[- ]?complete|script|bypass|solve|handle|perform)\b",
+    re.IGNORECASE,
+)
+
 OFFICIAL_ACTION_LANGUAGE_RE = re.compile(
     r"\b(?:certif(?:y|ies|ication)|acknowledg(?:e|ement)|submit|submission|submitted|payment|pay|paid|purchase|upload|attach|schedule|scheduling|cancel|cancellation|withdraw|reactivate|inspection)\b",
     re.IGNORECASE,
@@ -129,7 +151,7 @@ class ObservationRehearsalViolation:
 
 
 class ObservationRehearsalValidationError(ValueError):
-    """Raised when a read-only observation rehearsal packet is unsafe."""
+    """Raised when a read-only observation evidence intake packet is unsafe."""
 
     def __init__(self, violations: Sequence[ObservationRehearsalViolation]) -> None:
         self.violations = tuple(violations)
@@ -138,7 +160,7 @@ class ObservationRehearsalValidationError(ValueError):
 
 
 def validate_devhub_readonly_observation_rehearsal_v1(packet: Mapping[str, Any]) -> list[ObservationRehearsalViolation]:
-    """Return all validation violations for a rehearsal packet."""
+    """Return all validation violations for a DevHub observation evidence intake packet v1."""
 
     violations: list[ObservationRehearsalViolation] = []
     if not isinstance(packet, Mapping):
@@ -151,18 +173,36 @@ def validate_devhub_readonly_observation_rehearsal_v1(packet: Mapping[str, Any])
     return violations
 
 
+def validate_devhub_observation_evidence_intake_packet_v1(packet: Mapping[str, Any]) -> list[ObservationRehearsalViolation]:
+    """Alias for the DevHub observation evidence intake packet v1 validator."""
+
+    return validate_devhub_readonly_observation_rehearsal_v1(packet)
+
+
 def assert_valid_devhub_readonly_observation_rehearsal_v1(packet: Mapping[str, Any]) -> None:
-    """Raise when a packet is not safe read-only rehearsal evidence."""
+    """Raise when a packet is not safe read-only observation evidence."""
 
     violations = validate_devhub_readonly_observation_rehearsal_v1(packet)
     if violations:
         raise ObservationRehearsalValidationError(violations)
 
 
+def assert_valid_devhub_observation_evidence_intake_packet_v1(packet: Mapping[str, Any]) -> None:
+    """Raise when a DevHub observation evidence intake packet v1 is unsafe."""
+
+    assert_valid_devhub_readonly_observation_rehearsal_v1(packet)
+
+
 def packet_is_valid_devhub_readonly_observation_rehearsal_v1(packet: Mapping[str, Any]) -> bool:
     """Return True only for packets accepted by the v1 validator."""
 
     return not validate_devhub_readonly_observation_rehearsal_v1(packet)
+
+
+def packet_is_valid_devhub_observation_evidence_intake_packet_v1(packet: Mapping[str, Any]) -> bool:
+    """Return True only for accepted DevHub observation evidence intake packet v1 data."""
+
+    return packet_is_valid_devhub_readonly_observation_rehearsal_v1(packet)
 
 
 def _validate_ui_observations(packet: Mapping[str, Any], violations: list[ObservationRehearsalViolation]) -> None:
@@ -172,7 +212,7 @@ def _validate_ui_observations(packet: Mapping[str, Any], violations: list[Observ
             ObservationRehearsalViolation(
                 "uncited_ui_evidence",
                 "$.ui_observations",
-                "read-only rehearsals require cited UI observation evidence",
+                "read-only intake packets require cited UI observation evidence",
             )
         )
         return
@@ -290,13 +330,15 @@ def _scan_key_value(key: str, value: Any, path: str, violations: list[Observatio
     if any(part in key for part in SESSION_KEY_PARTS) and _is_present(value):
         violations.append(ObservationRehearsalViolation("session_file_artifact", path, "session files and auth state are not allowed"))
     if any(part in key for part in SCREENSHOT_KEY_PARTS) and _is_present(value):
-        violations.append(ObservationRehearsalViolation("screenshot_artifact", path, "screenshots are not allowed in committed rehearsal packets"))
+        violations.append(ObservationRehearsalViolation("screenshot_artifact", path, "screenshots are not allowed in committed intake packets"))
     if any(part in key for part in TRACE_KEY_PARTS) and _is_present(value):
-        violations.append(ObservationRehearsalViolation("trace_artifact", path, "browser traces are not allowed in committed rehearsal packets"))
+        violations.append(ObservationRehearsalViolation("trace_artifact", path, "browser traces are not allowed in committed intake packets"))
     if any(part in key for part in HAR_KEY_PARTS) and _is_present(value):
-        violations.append(ObservationRehearsalViolation("har_artifact", path, "HAR artifacts are not allowed in committed rehearsal packets"))
+        violations.append(ObservationRehearsalViolation("har_artifact", path, "HAR artifacts are not allowed in committed intake packets"))
     if any(part in key for part in PRIVATE_VALUE_KEY_PARTS) and _is_present(value) and not _is_redacted_marker(value):
         violations.append(ObservationRehearsalViolation("private_account_value", path, "private account values must be absent or redacted"))
+    if any(part in key for part in AUTH_AUTOMATION_KEY_PARTS) and _is_present(value) and value is not False:
+        violations.append(ObservationRehearsalViolation("prohibited_auth_automation", path, "automated login, CAPTCHA, MFA, password recovery, or account-creation handling is not allowed"))
     if key in {"action_class", "action_type", "control_class"} and str(value).strip().lower() in WRITE_ACTION_CLASSES:
         violations.append(ObservationRehearsalViolation("write_capable_action", path, "write-capable actions are not allowed"))
     if key in {"write_action_allowed", "write_capable", "can_write", "can_click", "can_fill", "official_action_allowed"} and value is not False:
@@ -333,6 +375,15 @@ def _scan_string(value: str, path: str, violations: list[ObservationRehearsalVio
     if key_hint in {"action", "action_name", "action_summary", "control", "selector", "step"}:
         if any(pattern.search(stripped) for pattern in WRITE_ACTION_PATTERNS):
             violations.append(ObservationRehearsalViolation("write_capable_action", path, "string describes a write-capable action"))
+
+    if AUTH_AUTOMATION_TEXT_RE.search(stripped):
+        violations.append(
+            ObservationRehearsalViolation(
+                "prohibited_auth_automation",
+                path,
+                "automated login, CAPTCHA, MFA, password recovery, or account-creation handling is not allowed",
+            )
+        )
 
     if OFFICIAL_ACTION_LANGUAGE_RE.search(stripped):
         violations.append(

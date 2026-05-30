@@ -1,0 +1,159 @@
+{
+  "packet_version": "inactive_fixture_promotion_candidate_packet_v2",
+  "consumes_rehearsal_version": "combined_inactive_patch_preview_dependency_rehearsal_v1",
+  "source_rehearsal_id": "inactive-rehearsal-20260530-fixture-promotion-v1",
+  "mode": "fixture_first_inactive_candidate_only",
+  "side_effects": {
+    "applies_fixture_changes": false,
+    "edits_active_artifacts": false,
+    "changes_prompts": false,
+    "updates_release_state": false,
+    "crawls_live_sources": false,
+    "accesses_devhub": false,
+    "performs_official_actions": false
+  },
+  "candidate_rows": [
+    {
+      "candidate_id": "promotion-candidate-v2::devhub-action-gates::patch-preview-devhub-action-gates-001",
+      "source_rehearsal_id": "inactive-rehearsal-20260530-fixture-promotion-v1",
+      "fixture_family": "devhub-action-gates",
+      "fixture_path": "ppd/tests/fixtures/inactive/devhub/action_gates_v1.json",
+      "preview_patch_id": "patch-preview-devhub-action-gates-001",
+      "dependency_ids": [
+        "dependency-rehearsal-devhub-attendance-policy",
+        "dependency-rehearsal-exact-confirmation-policy"
+      ],
+      "owner": "ppd-devhub-guardrails",
+      "prerequisite_replay_ids": [
+        "replay-devhub-action-gates-schema"
+      ],
+      "reviewer_approval": {
+        "status": "pending_review",
+        "reviewer": null,
+        "reviewed_at": null,
+        "notes": "Fixture promotion candidate only; no active fixture changes are applied by this packet."
+      },
+      "no_go_reasons": {
+        "missing_owner": false,
+        "failed_prerequisite_replay": false,
+        "active_artifact_edit_required": false,
+        "live_source_required": false,
+        "devhub_access_required": false,
+        "official_action_required": false,
+        "undocumented_rollback_plan": false
+      },
+      "rollback_plan_ref": "rollback-plan::inactive-fixture-promotion::devhub-action-gates::remove-candidate-only-packet",
+      "promotion_action": "candidate_only_no_apply"
+    },
+    {
+      "candidate_id": "promotion-candidate-v2::permit-document-requirements::patch-preview-permit-document-requirements-001",
+      "source_rehearsal_id": "inactive-rehearsal-20260530-fixture-promotion-v1",
+      "fixture_family": "permit-document-requirements",
+      "fixture_path": "ppd/tests/fixtures/inactive/requirements/permit_document_requirements_v1.json",
+      "preview_patch_id": "patch-preview-permit-document-requirements-001",
+      "dependency_ids": [
+        "dependency-rehearsal-single-pdf-policy",
+        "dependency-rehearsal-source-citation-fixture"
+      ],
+      "owner": "ppd-requirement-extraction",
+      "prerequisite_replay_ids": [
+        "replay-permit-document-requirements-schema"
+      ],
+      "reviewer_approval": {
+        "status": "pending_review",
+        "reviewer": null,
+        "reviewed_at": null,
+        "notes": "Fixture promotion candidate only; no active fixture changes are applied by this packet."
+      },
+      "no_go_reasons": {
+        "missing_owner": false,
+        "failed_prerequisite_replay": false,
+        "active_artifact_edit_required": false,
+        "live_source_required": false,
+        "devhub_access_required": false,
+        "official_action_required": false,
+        "undocumented_rollback_plan": false
+      },
+      "rollback_plan_ref": "rollback-plan::inactive-fixture-promotion::permit-document-requirements::remove-candidate-only-packet",
+      "promotion_action": "candidate_only_no_apply"
+    }
+  ],
+  "fixture_family_ownership_assignments": [
+    {
+      "fixture_family": "devhub-action-gates",
+      "owner": "ppd-devhub-guardrails"
+    },
+    {
+      "fixture_family": "permit-document-requirements",
+      "owner": "ppd-requirement-extraction"
+    }
+  ],
+  "prerequisite_validation_replay_inventory": [
+    {
+      "replay_id": "replay-devhub-action-gates-schema",
+      "preview_patch_id": "patch-preview-devhub-action-gates-001",
+      "validation_name": "inactive devhub action gate fixture schema replay",
+      "status": "ready_for_offline_replay",
+      "evidence_fixture_path": "ppd/tests/fixtures/inactive/devhub/action_gates_v1.json",
+      "replay_command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_fixture_promotion_candidate_packet_v2.py"
+      ]
+    },
+    {
+      "replay_id": "replay-permit-document-requirements-schema",
+      "preview_patch_id": "patch-preview-permit-document-requirements-001",
+      "validation_name": "inactive permit document requirement fixture schema replay",
+      "status": "ready_for_offline_replay",
+      "evidence_fixture_path": "ppd/tests/fixtures/inactive/requirements/permit_document_requirements_v1.json",
+      "replay_command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_fixture_promotion_candidate_packet_v2.py"
+      ]
+    }
+  ],
+  "reviewer_approval_placeholders": {
+    "promotion-candidate-v2::devhub-action-gates::patch-preview-devhub-action-gates-001": {
+      "status": "pending_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "notes": "Fixture promotion candidate only; no active fixture changes are applied by this packet."
+    },
+    "promotion-candidate-v2::permit-document-requirements::patch-preview-permit-document-requirements-001": {
+      "status": "pending_review",
+      "reviewer": null,
+      "reviewed_at": null,
+      "notes": "Fixture promotion candidate only; no active fixture changes are applied by this packet."
+    }
+  },
+  "no_go_reason_fields": [
+    "active_artifact_edit_required",
+    "devhub_access_required",
+    "failed_prerequisite_replay",
+    "live_source_required",
+    "missing_owner",
+    "official_action_required",
+    "undocumented_rollback_plan"
+  ],
+  "rollback_plan_references": {
+    "promotion-candidate-v2::devhub-action-gates::patch-preview-devhub-action-gates-001": "rollback-plan::inactive-fixture-promotion::devhub-action-gates::remove-candidate-only-packet",
+    "promotion-candidate-v2::permit-document-requirements::patch-preview-permit-document-requirements-001": "rollback-plan::inactive-fixture-promotion::permit-document-requirements::remove-candidate-only-packet"
+  },
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_inactive_fixture_promotion_candidate_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

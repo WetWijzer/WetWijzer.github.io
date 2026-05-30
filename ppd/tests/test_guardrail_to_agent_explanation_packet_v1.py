@@ -74,6 +74,7 @@ class GuardrailToAgentExplanationPacketV1Test(unittest.TestCase):
         self.assertTrue(all(action["requires_exact_confirmation"] is True for action in blocked))
         self.assertTrue(all(action["requires_user_attendance"] is True for action in blocked))
         self.assertTrue(all(action["official_action_executed"] is False for action in blocked))
+        self.assertTrue(all(action["reason"] for action in blocked))
         self.assertTrue(all(action["may_upload"] is False for action in reversible))
         self.assertTrue(all(action["may_submit"] is False for action in reversible))
         self.assertTrue(all(action["may_pay"] is False for action in reversible))
@@ -101,7 +102,7 @@ class GuardrailToAgentExplanationPacketV1Test(unittest.TestCase):
 
         problems = caught.exception.problems
         self.assertTrue(any("private value field" in problem for problem in problems))
-        self.assertTrue(any("raw or live artifact field" in problem for problem in problems))
+        self.assertTrue(any("raw document, session, or browser artifact" in problem for problem in problems))
         self.assertTrue(any("next_safe_actions cannot include consequential" in problem for problem in problems))
 
     def test_rejects_stale_or_unofficial_source_evidence(self) -> None:
@@ -123,6 +124,48 @@ class GuardrailToAgentExplanationPacketV1Test(unittest.TestCase):
             self.build(fixture)
 
         self.assertTrue(any("guardrail_bundle_id values must match" in problem for problem in caught.exception.problems))
+        self.assertTrue(any("unsupported" in problem for problem in caught.exception.problems))
+
+    def test_rejects_missing_blocked_action_rationale(self) -> None:
+        fixture = deepcopy(self.fixture())
+        fixture["user_gap_analysis"]["blocked_actions"][0]["reason"] = ""
+
+        with self.assertRaises(GuardrailToAgentExplanationPacketError) as caught:
+            self.build(fixture)
+
+        self.assertTrue(any("requires a rationale" in problem for problem in caught.exception.problems))
+
+    def test_rejects_private_authenticated_facts_and_artifact_fields(self) -> None:
+        fixture = deepcopy(self.fixture())
+        fixture["user_gap_analysis"]["known_facts"].append(
+            {"fact_id": "private-devhub-status", "privacy_classification": "devhub_authenticated"}
+        )
+        fixture["agent_readiness_adapter_outputs"][0]["browser_trace"] = "trace.zip"
+        fixture["agent_readiness_adapter_outputs"][1]["session_artifact"] = "session.json"
+
+        with self.assertRaises(GuardrailToAgentExplanationPacketError) as caught:
+            self.build(fixture)
+
+        problems = caught.exception.problems
+        self.assertTrue(any("private or authenticated facts" in problem for problem in problems))
+        self.assertTrue(any("raw document, session, or browser artifact" in problem for problem in problems))
+
+    def test_rejects_guarantees_final_action_language_and_mutation_flags(self) -> None:
+        packet = self.packet()
+        packet["explanation_templates"][0]["agent_message"] = "This guarantees approval and the permit will issue."
+        packet["explanation_templates"][1]["agent_message"] = "Click final submission now."
+        packet["active_prompt_mutation"] = True
+        packet["active_guardrail_mutation"] = True
+        packet["active_source_mutation"] = True
+        packet["active_surface_registry_mutation"] = True
+        packet["active_release_state_mutation"] = True
+        packet["active_agent_state_mutation"] = True
+
+        errors = validate_guardrail_to_agent_explanation_packet(packet)
+
+        self.assertTrue(any("must not guarantee legal or permitting outcomes" in error for error in errors))
+        self.assertTrue(any("must not include final submission" in error for error in errors))
+        self.assertTrue(any("active prompt, guardrail, source, surface-registry, release-state, or agent-state mutation" in error for error in errors))
 
 
 if __name__ == "__main__":

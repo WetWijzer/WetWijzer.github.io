@@ -1,0 +1,26 @@
+{
+  "policy_version": "coverage_gap_reviewer_policy_v1",
+  "reviewer_owner_by_group": {
+    "forms": "forms-reviewer",
+    "pdfs": "pdf-reviewer",
+    "fee_triggers": "fees-reviewer",
+    "deadlines": "deadlines-reviewer",
+    "file_rules": "documents-reviewer",
+    "permit_type_exceptions": "process-model-reviewer",
+    "action_gates": "guardrail-reviewer"
+  },
+  "expected_follow_up_fixture_family_by_group": {
+    "forms": "ppd/tests/fixtures/forms_requirement_extraction/",
+    "pdfs": "ppd/tests/fixtures/pdf_requirement_extraction/",
+    "fee_triggers": "ppd/tests/fixtures/fee_trigger_requirement_extraction/",
+    "deadlines": "ppd/tests/fixtures/deadline_requirement_extraction/",
+    "file_rules": "ppd/tests/fixtures/file_rule_requirement_extraction/",
+    "permit_type_exceptions": "ppd/tests/fixtures/permit_type_exception_requirement_extraction/",
+    "action_gates": "ppd/tests/fixtures/action_gate_requirement_extraction/"
+  },
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/coverage_gap_prioritization_packet_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_coverage_gap_prioritization_packet_v1.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

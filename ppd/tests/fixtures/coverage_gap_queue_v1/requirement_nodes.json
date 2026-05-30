@@ -1,0 +1,47 @@
+{
+  "fixture_id": "requirement-nodes-fixture-coverage-gap-v1",
+  "requirements": [
+    {
+      "requirement_id": "req-form-intake-001",
+      "title": "Confirm intake form extraction coverage",
+      "coverage_gap_types": ["forms"],
+      "coverage_gap_reason": "Trace exists but no fixture confirms required form field extraction."
+    },
+    {
+      "requirement_id": "req-plan-pdf-001",
+      "title": "Confirm PDF submittal extraction coverage",
+      "coverage_gap_types": ["pdfs"],
+      "coverage_gap_reason": "Trace exists but no fixture confirms PDF packet extraction."
+    },
+    {
+      "requirement_id": "req-fee-trigger-001",
+      "title": "Confirm fee trigger extraction coverage",
+      "coverage_gap_types": ["fee_triggers"],
+      "coverage_gap_reason": "Fee-trigger text changed in public-source rehearsal and needs cited review."
+    },
+    {
+      "requirement_id": "req-deadline-001",
+      "title": "Confirm deadline extraction coverage",
+      "coverage_gap_types": ["deadlines"],
+      "coverage_gap_reason": "Deadline wording is impacted by source-change rehearsal."
+    },
+    {
+      "requirement_id": "req-file-rule-001",
+      "title": "Confirm file rule extraction coverage",
+      "coverage_gap_types": ["file_rules"],
+      "coverage_gap_reason": "File naming and format rules need fixture-backed extraction coverage."
+    },
+    {
+      "requirement_id": "req-permit-exception-001",
+      "title": "Confirm permit-type exception extraction coverage",
+      "coverage_gap_types": ["permit_type_exceptions"],
+      "coverage_gap_reason": "Permit-type exception language needs explicit review queue coverage."
+    },
+    {
+      "requirement_id": "req-action-gate-001",
+      "title": "Confirm action gate extraction coverage",
+      "coverage_gap_types": ["action_gates"],
+      "coverage_gap_reason": "Action gate is affected by source-change rehearsal."
+    }
+  ]
+}

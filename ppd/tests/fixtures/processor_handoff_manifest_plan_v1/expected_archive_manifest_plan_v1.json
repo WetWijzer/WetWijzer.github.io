@@ -1,0 +1,139 @@
+{
+  "plan_version": "fixture-first-processor-handoff-dry-run-manifest-plan-v1",
+  "source_plan_version": "public-crawl-frontier-expansion-plan-v1",
+  "processor_policy_version": "processor-suite-policy-fixture-v1",
+  "archive_manifest_rows": [
+    {
+      "manifest_id": "archive-manifest:dry-run:v1:ppd-public-html-online-tools",
+      "source_id": "ppd-public-html-online-tools",
+      "source_evidence_ids": [
+        "official-source-anchor:online-permitting-tools"
+      ],
+      "requested_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "redirect_chain": [],
+      "http_status": null,
+      "content_type": "text/html",
+      "content_hash": null,
+      "capture_started_at": null,
+      "capture_finished_at": null,
+      "processor_name": "ipfs-datasets-html-processor-placeholder",
+      "processor_version": "placeholder-version",
+      "archive_artifact_ref": null,
+      "normalized_document_id": "normalized-document:placeholder:v1:ppd-public-html-online-tools",
+      "skipped_reason": null,
+      "no_raw_body_persisted": true
+    },
+    {
+      "manifest_id": "archive-manifest:dry-run:v1:ppd-public-pdf-fee-payment",
+      "source_id": "ppd-public-pdf-fee-payment",
+      "source_evidence_ids": [
+        "official-source-anchor:fee-payment-guide"
+      ],
+      "requested_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "redirect_chain": [],
+      "http_status": null,
+      "content_type": "application/pdf",
+      "content_hash": null,
+      "capture_started_at": null,
+      "capture_finished_at": null,
+      "processor_name": "ipfs-datasets-pdf-processor-placeholder",
+      "processor_version": "placeholder-version",
+      "archive_artifact_ref": null,
+      "normalized_document_id": "normalized-document:placeholder:v1:ppd-public-pdf-fee-payment",
+      "skipped_reason": null,
+      "no_raw_body_persisted": true
+    },
+    {
+      "manifest_id": "archive-manifest:dry-run:v1:ppd-skipped-private-devhub",
+      "source_id": "ppd-skipped-private-devhub",
+      "source_evidence_ids": [
+        "official-source-anchor:devhub-public-portal"
+      ],
+      "requested_url": "https://devhub.portlandoregon.gov/secure/my-permits",
+      "canonical_url": "https://devhub.portlandoregon.gov/secure/my-permits",
+      "redirect_chain": [],
+      "http_status": null,
+      "content_type": "text/html",
+      "content_hash": null,
+      "capture_started_at": null,
+      "capture_finished_at": null,
+      "processor_name": "no-processor-dry-run-skip",
+      "processor_version": "not-applicable",
+      "archive_artifact_ref": null,
+      "normalized_document_id": null,
+      "skipped_reason": "private_authenticated",
+      "no_raw_body_persisted": true
+    },
+    {
+      "manifest_id": "archive-manifest:dry-run:v1:ppd-skipped-outside-allowlist",
+      "source_id": "ppd-skipped-outside-allowlist",
+      "source_evidence_ids": [
+        "official-source-anchor:outside-allowlist-negative-fixture"
+      ],
+      "requested_url": "https://example.com/vendor-form.pdf",
+      "canonical_url": "https://example.com/vendor-form.pdf",
+      "redirect_chain": [],
+      "http_status": null,
+      "content_type": "application/pdf",
+      "content_hash": null,
+      "capture_started_at": null,
+      "capture_finished_at": null,
+      "processor_name": "no-processor-dry-run-skip",
+      "processor_version": "not-applicable",
+      "archive_artifact_ref": null,
+      "normalized_document_id": null,
+      "skipped_reason": "outside_allowlist",
+      "no_raw_body_persisted": true
+    },
+    {
+      "manifest_id": "archive-manifest:dry-run:v1:ppd-skipped-unsupported-content-type",
+      "source_id": "ppd-skipped-unsupported-content-type",
+      "source_evidence_ids": [
+        "official-source-anchor:unsupported-content-type-negative-fixture"
+      ],
+      "requested_url": "https://www.portland.gov/ppd/assets/site-logo.png",
+      "canonical_url": "https://www.portland.gov/ppd/assets/site-logo.png",
+      "redirect_chain": [],
+      "http_status": null,
+      "content_type": "image/png",
+      "content_hash": null,
+      "capture_started_at": null,
+      "capture_finished_at": null,
+      "processor_name": "no-processor-dry-run-skip",
+      "processor_version": "not-applicable",
+      "archive_artifact_ref": null,
+      "normalized_document_id": null,
+      "skipped_reason": "unsupported_content_type",
+      "no_raw_body_persisted": true
+    }
+  ],
+  "attestations": {
+    "fixture_first": true,
+    "network_fetch_performed": false,
+    "ipfs_datasets_py_invoked": false,
+    "archive_artifacts_written": false,
+    "no_raw_body_persisted": true
+  },
+  "rollback_note": "Delete generated dry-run manifest rows or revert this fixture-only plan; no raw bodies, downloaded documents, processor outputs, or archive artifacts are produced by this handoff plan.",
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/crawler/processor_handoff_manifest_plan_v1.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_processor_handoff_manifest_plan_v1.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

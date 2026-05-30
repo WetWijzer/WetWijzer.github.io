@@ -1,0 +1,31 @@
+{
+  "packet_id": "public-source-refresh-evidence-intake-packet-v1-fixture-20260530",
+  "packet_version": "public_source_refresh_evidence_intake_packet_v1",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "sources": [
+    {
+      "source_id": "portland-bds-title-33",
+      "requirement_ids": ["PCC-33.110.215", "PCC-33.110.220"],
+      "public_url": "https://www.portland.gov/code/33",
+      "public_page_title": "Title 33 Planning and Zoning",
+      "evidence": {
+        "title_observed": "Title 33 Planning and Zoning",
+        "updated_date_visible": true,
+        "updated_date_text": "Updated May 15, 2026",
+        "metadata_capture_method": "fixture_only"
+      }
+    },
+    {
+      "source_id": "portland-transportation-trn-10",
+      "requirement_ids": ["TRN-10.20"],
+      "public_url": "https://www.portland.gov/transportation/permitting",
+      "public_page_title": "Transportation Permitting",
+      "evidence": {
+        "title_observed": "PBOT Permits",
+        "updated_date_visible": false,
+        "updated_date_text": null,
+        "metadata_capture_method": "fixture_only"
+      }
+    }
+  ]
+}

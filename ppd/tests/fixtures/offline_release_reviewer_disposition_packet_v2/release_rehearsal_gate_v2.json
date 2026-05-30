@@ -1,0 +1,170 @@
+{
+  "packet_version": "release_rehearsal_gate_v2",
+  "mode": "fixture_first_offline_release_rehearsal_gate_v2",
+  "consumes": {
+    "reviewer_disposition_packet_v2": "reviewer_disposition_packet_v2",
+    "inactive_promotion_patch_preview_v1": "inactive-promotion-patch-preview-v1",
+    "action_journal_acceptance_packet_v1": "action-journal-acceptance-packet-v1",
+    "public_source_refresh_evidence_intake_packet_v1": "public_source_refresh_evidence_intake_packet_v1",
+    "devhub_observation_evidence_intake_packet_v1": "devhub_observation_evidence_intake_packet_v1"
+  },
+  "gate_rows": [
+    {
+      "row_id": "release-rehearsal-gate-v2-001",
+      "artifact_id": "inactive-preview-alpha",
+      "decision": "pass",
+      "reviewer_owner": "ppd-reviewer-a",
+      "reasons": [
+        "fixture evidence supports offline release rehearsal passage"
+      ],
+      "citations": [
+        "reviewer:alpha:approved",
+        "preview:alpha:source-evidence",
+        "public:alpha:current"
+      ],
+      "manual_only_gate_refs": [
+        "human_supervised_release_authorization",
+        "authenticated_devhub_attendance",
+        "official_record_change_checkpoint",
+        "fee_workflow_checkpoint",
+        "exact_confirmation_checkpoint"
+      ],
+      "handoff_note_refs": [
+        "future-human-supervised-release",
+        "no-live-or-official-action-authorized"
+      ]
+    },
+    {
+      "row_id": "release-rehearsal-gate-v2-002",
+      "artifact_id": "inactive-preview-beta",
+      "decision": "block",
+      "reviewer_owner": "ppd-reviewer-b",
+      "risk_severity": "medium",
+      "reasons": [
+        "validation transcript still needs reviewer comparison before future supervised release"
+      ],
+      "citations": [
+        "reviewer:beta:hold",
+        "preview:beta:source-evidence",
+        "public:beta:current"
+      ],
+      "manual_only_gate_refs": [
+        "human_supervised_release_authorization",
+        "authenticated_devhub_attendance",
+        "official_record_change_checkpoint",
+        "fee_workflow_checkpoint",
+        "exact_confirmation_checkpoint"
+      ],
+      "handoff_note_refs": [
+        "future-human-supervised-release",
+        "no-live-or-official-action-authorized"
+      ]
+    },
+    {
+      "row_id": "release-rehearsal-gate-v2-003",
+      "artifact_id": "inactive-preview-gamma",
+      "decision": "block",
+      "reviewer_owner": "ppd-reviewer-c",
+      "risk_severity": "critical",
+      "release_blocker": true,
+      "reasons": [
+        "evidence bundle does not support release reviewer approval"
+      ],
+      "citations": [
+        "reviewer:gamma:reject",
+        "preview:gamma:source-evidence",
+        "public:gamma:needs-review"
+      ],
+      "manual_only_gate_refs": [
+        "human_supervised_release_authorization",
+        "authenticated_devhub_attendance",
+        "official_record_change_checkpoint",
+        "fee_workflow_checkpoint",
+        "exact_confirmation_checkpoint"
+      ],
+      "handoff_note_refs": [
+        "future-human-supervised-release",
+        "no-live-or-official-action-authorized"
+      ]
+    }
+  ],
+  "manual_only_gates": [
+    {
+      "gate_id": "human_supervised_release_authorization",
+      "manual_only": true,
+      "required_before": "future human-supervised release",
+      "automated_action_allowed": false,
+      "citations": [
+        "manual-gate:human-supervised-release"
+      ]
+    }
+  ],
+  "validation_replay_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/release_rehearsal_gate_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_release_rehearsal_gate_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "reviewer-rollback-001",
+      "action": "restore alpha inactive fixture baseline before later supervised release review",
+      "citations": [
+        "reviewer:alpha:rollback"
+      ]
+    },
+    {
+      "checkpoint_id": "reviewer-rollback-002",
+      "action": "keep beta inactive fixture blocked until reviewer reconciliation",
+      "citations": [
+        "reviewer:beta:rollback"
+      ]
+    },
+    {
+      "checkpoint_id": "reviewer-rollback-003",
+      "action": "keep gamma inactive fixture rejected until evidence bundle is rebuilt",
+      "citations": [
+        "reviewer:gamma:rollback"
+      ]
+    }
+  ],
+  "handoff_notes": [
+    {
+      "note_id": "future-human-supervised-release",
+      "note": "Use this packet only as an offline rehearsal gate for a later human-supervised release decision.",
+      "citations": [
+        "release-rehearsal-gate:v2"
+      ]
+    },
+    {
+      "note_id": "no-live-or-official-action-authorized",
+      "note": "This packet authorizes no live run, account session, artifact promotion, official record change, or financial workflow.",
+      "citations": [
+        "release-rehearsal-gate:v2:attestations"
+      ]
+    }
+  ],
+  "attestations": {
+    "fixture_first": true,
+    "no_live_execution": true,
+    "no_authenticated_devhub_session": true,
+    "no_private_artifacts": true,
+    "no_official_actions": true,
+    "no_financial_actions": true,
+    "no_artifact_promotion": true
+  },
+  "overall_gate_status": "blocked"
+}

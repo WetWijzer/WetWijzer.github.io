@@ -1,0 +1,32 @@
+{
+  "combined_promotion_dependency_packet_v1": {
+    "id": "combined-promotion-dependency-packet-v1.fixture",
+    "status": "candidate",
+    "source": "offline-fixture"
+  },
+  "affected_requirement_fixture_ids": [
+    "req.trade-permit.plan-review.threshold",
+    "req.trade-permit.final-review-attestation"
+  ],
+  "affected_process_fixture_ids": [
+    "proc.trade-permit.review-routing",
+    "proc.devhub.attended-final-action"
+  ],
+  "affected_guardrail_fixture_ids": [
+    "guardrail.require-cited-public-source",
+    "guardrail.block-stale-or-conflicting-evidence",
+    "guardrail.require-exact-confirmation-for-final-action",
+    "guardrail.block-conflicting-action-classification"
+  ],
+  "affected_user_gap_fixture_ids": [
+    "gap.none-for-threshold-check",
+    "gap.stale-public-source-date",
+    "gap.missing-exact-confirmation",
+    "gap.action-classification-conflict"
+  ],
+  "affected_devhub_action_classification_fixture_ids": [
+    "devhub.read-only-status-check",
+    "devhub.consequential-final-action",
+    "devhub.conflicting-readonly-and-final-action"
+  ]
+}

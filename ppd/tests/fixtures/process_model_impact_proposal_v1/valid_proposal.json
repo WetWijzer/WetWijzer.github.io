@@ -1,0 +1,32 @@
+{
+  "proposal_id": "impact-proposal-v1-fixture-valid",
+  "impact_rows": [
+    {
+      "row_id": "row-001",
+      "affected_process_ids": ["process-single-pdf-submit-plans-online"],
+      "affected_requirement_ids": ["req-single-pdf-drawings-one-file"],
+      "summary": "Clarifies cited single PDF upload staging guidance for a reversible draft preview only.",
+      "citations": ["source-ppd-submit-plans-online#single-pdf-guidance"]
+    }
+  ],
+  "dependency_order": ["source-index-check", "requirement-diff-review", "human-review"],
+  "reviewer_owner": "ppd-human-reviewer",
+  "rollback_note": "Discard this proposal packet and retain the prior accepted process model when citations or reviewer disposition do not support promotion.",
+  "artifacts": [
+    {
+      "artifact_id": "normalized-public-text-summary",
+      "artifact_type": "commit-safe-summary",
+      "privacy": "public_metadata_only"
+    }
+  ],
+  "mutation_flags": {
+    "source": false,
+    "document": false,
+    "requirement": false,
+    "process": false,
+    "guardrail": false,
+    "prompt": false,
+    "release_state": false,
+    "agent_state": false
+  }
+}

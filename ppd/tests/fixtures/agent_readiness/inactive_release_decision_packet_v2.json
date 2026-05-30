@@ -1,0 +1,132 @@
+{
+  "packet_type": "ppd.inactive_release_decision_packet.v2",
+  "packet_id": "fixture-inactive-release-decision-packet-v2",
+  "fixture_only": true,
+  "inactive_release_decision": true,
+  "source_intake_packet": {
+    "packet_type": "ppd.offline_release_reviewer_disposition_intake_packet.v2",
+    "packet_id": "fixture-offline-release-reviewer-disposition-intake-v2"
+  },
+  "decision_rows": [
+    {
+      "decision_row_id": "inactive-decision-row-1",
+      "reviewer_id": "release-reviewer-alpha",
+      "intake_decision": "approved_for_offline_review",
+      "decision": "approve",
+      "deterministic_rule": "approved_for_offline_review maps to approve; blocked, deferred, and no_go map to hold",
+      "rationale": "Fixture evidence is structured enough for an inactive offline decision artifact.",
+      "citations": ["fixture:intake-reviewer-alpha"]
+    },
+    {
+      "decision_row_id": "inactive-decision-row-2",
+      "reviewer_id": "release-reviewer-beta",
+      "intake_decision": "deferred",
+      "decision": "hold",
+      "deterministic_rule": "approved_for_offline_review maps to approve; blocked, deferred, and no_go map to hold",
+      "rationale": "Manual operator review evidence remains pending before any separate release decision.",
+      "citations": ["fixture:intake-reviewer-beta"]
+    }
+  ],
+  "promotion_preconditions": [
+    {
+      "precondition_id": "precondition-offline-validation-replay",
+      "description": "Offline validation commands must be replayed from committed fixtures before any separate operator decision.",
+      "status": "pending",
+      "required_before": "any_separate_operator_release_decision",
+      "citations": ["fixture:offline-validation-command-inventory"]
+    },
+    {
+      "precondition_id": "precondition-blocker-reconciliation",
+      "description": "Every hold row and carry-forward blocker must be reconciled outside this inactive fixture artifact.",
+      "status": "pending",
+      "required_before": "any_separate_operator_release_decision",
+      "citations": ["fixture:blocked-release-reasons"]
+    },
+    {
+      "precondition_id": "precondition-reviewer-signoffs",
+      "description": "Reviewer signoff placeholders must be filled by humans in a separate authorized review path.",
+      "status": "pending",
+      "required_before": "any_separate_operator_release_decision",
+      "citations": ["fixture:reviewer-signoff-placeholders"]
+    }
+  ],
+  "blocked_release_reasons": [
+    {
+      "reason_id": "blocked-inactive-decision-row-2",
+      "source": "reviewer_decision_rows",
+      "reason": "Reviewer disposition deferred maps to hold for inactive release decision packet v2.",
+      "owner_placeholder": "release-reviewer-beta",
+      "citations": ["fixture:intake-reviewer-beta"]
+    },
+    {
+      "reason_id": "blocked-carry-forward-1",
+      "source": "unresolved_blocker_carry_forward",
+      "reason": "Manual operator review evidence is still pending in the inactive fixture path.",
+      "owner_placeholder": "release-reviewer-beta",
+      "citations": ["fixture:blocker-manual-review-pending"]
+    },
+    {
+      "reason_id": "blocked-no-go-placeholder-1",
+      "source": "no_go_reason_placeholders",
+      "reason": "Manual review placeholder remains open until a separate authorized review records a final disposition.",
+      "owner_placeholder": "release-reviewer-beta",
+      "citations": ["fixture:no-go-placeholder-manual-review"]
+    }
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "signoff_id": "signoff-1",
+      "reviewer_id": "release-reviewer-alpha",
+      "placeholder": "pending_manual_reviewer_signoff",
+      "required_before": "any_separate_operator_release_decision",
+      "citations": ["fixture:intake-reviewer-alpha"]
+    },
+    {
+      "signoff_id": "signoff-2",
+      "reviewer_id": "release-reviewer-beta",
+      "placeholder": "pending_manual_reviewer_signoff",
+      "required_before": "any_separate_operator_release_decision",
+      "citations": ["fixture:intake-reviewer-beta"]
+    }
+  ],
+  "prerequisite_validation_replay_inventory": [
+    {
+      "replay_id": "offline-validation-command-1",
+      "command": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+      "mode": "offline_fixture_replay",
+      "expected_result": "zero_exit",
+      "citations": ["fixture:offline-validation-command-inventory"]
+    },
+    {
+      "replay_id": "offline-validation-command-2",
+      "command": ["python3", "-m", "pytest", "ppd/tests/test_inactive_release_decision_packet_v2.py"],
+      "mode": "offline_fixture_replay",
+      "expected_result": "zero_exit",
+      "citations": ["fixture:offline-validation-command-inventory"]
+    }
+  ],
+  "rollback_plan_references": [
+    {
+      "rollback_ref_id": "rollback-reference-1",
+      "reviewer_id": "release-reviewer-alpha",
+      "reference_type": "rollback_readiness_acknowledgement",
+      "status": "reference_only_not_activated",
+      "citations": ["fixture:rollback-readiness-reference"]
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "pytest", "ppd/tests/test_inactive_release_decision_packet_v2.py"]
+  ],
+  "non_promotion_attestations": {
+    "promotes_fixtures": false,
+    "changes_prompts": false,
+    "mutates_guardrails": false,
+    "mutates_processes": false,
+    "mutates_agent_state": false,
+    "updates_release_state": false,
+    "uses_live_sources": false,
+    "accesses_devhub": false,
+    "performs_official_actions": false
+  }
+}

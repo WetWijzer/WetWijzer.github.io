@@ -1,0 +1,42 @@
+[
+  {
+    "anchor_id": "pcc-title-33",
+    "last_checked_utc": "2026-05-30T00:00:00Z",
+    "last_seen_utc": "2026-05-29T00:00:00Z",
+    "observed_digest": "sha256:fixture-title-33-new",
+    "processor_digest": "sha256:fixture-title-33-old",
+    "is_stale": false,
+    "changed_since_processor": true,
+    "evidence": "Fixture digest differs from processor dry-run digest."
+  },
+  {
+    "anchor_id": "trn-admin-rule-streets",
+    "last_checked_utc": "2026-05-30T00:00:00Z",
+    "last_seen_utc": "2026-03-01T00:00:00Z",
+    "observed_digest": "sha256:fixture-trn-rules",
+    "processor_digest": "sha256:fixture-trn-rules",
+    "is_stale": true,
+    "changed_since_processor": false,
+    "evidence": "Fixture last_seen_utc exceeds freshness threshold."
+  },
+  {
+    "anchor_id": "bds-fee-schedule",
+    "last_checked_utc": "2026-05-30T00:00:00Z",
+    "last_seen_utc": "2026-05-01T00:00:00Z",
+    "observed_digest": "sha256:fixture-fees-new",
+    "processor_digest": "sha256:fixture-fees-old",
+    "is_stale": true,
+    "changed_since_processor": true,
+    "evidence": "Fixture indicates stale source and digest drift."
+  },
+  {
+    "anchor_id": "bds-current-forms",
+    "last_checked_utc": "2026-05-30T00:00:00Z",
+    "last_seen_utc": "2026-05-29T00:00:00Z",
+    "observed_digest": "sha256:fixture-forms",
+    "processor_digest": "sha256:fixture-forms",
+    "is_stale": false,
+    "changed_since_processor": false,
+    "evidence": "Fixture is current and unchanged."
+  }
+]

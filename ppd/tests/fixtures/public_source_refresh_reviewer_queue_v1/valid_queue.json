@@ -1,0 +1,22 @@
+{
+  "schema_version": "public_source_refresh_reviewer_queue_v1",
+  "items": [
+    {
+      "queue_item_id": "psr-review-20260530-001",
+      "source_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "citations": [
+        {
+          "source_id": "ppd-devhub-faqs",
+          "url": "https://www.portland.gov/ppd/devhub-faqs",
+          "title": "DevHub FAQs"
+        }
+      ],
+      "affected_ids": [
+        "source:ppd-devhub-faqs",
+        "requirement:devhub-public-refresh-review"
+      ],
+      "defer_rationale": "Needs human review before any public-source refresh metadata is accepted.",
+      "review_note": "Queue item asks for review only and does not mutate sources, requirements, process models, guardrails, monitoring, release state, or agent state."
+    }
+  ]
+}

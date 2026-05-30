@@ -1,0 +1,97 @@
+{
+  "reviewer_owner": "ppd-public-crawl-reviewer",
+  "rollback_note": "Discard metadata-only candidates before any active frontier promotion; no fetched bodies or processor outputs are committed by this fixture.",
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/crawler/public_frontier_expansion.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_public_frontier_expansion_v1.py"]
+  ],
+  "public_crawl_allowlist_fixtures_v1": {
+    "allowed_hosts": [
+      "www.portland.gov",
+      "devhub.portlandoregon.gov",
+      "www.portlandoregon.gov",
+      "www.portlandmaps.com"
+    ],
+    "private_path_patterns": [
+      "/login",
+      "/signin",
+      "/sign-in",
+      "/account",
+      "/dashboard",
+      "/payment",
+      "/checkout"
+    ]
+  },
+  "robots_policy_preflight_fixtures_v1": {
+    "decisions": [
+      {
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+        "decision": "allow"
+      },
+      {
+        "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "decision": "allow"
+      },
+      {
+        "canonical_url": "https://devhub.portlandoregon.gov/login",
+        "decision": "disallow"
+      },
+      {
+        "canonical_url": "https://www.portland.gov/private/downloads/internal.pdf",
+        "decision": "disallow"
+      }
+    ]
+  },
+  "source_index_records_v1": {
+    "records": [
+      {
+        "source_id": "ppd-apply-permits",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+        "content_type_expectation": "text/html",
+        "processor_policy": "public_html_metadata_then_normalized_text"
+      },
+      {
+        "source_id": "ppd-fee-payment-pdf",
+        "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "content_type_expectation": "application/pdf",
+        "processor_policy": "public_pdf_metadata_then_text_extraction"
+      },
+      {
+        "source_id": "devhub-login-public-boundary",
+        "canonical_url": "https://devhub.portlandoregon.gov/login",
+        "content_type_expectation": "text/html",
+        "processor_policy": "no_public_crawl_authenticated_boundary"
+      }
+    ]
+  },
+  "official_source_anchor_audit_packet_v1": {
+    "anchors": [
+      {
+        "source_id": "ppd-online-tools",
+        "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+        "links": [
+          {
+            "href": "https://www.portland.gov/ppd/get-permit/apply-permits#start",
+            "text": "Apply for permits"
+          },
+          {
+            "href": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+            "text": "How to pay fees"
+          },
+          {
+            "href": "https://devhub.portlandoregon.gov/login",
+            "text": "Sign in to DevHub"
+          },
+          {
+            "href": "https://example.com/permit-advice",
+            "text": "Unofficial permit advice"
+          },
+          {
+            "href": "mailto:ppd@example.invalid",
+            "text": "Email PP&D"
+          }
+        ]
+      }
+    ]
+  }
+}

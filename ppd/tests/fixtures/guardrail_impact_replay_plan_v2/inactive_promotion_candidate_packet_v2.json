@@ -1,0 +1,254 @@
+{
+  "packet_type": "ppd.inactive_promotion_candidate_packet.v2",
+  "packet_version": "v2",
+  "mode": "fixture_first_inactive_candidate_only",
+  "candidate_only": true,
+  "metadata_only": true,
+  "source_rehearsal_id": "combined_recrawl_devhub_inactive_patch_dependency_rehearsal_v1",
+  "consumed_approved_dependency_row_ids": [
+    "dependency-001-devhub-application-guide-draft-surface",
+    "dependency-002-single-pdf-upload-staging-surface"
+  ],
+  "inactive_source_registry_candidate_deltas": [
+    {
+      "candidate_delta_id": "inactive-source-registry-delta:ppd-devhub-guide-submit-permit-application",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "source_id": "ppd-devhub-guide-submit-permit-application",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "candidate_status": "inactive_pending_manual_signoff",
+      "owning_surface": "ppd_public_source_registry",
+      "evidence_ids": [
+        "source:ppd-devhub-guide-submit-permit-application#draft-save-for-later"
+      ],
+      "changed_requirement_ids": [
+        "requirement:devhub-application-draft-save-for-later"
+      ],
+      "active_source_registry_mutation": false,
+      "active_source_mutation": false
+    },
+    {
+      "candidate_delta_id": "inactive-source-registry-delta:ppd-submit-plans-online-single-pdf",
+      "dependency_row_id": "dependency-002-single-pdf-upload-staging-surface",
+      "source_id": "ppd-submit-plans-online-single-pdf",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "candidate_status": "inactive_pending_manual_signoff",
+      "owning_surface": "ppd_public_source_registry",
+      "evidence_ids": [
+        "source:ppd-submit-plans-online-single-pdf#drawing-plans-together"
+      ],
+      "changed_requirement_ids": [
+        "requirement:single-pdf-drawings-together"
+      ],
+      "active_source_registry_mutation": false,
+      "active_source_mutation": false
+    }
+  ],
+  "inactive_archive_manifest_candidate_deltas": [
+    {
+      "candidate_delta_id": "inactive-archive-manifest-delta:ppd-devhub-guide-submit-permit-application",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "source_id": "ppd-devhub-guide-submit-permit-application",
+      "manifest_id": "inactive-candidate-manifest:ppd-devhub-guide-submit-permit-application",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "archive_artifact_ref": "placeholder:inactive-metadata-only-no-artifact",
+      "normalized_document_ref": "inactive-normalized-document:ppd-devhub-guide-submit-permit-application",
+      "raw_body_persisted": false,
+      "active_archive_manifest_mutation": false
+    },
+    {
+      "candidate_delta_id": "inactive-archive-manifest-delta:ppd-submit-plans-online-single-pdf",
+      "dependency_row_id": "dependency-002-single-pdf-upload-staging-surface",
+      "source_id": "ppd-submit-plans-online-single-pdf",
+      "manifest_id": "inactive-candidate-manifest:ppd-submit-plans-online-single-pdf",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "archive_artifact_ref": "placeholder:inactive-metadata-only-no-artifact",
+      "normalized_document_ref": "inactive-normalized-document:ppd-submit-plans-online-single-pdf",
+      "raw_body_persisted": false,
+      "active_archive_manifest_mutation": false
+    }
+  ],
+  "inactive_normalized_document_candidate_references": [
+    {
+      "candidate_reference_id": "inactive-normalized-document:ppd-devhub-guide-submit-permit-application",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "source_id": "ppd-devhub-guide-submit-permit-application",
+      "document_id": "inactive-doc-candidate:ppd-devhub-guide-submit-permit-application",
+      "source_evidence_ids": [
+        "source:ppd-devhub-guide-submit-permit-application#draft-save-for-later"
+      ],
+      "candidate_status": "inactive_reference_only",
+      "active_document_mutation": false
+    },
+    {
+      "candidate_reference_id": "inactive-normalized-document:ppd-submit-plans-online-single-pdf",
+      "dependency_row_id": "dependency-002-single-pdf-upload-staging-surface",
+      "source_id": "ppd-submit-plans-online-single-pdf",
+      "document_id": "inactive-doc-candidate:ppd-submit-plans-online-single-pdf",
+      "source_evidence_ids": [
+        "source:ppd-submit-plans-online-single-pdf#drawing-plans-together"
+      ],
+      "candidate_status": "inactive_reference_only",
+      "active_document_mutation": false
+    }
+  ],
+  "inactive_devhub_surface_candidate_deltas": [
+    {
+      "candidate_delta_id": "inactive-devhub-surface-delta:devhub-permit-application-draft-surface",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "surface_id": "devhub-permit-application-draft-surface",
+      "observed_surface_ref": "observation:devhub-application-draft-fixture-redacted",
+      "related_source_ids": [
+        "ppd-devhub-guide-submit-permit-application"
+      ],
+      "action_labels": [
+        "Review application draft",
+        "Save for later"
+      ],
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "candidate_status": "inactive_pending_manual_signoff",
+      "active_devhub_surface_mutation": false,
+      "active_surface_mutation": false
+    },
+    {
+      "candidate_delta_id": "inactive-devhub-surface-delta:devhub-document-staging-surface",
+      "dependency_row_id": "dependency-002-single-pdf-upload-staging-surface",
+      "surface_id": "devhub-document-staging-surface",
+      "observed_surface_ref": "observation:devhub-document-staging-fixture-redacted",
+      "related_source_ids": [
+        "ppd-submit-plans-online-single-pdf"
+      ],
+      "action_labels": [
+        "Review document checklist",
+        "Save staged draft"
+      ],
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "candidate_status": "inactive_pending_manual_signoff",
+      "active_devhub_surface_mutation": false,
+      "active_surface_mutation": false
+    }
+  ],
+  "guardrail_replay_prerequisites": [
+    {
+      "guardrail_replay_ref": "guardrail-replay-prerequisite:dependency-001-devhub-application-guide-draft-surface",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "required_source_evidence_ids": [
+        "source:ppd-devhub-guide-submit-permit-application#draft-save-for-later"
+      ],
+      "required_requirement_ids": [
+        "requirement:devhub-application-draft-save-for-later"
+      ],
+      "required_surface_ids": [
+        "devhub-permit-application-draft-surface"
+      ],
+      "expected_replay_mode": "offline_fixture_only",
+      "required_commands": [
+        [
+          "python3",
+          "-m",
+          "py_compile",
+          "ppd/agent_readiness/inactive_promotion_candidate_packet_v2.py"
+        ],
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_inactive_promotion_candidate_packet_v2.py"
+        ],
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ],
+      "active_guardrail_mutation": false
+    },
+    {
+      "guardrail_replay_ref": "guardrail-replay-prerequisite:dependency-002-single-pdf-upload-staging-surface",
+      "dependency_row_id": "dependency-002-single-pdf-upload-staging-surface",
+      "required_source_evidence_ids": [
+        "source:ppd-submit-plans-online-single-pdf#drawing-plans-together"
+      ],
+      "required_requirement_ids": [
+        "requirement:single-pdf-drawings-together"
+      ],
+      "required_surface_ids": [
+        "devhub-document-staging-surface"
+      ],
+      "expected_replay_mode": "offline_fixture_only",
+      "required_commands": [
+        [
+          "python3",
+          "-m",
+          "py_compile",
+          "ppd/agent_readiness/inactive_promotion_candidate_packet_v2.py"
+        ],
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_inactive_promotion_candidate_packet_v2.py"
+        ],
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ],
+      "active_guardrail_mutation": false
+    }
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "signoff_id": "reviewer-signoff:dependency-001-devhub-application-guide-draft-surface",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "reviewer": "",
+      "reviewed_at": "",
+      "decision": "pending_manual_review",
+      "notes": ""
+    },
+    {
+      "signoff_id": "reviewer-signoff:dependency-002-single-pdf-upload-staging-surface",
+      "dependency_row_id": "dependency-002-single-pdf-upload-staging-surface",
+      "reviewer": "",
+      "reviewed_at": "",
+      "decision": "pending_manual_review",
+      "notes": ""
+    }
+  ],
+  "exact_offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/agent_readiness/inactive_promotion_candidate_packet_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_inactive_promotion_candidate_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "side_effect_attestations": {
+    "active_source_registry_mutation": false,
+    "active_source_mutation": false,
+    "active_archive_manifest_mutation": false,
+    "active_document_mutation": false,
+    "active_devhub_surface_mutation": false,
+    "active_surface_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_process_mutation": false,
+    "live_crawl_performed": false,
+    "devhub_accessed": false,
+    "official_action_performed": false
+  }
+}

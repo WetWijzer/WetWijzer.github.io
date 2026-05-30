@@ -1,0 +1,72 @@
+{
+  "mode": "fixture-first-offline-only",
+  "packet_version": "inactive-release-decision-packet-v2",
+  "rows": [
+    {
+      "decision_basis": "Offline fixture review found the inactive release candidate eligible for an inactive hold decision packet.",
+      "decision_order": 1,
+      "human_approval_placeholder": {
+        "approval_record": null,
+        "required_before_promotion": true,
+        "status": "not-approved"
+      },
+      "inactive_release_decision": "hold-inactive-pending-human-approval",
+      "no_live_access_attestation": {
+        "attested": true,
+        "basis": "Derived from committed PP&D fixtures only; no crawl, login, upload, or external network action was performed."
+      },
+      "promotion_scope_placeholder": {
+        "requires_human_scope_selection": true,
+        "scope": "no promotion scope authorized by this fixture",
+        "status": "placeholder-only"
+      },
+      "release_id": "inactive-release-2026-05-30-a",
+      "rollback_plan_reference": "ppd/tests/fixtures/rollback-plans/inactive-release-2026-05-30-a.md",
+      "source_disposition_packet_version": "approved-offline-release-reviewer-disposition-packet-v2",
+      "source_review_order": 1
+    },
+    {
+      "decision_basis": "Offline fixture review found the inactive release candidate complete enough to queue for human promotion review.",
+      "decision_order": 2,
+      "human_approval_placeholder": {
+        "approval_record": null,
+        "required_before_promotion": true,
+        "status": "not-approved"
+      },
+      "inactive_release_decision": "hold-inactive-pending-human-approval",
+      "no_live_access_attestation": {
+        "attested": true,
+        "basis": "Derived from committed PP&D fixtures only; no crawl, login, upload, or external network action was performed."
+      },
+      "promotion_scope_placeholder": {
+        "requires_human_scope_selection": true,
+        "scope": "no promotion scope authorized by this fixture",
+        "status": "placeholder-only"
+      },
+      "release_id": "inactive-release-2026-05-30-b",
+      "rollback_plan_reference": "ppd/tests/fixtures/rollback-plans/inactive-release-2026-05-30-b.md",
+      "source_disposition_packet_version": "approved-offline-release-reviewer-disposition-packet-v2",
+      "source_review_order": 2
+    }
+  ],
+  "source_packet_version": "approved-offline-release-reviewer-disposition-packet-v2",
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/inactive_release_decision_packet_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_inactive_release_decision_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "packet_version": "requirement_formalization_candidate_packet_v1",
+  "reviewer_owner": "ppd-reviewer",
+  "rollback_note": "Discard this candidate packet without mutating source, document, requirement, process, guardrail, release, or agent state.",
+  "review_status": "pending_review",
+  "formalization_status": "candidate_only",
+  "candidate_rows": [
+    {
+      "candidate_id": "candidate-001",
+      "affected_source_id": "source-portland-code-title-33",
+      "affected_document_id": "document-zoning-code-chapter-33-110",
+      "affected_requirement_id": "requirement-setback-001",
+      "confidence": 0.82,
+      "review_status": "pending_review",
+      "formalization_status": "candidate_only",
+      "summary": "Candidate wording for reviewer assessment only.",
+      "citations": [
+        {
+          "source_id": "source-portland-code-title-33",
+          "document_id": "document-zoning-code-chapter-33-110",
+          "locator": "33.110.220"
+        }
+      ]
+    }
+  ]
+}

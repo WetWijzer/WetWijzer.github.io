@@ -1,0 +1,37 @@
+{
+  "version": "devhub-observed-surface-update-plan-v2",
+  "reviewer_owner": "ppd-reviewer",
+  "rollback_checkpoints": [
+    "discard-preview-json",
+    "restore-inactive-fixtures"
+  ],
+  "surface_updates": [
+    {
+      "update_id": "update-alpha",
+      "surface_id": "inactive-permit-search",
+      "attendance_gate": "attended-review-recorded",
+      "proposed": {
+        "label": "Permit search input",
+        "selector": "form[data-devhub-fixture='permit-search'] input[name='q']",
+        "validation_message": "Search term is required before a fixture preview can proceed.",
+        "redaction_policy": "Redact owner names, account IDs, email addresses, phone numbers, and street-unit details.",
+        "attendance_gate": "attended-review-recorded",
+        "selector_confidence_note": "Fixture selector includes form scope and stable input name; confidence high."
+      }
+    },
+    {
+      "update_id": "update-beta",
+      "surface_id": "inactive-upload-action",
+      "attendance_gate": "attended-review-recorded",
+      "performs_official_action": true,
+      "proposed": {
+        "label": "Upload action disabled preview",
+        "selector": "button[data-devhub-fixture='upload']",
+        "validation_message": "Uploads are excluded from fixture-first preview.",
+        "redaction_policy": "No uploaded documents or private values may be committed.",
+        "attendance_gate": "attended-review-recorded",
+        "selector_confidence_note": "Blocked because upload actions are outside read-only preview scope."
+      }
+    }
+  ]
+}

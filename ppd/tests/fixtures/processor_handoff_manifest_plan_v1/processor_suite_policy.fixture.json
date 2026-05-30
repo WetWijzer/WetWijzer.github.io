@@ -1,0 +1,17 @@
+{
+  "policy_version": "processor-suite-policy-fixture-v1",
+  "content_type_processors": {
+    "text/html": {
+      "processor_name": "ipfs-datasets-html-processor-placeholder",
+      "processor_version": "placeholder-version"
+    },
+    "application/pdf": {
+      "processor_name": "ipfs-datasets-pdf-processor-placeholder",
+      "processor_version": "placeholder-version"
+    }
+  },
+  "skipped_processor": {
+    "processor_name": "no-processor-dry-run-skip",
+    "processor_version": "not-applicable"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "preview_id": "devhub_observed_surface_inactive_patch_preview_v1",
+  "mode": "inactive_patch_preview",
+  "generated_from": "committed deterministic fixture only",
+  "inactive_devhub_surface_patches": [
+    {
+      "order": 1,
+      "surface_patch_id": "devhub-inactive-surface-application-draft-001",
+      "surface_id": "devhub-permit-application-draft-surface",
+      "observed_surface_ref": "fixture-observed-surface:application-draft-redacted",
+      "related_source_ids": [
+        "ppd-devhub-guide-submit-permit-application"
+      ],
+      "action_labels": [
+        "Save for Later",
+        "Upload Documents",
+        "Review Application"
+      ],
+      "requires_attendance": true,
+      "inactive_reason": "fixture preview only; no browser/session artifact is created",
+      "rollback_ref": "rollback:devhub-surface-preview:application-draft"
+    },
+    {
+      "order": 2,
+      "surface_patch_id": "devhub-inactive-surface-upload-staging-002",
+      "surface_id": "devhub-upload-staging-surface",
+      "observed_surface_ref": "fixture-observed-surface:upload-staging-redacted",
+      "related_source_ids": [
+        "ppd-submit-plans-online-single-pdf",
+        "ppd-devhub-guide-submit-permit-application"
+      ],
+      "action_labels": [
+        "Choose File",
+        "Remove",
+        "Continue"
+      ],
+      "requires_attendance": true,
+      "inactive_reason": "fixture preview only; no browser/session artifact is created",
+      "rollback_ref": "rollback:devhub-surface-preview:upload-staging"
+    },
+    {
+      "order": 3,
+      "surface_patch_id": "devhub-inactive-surface-fee-payment-003",
+      "surface_id": "devhub-fee-payment-review-surface",
+      "observed_surface_ref": "fixture-observed-surface:fee-payment-review-redacted",
+      "related_source_ids": [
+        "ppd-how-pay-fees"
+      ],
+      "action_labels": [
+        "Review Fees",
+        "Submit Payment"
+      ],
+      "requires_attendance": true,
+      "inactive_reason": "fixture preview only; no payment detail, browser, or session artifact is created",
+      "rollback_ref": "rollback:devhub-surface-preview:fee-payment-review"
+    },
+    {
+      "order": 4,
+      "surface_patch_id": "devhub-inactive-surface-unlinked-004",
+      "surface_id": "devhub-account-home-surface",
+      "observed_surface_ref": "fixture-observed-surface:account-home-redacted",
+      "related_source_ids": [],
+      "action_labels": [
+        "My Records",
+        "Apply"
+      ],
+      "requires_attendance": true,
+      "inactive_reason": "fixture preview only; no browser/session artifact is created",
+      "rollback_ref": "rollback:devhub-surface-preview:account-home"
+    }
+  ]
+}

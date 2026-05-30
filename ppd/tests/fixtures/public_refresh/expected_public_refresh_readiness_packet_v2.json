@@ -1,0 +1,141 @@
+{
+  "packet_version": "public-refresh-readiness-packet-v2",
+  "packet_id": "fixture-first-public-refresh-readiness-v2",
+  "source_checklist_id": "inactive-release-activation-checklist-v2",
+  "source_checklist_status": "inactive",
+  "release": "public-refresh-readiness-v2",
+  "generated_from_fixture_at": "2026-05-30T00:00:00Z",
+  "network_access": "not_requested",
+  "devhub_scope": "not_touched",
+  "active_source_registry_changes": "not_allowed",
+  "ordered_public_source_refresh_prerequisites": [
+    {
+      "order": 1,
+      "checklist_item_id": "public-source-prerequisites",
+      "title": "Confirm ordered public-source refresh prerequisites",
+      "source_scope": "official_public_ppd_sources",
+      "readiness_gate": "manual_review_required",
+      "status": "pending_public_refresh_review",
+      "offline_only": true,
+      "blocks_live_refresh_until_resolved": true
+    },
+    {
+      "order": 2,
+      "checklist_item_id": "allowlist-robots-placeholders",
+      "title": "Prepare allowlist and robots review placeholders",
+      "source_scope": "public_hosts_only",
+      "readiness_gate": "manual_review_required",
+      "status": "pending_public_refresh_review",
+      "offline_only": true,
+      "blocks_live_refresh_until_resolved": true
+    },
+    {
+      "order": 3,
+      "checklist_item_id": "source-freshness-placeholders",
+      "title": "Prepare source freshness comparison placeholders",
+      "source_scope": "metadata_manifests_only",
+      "readiness_gate": "offline_diff_required",
+      "status": "pending_public_refresh_review",
+      "offline_only": true,
+      "blocks_live_refresh_until_resolved": true
+    },
+    {
+      "order": 4,
+      "checklist_item_id": "raw-body-non-persistence",
+      "title": "Attest that raw public bodies are not persisted in git",
+      "source_scope": "commit_safe_metadata_only",
+      "readiness_gate": "attestation_required",
+      "status": "pending_public_refresh_review",
+      "offline_only": true,
+      "blocks_live_refresh_until_resolved": true
+    },
+    {
+      "order": 5,
+      "checklist_item_id": "affected-guardrail-review",
+      "title": "Prepare affected guardrail review placeholders",
+      "source_scope": "guardrail_metadata_only",
+      "readiness_gate": "manual_review_required",
+      "status": "pending_public_refresh_review",
+      "offline_only": true,
+      "blocks_live_refresh_until_resolved": true
+    }
+  ],
+  "allowlist_and_robots_review_placeholders": [
+    {
+      "order": 1,
+      "source_group_id": "portland_gov_ppd_public_guidance",
+      "canonical_hosts": ["www.portland.gov"],
+      "allowlist_review_status": "placeholder_pending_human_review",
+      "robots_review_status": "placeholder_pending_human_review",
+      "review_notes": "Confirm host allowlist and robots directives before any live refresh."
+    },
+    {
+      "order": 2,
+      "source_group_id": "devhub_public_guidance",
+      "canonical_hosts": ["devhub.portlandoregon.gov", "www.portland.gov"],
+      "allowlist_review_status": "placeholder_pending_human_review",
+      "robots_review_status": "placeholder_pending_human_review",
+      "review_notes": "Confirm host allowlist and robots directives before any live refresh."
+    }
+  ],
+  "source_freshness_comparison_placeholders": [
+    {
+      "order": 1,
+      "source_group_id": "portland_gov_ppd_public_guidance",
+      "current_manifest_ref": "placeholder_current_public_guidance_manifest",
+      "candidate_manifest_ref": "placeholder_candidate_manifest_ref",
+      "comparison_status": "placeholder_not_run",
+      "expected_comparison_fields": ["content_hash", "last_seen_at", "freshness_status", "affected_requirement_ids", "affected_guardrail_bundle_ids"]
+    },
+    {
+      "order": 2,
+      "source_group_id": "devhub_public_guidance",
+      "current_manifest_ref": "placeholder_current_devhub_public_manifest",
+      "candidate_manifest_ref": "placeholder_candidate_manifest_ref",
+      "comparison_status": "placeholder_not_run",
+      "expected_comparison_fields": ["content_hash", "last_seen_at", "freshness_status", "affected_requirement_ids", "affected_guardrail_bundle_ids"]
+    }
+  ],
+  "raw_body_non_persistence_attestations": [
+    {
+      "order": 1,
+      "attestation_id": "no_raw_public_body_commits",
+      "status": "required_before_refresh",
+      "statement": "Raw public response bodies, WARC files, screenshots, traces, HAR files, and downloaded documents are not committed by this readiness packet."
+    },
+    {
+      "order": 2,
+      "attestation_id": "metadata_only_fixture_scope",
+      "status": "satisfied_by_fixture",
+      "statement": "Committed fixtures contain checklist metadata and expected readiness records only."
+    }
+  ],
+  "affected_guardrail_review_placeholders": [
+    {
+      "order": 1,
+      "guardrail_bundle_id": "permit_application_submission_guardrails",
+      "review_status": "placeholder_pending_refresh_diff",
+      "review_reason": "Public guidance refresh may change required facts, documents, acknowledgements, or submission gates.",
+      "required_before_activation": true
+    },
+    {
+      "order": 2,
+      "guardrail_bundle_id": "fee_payment_guardrails",
+      "review_status": "placeholder_pending_refresh_diff",
+      "review_reason": "Public guidance refresh may change payment instructions, fee triggers, or financial action gates.",
+      "required_before_activation": true
+    },
+    {
+      "order": 3,
+      "guardrail_bundle_id": "corrections_upload_guardrails",
+      "review_status": "placeholder_pending_refresh_diff",
+      "review_reason": "Public guidance refresh may change upload correction prerequisites or official-record action gates.",
+      "required_before_activation": true
+    }
+  ],
+  "exact_offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/public_refresh/readiness_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_public_refresh_readiness_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

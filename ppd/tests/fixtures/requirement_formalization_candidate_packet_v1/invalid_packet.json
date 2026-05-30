@@ -1,0 +1,15 @@
+{
+  "packet_version": "requirement_formalization_candidate_packet_v1",
+  "review_status": "pending_review",
+  "formalization_status": "candidate_only",
+  "candidate_rows": [
+    {
+      "candidate_id": "candidate-uncited",
+      "summary": "This will be approved and should submit the application.",
+      "raw_html": "raw crawl output",
+      "artifact_type": "pdf",
+      "authorization_header": "Bearer private-token",
+      "active_source_mutation": true
+    }
+  ]
+}

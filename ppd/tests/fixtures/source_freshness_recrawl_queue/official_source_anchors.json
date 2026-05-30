@@ -1,0 +1,30 @@
+[
+  {
+    "id": "pcc-title-33",
+    "title": "Portland City Code Title 33 Planning and Zoning",
+    "url": "https://www.portland.gov/code/33",
+    "source_family": "code",
+    "processor": "ppd-code-processor"
+  },
+  {
+    "id": "trn-admin-rule-streets",
+    "title": "Transportation Administrative Rules for Streets",
+    "url": "https://www.portland.gov/transportation/administrative-rules",
+    "source_family": "administrative_rule",
+    "processor": "ppd-rule-processor"
+  },
+  {
+    "id": "bds-fee-schedule",
+    "title": "BDS Fee Schedule",
+    "url": "https://www.portland.gov/bds/fees",
+    "source_family": "fee_schedule",
+    "processor": "ppd-fee-processor"
+  },
+  {
+    "id": "bds-current-forms",
+    "title": "BDS Current Forms",
+    "url": "https://www.portland.gov/bds/forms",
+    "source_family": "form",
+    "processor": "ppd-form-processor"
+  }
+]

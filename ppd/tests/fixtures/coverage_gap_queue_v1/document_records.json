@@ -1,0 +1,47 @@
+{
+  "fixture_id": "document-records-fixture-coverage-gap-v1",
+  "documents": [
+    {
+      "document_id": "doc-bds-intake-form",
+      "source_id": "src-bds-intake-form",
+      "official_anchor": "residential-permit-intake-form",
+      "official_url": "https://www.portland.gov/ppd/residential-permits"
+    },
+    {
+      "document_id": "doc-plan-submittal-pdf",
+      "source_id": "src-plan-submittal-pdf",
+      "official_anchor": "plan-submittal-standards-pdf",
+      "official_url": "https://www.portland.gov/ppd/plan-review"
+    },
+    {
+      "document_id": "doc-fee-schedule",
+      "source_id": "src-fee-schedule",
+      "official_anchor": "building-permit-fees",
+      "official_url": "https://www.portland.gov/ppd/fees"
+    },
+    {
+      "document_id": "doc-review-timeline",
+      "source_id": "src-review-timeline",
+      "official_anchor": "review-timelines",
+      "official_url": "https://www.portland.gov/ppd/permit-review-process"
+    },
+    {
+      "document_id": "doc-electronic-files",
+      "source_id": "src-electronic-files",
+      "official_anchor": "electronic-file-standards",
+      "official_url": "https://www.portland.gov/ppd/eplans"
+    },
+    {
+      "document_id": "doc-permit-types",
+      "source_id": "src-permit-types",
+      "official_anchor": "permit-type-exceptions",
+      "official_url": "https://www.portland.gov/ppd/permit-types"
+    },
+    {
+      "document_id": "doc-inspection-gates",
+      "source_id": "src-inspection-gates",
+      "official_anchor": "inspection-action-gates",
+      "official_url": "https://www.portland.gov/ppd/inspections"
+    }
+  ]
+}

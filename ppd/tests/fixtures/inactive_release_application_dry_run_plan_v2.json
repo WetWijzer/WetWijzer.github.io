@@ -1,0 +1,183 @@
+{
+  "active_promotion_applied": false,
+  "devhub_accessed": false,
+  "dry_run": true,
+  "expected_file_delta_placeholders": [
+    {
+      "citations": [
+        "inactive-release-decision-row:inactive-release-2026-05-30-a"
+      ],
+      "delta_id": "delta-inactive-release-2026-05-30-a",
+      "delta_kind": "complete-file-replacement-placeholder",
+      "delta_order": 1,
+      "expected_status": "not-applied",
+      "release_id": "inactive-release-2026-05-30-a",
+      "source_decision_order": 1,
+      "target_path_placeholder": "ppd/tests/fixtures/inactive_release_application_dry_run_plan_v2/inactive-release-2026-05-30-a.json"
+    },
+    {
+      "citations": [
+        "inactive-release-decision-row:inactive-release-2026-05-30-b"
+      ],
+      "delta_id": "delta-inactive-release-2026-05-30-b",
+      "delta_kind": "complete-file-replacement-placeholder",
+      "delta_order": 2,
+      "expected_status": "not-applied",
+      "release_id": "inactive-release-2026-05-30-b",
+      "source_decision_order": 2,
+      "target_path_placeholder": "ppd/tests/fixtures/inactive_release_application_dry_run_plan_v2/inactive-release-2026-05-30-b.json"
+    }
+  ],
+  "fixture_first": true,
+  "live_source_accessed": false,
+  "metadata_only": true,
+  "mode": "fixture-first-inactive-release-application-dry-run-only",
+  "official_action_performed": false,
+  "ordered_synthetic_application_steps": [
+    {
+      "expected_state": "staged-placeholder-only",
+      "input_ref": "decision-row-1",
+      "release_id": "inactive-release-2026-05-30-a",
+      "requires_reviewer_stop_gate": true,
+      "step_id": "stage-inactive-release-2026-05-30-a-decision-packet",
+      "step_order": 1,
+      "synthetic_action": "stage inactive release decision fixture for review"
+    },
+    {
+      "expected_state": "file-delta-placeholders-only",
+      "input_ref": "ppd/tests/fixtures/rollback-plans/inactive-release-2026-05-30-a.md",
+      "release_id": "inactive-release-2026-05-30-a",
+      "requires_reviewer_stop_gate": true,
+      "step_id": "map-inactive-release-2026-05-30-a-file-placeholders",
+      "step_order": 2,
+      "synthetic_action": "map expected complete-file replacement placeholders"
+    },
+    {
+      "expected_state": "staged-placeholder-only",
+      "input_ref": "decision-row-2",
+      "release_id": "inactive-release-2026-05-30-b",
+      "requires_reviewer_stop_gate": true,
+      "step_id": "stage-inactive-release-2026-05-30-b-decision-packet",
+      "step_order": 3,
+      "synthetic_action": "stage inactive release decision fixture for review"
+    },
+    {
+      "expected_state": "file-delta-placeholders-only",
+      "input_ref": "ppd/tests/fixtures/rollback-plans/inactive-release-2026-05-30-b.md",
+      "release_id": "inactive-release-2026-05-30-b",
+      "requires_reviewer_stop_gate": true,
+      "step_id": "map-inactive-release-2026-05-30-b-file-placeholders",
+      "step_order": 4,
+      "synthetic_action": "map expected complete-file replacement placeholders"
+    }
+  ],
+  "plan_version": "inactive-release-application-dry-run-plan-v2",
+  "post_application_replay_prerequisites": [
+    {
+      "blocks_application": true,
+      "command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_release_decision_packet_v2.py"
+      ],
+      "prerequisite_id": "replay-source-decision-validation",
+      "prerequisite_order": 1,
+      "required_status": "pending-offline-replay"
+    },
+    {
+      "blocks_application": true,
+      "command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_release_application_dry_run_plan_v2.py"
+      ],
+      "prerequisite_id": "replay-plan-validation",
+      "prerequisite_order": 2,
+      "required_status": "pending-offline-replay"
+    },
+    {
+      "blocks_application": true,
+      "command": [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ],
+      "prerequisite_id": "replay-daemon-self-test",
+      "prerequisite_order": 3,
+      "required_status": "pending-offline-replay"
+    },
+    {
+      "blocks_application": true,
+      "expected_release_row_count": 2,
+      "prerequisite_id": "replay-row-count-reconciliation",
+      "prerequisite_order": 4,
+      "required_status": "pending-offline-review"
+    }
+  ],
+  "private_artifact_stored": false,
+  "reviewer_stop_gates": [
+    {
+      "blocks_application": true,
+      "gate_id": "stop-before-active-promotion",
+      "gate_order": 1,
+      "required_reviewer_action": "manual approval record must be supplied in a separate authorized path",
+      "status": "stop-required"
+    },
+    {
+      "blocks_application": true,
+      "gate_id": "stop-inactive-release-2026-05-30-a-human-approval",
+      "gate_order": 2,
+      "release_id": "inactive-release-2026-05-30-a",
+      "required_reviewer_action": "review the source decision basis and placeholder file delta before any later patch",
+      "status": "stop-required"
+    },
+    {
+      "blocks_application": true,
+      "gate_id": "stop-inactive-release-2026-05-30-b-human-approval",
+      "gate_order": 3,
+      "release_id": "inactive-release-2026-05-30-b",
+      "required_reviewer_action": "review the source decision basis and placeholder file delta before any later patch",
+      "status": "stop-required"
+    }
+  ],
+  "rollback_rehearsal_checkpoints": [
+    {
+      "checkpoint_id": "rollback-inactive-release-2026-05-30-a",
+      "checkpoint_order": 1,
+      "rehearsal_status": "checkpoint-only-not-executed",
+      "release_id": "inactive-release-2026-05-30-a",
+      "required_before_any_future_application": true,
+      "rollback_reference": "ppd/tests/fixtures/rollback-plans/inactive-release-2026-05-30-a.md"
+    },
+    {
+      "checkpoint_id": "rollback-inactive-release-2026-05-30-b",
+      "checkpoint_order": 2,
+      "rehearsal_status": "checkpoint-only-not-executed",
+      "release_id": "inactive-release-2026-05-30-b",
+      "required_before_any_future_application": true,
+      "rollback_reference": "ppd/tests/fixtures/rollback-plans/inactive-release-2026-05-30-b.md"
+    }
+  ],
+  "source_packet_version": "inactive-release-decision-packet-v2",
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/inactive_release_application_dry_run_plan_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_inactive_release_application_dry_run_plan_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

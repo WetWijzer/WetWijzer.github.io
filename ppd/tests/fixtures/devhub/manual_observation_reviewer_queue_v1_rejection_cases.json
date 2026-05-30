@@ -1,0 +1,74 @@
+{
+  "cases": [
+    {
+      "case_id": "reject_private_account_value",
+      "patch": {"observations": [{"private_account_value": "applicant@example.test"}]},
+      "expected_error_fragment": "private account"
+    },
+    {
+      "case_id": "reject_session_file",
+      "patch": {"observations": [{"session_file": "storage_state.json"}]},
+      "expected_error_fragment": "browser artifact"
+    },
+    {
+      "case_id": "reject_screenshot_trace_har_artifact",
+      "patch": {"observations": [{"evidence_artifacts": ["review.png", "trace.zip", "network.har"]}]},
+      "expected_error_fragment": "private value or browser artifact text"
+    },
+    {
+      "case_id": "reject_write_capable_action_evidence",
+      "patch": {"observations": [{"action_evidence": ["click_submit"]}]},
+      "expected_error_fragment": "write-capable action evidence"
+    },
+    {
+      "case_id": "reject_login_captcha_mfa_account_creation_handling",
+      "patch": {"observations": [{"review_notes": "Automate login and solve CAPTCHA for account creation."}]},
+      "expected_error_fragment": "prohibited automation"
+    },
+    {
+      "case_id": "reject_consequential_action_language",
+      "patch": {"observations": [{"review_notes": "Click submit after uploading the correction document."}]},
+      "expected_error_fragment": "consequential action language"
+    },
+    {
+      "case_id": "reject_missing_redaction_fields",
+      "remove_observation_fields": ["redaction_checks"],
+      "expected_error_fragment": "redaction_checks"
+    },
+    {
+      "case_id": "reject_missing_attendance_fields",
+      "remove_observation_fields": ["attendance_requirements"],
+      "expected_error_fragment": "attendance_requirements"
+    },
+    {
+      "case_id": "reject_active_devhub_mutation_flag",
+      "patch": {"observations": [{"mutation_flags": {"active_devhub_mutation": true}}]},
+      "expected_error_fragment": "active mutation"
+    },
+    {
+      "case_id": "reject_active_surface_registry_mutation_flag",
+      "patch": {"observations": [{"active_surface_registry_mutation": true}]},
+      "expected_error_fragment": "active mutation"
+    },
+    {
+      "case_id": "reject_active_guardrail_mutation_flag",
+      "patch": {"observations": [{"active_guardrail_mutation": true}]},
+      "expected_error_fragment": "active mutation"
+    },
+    {
+      "case_id": "reject_active_prompt_mutation_flag",
+      "patch": {"observations": [{"active_prompt_mutation": true}]},
+      "expected_error_fragment": "active mutation"
+    },
+    {
+      "case_id": "reject_active_release_state_mutation_flag",
+      "patch": {"observations": [{"active_release_state_mutation": true}]},
+      "expected_error_fragment": "active mutation"
+    },
+    {
+      "case_id": "reject_active_agent_state_mutation_flag",
+      "patch": {"observations": [{"active_agent_state_mutation": true}]},
+      "expected_error_fragment": "active mutation"
+    }
+  ]
+}

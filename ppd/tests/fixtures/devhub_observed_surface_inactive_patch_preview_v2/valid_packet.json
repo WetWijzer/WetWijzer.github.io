@@ -1,0 +1,65 @@
+{
+  "preview_version": "devhub_observed_surface_inactive_patch_preview_v2",
+  "mode": "inactive_patch_preview",
+  "surface_state": "inactive",
+  "devhub_execution": "none",
+  "promotion_claim": "none",
+  "summary": "Offline inactive observed-surface patch preview for reviewer validation only.",
+  "rows": [
+    {
+      "row_id": "row-address-search-heading",
+      "before": "Surface heading unknown in offline fixture.",
+      "after": "Observed heading candidate retained as inactive preview text.",
+      "observation_evidence_id": "obs-devhub-public-help-001"
+    }
+  ],
+  "observation_evidence": [
+    {
+      "evidence_id": "obs-devhub-public-help-001",
+      "citation": "official DevHub public guide fixture excerpt, line 12",
+      "observed_at": "2026-05-30T00:00:00Z",
+      "summary": "Public guide text describes account-scoped DevHub navigation without private session content."
+    }
+  ],
+  "selector_confidence_notes": [
+    {
+      "selector": "role=heading[name='Apply for permits']",
+      "confidence_note": "Role selector is preferred because it is accessible text in public guidance, not a private DOM capture."
+    }
+  ],
+  "gates": {
+    "redaction": {
+      "status": "pass",
+      "notes": "No credentials, cookies, screenshots, traces, private values, or raw downloads are included."
+    },
+    "attendance": {
+      "status": "pass",
+      "notes": "Preview is offline and inactive; any authenticated workflow would require attended review."
+    }
+  },
+  "blocked_rows": [
+    {
+      "row_id": "blocked-live-submit-control",
+      "explanation": "Consequential DevHub controls are excluded from inactive offline preview rows."
+    }
+  ],
+  "validation_inventory": [
+    {"check": "before_after_rows", "status": "pass"},
+    {"check": "observation_evidence", "status": "pass"},
+    {"check": "selector_confidence_notes", "status": "pass"},
+    {"check": "redaction_gate", "status": "pass"},
+    {"check": "attendance_gate", "status": "pass"},
+    {"check": "blocked_row_explanations", "status": "pass"},
+    {"check": "artifact_exclusion", "status": "pass"},
+    {"check": "mutation_flags", "status": "pass"}
+  ],
+  "artifact_manifest": [],
+  "mutation_flags": {
+    "active_devhub_surface_mutation": false,
+    "active_devhub_process_mutation": false,
+    "active_devhub_guardrail_mutation": false,
+    "active_devhub_release_state_mutation": false,
+    "active_devhub_fixture_mutation": false,
+    "active_devhub_agent_state_mutation": false
+  }
+}

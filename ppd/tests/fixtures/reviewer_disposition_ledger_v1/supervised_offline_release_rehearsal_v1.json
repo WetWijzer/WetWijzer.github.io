@@ -1,0 +1,29 @@
+{
+  "schema": "ppd.supervised_offline_release_rehearsal.v1",
+  "items": [
+    {
+      "id": "offline-release-rehearsal-001",
+      "recommended_disposition": "block",
+      "reviewer_owner": "ppd-release-supervisor",
+      "decision_rationale": "Release rehearsal is blocked until rollback evidence and dependency order are reviewed together.",
+      "dependency_order": 3,
+      "rollback_note": "Do not promote rehearsal outputs; rerun only against committed offline fixtures after reviewer sign-off.",
+      "expected_follow_up_artifact": "ppd/tests/fixtures/supervised_offline_release_rehearsal_v1/rollback-evidence.json",
+      "offline_validation_command": "python3 ppd/reviewer_disposition_ledger_v1.py",
+      "citations": [
+        {
+          "label": "Supervised offline release rehearsal v1 fixture",
+          "path": "ppd/tests/fixtures/reviewer_disposition_ledger_v1/supervised_offline_release_rehearsal_v1.json",
+          "locator": "items[0]"
+        }
+      ],
+      "attestations": {
+        "no_live": true,
+        "no_auth": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    }
+  ]
+}

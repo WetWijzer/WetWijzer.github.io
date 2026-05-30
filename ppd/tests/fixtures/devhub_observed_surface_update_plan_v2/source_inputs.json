@@ -1,0 +1,87 @@
+{
+  "source_packets": {
+    "devhub_observation_evidence_intake_packet_v1": {
+      "packet_id": "devhub-observation-evidence-intake-v1-fixture",
+      "observed_surfaces": [
+        {
+          "surface_id": "trade-permit-dashboard",
+          "page_heading": "Trade Permit Dashboard",
+          "observed_labels": [
+            "Permit status",
+            "Corrections requested",
+            "Messages"
+          ],
+          "selector_confidence": "medium",
+          "reviewer_owner": "permits-review-lead",
+          "redaction_checks": [
+            "redacted account labels only",
+            "no raw applicant fields"
+          ],
+          "rollback_note": "Reject this candidate if the reviewer cannot cite the committed intake packet and rehearsal step.",
+          "citations": [
+            {
+              "packet": "devhub_observation_evidence_intake_packet_v1",
+              "pointer": "/observed_surfaces/0"
+            }
+          ]
+        }
+      ]
+    },
+    "attended_devhub_observation_handoff_checklist_v1": {
+      "packet_id": "attended-devhub-observation-handoff-checklist-v1-fixture",
+      "manual_observation_checklists": [
+        {
+          "surface_id": "trade-permit-dashboard",
+          "page_heading": "Trade Permit Dashboard",
+          "reviewer_owner": "permits-review-lead",
+          "manual_attendance_gates": [
+            "reviewer present",
+            "stop before official controls"
+          ],
+          "stop_before_action_gates": [
+            "upload",
+            "submit",
+            "payment",
+            "scheduling"
+          ],
+          "citations": [
+            {
+              "packet": "attended_devhub_observation_handoff_checklist_v1",
+              "pointer": "/manual_observation_checklists/0"
+            }
+          ]
+        }
+      ]
+    },
+    "devhub_read_only_observation_rehearsal_v1": {
+      "rehearsal_id": "devhub-read-only-observation-rehearsal-v1",
+      "steps": [
+        {
+          "surface_id": "trade-permit-dashboard",
+          "title": "Trade Permit Dashboard",
+          "visible_labels": [
+            "Permit status",
+            "Messages"
+          ],
+          "manual_attendance_checkpoints": [
+            "manual login by reviewer only",
+            "observe labels only"
+          ],
+          "redaction_requirements": [
+            "no stored session state",
+            "no screenshots or traces"
+          ],
+          "citations": [
+            {
+              "packet": "devhub_read_only_observation_rehearsal_v1",
+              "pointer": "/steps/0"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "reviewer_owner_assignments": {
+    "trade-permit-dashboard": "permits-review-lead"
+  }
+}

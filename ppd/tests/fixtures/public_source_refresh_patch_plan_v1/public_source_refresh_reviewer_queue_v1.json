@@ -1,0 +1,53 @@
+{
+  "queue_id": "public-source-refresh-reviewer-queue-v1-fixture",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "items": [
+    {
+      "queue_item_id": "queue-apply-permits-001",
+      "source_id": "src-ppd-apply-permits",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "visible_title": "Apply for permits",
+      "visible_date_text": "Last updated May 2026",
+      "visible_date_review_note": "Reviewer observed a visible page title and date label in the approved fixture metadata only.",
+      "previous_content_hash": "sha256:previous-apply-permits-fixture",
+      "proposed_content_hash": "sha256:proposed-apply-permits-fixture",
+      "freshness_status": "reviewed_public_metadata_refresh_proposed",
+      "observed_at": "2026-05-30T00:00:00Z",
+      "affected_requirement_ids": [
+        "req-devhub-application-path",
+        "req-unsupported-email-path-check"
+      ],
+      "validation_checks": [
+        "proposal_rows_only",
+        "no_recrawl",
+        "no_download",
+        "no_processor_execution",
+        "no_raw_body_storage",
+        "no_registry_mutation"
+      ]
+    },
+    {
+      "queue_item_id": "queue-devhub-faq-001",
+      "source_id": "src-ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "visible_title": "DevHub FAQs",
+      "visible_date_text": "Last updated May 2026",
+      "visible_date_review_note": "Fixture queue item retained for non-approved disposition filtering coverage.",
+      "previous_content_hash": "sha256:previous-devhub-faq-fixture",
+      "proposed_content_hash": "sha256:proposed-devhub-faq-fixture",
+      "freshness_status": "review_pending",
+      "observed_at": "2026-05-30T00:00:00Z",
+      "affected_requirement_ids": [
+        "req-devhub-account-services"
+      ],
+      "validation_checks": [
+        "proposal_rows_only",
+        "no_recrawl",
+        "no_download",
+        "no_processor_execution",
+        "no_raw_body_storage",
+        "no_registry_mutation"
+      ]
+    }
+  ]
+}

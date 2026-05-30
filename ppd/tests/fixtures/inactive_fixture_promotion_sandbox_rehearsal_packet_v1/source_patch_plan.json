@@ -1,0 +1,100 @@
+{
+  "artifact_id": "inactive_fixture_promotion_application_plan_v1",
+  "artifact_type": "fixture_first_application_patch_plan",
+  "version": 1,
+  "status": "review_ready",
+  "affected_fixture_family_rows": [
+    {
+      "family_id": "public_source_refresh",
+      "target_fixture_area": "ppd/tests/fixtures/public_source_refresh/",
+      "reviewer_owner": "public-source-refresh-reviewer",
+      "review_focus": "metadata-only source expectations"
+    },
+    {
+      "family_id": "devhub_observed_surface",
+      "target_fixture_area": "ppd/tests/fixtures/devhub_observed_surface/",
+      "reviewer_owner": "devhub-surface-reviewer",
+      "review_focus": "redacted observed-surface expectations"
+    },
+    {
+      "family_id": "inactive_promotion_diff_ledger",
+      "target_fixture_area": "ppd/tests/fixtures/inactive_fixture_promotion/",
+      "reviewer_owner": "fixture-ledger-reviewer",
+      "review_focus": "deterministic diff rows"
+    },
+    {
+      "family_id": "combined_rehearsal",
+      "target_fixture_area": "ppd/tests/fixtures/inactive_fixture_promotion/",
+      "reviewer_owner": "promotion-supervisor-reviewer",
+      "review_focus": "offline gate alignment"
+    }
+  ],
+  "dependency_gates": [
+    {
+      "gate_id": "gate_001_input_artifacts_present",
+      "required_before_step": "step_001_inventory_inputs",
+      "must_pass": true,
+      "offline_check": "Confirm consumed artifact identifiers are represented in fixture metadata."
+    },
+    {
+      "gate_id": "gate_002_offline_validation_defined",
+      "required_before_step": "step_002_validation_handoff",
+      "must_pass": true,
+      "offline_check": "Confirm validation commands are offline and deterministic."
+    }
+  ],
+  "ordered_application_steps": [
+    {
+      "step_id": "step_001_inventory_inputs",
+      "order": 1,
+      "action": "Inventory consumed inactive artifacts and map rows to fixture families.",
+      "citations": ["inactive-fixture-application-plan:v1:step-001"],
+      "dependency_gates": ["gate_001_input_artifacts_present"],
+      "rollback_checkpoint": "rollback_001_before_fixture_write",
+      "reviewer_owner": "promotion-supervisor-reviewer"
+    },
+    {
+      "step_id": "step_002_validation_handoff",
+      "order": 2,
+      "action": "Run offline validation commands and leave completion to daemon validation.",
+      "citations": ["inactive-fixture-application-plan:v1:step-002"],
+      "dependency_gates": ["gate_002_offline_validation_defined"],
+      "rollback_checkpoint": "rollback_002_after_failed_validation",
+      "reviewer_owner": "promotion-supervisor-reviewer"
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "rollback_001_before_fixture_write",
+      "restore_scope": "Abort application plan before fixture writes.",
+      "trigger_conditions": ["missing_required_input_artifact"]
+    },
+    {
+      "checkpoint_id": "rollback_002_after_failed_validation",
+      "restore_scope": "Revert only staged inactive fixture rows from this plan.",
+      "trigger_conditions": ["daemon_self_test_failure"]
+    }
+  ],
+  "reviewer_owner_assignments": [
+    {
+      "reviewer_owner": "promotion-supervisor-reviewer",
+      "owned_items": ["application ordering", "dependency gates", "validation handoff"]
+    }
+  ],
+  "exact_offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "blocked_validation_behaviors": [
+    "live_public_crawl",
+    "authenticated_devhub_browser_session",
+    "captcha_automation",
+    "mfa_automation",
+    "account_creation",
+    "payment_entry_or_submission",
+    "permit_submission",
+    "official_upload",
+    "inspection_scheduling",
+    "permit_or_request_cancellation"
+  ],
+  "completion_rule": "The daemon marks the selected task complete only after offline validation passes."
+}

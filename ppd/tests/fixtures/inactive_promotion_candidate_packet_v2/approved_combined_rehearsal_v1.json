@@ -1,0 +1,84 @@
+{
+  "rehearsal_id": "combined_recrawl_devhub_inactive_patch_dependency_rehearsal_v1",
+  "mode": "fixture_first_offline_rehearsal",
+  "mutates_active_artifacts": false,
+  "dependency_rows": [
+    {
+      "dependency_order": 1,
+      "dependency_id": "dependency-001-devhub-application-guide-draft-surface",
+      "reviewer_approval_status": "approved_for_inactive_candidate_packet_v2",
+      "public_source_patch": {
+        "source_patch_id": "public-source-patch-devhub-application-guide",
+        "source_id": "ppd-devhub-guide-submit-permit-application",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+        "changed_requirement_ids": [
+          "requirement:devhub-application-draft-save-for-later"
+        ],
+        "evidence_ids": [
+          "source:ppd-devhub-guide-submit-permit-application#draft-save-for-later"
+        ],
+        "inactive_reason": "approved inactive fixture dependency only"
+      },
+      "devhub_surface_patch": {
+        "surface_patch_id": "devhub-surface-patch-application-draft",
+        "surface_id": "devhub-permit-application-draft-surface",
+        "observed_surface_ref": "observation:devhub-application-draft-fixture-redacted",
+        "related_source_ids": [
+          "ppd-devhub-guide-submit-permit-application"
+        ],
+        "action_labels": [
+          "Review application draft",
+          "Save for later"
+        ],
+        "requires_attendance": true,
+        "inactive_reason": "approved inactive fixture dependency only"
+      },
+      "rollback_references": [
+        "rollback:public-source-recrawl-preview:devhub-application-guide",
+        "rollback:devhub-surface-preview:application-draft"
+      ]
+    },
+    {
+      "dependency_order": 2,
+      "dependency_id": "dependency-002-single-pdf-upload-staging-surface",
+      "reviewer_approval_status": "approved_for_inactive_candidate_packet_v2",
+      "public_source_patch": {
+        "source_patch_id": "public-source-patch-single-pdf",
+        "source_id": "ppd-submit-plans-online-single-pdf",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "changed_requirement_ids": [
+          "requirement:single-pdf-drawings-together"
+        ],
+        "evidence_ids": [
+          "source:ppd-submit-plans-online-single-pdf#drawing-plans-together"
+        ],
+        "inactive_reason": "approved inactive fixture dependency only"
+      },
+      "devhub_surface_patch": {
+        "surface_patch_id": "devhub-surface-patch-document-staging",
+        "surface_id": "devhub-document-staging-surface",
+        "observed_surface_ref": "observation:devhub-document-staging-fixture-redacted",
+        "related_source_ids": [
+          "ppd-submit-plans-online-single-pdf"
+        ],
+        "action_labels": [
+          "Review document checklist",
+          "Save staged draft"
+        ],
+        "requires_attendance": true,
+        "inactive_reason": "approved inactive fixture dependency only"
+      },
+      "rollback_references": [
+        "rollback:public-source-recrawl-preview:single-pdf",
+        "rollback:devhub-surface-preview:document-staging"
+      ]
+    }
+  ],
+  "exact_offline_validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

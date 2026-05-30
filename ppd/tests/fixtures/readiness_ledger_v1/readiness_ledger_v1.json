@@ -1,0 +1,200 @@
+{
+  "schema_version": "ppd-readiness-ledger-v1",
+  "fixture_packet_created_at": "2026-05-30T00:00:00Z",
+  "source_packets": [
+    {
+      "fixture_packet_id": "packet-public-sources-20260508",
+      "source_id": "ppd-official-anchors",
+      "evidence_id": "ev-public-source-anchors",
+      "title": "Official PP&D public source anchors from implementation plan",
+      "canonical_url": "https://www.portland.gov/ppd",
+      "capture_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_basis": "Plan source facts verified against official public sources on 2026-05-08",
+      "contains_raw_body": false
+    },
+    {
+      "fixture_packet_id": "packet-devhub-tools-20260508",
+      "source_id": "ppd-online-permitting-tools",
+      "evidence_id": "ev-devhub-tools-overview",
+      "title": "Online permitting tools overview fixture summary",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "capture_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_basis": "Plan notes identify DevHub as the City of Portland online permitting system and enumerate account-scoped guides",
+      "contains_raw_body": false
+    },
+    {
+      "fixture_packet_id": "packet-submit-plans-20260508",
+      "source_id": "ppd-submit-plans-online",
+      "evidence_id": "ev-submit-plans-online",
+      "title": "Submit Plans Online and Single PDF guidance fixture summary",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "capture_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_basis": "Plan source facts summarize Single PDF process and separate supporting PDF uploads",
+      "contains_raw_body": false
+    },
+    {
+      "fixture_packet_id": "packet-devhub-guide-20260508",
+      "source_id": "ppd-devhub-application-guide",
+      "evidence_id": "ev-devhub-application-guide",
+      "title": "DevHub permit application guide fixture summary",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "capture_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_basis": "Plan source facts list DevHub request types, dynamic questions, save-for-later behavior, uploads, and acknowledgement steps",
+      "contains_raw_body": false
+    },
+    {
+      "fixture_packet_id": "packet-devhub-faq-20260508",
+      "source_id": "ppd-devhub-faq",
+      "evidence_id": "ev-devhub-faq",
+      "title": "DevHub FAQ fixture summary",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "capture_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_basis": "Plan source facts list account-scoped DevHub services including status, corrections, inspections, and fees",
+      "contains_raw_body": false
+    },
+    {
+      "fixture_packet_id": "packet-devhub-signin-20260508",
+      "source_id": "ppd-devhub-signin-guide",
+      "evidence_id": "ev-devhub-signin-guide",
+      "title": "DevHub account and sign-in fixture summary",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-sign-guide",
+      "capture_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_basis": "Plan source facts state that DevHub online permitting services require PortlandOregon.gov credentials",
+      "contains_raw_body": false
+    },
+    {
+      "fixture_packet_id": "packet-fee-payment-20260508",
+      "source_id": "ppd-fee-payment-guide",
+      "evidence_id": "ev-fee-payment-guide",
+      "title": "Fee payment guide fixture summary",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "capture_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_basis": "Plan source facts classify payment detail entry and final payment submission as financial workflows requiring separate guardrails",
+      "contains_raw_body": false
+    }
+  ],
+  "validators": [
+    {
+      "validator_id": "validator-self-test",
+      "purpose": "Run the PP&D daemon deterministic self-test without live crawling or DevHub access",
+      "offline_command": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+    },
+    {
+      "validator_id": "validator-readiness-ledger-pytest",
+      "purpose": "Validate readiness ledger fixture completeness and attestations",
+      "offline_command": ["python3", "-m", "pytest", "ppd/tests/test_readiness_ledger_v1.py"]
+    },
+    {
+      "validator_id": "validator-readiness-ledger-pycompile",
+      "purpose": "Confirm readiness ledger Python syntax",
+      "offline_command": ["python3", "-m", "py_compile", "ppd/readiness/ledger_v1.py", "ppd/tests/test_readiness_ledger_v1.py"]
+    }
+  ],
+  "readiness_rows": [
+    {
+      "row_id": "readiness-public-source-freshness-v1",
+      "topic": "public_source_freshness",
+      "status": "ready_with_blockers",
+      "owner": "PP&D public source freshness maintainer",
+      "evidence_ids": ["ev-public-source-anchors", "ev-devhub-tools-overview", "ev-submit-plans-online"],
+      "validator_ids": ["validator-self-test", "validator-readiness-ledger-pytest"],
+      "manual_review_blockers": ["Human reviewer must confirm whether official pages changed after the fixture verification date before relying on production guidance."],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true
+      }
+    },
+    {
+      "row_id": "readiness-requirement-traceability-v1",
+      "topic": "requirement_traceability",
+      "status": "ready_with_blockers",
+      "owner": "PP&D requirements traceability maintainer",
+      "evidence_ids": ["ev-devhub-application-guide", "ev-submit-plans-online", "ev-fee-payment-guide"],
+      "validator_ids": ["validator-readiness-ledger-pytest", "validator-readiness-ledger-pycompile"],
+      "manual_review_blockers": ["Human reviewer must map cited fixture summaries to finalized RequirementNode identifiers after extraction contracts are populated."],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true
+      }
+    },
+    {
+      "row_id": "readiness-guardrail-explanations-v1",
+      "topic": "guardrail_explanations",
+      "status": "ready_with_blockers",
+      "owner": "PP&D guardrail compiler maintainer",
+      "evidence_ids": ["ev-devhub-application-guide", "ev-fee-payment-guide", "ev-devhub-faq"],
+      "validator_ids": ["validator-self-test", "validator-readiness-ledger-pytest"],
+      "manual_review_blockers": ["Human reviewer must approve final explanation wording before it is exposed as agent-facing permitting advice."],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true
+      }
+    },
+    {
+      "row_id": "readiness-reversible-draft-preview-v1",
+      "topic": "reversible_draft_preview",
+      "status": "ready_with_blockers",
+      "owner": "PP&D reversible draft maintainer",
+      "evidence_ids": ["ev-devhub-application-guide", "ev-submit-plans-online"],
+      "validator_ids": ["validator-readiness-ledger-pytest", "validator-readiness-ledger-pycompile"],
+      "manual_review_blockers": ["Human reviewer must inspect generated draft previews before any workflow is allowed to approach upload, certification, or submission gates."],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true
+      }
+    },
+    {
+      "row_id": "readiness-devhub-read-only-observation-v1",
+      "topic": "devhub_read_only_observation",
+      "status": "blocked_manual_review",
+      "owner": "PP&D DevHub attended automation maintainer",
+      "evidence_ids": ["ev-devhub-faq", "ev-devhub-signin-guide", "ev-devhub-tools-overview"],
+      "validator_ids": ["validator-self-test", "validator-readiness-ledger-pytest"],
+      "manual_review_blockers": ["No committed fixture may stand in for a user-attended authenticated DevHub observation; manual review must confirm read-only scope before any observed surface is trusted."],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true
+      }
+    },
+    {
+      "row_id": "readiness-action-journal-safety-v1",
+      "topic": "action_journal_safety",
+      "status": "ready_with_blockers",
+      "owner": "PP&D action journal maintainer",
+      "evidence_ids": ["ev-devhub-application-guide", "ev-devhub-faq", "ev-fee-payment-guide"],
+      "validator_ids": ["validator-readiness-ledger-pytest", "validator-readiness-ledger-pycompile"],
+      "manual_review_blockers": ["Human reviewer must verify any new journal event schema excludes credentials, cookies, auth state, screenshots, traces, HAR data, private values, payment details, and local private paths."],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true
+      }
+    },
+    {
+      "row_id": "readiness-agent-response-safety-v1",
+      "topic": "agent_response_safety",
+      "status": "ready_with_blockers",
+      "owner": "PP&D agent safety maintainer",
+      "evidence_ids": ["ev-public-source-anchors", "ev-devhub-application-guide", "ev-fee-payment-guide"],
+      "validator_ids": ["validator-self-test", "validator-readiness-ledger-pytest", "validator-readiness-ledger-pycompile"],
+      "manual_review_blockers": ["Human reviewer must confirm agent responses continue to cite fixture-backed requirements and refuse official actions without user attendance and exact confirmation."],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true
+      }
+    }
+  ]
+}

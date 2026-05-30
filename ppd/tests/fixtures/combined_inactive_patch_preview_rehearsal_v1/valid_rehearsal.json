@@ -1,0 +1,72 @@
+{
+  "schema_version": "combined_inactive_patch_preview_dependency_rehearsal_v1",
+  "scope": "combined_inactive_fixture_preview_rehearsal_v1",
+  "mutation_flags": [
+    "combined_inactive_fixture_preview_rehearsal",
+    "fixture_preview_only",
+    "inactive_patch_preview_only",
+    "no_live_execution",
+    "no_applied_promotion",
+    "no_mutation"
+  ],
+  "cross_family_dependency_rows": [
+    {
+      "source_family": "public_source_registry",
+      "dependent_family": "devhub_observation_fixture",
+      "dependency": "public DevHub guidance constrains the observation labels used by the inactive fixture preview",
+      "evidence_ids": [
+        "pub-devhub-faq-2026-05-08",
+        "obs-devhub-navigation-fixture-001"
+      ]
+    }
+  ],
+  "public_source_evidence": [
+    {
+      "source_id": "pub-devhub-faq-2026-05-08",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "citation": "Official public DevHub FAQ anchor verified for fixture-only rehearsal dependency checks."
+    }
+  ],
+  "devhub_observation_evidence": [
+    {
+      "observation_id": "obs-devhub-navigation-fixture-001",
+      "source_id": "fixture-devhub-public-navigation",
+      "citation": "Synthetic redacted observation fixture describing public navigation labels only."
+    }
+  ],
+  "unchanged_family_inventory": [
+    {
+      "family": "pdf_draft_fill",
+      "status": "unchanged",
+      "note": "No PDF drafting behavior is altered by this preview rehearsal."
+    }
+  ],
+  "blocked_promotion_carry_forward_notes": [
+    {
+      "blocked_item": "active-promotion",
+      "carry_forward_note": "Promotion remains blocked until reviewer signoff and separate activation validation exist."
+    }
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "reviewer_role": "PPD guardrail reviewer",
+      "placeholder": "pending reviewer name and date"
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint": "fixture-only preview rollback",
+      "expected_state": "No live state, private data, or active promotion output exists."
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "notes": [
+    "This artifact rehearses dependency validation for committed deterministic fixtures only."
+  ]
+}

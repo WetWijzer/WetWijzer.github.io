@@ -1,0 +1,129 @@
+{
+  "version": "devhub_read_only_observation_reviewer_disposition_queue_v1",
+  "packet_id": "devhub-read-only-observation-reviewer-disposition-queue-v1",
+  "fixture_first": true,
+  "read_only_only": true,
+  "consumes_intake_gate_version": "devhub_read_only_observation_evidence_intake_gate_v1",
+  "consumed_intake_gate_packet_id": "devhub-read-only-observation-evidence-intake-gate-synthetic-v1",
+  "no_active_surface_map_changes": true,
+  "reviewer_decision_rows": [
+    {
+      "decision_row_id": "devhub-read-only-review-disposition-v1-001",
+      "decision_order": 1,
+      "source_intake_row_id": "devhub-observation-intake-row-home-v1",
+      "surface_id": "devhub-home-read-only-synthetic",
+      "surface_label": "DevHub home metadata shell",
+      "safe_read_only_surface_bucket": "devhub_home",
+      "decision_status": "pending_reviewer_disposition",
+      "reviewer_decision_placeholder": "Reviewer records accept, reject, or needs-follow-up after offline validation.",
+      "evidence_refs": [
+        "ppd-plan-devhub-safe-read-only-surfaces",
+        "synthetic-devhub-home-observation-metadata-v1"
+      ],
+      "redaction_confirmation_placeholders": [
+        {"attestation_id": "credentials_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "session_state_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "browser_artifacts_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "auth_files_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "screenshots_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "traces_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "har_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "private_page_values_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "raw_crawl_data_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "raw_pdf_data_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "downloaded_data_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "payment_details_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "uploaded_documents_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "official_action_artifacts_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "only_synthetic_or_redacted_metadata", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."}
+      ],
+      "blocked_action_carry_forward_notes": [
+        "Stop before login, account settings, upload, submit, certification, payment, scheduling, cancellation, password recovery, MFA, CAPTCHA, or account creation controls.",
+        "Record only synthetic surface IDs, generic headings, and reviewer-safe metadata placeholders."
+      ],
+      "rollback_checkpoint": {
+        "checkpoint_id": "rollback-devhub-read-only-review-disposition-v1-001",
+        "decision_row_id": "devhub-read-only-review-disposition-v1-001",
+        "restart_from_fixture": true,
+        "rollback_action": "Discard the reviewer row and rebuild from the committed intake fixture.",
+        "active_surface_map_changes": false
+      },
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/devhub/read_only_observation_reviewer_disposition_queue_v1.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_devhub_read_only_observation_reviewer_disposition_queue_v1.py"]
+      ],
+      "active_surface_map_changes": false
+    },
+    {
+      "decision_row_id": "devhub-read-only-review-disposition-v1-002",
+      "decision_order": 2,
+      "source_intake_row_id": "devhub-observation-intake-row-permit-status-v1",
+      "surface_id": "devhub-permit-status-read-only-redacted",
+      "surface_label": "Permit status read-only metadata shell",
+      "safe_read_only_surface_bucket": "permit_status_review",
+      "decision_status": "pending_reviewer_disposition",
+      "reviewer_decision_placeholder": "Reviewer records accept, reject, or needs-follow-up after offline validation.",
+      "evidence_refs": [
+        "redacted-observation-surface-id-only-v1",
+        "ppd-plan-devhub-account-scoped-read-only-review"
+      ],
+      "redaction_confirmation_placeholders": [
+        {"attestation_id": "credentials_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "session_state_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "browser_artifacts_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "auth_files_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "screenshots_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "traces_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "har_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "private_page_values_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "raw_crawl_data_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "raw_pdf_data_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "downloaded_data_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "payment_details_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "uploaded_documents_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "official_action_artifacts_absent", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."},
+        {"attestation_id": "only_synthetic_or_redacted_metadata", "confirmation_status": "pending_reviewer_confirmation", "reviewer_placeholder": "Reviewer confirms the attestation from committed metadata only."}
+      ],
+      "blocked_action_carry_forward_notes": [
+        "Stop before opening a real record, uploading corrections, submitting a lookup, certifying statements, paying fees, scheduling inspections, canceling, withdrawing, or changing official status.",
+        "If a private page value is visible, discard the row and record only a blocked-action note."
+      ],
+      "rollback_checkpoint": {
+        "checkpoint_id": "rollback-devhub-read-only-review-disposition-v1-002",
+        "decision_row_id": "devhub-read-only-review-disposition-v1-002",
+        "restart_from_fixture": true,
+        "rollback_action": "Discard the reviewer row and rebuild from the committed intake fixture.",
+        "active_surface_map_changes": false
+      },
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/devhub/read_only_observation_reviewer_disposition_queue_v1.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_devhub_read_only_observation_reviewer_disposition_queue_v1.py"]
+      ],
+      "active_surface_map_changes": false
+    }
+  ],
+  "safe_read_only_surface_buckets": {
+    "devhub_home": ["devhub-read-only-review-disposition-v1-001"],
+    "permit_status_review": ["devhub-read-only-review-disposition-v1-002"]
+  },
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "rollback-devhub-read-only-review-disposition-v1-001",
+      "decision_row_id": "devhub-read-only-review-disposition-v1-001",
+      "restart_from_fixture": true,
+      "rollback_action": "Discard the reviewer row and rebuild from the committed intake fixture.",
+      "active_surface_map_changes": false
+    },
+    {
+      "checkpoint_id": "rollback-devhub-read-only-review-disposition-v1-002",
+      "decision_row_id": "devhub-read-only-review-disposition-v1-002",
+      "restart_from_fixture": true,
+      "rollback_action": "Discard the reviewer row and rebuild from the committed intake fixture.",
+      "active_surface_map_changes": false
+    }
+  ],
+  "validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub/read_only_observation_reviewer_disposition_queue_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_devhub_read_only_observation_reviewer_disposition_queue_v1.py"]
+  ]
+}

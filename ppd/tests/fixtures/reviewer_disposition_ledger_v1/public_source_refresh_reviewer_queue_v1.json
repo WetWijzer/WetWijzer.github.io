@@ -1,0 +1,29 @@
+{
+  "schema": "ppd.public_source_refresh_reviewer_queue.v1",
+  "items": [
+    {
+      "id": "public-refresh-001",
+      "recommended_disposition": "approve",
+      "reviewer_owner": "ppd-source-reviewer",
+      "decision_rationale": "Fixture refresh evidence is cited and limited to public source planning metadata.",
+      "dependency_order": 1,
+      "rollback_note": "Remove the generated refresh fixture and retain the prior committed fixture set.",
+      "expected_follow_up_artifact": "ppd/tests/fixtures/public_source_refresh_reviewer_queue_v1/approved-refresh-note.json",
+      "offline_validation_command": "python3 ppd/reviewer_disposition_ledger_v1.py",
+      "citations": [
+        {
+          "label": "Public source refresh reviewer queue v1 fixture",
+          "path": "ppd/tests/fixtures/reviewer_disposition_ledger_v1/public_source_refresh_reviewer_queue_v1.json",
+          "locator": "items[0]"
+        }
+      ],
+      "attestations": {
+        "no_live": true,
+        "no_auth": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    }
+  ]
+}

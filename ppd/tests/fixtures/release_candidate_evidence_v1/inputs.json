@@ -1,0 +1,98 @@
+{
+  "primary_reviewer_owner": "ppd-release-owner",
+  "readiness_gap_report_v1": {
+    "packet_id": "readiness-gap-report-v1-fixture",
+    "fixture_only": true,
+    "default_reviewer_owner": "ppd-readiness-owner",
+    "citations": ["readiness-gap-report-v1#summary"],
+    "gaps": [
+      {
+        "gap_id": "freshness-review-open",
+        "summary": "Public source refresh evidence exists but still requires human review before promotion.",
+        "status": "needs_review",
+        "severity": "blocker",
+        "citations": ["readiness-gap-report-v1#gaps.freshness-review-open"],
+        "reviewer_owner": "ppd-readiness-owner",
+        "rollback_checkpoint": "hold candidate before any release promotion until freshness review is signed off"
+      }
+    ],
+    "unresolved_blockers": [
+      {
+        "blocker_id": "blocker:manual-review-required",
+        "summary": "A reviewer must confirm that fixture citations are sufficient and no live crawl was used.",
+        "severity": "blocker",
+        "source_row_id": "rc-v1:readiness:freshness-review-open",
+        "reviewer_owner": "ppd-release-owner",
+        "citations": ["readiness-gap-report-v1#unresolved_blockers.manual-review-required"]
+      }
+    ]
+  },
+  "public_source_refresh_evidence_intake_packet_v1": {
+    "packet_id": "public-source-refresh-intake-v1-fixture",
+    "fixture_only": true,
+    "default_reviewer_owner": "ppd-source-owner",
+    "citations": ["public-refresh-intake-v1#summary"],
+    "sources": [
+      {
+        "source_id": "ppd-online-tools-overview",
+        "summary": "Fixture records PP&D online permitting tools as source-refresh evidence without recrawling.",
+        "freshness_status": "fixture_current",
+        "severity": "medium",
+        "citations": ["public-refresh-intake-v1#sources.ppd-online-tools-overview"]
+      }
+    ]
+  },
+  "devhub_observation_evidence_intake_packet_v1": {
+    "packet_id": "devhub-observation-intake-v1-fixture",
+    "fixture_only": true,
+    "default_reviewer_owner": "ppd-devhub-owner",
+    "citations": ["devhub-observation-intake-v1#summary"],
+    "observations": [
+      {
+        "observation_id": "attended-sign-in-boundary",
+        "summary": "Fixture observation keeps DevHub login, MFA, and authenticated data outside committed artifacts.",
+        "status": "observed_fixture_only",
+        "severity": "high",
+        "citations": ["devhub-observation-intake-v1#observations.attended-sign-in-boundary"]
+      }
+    ]
+  },
+  "action_journal_replay_findings": {
+    "packet_id": "action-journal-replay-findings-fixture",
+    "fixture_only": true,
+    "default_reviewer_owner": "ppd-journal-owner",
+    "citations": ["action-journal-replay-findings#summary"],
+    "findings": [
+      {
+        "finding_id": "no-official-action-replayed",
+        "summary": "Replay evidence reaches only reversible planning and refusal events.",
+        "status": "accepted",
+        "severity": "medium",
+        "citations": ["action-journal-replay-findings#findings.no-official-action-replayed"]
+      }
+    ],
+    "rollback_checkpoints": [
+      {
+        "checkpoint_id": "rc-v1-before-promotion",
+        "trigger": "candidate promotion requested",
+        "action": "rerun fixture validation and require reviewer-owner approval",
+        "citations": ["action-journal-replay-findings#rollback.rc-v1-before-promotion"]
+      }
+    ]
+  },
+  "guarded_agent_response_acceptance_examples": {
+    "packet_id": "guarded-agent-response-acceptance-fixture",
+    "fixture_only": true,
+    "default_reviewer_owner": "ppd-agent-owner",
+    "citations": ["guarded-agent-response-acceptance#summary"],
+    "examples": [
+      {
+        "example_id": "refuse-payment-submit",
+        "summary": "Guarded response refuses final payment submission and asks for attended confirmation boundaries.",
+        "status": "accepted",
+        "severity": "high",
+        "citations": ["guarded-agent-response-acceptance#examples.refuse-payment-submit"]
+      }
+    ]
+  }
+}

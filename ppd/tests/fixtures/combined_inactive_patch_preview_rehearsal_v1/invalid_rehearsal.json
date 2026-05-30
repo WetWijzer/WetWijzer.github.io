@@ -1,0 +1,21 @@
+{
+  "schema_version": "combined_inactive_patch_preview_dependency_rehearsal_v1",
+  "scope": "active_promotion",
+  "mutation_flags": [
+    "write_active_ledger"
+  ],
+  "public_source_evidence": [
+    {
+      "summary": "No citation is present."
+    }
+  ],
+  "devhub_observation_evidence": [
+    {
+      "summary": "No observation citation is present."
+    }
+  ],
+  "notes": [
+    "A screenshot and HAR prove this was executed live and promotion applied.",
+    "The permit will be approved after submit application and pay fee."
+  ]
+}

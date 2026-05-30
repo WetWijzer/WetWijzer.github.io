@@ -1,0 +1,237 @@
+{
+  "packet_id": "requirement-formalization-candidate-packet-v1",
+  "packet_version": 1,
+  "mode": "fixture_first_offline",
+  "status": "candidate_only",
+  "consumes": [
+    {
+      "packet_id": "document-extraction-task-packet-v1",
+      "fixture_path": "ppd/tests/fixtures/document_extraction_task_packet_v1.json",
+      "role": "source_document_extraction"
+    },
+    {
+      "packet_id": "requirement-node-fixtures-v1",
+      "fixture_path": "ppd/tests/fixtures/requirement_nodes_v1.json",
+      "role": "existing_requirement_node_context"
+    },
+    {
+      "packet_id": "source-to-requirement-traceability-packet-v1",
+      "fixture_path": "ppd/tests/fixtures/source_to_requirement_traceability_packet_v1.json",
+      "role": "source_citation_traceability"
+    }
+  ],
+  "does_not_modify": [
+    "active_requirements",
+    "guardrail_bundles",
+    "public_corpus",
+    "logic_daemon_ledgers"
+  ],
+  "candidate_updates": [
+    {
+      "candidate_id": "req-form-doc-001",
+      "target_requirement_node_id": "candidate:document-requirements:building-permit-submittal",
+      "requirement_type": "document_requirement",
+      "title": "Building permit submittal documents",
+      "candidate_update": {
+        "action": "create_or_update_candidate_requirement_node",
+        "requirement_text": "Applicant must provide permit application materials and supporting construction documents sufficient for PP&D staff review before permit approval.",
+        "applicability": "Building permit workflows where plan review or construction document review is required.",
+        "evidence_summary": "Fixture extraction identifies submittal materials as a required document class and traceability links the statement to source excerpts.",
+        "formalization_fields": {
+          "required_documents": [
+            "permit application materials",
+            "supporting construction documents"
+          ],
+          "actor": "applicant",
+          "reviewing_authority": "Portland Permitting & Development"
+        }
+      },
+      "citations": [
+        {
+          "source_packet_id": "document-extraction-task-packet-v1",
+          "trace_id": "trace:doc-requirement:building-permit-submittal",
+          "locator": "fixture excerpt: document_requirements[0]"
+        }
+      ],
+      "confidence": 0.78,
+      "human_review_status": "required",
+      "formalization_status": "candidate_pending_review",
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "rollback_note": "Delete this candidate packet entry only; no active requirement nodes are modified."
+    },
+    {
+      "candidate_id": "req-form-fee-001",
+      "target_requirement_node_id": "candidate:fee-trigger:permit-application-intake",
+      "requirement_type": "fee_trigger",
+      "title": "Permit application fee trigger",
+      "candidate_update": {
+        "action": "create_or_update_candidate_requirement_node",
+        "requirement_text": "Permit fees may be triggered when an application is accepted for intake, review, issuance, inspection, or related PP&D service activity.",
+        "applicability": "Permit workflows with fee schedules or service charges.",
+        "evidence_summary": "Fixture traceability identifies fee-trigger language tied to intake and service events.",
+        "formalization_fields": {
+          "trigger_events": [
+            "application intake",
+            "plan review",
+            "permit issuance",
+            "inspection",
+            "related service activity"
+          ],
+          "payment_actor": "applicant or permit customer"
+        }
+      },
+      "citations": [
+        {
+          "source_packet_id": "source-to-requirement-traceability-packet-v1",
+          "trace_id": "trace:fee-trigger:permit-application-intake",
+          "locator": "fixture excerpt: fee_triggers[0]"
+        }
+      ],
+      "confidence": 0.72,
+      "human_review_status": "required",
+      "formalization_status": "candidate_pending_review",
+      "reviewer_owner": "ppd-fees-reviewer",
+      "rollback_note": "Remove candidate req-form-fee-001; no fee schedule or active logic is changed."
+    },
+    {
+      "candidate_id": "req-form-deadline-001",
+      "target_requirement_node_id": "candidate:deadline:requested-correction-response",
+      "requirement_type": "deadline",
+      "title": "Correction response deadline candidate",
+      "candidate_update": {
+        "action": "create_or_update_candidate_requirement_node",
+        "requirement_text": "When PP&D requests corrections or additional information, the applicant may need to respond within the deadline stated in the applicable notice, code provision, or program rule.",
+        "applicability": "Applications with correction cycles or additional-information requests.",
+        "evidence_summary": "Fixture extraction contains deadline language but does not establish a universal fixed number of days.",
+        "formalization_fields": {
+          "deadline_basis": "source_specific_notice_or_rule",
+          "deadline_value": null,
+          "deadline_unit": null,
+          "deadline_requires_source_review": true
+        }
+      },
+      "citations": [
+        {
+          "source_packet_id": "document-extraction-task-packet-v1",
+          "trace_id": "trace:deadline:requested-correction-response",
+          "locator": "fixture excerpt: deadlines[0]"
+        }
+      ],
+      "confidence": 0.64,
+      "human_review_status": "required",
+      "formalization_status": "candidate_pending_review",
+      "reviewer_owner": "ppd-deadlines-reviewer",
+      "rollback_note": "Remove candidate req-form-deadline-001; no deadline calculator or active requirement changes are introduced."
+    },
+    {
+      "candidate_id": "req-form-file-001",
+      "target_requirement_node_id": "candidate:file-rule:digital-plan-file-standards",
+      "requirement_type": "file_rule",
+      "title": "Digital plan file standards candidate",
+      "candidate_update": {
+        "action": "create_or_update_candidate_requirement_node",
+        "requirement_text": "Digital plan files should comply with the file format, naming, organization, and upload constraints stated by PP&D for the applicable permit workflow.",
+        "applicability": "Online or electronic permit submittals that require plan or document upload.",
+        "evidence_summary": "Fixture traceability links file-rule extraction to source material describing electronic document constraints.",
+        "formalization_fields": {
+          "file_constraints": [
+            "format",
+            "naming",
+            "organization",
+            "upload constraints"
+          ],
+          "enforcement_stage": "submittal_or_resubmittal_review"
+        }
+      },
+      "citations": [
+        {
+          "source_packet_id": "source-to-requirement-traceability-packet-v1",
+          "trace_id": "trace:file-rule:digital-plan-file-standards",
+          "locator": "fixture excerpt: file_rules[0]"
+        }
+      ],
+      "confidence": 0.7,
+      "human_review_status": "required",
+      "formalization_status": "candidate_pending_review",
+      "reviewer_owner": "ppd-document-intake-reviewer",
+      "rollback_note": "Delete this candidate entry; it does not alter upload automation, public corpus files, or active file validation."
+    },
+    {
+      "candidate_id": "req-form-exception-001",
+      "target_requirement_node_id": "candidate:permit-type-exception:minor-work-review-path",
+      "requirement_type": "permit_type_exception",
+      "title": "Minor work permit-type exception candidate",
+      "candidate_update": {
+        "action": "create_or_update_candidate_requirement_node",
+        "requirement_text": "Certain minor work or permit types may follow a reduced, different, or exempt review path when an applicable PP&D source expressly provides that exception.",
+        "applicability": "Permit classifications with source-cited exceptions from standard review requirements.",
+        "evidence_summary": "Fixture extraction includes exception language, but scope must be confirmed by a human reviewer before activation.",
+        "formalization_fields": {
+          "exception_kind": "reduced_or_alternate_review_path",
+          "requires_explicit_source_match": true,
+          "default_if_uncertain": "standard_review_path"
+        }
+      },
+      "citations": [
+        {
+          "source_packet_id": "document-extraction-task-packet-v1",
+          "trace_id": "trace:permit-type-exception:minor-work-review-path",
+          "locator": "fixture excerpt: permit_type_exceptions[0]"
+        }
+      ],
+      "confidence": 0.61,
+      "human_review_status": "required",
+      "formalization_status": "candidate_pending_review",
+      "reviewer_owner": "ppd-permit-classification-reviewer",
+      "rollback_note": "Remove candidate req-form-exception-001; no active permit classification or exception logic is changed."
+    },
+    {
+      "candidate_id": "req-form-gate-001",
+      "target_requirement_node_id": "candidate:action-gate:approval-before-work",
+      "requirement_type": "action_gate",
+      "title": "Approval before regulated work gate candidate",
+      "candidate_update": {
+        "action": "create_or_update_candidate_requirement_node",
+        "requirement_text": "Regulated work must not proceed until the required permit, approval, or authorization gate has been satisfied for the applicable workflow.",
+        "applicability": "Workflows where PP&D approval is a prerequisite to construction, alteration, occupancy, or related regulated activity.",
+        "evidence_summary": "Fixture traceability maps action-gate language to source excerpts describing authorization before proceeding.",
+        "formalization_fields": {
+          "blocked_action": "regulated work",
+          "required_gate": "permit_or_authorization_approval",
+          "gate_actor": "Portland Permitting & Development"
+        }
+      },
+      "citations": [
+        {
+          "source_packet_id": "source-to-requirement-traceability-packet-v1",
+          "trace_id": "trace:action-gate:approval-before-work",
+          "locator": "fixture excerpt: action_gates[0]"
+        }
+      ],
+      "confidence": 0.76,
+      "human_review_status": "required",
+      "formalization_status": "candidate_pending_review",
+      "reviewer_owner": "ppd-workflow-gates-reviewer",
+      "rollback_note": "Delete candidate req-form-gate-001; no active guardrail bundle or workflow gate is modified."
+    }
+  ],
+  "offline_validation": {
+    "commands": [
+      [
+        "python3",
+        "-m",
+        "py_compile",
+        "ppd/tests/test_requirement_formalization_candidate_packet_v1.py"
+      ],
+      [
+        "python3",
+        "ppd/tests/test_requirement_formalization_candidate_packet_v1.py"
+      ],
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ]
+    ]
+  }
+}

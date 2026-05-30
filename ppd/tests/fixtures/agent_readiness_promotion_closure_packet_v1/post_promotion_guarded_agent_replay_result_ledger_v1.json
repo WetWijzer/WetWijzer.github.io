@@ -1,0 +1,27 @@
+{
+  "ledger_id": "replay_ledger_fixture_post_guarded_001",
+  "ledger_version": "post_promotion_guarded_agent_replay_result_ledger_v1",
+  "generated_from": "fixture_only",
+  "replay_results": [
+    {
+      "application_id": "agent_readiness_smoke",
+      "status": "passed",
+      "evidence_ids": [
+        "ev_manifest_integrity",
+        "ev_replay_passed",
+        "ev_rollback_plan"
+      ],
+      "mismatch_codes": []
+    },
+    {
+      "application_id": "agent_readiness_release_guard",
+      "status": "failed",
+      "evidence_ids": [
+        "ev_guarded_replay"
+      ],
+      "mismatch_codes": [
+        "guarded_replay_policy_delta"
+      ]
+    }
+  ]
+}

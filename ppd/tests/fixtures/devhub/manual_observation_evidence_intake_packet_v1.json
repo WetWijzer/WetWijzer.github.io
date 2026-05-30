@@ -1,0 +1,141 @@
+{
+  "packet_version": "devhub_observation_evidence_intake_packet_v1",
+  "capture_mode": "synthetic_fixture_only",
+  "created_for": "task-checkbox-22",
+  "mutation_flags": {
+    "active_devhub_mutation": false,
+    "active_surface_registry_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  },
+  "observations": [
+    {
+      "surface_id": "devhub-home-read-only-synthetic",
+      "title": "DevHub home read-only page structure review",
+      "source_evidence_ids": ["dh-home-heading", "dh-home-landmarks", "dh-home-redaction"],
+      "page_heading": "DevHub Home",
+      "accessible_landmarks": ["banner", "main", "navigation", "contentinfo"],
+      "validation_message_expectations": [
+        "Reviewer confirms no validation messages are expected on the synthetic home queue item.",
+        "Reviewer records any observed validation text as a cited follow-up item instead of clicking through."
+      ],
+      "redaction_checks": [
+        "Account name, email address, permit numbers, application numbers, addresses, phone numbers, and private document labels must be absent or replaced by synthetic placeholders.",
+        "Queue item must not include cookies, tokens, local file paths, screenshots, traces, HAR content, or raw authenticated page values."
+      ],
+      "attendance_requirements": [
+        "Human reviewer attendance is required for any future live DevHub comparison.",
+        "Manual review stops before any sign-in, account, payment, upload, scheduling, cancellation, submission, or certification control."
+      ],
+      "stop_before_action_gates": [
+        "Stop before Sign In/Register, account settings, permit detail links, payment links, upload controls, scheduling controls, certification controls, or submit buttons.",
+        "Stop if the reviewer would need authenticated browser state or private account content to continue."
+      ],
+      "read_only_scope": true,
+      "synthetic_fixture": true,
+      "mutation_flags": {
+        "active_devhub_mutation": false,
+        "active_surface_registry_mutation": false,
+        "active_guardrail_mutation": false,
+        "active_prompt_mutation": false,
+        "active_release_state_mutation": false,
+        "active_agent_state_mutation": false
+      },
+      "attestations": {
+        "no_login_automation": true,
+        "no_session_state": true,
+        "no_screenshot": true,
+        "no_trace": true,
+        "no_har": true,
+        "no_click_through": true,
+        "no_upload": true,
+        "no_submit": true,
+        "no_payment": true,
+        "no_scheduling": true,
+        "no_write_capable_action_evidence": true
+      },
+      "citations": [
+        {
+          "source_evidence_id": "dh-home-heading",
+          "source_label": "Synthetic DevHub observation packet v1",
+          "quote_or_note": "Synthetic page heading expectation: DevHub Home."
+        },
+        {
+          "source_evidence_id": "dh-home-landmarks",
+          "source_label": "Synthetic DevHub observation packet v1",
+          "quote_or_note": "Synthetic accessible landmarks expected for read-only manual observation."
+        },
+        {
+          "source_evidence_id": "dh-home-redaction",
+          "source_label": "Synthetic DevHub observation packet v1",
+          "quote_or_note": "Synthetic redaction policy requires no private account values or browser artifacts."
+        }
+      ]
+    },
+    {
+      "surface_id": "devhub-permit-status-read-only-synthetic",
+      "title": "DevHub permit status read-only expectation review",
+      "source_evidence_ids": ["dh-status-heading", "dh-status-validation", "dh-status-gates"],
+      "page_heading": "My Permits and Requests",
+      "accessible_landmarks": ["banner", "main", "search", "navigation"],
+      "validation_message_expectations": [
+        "Empty synthetic search state should explain that a permit or request identifier is needed without exposing real identifiers.",
+        "Invalid synthetic search state should produce reviewer-visible text without triggering lookup, upload, payment, scheduling, cancellation, or submission."
+      ],
+      "redaction_checks": [
+        "Permit numbers, IVR numbers, addresses, applicant names, contractor names, document filenames, status comments, and fee amounts must be synthetic placeholders.",
+        "No authenticated response body, private attachment list, screenshot, trace, HAR, cookie, token, or local download path may be included."
+      ],
+      "attendance_requirements": [
+        "Human reviewer attendance is required for any future live DevHub comparison.",
+        "Manual review records only redacted, synthetic, read-only expectations and stops before official record navigation or mutation."
+      ],
+      "stop_before_action_gates": [
+        "Stop before opening a real permit record, submitting a lookup, uploading corrections, paying fees, scheduling inspections, canceling, withdrawing, or certifying any statement.",
+        "Stop if resolving the expectation requires live authenticated DevHub navigation."
+      ],
+      "read_only_scope": true,
+      "synthetic_fixture": true,
+      "mutation_flags": {
+        "active_devhub_mutation": false,
+        "active_surface_registry_mutation": false,
+        "active_guardrail_mutation": false,
+        "active_prompt_mutation": false,
+        "active_release_state_mutation": false,
+        "active_agent_state_mutation": false
+      },
+      "attestations": {
+        "no_login_automation": true,
+        "no_session_state": true,
+        "no_screenshot": true,
+        "no_trace": true,
+        "no_har": true,
+        "no_click_through": true,
+        "no_upload": true,
+        "no_submit": true,
+        "no_payment": true,
+        "no_scheduling": true,
+        "no_write_capable_action_evidence": true
+      },
+      "citations": [
+        {
+          "source_evidence_id": "dh-status-heading",
+          "source_label": "Synthetic DevHub observation packet v1",
+          "quote_or_note": "Synthetic page heading expectation: My Permits and Requests."
+        },
+        {
+          "source_evidence_id": "dh-status-validation",
+          "source_label": "Synthetic DevHub observation packet v1",
+          "quote_or_note": "Synthetic validation-message expectations cover empty and invalid read-only states."
+        },
+        {
+          "source_evidence_id": "dh-status-gates",
+          "source_label": "Synthetic DevHub observation packet v1",
+          "quote_or_note": "Synthetic gates stop before official record changes or private account navigation."
+        }
+      ]
+    }
+  ]
+}

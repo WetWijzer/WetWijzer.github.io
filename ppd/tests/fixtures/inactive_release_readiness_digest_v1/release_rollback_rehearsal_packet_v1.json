@@ -1,0 +1,18 @@
+{
+  "packet_id": "release-rollback-rehearsal-packet-v1-fixture",
+  "schema_version": "release_rollback_rehearsal_packet.v1",
+  "rehearsals": [
+    {
+      "artifact_id": "inactive-alpha",
+      "rehearsal_id": "rollback-rehearsal-alpha-001",
+      "reference": "rollback-rehearsal-alpha-001",
+      "status": "fixture_rehearsed"
+    },
+    {
+      "artifact_id": "inactive-beta",
+      "rehearsal_id": "rollback-rehearsal-beta-001",
+      "reference": "rollback-rehearsal-beta-001",
+      "status": "fixture_rehearsed_with_open_owner_placeholder"
+    }
+  ]
+}

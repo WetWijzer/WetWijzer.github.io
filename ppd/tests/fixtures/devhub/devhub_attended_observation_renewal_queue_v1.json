@@ -1,0 +1,108 @@
+{
+  "queue_version": "devhub_attended_observation_renewal_queue_v1",
+  "queue_id": "fixture-devhub-attended-observation-renewal-queue-v1",
+  "observation_candidate_rows": [
+    {
+      "candidate_id": "renew-devhub-home-readonly",
+      "surface_id": "synthetic_devhub_home",
+      "renewal_reason": "Refresh offline read-only home surface labels from cited public guidance.",
+      "reviewer_owner": "ppd-reviewer",
+      "source_evidence_ids": ["public-devhub-faq", "public-online-tools-overview"],
+      "attendance_preflight_placeholder_id": "attendance-preflight-home",
+      "redaction_checklist_reference_id": "redaction-checklist-standard",
+      "safe_read_only_action_classification_id": "classification-readonly-home",
+      "blocked_consequential_action_reminder_id": "blocked-official-actions",
+      "reviewer_approval_placeholder_id": "reviewer-approval-home"
+    },
+    {
+      "candidate_id": "renew-permit-status-readonly",
+      "surface_id": "synthetic_permit_status_detail",
+      "renewal_reason": "Refresh offline read-only permit status headings and notice categories.",
+      "reviewer_owner": "ppd-reviewer",
+      "source_evidence_ids": ["public-devhub-faq", "public-submit-permit-application-guide"],
+      "attendance_preflight_placeholder_id": "attendance-preflight-status",
+      "redaction_checklist_reference_id": "redaction-checklist-standard",
+      "safe_read_only_action_classification_id": "classification-readonly-status",
+      "blocked_consequential_action_reminder_id": "blocked-official-actions",
+      "reviewer_approval_placeholder_id": "reviewer-approval-status"
+    }
+  ],
+  "attendance_preflight_placeholders": [
+    {
+      "attendance_preflight_placeholder_id": "attendance-preflight-home",
+      "status": "placeholder_only",
+      "note": "Human operator presence must be confirmed before the home surface row is accepted."
+    },
+    {
+      "attendance_preflight_placeholder_id": "attendance-preflight-status",
+      "status": "placeholder_only",
+      "note": "Human operator presence must be confirmed before the status surface row is accepted."
+    }
+  ],
+  "redaction_checklist_references": [
+    {
+      "redaction_checklist_reference_id": "redaction-checklist-standard",
+      "checklist_ref": "ppd-redacted-read-only-observation-checklist",
+      "note": "Record synthetic labels, public citations, and placeholders only."
+    }
+  ],
+  "safe_read_only_action_classifications": [
+    {
+      "classification_id": "classification-readonly-home",
+      "classification": "safe_read_only",
+      "note": "Observation candidate is limited to offline review of labels and navigation structure."
+    },
+    {
+      "classification_id": "classification-readonly-status",
+      "classification": "safe_read_only",
+      "note": "Observation candidate is limited to offline review of status headings and notice categories."
+    }
+  ],
+  "blocked_consequential_action_reminders": [
+    {
+      "blocked_consequential_action_reminder_id": "blocked-official-actions",
+      "reminder": "Payment, submission, scheduling, cancellation, certification, and upload workflows remain blocked."
+    }
+  ],
+  "reviewer_approval_placeholders": [
+    {
+      "reviewer_approval_placeholder_id": "reviewer-approval-home",
+      "status": "pending_reviewer_approval",
+      "note": "Reviewer approval must be supplied before the home row feeds any downstream packet."
+    },
+    {
+      "reviewer_approval_placeholder_id": "reviewer-approval-status",
+      "status": "pending_reviewer_approval",
+      "note": "Reviewer approval must be supplied before the status row feeds any downstream packet."
+    }
+  ],
+  "artifact_policy": {
+    "captures_auth_files": false,
+    "captures_browser_artifacts": false,
+    "captures_har_files": false,
+    "captures_private_page_values": false,
+    "captures_private_values": false,
+    "captures_screenshots": false,
+    "captures_session_state": false,
+    "captures_traces": false,
+    "creates_auth_files": false,
+    "creates_browser_artifacts": false,
+    "creates_har_files": false,
+    "creates_screenshots": false,
+    "creates_session_state": false,
+    "creates_traces": false,
+    "stores_downloads": false,
+    "stores_raw_crawl_output": false,
+    "stores_raw_private_output": false
+  },
+  "mutation_flags": {
+    "active_surface_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  },
+  "validation_commands": [
+    ["python3", "-m", "unittest", "ppd.tests.test_devhub_attended_observation_renewal_queue_v1"]
+  ]
+}

@@ -1,0 +1,239 @@
+{
+  "version": "public-source-freshness-run-queue-v1",
+  "packet_id": "ppd-public-source-freshness-run-queue-v1",
+  "mode": "fixture_first_no_network",
+  "input_packet": {
+    "packet_id": "ppd-public-source-freshness-monitor-backlog-v1",
+    "version": 1,
+    "scope": "fixture_first_metadata_only_public_source_monitoring"
+  },
+  "run_queue_rows": [
+    {
+      "order": 1,
+      "check_id": "run-monitor-title-33-metadata-first",
+      "backlog_work_item_id": "monitor-title-33-metadata-first",
+      "title": "Build metadata-only freshness check for Title 33 anchor",
+      "source_anchor_ids": ["anchor-portland-zoning-code-title-33"],
+      "source_anchors": [
+        {
+          "id": "anchor-portland-zoning-code-title-33",
+          "label": "Portland Title 33 Planning and Zoning Code",
+          "official_url": "https://www.portland.gov/code/33",
+          "crawl_policy": "metadata_only_no_body_persistence",
+          "citation": {
+            "label": "Portland Title 33 Planning and Zoning Code",
+            "url": "https://www.portland.gov/code/33",
+            "verified_on": "2026-05-30"
+          }
+        }
+      ],
+      "expected_freshness_cadence": ["monthly"],
+      "schedule_ids": ["schedule-title-33-monthly"],
+      "synthetic_change_probes": [
+        {
+          "id": "synthetic-last-modified-drift",
+          "probe_type": "synthetic-last-modified-drift",
+          "description": "Fixture simulates metadata timestamp drift without fetching source bodies.",
+          "execution_mode": "synthetic_fixture_only"
+        },
+        {
+          "id": "synthetic-policy-effective-date-delta",
+          "probe_type": "synthetic-policy-effective-date-delta",
+          "description": "Fixture simulates changed effective-date metadata from an official anchor.",
+          "execution_mode": "synthetic_fixture_only"
+        }
+      ],
+      "reviewer_handoff": {
+        "queue_owner": "ppd-public-source-freshness-reviewer",
+        "review_state": "pending_offline_fixture_review",
+        "reviewer_decision_required": true,
+        "allowed_decisions": [
+          "accept_no_change_fixture_result",
+          "request_public_metadata_recrawl_preflight",
+          "escalate_for_human_source_review"
+        ],
+        "handoff_notes": [
+          "Use fixture probes only for this queue row.",
+          "Do not fetch live pages or downloaded documents from this run queue.",
+          "Do not mark any source refresh complete from this run queue alone."
+        ]
+      },
+      "offline_validation_commands": [
+        {
+          "id": "validate-packet-schema",
+          "argv": ["python3", "ppd/source_freshness_monitor_backlog.py", "ppd/tests/fixtures/source_freshness_monitor_backlog_v1.json"],
+          "network": false
+        },
+        {
+          "id": "run-focused-tests",
+          "argv": ["python3", "-m", "pytest", "ppd/tests/test_source_freshness_monitor_backlog.py"],
+          "network": false
+        }
+      ],
+      "run_constraints": {
+        "network_allowed": false,
+        "live_crawl_allowed": false,
+        "document_download_allowed": false,
+        "raw_body_persistence_allowed": false,
+        "active_artifact_updates_allowed": false,
+        "refresh_completion_claim_allowed": false
+      }
+    },
+    {
+      "order": 2,
+      "check_id": "run-monitor-land-use-fees-link-inventory",
+      "backlog_work_item_id": "monitor-land-use-fees-link-inventory",
+      "title": "Build fixture replay for land use fee and review type link inventory changes",
+      "source_anchor_ids": ["anchor-portland-bds-land-use-review-fees"],
+      "source_anchors": [
+        {
+          "id": "anchor-portland-bds-land-use-review-fees",
+          "label": "BDS Land Use Review fees and forms landing page",
+          "official_url": "https://www.portland.gov/bds/land-use-review-fees-and-types",
+          "crawl_policy": "metadata_only_no_body_persistence",
+          "citation": {
+            "label": "BDS Land Use Review fees and forms landing page",
+            "url": "https://www.portland.gov/bds/land-use-review-fees-and-types",
+            "verified_on": "2026-05-30"
+          }
+        }
+      ],
+      "expected_freshness_cadence": ["quarterly"],
+      "schedule_ids": ["schedule-fees-quarterly"],
+      "synthetic_change_probes": [
+        {
+          "id": "synthetic-link-inventory-delta",
+          "probe_type": "synthetic-link-inventory-delta",
+          "description": "Fixture simulates added, removed, or renamed official links.",
+          "execution_mode": "synthetic_fixture_only"
+        }
+      ],
+      "reviewer_handoff": {
+        "queue_owner": "ppd-public-source-freshness-reviewer",
+        "review_state": "pending_offline_fixture_review",
+        "reviewer_decision_required": true,
+        "allowed_decisions": [
+          "accept_no_change_fixture_result",
+          "request_public_metadata_recrawl_preflight",
+          "escalate_for_human_source_review"
+        ],
+        "handoff_notes": [
+          "Use fixture probes only for this queue row.",
+          "Do not fetch live pages or downloaded documents from this run queue.",
+          "Do not mark any source refresh complete from this run queue alone."
+        ]
+      },
+      "offline_validation_commands": [
+        {
+          "id": "validate-packet-schema",
+          "argv": ["python3", "ppd/source_freshness_monitor_backlog.py", "ppd/tests/fixtures/source_freshness_monitor_backlog_v1.json"],
+          "network": false
+        },
+        {
+          "id": "run-focused-tests",
+          "argv": ["python3", "-m", "pytest", "ppd/tests/test_source_freshness_monitor_backlog.py"],
+          "network": false
+        }
+      ],
+      "run_constraints": {
+        "network_allowed": false,
+        "live_crawl_allowed": false,
+        "document_download_allowed": false,
+        "raw_body_persistence_allowed": false,
+        "active_artifact_updates_allowed": false,
+        "refresh_completion_claim_allowed": false
+      }
+    },
+    {
+      "order": 3,
+      "check_id": "run-monitor-permit-forms-link-inventory",
+      "backlog_work_item_id": "monitor-permit-forms-link-inventory",
+      "title": "Build fixture replay for permit application form link changes",
+      "source_anchor_ids": ["anchor-portland-permit-forms"],
+      "source_anchors": [
+        {
+          "id": "anchor-portland-permit-forms",
+          "label": "Portland permit forms and applications landing page",
+          "official_url": "https://www.portland.gov/bds/permit-review-process/applications",
+          "crawl_policy": "metadata_only_no_body_persistence",
+          "citation": {
+            "label": "Portland permit forms and applications landing page",
+            "url": "https://www.portland.gov/bds/permit-review-process/applications",
+            "verified_on": "2026-05-30"
+          }
+        }
+      ],
+      "expected_freshness_cadence": ["monthly"],
+      "schedule_ids": ["schedule-forms-monthly"],
+      "synthetic_change_probes": [
+        {
+          "id": "synthetic-link-inventory-delta",
+          "probe_type": "synthetic-link-inventory-delta",
+          "description": "Fixture simulates added, removed, or renamed official links.",
+          "execution_mode": "synthetic_fixture_only"
+        },
+        {
+          "id": "synthetic-last-modified-drift",
+          "probe_type": "synthetic-last-modified-drift",
+          "description": "Fixture simulates metadata timestamp drift without fetching source bodies.",
+          "execution_mode": "synthetic_fixture_only"
+        }
+      ],
+      "reviewer_handoff": {
+        "queue_owner": "ppd-public-source-freshness-reviewer",
+        "review_state": "pending_offline_fixture_review",
+        "reviewer_decision_required": true,
+        "allowed_decisions": [
+          "accept_no_change_fixture_result",
+          "request_public_metadata_recrawl_preflight",
+          "escalate_for_human_source_review"
+        ],
+        "handoff_notes": [
+          "Use fixture probes only for this queue row.",
+          "Do not fetch live pages or downloaded documents from this run queue.",
+          "Do not mark any source refresh complete from this run queue alone."
+        ]
+      },
+      "offline_validation_commands": [
+        {
+          "id": "validate-packet-schema",
+          "argv": ["python3", "ppd/source_freshness_monitor_backlog.py", "ppd/tests/fixtures/source_freshness_monitor_backlog_v1.json"],
+          "network": false
+        },
+        {
+          "id": "run-focused-tests",
+          "argv": ["python3", "-m", "pytest", "ppd/tests/test_source_freshness_monitor_backlog.py"],
+          "network": false
+        }
+      ],
+      "run_constraints": {
+        "network_allowed": false,
+        "live_crawl_allowed": false,
+        "document_download_allowed": false,
+        "raw_body_persistence_allowed": false,
+        "active_artifact_updates_allowed": false,
+        "refresh_completion_claim_allowed": false
+      }
+    }
+  ],
+  "queue_constraints": {
+    "network_allowed": false,
+    "live_crawl_allowed": false,
+    "document_download_allowed": false,
+    "raw_body_persistence_allowed": false,
+    "active_artifact_updates_allowed": false,
+    "refresh_completion_claim_allowed": false
+  },
+  "validation_commands": [
+    {
+      "id": "validate-packet-schema",
+      "argv": ["python3", "ppd/source_freshness_monitor_backlog.py", "ppd/tests/fixtures/source_freshness_monitor_backlog_v1.json"],
+      "network": false
+    },
+    {
+      "id": "run-focused-tests",
+      "argv": ["python3", "-m", "pytest", "ppd/tests/test_source_freshness_monitor_backlog.py"],
+      "network": false
+    }
+  ]
+}

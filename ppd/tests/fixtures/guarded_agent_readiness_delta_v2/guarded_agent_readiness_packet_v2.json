@@ -1,0 +1,16 @@
+{
+  "packet_id": "guarded-agent-readiness-v2-existing-fixture",
+  "packet_version": "guarded-agent-readiness-packet-v2",
+  "inactive": false,
+  "path_hint": "ppd/tests/fixtures/guarded_agent_readiness_delta_v2/guarded_agent_readiness_packet_v2.json",
+  "readiness_kinds": [
+    "citation_traceability",
+    "missing_information_prompt",
+    "refusal_behavior",
+    "blocked_consequential_action",
+    "reversible_draft_boundary",
+    "journal_event_safety",
+    "rollback_readiness",
+    "offline_validation_command"
+  ]
+}

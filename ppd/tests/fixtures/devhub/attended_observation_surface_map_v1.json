@@ -1,0 +1,98 @@
+{
+  "fixture_id": "attended-observation-surface-map-v1",
+  "queue_id": "devhub-attended-observation-renewal-v1",
+  "surfaces": [
+    {
+      "surface_id": "devhub-home",
+      "observation_order": 10,
+      "auth_scope": "authenticated_attended",
+      "url_pattern": "https://devhub.portlandoregon.gov/home",
+      "page_heading": "DevHub Home",
+      "accessible_landmarks": [
+        "main",
+        "navigation",
+        "account summary"
+      ],
+      "actions": [
+        {
+          "action_id": "review_account_home_status",
+          "observation_order": 10,
+          "label": "Review account home status"
+        },
+        {
+          "action_id": "start_new_permit_application",
+          "observation_order": 20,
+          "label": "Start new permit application"
+        }
+      ],
+      "redaction_checklist_refs": [
+        "devhub-account-identifiers",
+        "devhub-private-notices"
+      ],
+      "requires_attendance": true,
+      "requires_exact_confirmation": false
+    },
+    {
+      "surface_id": "my-permits-and-requests",
+      "observation_order": 20,
+      "auth_scope": "authenticated_attended",
+      "url_pattern": "https://devhub.portlandoregon.gov/permits*",
+      "page_heading": "My Permits & Requests",
+      "accessible_landmarks": [
+        "main",
+        "permit request list",
+        "status filters"
+      ],
+      "actions": [
+        {
+          "action_id": "review_permit_request_list",
+          "observation_order": 10,
+          "label": "Review permit request list"
+        },
+        {
+          "action_id": "upload_correction_to_record",
+          "observation_order": 20,
+          "label": "Upload correction to official record"
+        }
+      ],
+      "redaction_checklist_refs": [
+        "devhub-case-identifiers",
+        "devhub-applicant-contact-values",
+        "devhub-private-attachment-names"
+      ],
+      "requires_attendance": true,
+      "requires_exact_confirmation": false
+    },
+    {
+      "surface_id": "fee-notice-review",
+      "observation_order": 30,
+      "auth_scope": "authenticated_attended",
+      "url_pattern": "https://devhub.portlandoregon.gov/fees*",
+      "page_heading": "Fee Notice Review",
+      "accessible_landmarks": [
+        "main",
+        "fee notices",
+        "payment summary"
+      ],
+      "actions": [
+        {
+          "action_id": "review_fee_notice",
+          "observation_order": 10,
+          "label": "Review fee notice"
+        },
+        {
+          "action_id": "submit_payment",
+          "observation_order": 20,
+          "label": "Submit payment"
+        }
+      ],
+      "redaction_checklist_refs": [
+        "devhub-fee-amounts",
+        "devhub-payment-details",
+        "devhub-case-identifiers"
+      ],
+      "requires_attendance": true,
+      "requires_exact_confirmation": true
+    }
+  ]
+}

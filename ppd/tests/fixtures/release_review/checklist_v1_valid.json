@@ -1,0 +1,41 @@
+{
+  "checklist_items": {
+    "scope-boundary-review": {"status": "pass"},
+    "source-citation-review": {"status": "pass"},
+    "private-artifact-review": {"status": "pass"},
+    "rollback-readiness-review": {"status": "pass"},
+    "validation-replay-review": {"status": "pass"},
+    "unresolved-risk-acknowledgement-review": {"status": "acknowledged"},
+    "validation-command-review": {"status": "pass"},
+    "release-language-review": {"status": "pass"},
+    "mutation-flag-review": {"status": "pass"}
+  },
+  "evidence_citation_coverage": [
+    {"checklist_item_id": "scope-boundary-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#scope"},
+    {"checklist_item_id": "source-citation-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#source"},
+    {"checklist_item_id": "private-artifact-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#private"},
+    {"checklist_item_id": "rollback-readiness-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#rollback"},
+    {"checklist_item_id": "validation-replay-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#replay"},
+    {"checklist_item_id": "unresolved-risk-acknowledgement-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#risk"},
+    {"checklist_item_id": "validation-command-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#commands"},
+    {"checklist_item_id": "release-language-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#language"},
+    {"checklist_item_id": "mutation-flag-review", "citation": "ppd/tests/fixtures/release_review/checklist_v1_valid.json#mutation"}
+  ],
+  "rollback_owner_confirmed": true,
+  "rollback_steps_confirmed": true,
+  "rollback_stop_condition_confirmed": true,
+  "validation_replay_owner_confirmed": true,
+  "validation_replay_inputs_confirmed": true,
+  "validation_replay_expected_results_confirmed": true,
+  "unresolved_risks_acknowledged": true,
+  "unresolved_risk_owner_placeholder": true,
+  "unresolved_risk_followup_placeholder": true,
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+  "artifacts": [{"path": "ppd/release_review/checklist_v1.py"}],
+  "claims": ["Deterministic review candidate only."],
+  "artifact_mutation_enabled": false,
+  "prompt_mutation_enabled": false,
+  "release_state_mutation_enabled": false,
+  "fixture_mutation_enabled": false,
+  "agent_state_mutation_enabled": false
+}

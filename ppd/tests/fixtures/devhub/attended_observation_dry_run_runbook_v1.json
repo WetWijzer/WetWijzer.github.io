@@ -1,0 +1,114 @@
+{
+  "version": "attended_devhub_observation_dry_run_runbook_v1",
+  "runbook_id": "devhub-attended-observation-dry-run-v1-fixture",
+  "purpose": "Fixture-only dry-run targets for attended reviewer observation of read-only DevHub surfaces.",
+  "observation_targets": [
+    {
+      "surface_id": "devhub-home-read-only",
+      "surface_label": "DevHub home after attended sign-in",
+      "auth_scope": "attended_user_owned_read_only",
+      "page_heading_expectations": [
+        "Home",
+        "DevHub"
+      ],
+      "accessible_landmark_expectations": [
+        "banner",
+        "main",
+        "navigation"
+      ],
+      "validation_message_expectations": [
+        "No synthetic validation error is expected on initial read-only home observation.",
+        "If an expired session message appears, stop and request attended re-authentication without storing state."
+      ],
+      "redaction_status": "synthetic_fixture_only_no_private_values",
+      "stop_before_action_gates": [
+        "Stop before selecting Sign In/Register or any account-management action.",
+        "Stop before opening a workflow that can create, upload, submit, pay, or schedule."
+      ],
+      "owner_fields": {
+        "surface_owner": "ppd-devhub-observation",
+        "review_owner": "ppd-human-reviewer",
+        "evidence_owner": "ppd-fixture-curator"
+      },
+      "offline_validation_commands": [
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ]
+    },
+    {
+      "surface_id": "devhub-my-permits-requests-read-only",
+      "surface_label": "My Permits and Requests list review",
+      "auth_scope": "attended_user_owned_read_only",
+      "page_heading_expectations": [
+        "My Permits",
+        "My Requests",
+        "Permits and Requests"
+      ],
+      "accessible_landmark_expectations": [
+        "main",
+        "navigation",
+        "search"
+      ],
+      "validation_message_expectations": [
+        "Empty-state text may appear when the user has no visible permits or requests.",
+        "Filter validation messages must be observed as labels only and must not include private permit values."
+      ],
+      "redaction_status": "synthetic_fixture_only_no_private_values",
+      "stop_before_action_gates": [
+        "Stop before opening an application flow that can change official records.",
+        "Stop before clicking upload, submit, schedule, cancel, withdraw, certify, or payment controls."
+      ],
+      "owner_fields": {
+        "surface_owner": "ppd-devhub-observation",
+        "review_owner": "ppd-human-reviewer",
+        "evidence_owner": "ppd-fixture-curator"
+      },
+      "offline_validation_commands": [
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ]
+    },
+    {
+      "surface_id": "devhub-permit-detail-read-only",
+      "surface_label": "Permit detail status and messages review",
+      "auth_scope": "attended_user_owned_read_only",
+      "page_heading_expectations": [
+        "Permit Details",
+        "Request Details",
+        "Status"
+      ],
+      "accessible_landmark_expectations": [
+        "main",
+        "navigation",
+        "region"
+      ],
+      "validation_message_expectations": [
+        "Status, fee notice, checksheet, and correction labels must be recorded only as synthetic categories.",
+        "Any user-specific address, permit number, contact, fee amount, or document title must be redacted before review."
+      ],
+      "redaction_status": "synthetic_fixture_only_no_private_values",
+      "stop_before_action_gates": [
+        "Stop before uploading corrections or attachments.",
+        "Stop before paying fees, scheduling inspections, certifying acknowledgements, submitting, cancelling, withdrawing, or requesting official changes."
+      ],
+      "owner_fields": {
+        "surface_owner": "ppd-devhub-observation",
+        "review_owner": "ppd-human-reviewer",
+        "evidence_owner": "ppd-fixture-curator"
+      },
+      "offline_validation_commands": [
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ]
+    }
+  ]
+}

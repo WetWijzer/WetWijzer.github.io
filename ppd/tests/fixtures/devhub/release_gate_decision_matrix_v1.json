@@ -1,0 +1,86 @@
+{
+  "matrix_version": "devhub_release_gate_decision_matrix_v1",
+  "created_for": "task-checkbox-21",
+  "decisions": [
+    {
+      "surface_id": "devhub-home-read-only-synthetic",
+      "decision": "manual_review_required_read_only",
+      "decision_reasons": [
+        "Observation is limited to cited synthetic page structure expectations.",
+        "Reviewer queue must preserve PP&D DevHub boundaries before any authenticated or consequential action."
+      ],
+      "required_stop_gates": [
+        "Manual reviewer must not perform login automation, preserve session state, capture screenshots, record traces, export HAR, click through account-scoped links, upload files, submit forms, process payment, or schedule inspections.",
+        "Any mismatch becomes a new cited review note rather than an automated browser action."
+      ],
+      "reviewer_owner": "ppd-devhub-manual-reviewer",
+      "rollback_notes": [
+        "Remove the generated queue item from downstream review output if any attestation fails.",
+        "Rebuild from committed fixtures only after replacing the invalid synthetic evidence or gate row."
+      ],
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/devhub/manual_observation_reviewer_queue.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_devhub_manual_observation_reviewer_queue.py"]
+      ],
+      "read_only_scope": true,
+      "synthetic_fixture": true,
+      "attestations": {
+        "no_login_automation": true,
+        "no_session_state": true,
+        "no_screenshot": true,
+        "no_trace": true,
+        "no_har": true,
+        "no_click_through": true,
+        "no_upload": true,
+        "no_submit": true,
+        "no_payment": true,
+        "no_scheduling": true
+      },
+      "citation": {
+        "source_evidence_id": "dh-home-heading",
+        "source_label": "Release gate decision matrix v1",
+        "quote_or_note": "Home surface release decision remains manual-review-required and read-only."
+      }
+    },
+    {
+      "surface_id": "devhub-permit-status-read-only-synthetic",
+      "decision": "manual_review_required_read_only",
+      "decision_reasons": [
+        "Observation is limited to cited synthetic permit-status expectations and does not inspect a real permit record.",
+        "Lookup, upload, fee payment, scheduling, cancellation, certification, and submission remain stop-before-action gates."
+      ],
+      "required_stop_gates": [
+        "Manual reviewer must not perform login automation, preserve session state, capture screenshots, record traces, export HAR, click through account-scoped links, upload files, submit forms, process payment, or schedule inspections.",
+        "Any need for private account evidence requires attended human review outside committed fixtures."
+      ],
+      "reviewer_owner": "ppd-devhub-manual-reviewer",
+      "rollback_notes": [
+        "Remove the generated queue item from downstream review output if it contains real permit, address, fee, attachment, or account data.",
+        "Rebuild from committed fixtures only after the synthetic packet and gate matrix pass offline validation."
+      ],
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/devhub/manual_observation_reviewer_queue.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_devhub_manual_observation_reviewer_queue.py"]
+      ],
+      "read_only_scope": true,
+      "synthetic_fixture": true,
+      "attestations": {
+        "no_login_automation": true,
+        "no_session_state": true,
+        "no_screenshot": true,
+        "no_trace": true,
+        "no_har": true,
+        "no_click_through": true,
+        "no_upload": true,
+        "no_submit": true,
+        "no_payment": true,
+        "no_scheduling": true
+      },
+      "citation": {
+        "source_evidence_id": "dh-status-gates",
+        "source_label": "Release gate decision matrix v1",
+        "quote_or_note": "Permit status surface release decision remains manual-review-required and read-only."
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "digest_id": "inactive-release-promotion-readiness-digest-v1",
+  "release_id": "ppd-fixture-release-2026-05-30",
+  "source_state": "inactive",
+  "promotion_gates": [
+    {
+      "name": "fixture coverage",
+      "status": "ready",
+      "evidence_ids": ["evidence-fixture-coverage"]
+    },
+    {
+      "name": "offline validation replay",
+      "status": "ready",
+      "evidence_ids": ["evidence-validation-replay"]
+    },
+    {
+      "name": "unresolved risk acknowledgement",
+      "status": "needs_reviewer_acknowledgement",
+      "evidence_ids": ["evidence-risk-register"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "evidence-fixture-coverage",
+      "citation": "ppd/tests/fixtures/release_reviewer_go_no_go_v1/inactive_release_promotion_readiness_digest_v1.json#promotion_gates[0]",
+      "covers": ["fixture coverage"]
+    },
+    {
+      "id": "evidence-validation-replay",
+      "citation": "ppd/tests/fixtures/release_reviewer_go_no_go_v1/inactive_release_promotion_readiness_digest_v1.json#validation_replay",
+      "covers": ["offline validation replay"]
+    },
+    {
+      "id": "evidence-risk-register",
+      "citation": "ppd/tests/fixtures/release_reviewer_go_no_go_v1/inactive_release_promotion_readiness_digest_v1.json#unresolved_risks",
+      "covers": ["unresolved risk acknowledgement"]
+    }
+  ],
+  "rollback_readiness": {
+    "checks": [
+      "Confirm prior active artifacts are unchanged by this fixture-first review.",
+      "Confirm rollback notes remain review-only and do not update release state."
+    ]
+  },
+  "validation_replay": [
+    {
+      "name": "compile reviewer checklist module",
+      "command": ["python3", "-m", "py_compile", "ppd/release_reviewer_checklist_v1.py"],
+      "expected_result": "pass"
+    },
+    {
+      "name": "run reviewer checklist fixture test",
+      "command": ["python3", "-m", "unittest", "ppd.tests.test_release_reviewer_checklist_v1"],
+      "expected_result": "pass"
+    }
+  ],
+  "unresolved_risks": [
+    {
+      "risk": "Reviewer must explicitly acknowledge that this checklist is generated from an inactive fixture digest and is not an official promotion action."
+    }
+  ]
+}

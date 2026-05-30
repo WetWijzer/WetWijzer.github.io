@@ -1,0 +1,81 @@
+{
+  "queue_version": "devhub_read_only_observation_reviewer_disposition_queue_v1",
+  "queue_id": "devhub-read-only-observation-reviewer-disposition-queue-v1-fixture",
+  "artifact_policy": {
+    "captures_auth_files": false,
+    "captures_browser_artifacts": false,
+    "captures_har_files": false,
+    "captures_private_values": false,
+    "captures_screenshots": false,
+    "captures_session_state": false,
+    "captures_traces": false,
+    "creates_auth_files": false,
+    "creates_browser_artifacts": false,
+    "creates_har_files": false,
+    "creates_screenshots": false,
+    "creates_session_state": false,
+    "creates_traces": false,
+    "stores_downloads": false,
+    "stores_raw_crawl_output": false,
+    "stores_raw_pdf_output": false
+  },
+  "mutation_flags": {
+    "active_source_mutation": false,
+    "active_surface_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_release_state_mutation": false,
+    "active_prompt_mutation": false,
+    "active_fixture_mutation": false,
+    "active_agent_state_mutation": false
+  },
+  "safe_read_only_surface_buckets": [
+    {
+      "bucket_id": "safe-bucket-home-status-review",
+      "classification": "safe_read_only",
+      "surface_ids": ["devhub-home-status-review"],
+      "scope_note": "Review only redacted labels, headings, status categories, and public-source-aligned field names."
+    }
+  ],
+  "redaction_confirmation_placeholders": [
+    {
+      "placeholder_id": "redaction-placeholder-home-status-review",
+      "status": "placeholder_only",
+      "expected_confirmation": "Reviewer confirms only synthetic labels and public-source evidence ids are present."
+    }
+  ],
+  "blocked_action_carry_forward_notes": [
+    {
+      "note_id": "blocked-note-consequential-official-actions",
+      "note": "Consequential official workflows remain out of scope and must carry forward as blocked guardrail rows."
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "rollback-checkpoint-no-state-change",
+      "restore_note": "Discard this offline queue candidate and retain the previous accepted reviewer queue artifact."
+    }
+  ],
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "unittest", "ppd.tests.test_devhub_read_only_observation_reviewer_disposition_queue_v1"]
+  ],
+  "reviewer_decision_rows": [
+    {
+      "row_id": "decision-home-status-review",
+      "reviewer_owner": "ppd-offline-reviewer",
+      "reviewer_decision": "approve_read_only",
+      "rationale": "The row is limited to redacted safe-read-only surface structure and public-source evidence alignment.",
+      "safe_read_only_surface_bucket_id": "safe-bucket-home-status-review",
+      "redaction_confirmation_placeholder_id": "redaction-placeholder-home-status-review",
+      "blocked_action_carry_forward_note_id": "blocked-note-consequential-official-actions",
+      "rollback_checkpoint_id": "rollback-checkpoint-no-state-change",
+      "source_evidence_ids": ["official-devhub-faq-public-source"],
+      "citations": [
+        {
+          "source_evidence_id": "official-devhub-faq-public-source",
+          "url": "https://www.portland.gov/ppd/devhub-faqs"
+        }
+      ]
+    }
+  ]
+}

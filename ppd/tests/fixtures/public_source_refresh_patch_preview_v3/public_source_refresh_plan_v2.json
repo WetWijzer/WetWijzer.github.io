@@ -1,0 +1,28 @@
+{
+  "refresh_plan_id": "public-source-refresh-plan-v2-fixture",
+  "reviewer_owner": "ppd-public-source-reviewer",
+  "rollback_checkpoints": [
+    "retain-current-active-source-registry",
+    "retain-current-active-document-records",
+    "retain-current-active-requirement-graph",
+    "discard-preview-output-before-active-promotion"
+  ],
+  "source_updates": [
+    {
+      "source_id": "ppd-devhub-faq-public",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "reviewer_owner": "ppd-public-source-reviewer",
+      "rollback_checkpoints": [
+        "restore-devhub-faq-inactive-fixture-before-hash"
+      ]
+    },
+    {
+      "source_id": "ppd-submit-plans-online-public",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "reviewer_owner": "ppd-public-source-reviewer",
+      "rollback_checkpoints": [
+        "restore-submit-plans-online-inactive-fixture-before-hash"
+      ]
+    }
+  ]
+}

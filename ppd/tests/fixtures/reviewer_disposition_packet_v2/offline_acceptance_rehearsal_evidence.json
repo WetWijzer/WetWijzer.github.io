@@ -1,0 +1,32 @@
+{
+  "version": "offline_acceptance_rehearsal_evidence_v1",
+  "rehearsals": [
+    {
+      "id": "rehearsal-alpha-accepted",
+      "artifact_id": "inactive-preview-alpha",
+      "outcome": "accepted",
+      "owner": "ppd-reviewer-a",
+      "summary": "Alpha fixture passed offline acceptance rehearsal.",
+      "validation_command": ["python3", "-m", "pytest", "ppd/tests/test_reviewer_disposition_packet_v2.py"],
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/offline_acceptance_rehearsal_evidence.json#rehearsals[0]"
+    },
+    {
+      "id": "rehearsal-beta-failed",
+      "artifact_id": "inactive-preview-beta",
+      "outcome": "failed",
+      "owner": "ppd-reviewer-b",
+      "summary": "Beta fixture failed offline acceptance rehearsal because the blocker citation was absent.",
+      "validation_command": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/offline_acceptance_rehearsal_evidence.json#rehearsals[1]"
+    },
+    {
+      "id": "rehearsal-gamma-not-run",
+      "artifact_id": "inactive-preview-gamma",
+      "outcome": "not_run",
+      "owner": "ppd-reviewer-c",
+      "summary": "Gamma fixture was intentionally not rehearsed pending owner review.",
+      "validation_command": ["python3", "-m", "pytest", "ppd/tests/test_reviewer_disposition_packet_v2.py"],
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/offline_acceptance_rehearsal_evidence.json#rehearsals[2]"
+    }
+  ]
+}

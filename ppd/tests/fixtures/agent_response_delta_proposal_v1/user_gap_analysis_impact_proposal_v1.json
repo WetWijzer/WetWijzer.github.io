@@ -1,0 +1,63 @@
+{
+  "proposal_id": "user_gap_analysis_impact_proposal_v1:case-demo-adu-001",
+  "proposal_version": "v1",
+  "fixture_first": true,
+  "affected_case_ids": [
+    "case-demo-adu-001"
+  ],
+  "affected_process_ids": [
+    "process-detached-adu-devhub-v1"
+  ],
+  "affected_guardrail_bundle_ids": [
+    "guardrail-detached-adu-devhub-v1"
+  ],
+  "proposed_impacts": [
+    {
+      "impact_id": "ugaip-v1-case-demo-adu-001-01-required_user_facts",
+      "category": "required_user_facts",
+      "citations": [
+        "process:detached-adu:required-facts",
+        "ppd-source:apply-permits"
+      ]
+    },
+    {
+      "impact_id": "ugaip-v1-case-demo-adu-001-03-missing_documents",
+      "category": "missing_documents",
+      "citations": [
+        "process:detached-adu:required-documents",
+        "ppd-source:submit-plans-online"
+      ]
+    },
+    {
+      "impact_id": "ugaip-v1-case-demo-adu-001-04-stale_or_conflicting_evidence",
+      "category": "stale_or_conflicting_evidence",
+      "citations": [
+        "freshness:property-summary:max-age-policy",
+        "user-doc:owner-worksheet"
+      ]
+    },
+    {
+      "impact_id": "ugaip-v1-case-demo-adu-001-05-required_confirmations",
+      "category": "required_confirmations",
+      "citations": [
+        "guardrail:exact-confirmation-submit"
+      ]
+    },
+    {
+      "impact_id": "ugaip-v1-case-demo-adu-001-06-blocked_actions",
+      "category": "blocked_actions",
+      "citations": [
+        "guardrail:attended-devhub-boundary",
+        "guardrail:no-payment-or-upload-automation"
+      ]
+    },
+    {
+      "impact_id": "ugaip-v1-case-demo-adu-001-07-next_safe_actions",
+      "category": "next_safe_actions",
+      "citations": [
+        "process:detached-adu:required-documents",
+        "guardrail:read-only-and-reversible-draft-only"
+      ]
+    }
+  ]
+}

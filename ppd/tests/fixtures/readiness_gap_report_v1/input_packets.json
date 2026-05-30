@@ -1,0 +1,133 @@
+{
+  "readiness_ledger_v1": {
+    "artifact_type": "ppd_readiness_ledger_v1",
+    "readiness_items": [
+      {
+        "gap_id": "gap-source-citation-coverage",
+        "title": "Trace every readiness decision to public PP&D source evidence",
+        "status": "gap",
+        "blocker": "One remaining guardrail decision has source evidence but is not yet represented as a cited reviewer row.",
+        "dependencies": [],
+        "reviewer_owner": "source-reviewer",
+        "reviewer_role": "PP&D public-source reviewer",
+        "source_requirement_ids": ["REQ-DEVHUB-ACCOUNT", "REQ-SINGLE-PDF"],
+        "guardrail_ids": ["GR-EXACT-CONFIRMATION"],
+        "draft_preview_ids": [],
+        "journal_validator_ids": ["AJV-COMMIT-SAFE"],
+        "devhub_runbook_step_ids": ["DH-DRYRUN-PREFLIGHT"],
+        "offline_validation_commands": [
+          ["python3", "-m", "py_compile", "ppd/readiness_gap_report.py"],
+          ["python3", "-m", "pytest", "ppd/tests/test_readiness_gap_report_v1.py"]
+        ]
+      },
+      {
+        "gap_id": "gap-reversible-draft-preview",
+        "title": "Confirm reversible draft previews stop before official DevHub actions",
+        "status": "gap",
+        "blocker": "Draft preview handoff needs explicit reviewer ownership before it can be treated as PP&D-ready.",
+        "dependencies": ["gap-source-citation-coverage"],
+        "reviewer_owner": "devhub-automation-reviewer",
+        "reviewer_role": "attended DevHub automation reviewer",
+        "source_requirement_ids": ["REQ-DEVHUB-CERTIFICATION"],
+        "guardrail_ids": ["GR-REFUSE-OFFICIAL-ACTION"],
+        "draft_preview_ids": ["DPH-LOCAL-PREVIEW-ONLY"],
+        "journal_validator_ids": ["AJV-NO-PRIVATE-ARTIFACTS"],
+        "devhub_runbook_step_ids": ["DH-DRYRUN-NO-LOGIN"],
+        "offline_validation_commands": [
+          ["python3", "-m", "py_compile", "ppd/readiness_gap_report.py"],
+          ["python3", "-m", "pytest", "ppd/tests/test_readiness_gap_report_v1.py"]
+        ]
+      },
+      {
+        "gap_id": "ready-offline-fixtures-present",
+        "title": "Committed fixture packet set exists",
+        "status": "ready",
+        "blocker": "No blocker remains for fixture availability.",
+        "dependencies": [],
+        "reviewer_owner": "test-reviewer",
+        "reviewer_role": "fixture reviewer",
+        "source_requirement_ids": [],
+        "guardrail_ids": [],
+        "draft_preview_ids": [],
+        "journal_validator_ids": [],
+        "devhub_runbook_step_ids": [],
+        "offline_validation_commands": []
+      }
+    ]
+  },
+  "source_to_requirement_traceability_packet_v1": {
+    "artifact_type": "source_to_requirement_traceability_packet_v1",
+    "requirement_traces": [
+      {
+        "requirement_id": "REQ-DEVHUB-ACCOUNT",
+        "citation": "official-source-anchor:DevHub account and sign-in guide",
+        "evidence_summary": "DevHub online permitting services require account-scoped sign-in with PortlandOregon.gov credentials."
+      },
+      {
+        "requirement_id": "REQ-SINGLE-PDF",
+        "citation": "official-source-anchor:Submit Plans Online / Single PDF Process",
+        "evidence_summary": "Plan drawings are prepared as one PDF while applications and supporting documents are separate PDFs."
+      },
+      {
+        "requirement_id": "REQ-DEVHUB-CERTIFICATION",
+        "citation": "official-source-anchor:DevHub permit application guide",
+        "evidence_summary": "Acknowledgement, certification, upload, submission, scheduling, and payment steps are consequential and require human attendance and exact confirmation."
+      }
+    ]
+  },
+  "guardrail_to_agent_explanation_packet_v1": {
+    "artifact_type": "guardrail_to_agent_explanation_packet_v1",
+    "guardrail_explanations": [
+      {
+        "guardrail_id": "GR-EXACT-CONFIRMATION",
+        "citation": "plan:Non-Negotiable Boundaries",
+        "evidence_summary": "Official actions must stop until the attended user confirms the exact action."
+      },
+      {
+        "guardrail_id": "GR-REFUSE-OFFICIAL-ACTION",
+        "citation": "plan:Authenticated DevHub Automation Plan consequential official actions",
+        "evidence_summary": "Submitting, certifying, uploading to an official record, payment, scheduling, cancellation, and account/security changes are refused unless attended and confirmed."
+      }
+    ]
+  },
+  "reversible_draft_preview_handoff_packet_v4": {
+    "artifact_type": "reversible_draft_preview_handoff_packet_v4",
+    "draft_previews": [
+      {
+        "draft_preview_id": "DPH-LOCAL-PREVIEW-ONLY",
+        "citation": "handoff:v4:local-preview-before-official-record",
+        "evidence_summary": "Draft values may be rendered in a local preview, but the handoff does not upload, submit, certify, schedule, cancel, pay, or mutate active DevHub state."
+      }
+    ]
+  },
+  "action_journal_replay_validator_v1": {
+    "artifact_type": "action_journal_replay_validator_v1",
+    "validator_checks": [
+      {
+        "validator_check_id": "AJV-COMMIT-SAFE",
+        "citation": "validator:v1:commit-safe-event-types",
+        "evidence_summary": "Replay accepts only commit-safe journal event types and rejects credentials, cookies, auth state, screenshots, traces, HAR data, payment details, private values, and local private file paths."
+      },
+      {
+        "validator_check_id": "AJV-NO-PRIVATE-ARTIFACTS",
+        "citation": "validator:v1:private-artifact-denylist",
+        "evidence_summary": "Replay validation fails if private DevHub session files, browser state, raw crawl output, downloaded private documents, or payment details are referenced."
+      }
+    ]
+  },
+  "attended_devhub_observation_dry_run_runbook_v1": {
+    "artifact_type": "attended_devhub_observation_dry_run_runbook_v1",
+    "runbook_steps": [
+      {
+        "runbook_step_id": "DH-DRYRUN-PREFLIGHT",
+        "citation": "runbook:v1:offline-preflight",
+        "evidence_summary": "The dry-run begins with fixture and policy preflight before any live DevHub observation is considered."
+      },
+      {
+        "runbook_step_id": "DH-DRYRUN-NO-LOGIN",
+        "citation": "runbook:v1:no-authenticated-session-in-fixtures",
+        "evidence_summary": "Committed dry-run fixtures do not contain login state, credentials, MFA artifacts, screenshots, traces, HAR files, or private account values."
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "inventory_id": "inactive_fixture_families_v1_fixture",
+  "inactive_fixture_families": [
+    {
+      "family_id": "trade-permit-inactive-fixtures",
+      "fixtures": [
+        {
+          "fixture_id": "inactive-electrical-fixture-v1",
+          "active": false,
+          "content_hash": "sha256:inactive-electrical-before",
+          "schema_version": "fixture-v1"
+        },
+        {
+          "fixture_id": "inactive-mechanical-fixture-v1",
+          "active": false,
+          "content_hash": "sha256:inactive-mechanical-before",
+          "schema_version": "fixture-v1"
+        },
+        {
+          "fixture_id": "inactive-plumbing-fixture-v1",
+          "active": false,
+          "content_hash": "sha256:inactive-plumbing-before",
+          "schema_version": "fixture-v1"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "schema_version": "devhub_attended_observation_preflight_packet_v1",
+  "packet_id": "devhub_attended_observation_preflight_packet_v1_fixture",
+  "mode": "offline_fixture_only",
+  "devhub_opened": false,
+  "stores_session_or_browser_artifacts": false,
+  "surfaces": [
+    {
+      "surface_id": "devhub_home_attended_redacted",
+      "surface_label": "DevHub Home",
+      "auth_scope": "authenticated_attended_redacted",
+      "observation_goal": "Confirm the post-login home surface exposes navigation to account-scoped read-only areas without recording private values.",
+      "expected_landmarks": [
+        "banner",
+        "navigation",
+        "main"
+      ],
+      "read_only_action_keys": [
+        "view_home"
+      ],
+      "expected_accessible_fields": [
+        {
+          "field_key": "signed_in_account_indicator",
+          "expected_accessible_role": "text",
+          "expected_accessible_name": "signed-in account indicator",
+          "redaction_reason": "account_identity_private_value"
+        },
+        {
+          "field_key": "my_permits_requests_link",
+          "expected_accessible_role": "link",
+          "expected_accessible_name": "My Permits & Requests",
+          "redaction_reason": "navigation_label_only_no_private_value_expected"
+        }
+      ]
+    },
+    {
+      "surface_id": "my_permits_requests_attended_redacted",
+      "surface_label": "My Permits & Requests",
+      "auth_scope": "authenticated_attended_redacted",
+      "observation_goal": "Review only the accessible structure of account-scoped permit/request listings while redacting permit numbers, addresses, applicant names, and status details.",
+      "expected_landmarks": [
+        "main",
+        "table or list",
+        "pagination or filters when present"
+      ],
+      "read_only_action_keys": [
+        "review_permits_requests",
+        "review_permit_detail"
+      ],
+      "expected_accessible_fields": [
+        {
+          "field_key": "permit_request_row",
+          "expected_accessible_role": "row",
+          "expected_accessible_name": "permit or request row",
+          "redaction_reason": "permit_number_address_status_private_value"
+        },
+        {
+          "field_key": "permit_request_detail_link",
+          "expected_accessible_role": "link",
+          "expected_accessible_name": "permit or request detail link",
+          "redaction_reason": "permit_number_private_value"
+        }
+      ]
+    },
+    {
+      "surface_id": "permit_detail_attended_redacted",
+      "surface_label": "Permit Detail",
+      "auth_scope": "authenticated_attended_redacted",
+      "observation_goal": "Classify read-only detail, status, fee notice, correction, attachment, and inspection result review points without recording page values or taking official actions.",
+      "expected_landmarks": [
+        "main",
+        "status section",
+        "documents or attachments section",
+        "messages section"
+      ],
+      "read_only_action_keys": [
+        "review_status_messages",
+        "review_fee_notice",
+        "review_correction_request",
+        "review_attachment_list",
+        "review_inspection_results"
+      ],
+      "expected_accessible_fields": [
+        {
+          "field_key": "status_message_region",
+          "expected_accessible_role": "region",
+          "expected_accessible_name": "status messages",
+          "redaction_reason": "case_status_private_value"
+        },
+        {
+          "field_key": "fee_notice_region",
+          "expected_accessible_role": "region",
+          "expected_accessible_name": "fees or balance due",
+          "redaction_reason": "financial_private_value"
+        },
+        {
+          "field_key": "correction_request_region",
+          "expected_accessible_role": "region",
+          "expected_accessible_name": "corrections or checksheets",
+          "redaction_reason": "review_comment_private_value"
+        },
+        {
+          "field_key": "attachment_list_region",
+          "expected_accessible_role": "region",
+          "expected_accessible_name": "attachments or documents",
+          "redaction_reason": "uploaded_document_metadata_private_value"
+        },
+        {
+          "field_key": "inspection_results_region",
+          "expected_accessible_role": "region",
+          "expected_accessible_name": "inspection results",
+          "redaction_reason": "inspection_result_private_value"
+        }
+      ]
+    }
+  ]
+}

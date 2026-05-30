@@ -1,0 +1,36 @@
+{
+  "queue_version": "public_source_freshness_recrawl_queue_v1",
+  "generated_from": "offline fixture for public source recrawl preflight review packet v1",
+  "candidates": [
+    {
+      "priority": 20,
+      "source_id": "portland-permits-zoning-code",
+      "title": "Portland zoning code public source freshness check",
+      "url": "https://www.portland.gov/code/33",
+      "recrawl_reason": "scheduled freshness review for public land use rules",
+      "freshness_signal": "official code page may change after council action",
+      "official_anchors": [
+        {
+          "label": "Portland City Code Title 33",
+          "url": "https://www.portland.gov/code/33",
+          "publisher": "City of Portland"
+        }
+      ]
+    },
+    {
+      "priority": 10,
+      "source_id": "portland-permits-home-page",
+      "title": "Portland permits public landing page freshness check",
+      "url": "https://www.portland.gov/bds/permit-review-process",
+      "recrawl_reason": "public guidance page may update before processor handoff",
+      "freshness_signal": "review queue requested a fixture-first preflight before any live crawl",
+      "official_anchors": [
+        {
+          "label": "Permit review process",
+          "url": "https://www.portland.gov/bds/permit-review-process",
+          "publisher": "City of Portland Bureau of Development Services"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "original_official_source_anchors": [
+    "https://www.portland.gov/ppd",
+    "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+    "https://devhub.portlandoregon.gov",
+    "https://www.portland.gov/ppd/devhub-faqs"
+  ],
+  "committed_source_registry_fixtures": {
+    "fixture_id": "source_anchor_coverage_matrix_subset",
+    "anchors": [
+      {
+        "source_id": "ppd-public-landing",
+        "canonical_url": "https://www.portland.gov/ppd",
+        "processor_policy": "metadata-only fixture seed; future public HTML extraction after policy preflight",
+        "freshness_status": "synthetic_unverified",
+        "robots_policy_status": "not_checked_fixture_only",
+        "fixture_ref": "source_anchor_coverage_matrix:ppd-public-landing"
+      },
+      {
+        "source_id": "ppd-online-permitting-tools",
+        "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+        "processor_policy": "metadata-only fixture seed; future public HTML extraction after policy preflight",
+        "freshness_status": "synthetic_unverified",
+        "robots_policy_status": "not_checked_fixture_only",
+        "fixture_ref": "source_anchor_coverage_matrix:ppd-online-permitting-tools"
+      }
+    ]
+  },
+  "source_index_fixtures": {
+    "fixture_id": "source_index_records_subset",
+    "records": [
+      {
+        "id": "ppd-home",
+        "canonicalUrl": "https://www.portland.gov/ppd",
+        "lastSeenAt": "2026-05-01T17:00:00Z",
+        "crawlStatus": "fetched",
+        "fixture_ref": "source-index:ppd-home"
+      }
+    ]
+  },
+  "human_release_handoff_packet_v1": {
+    "schema_version": "human_release_handoff_packet_v1",
+    "recommendation": "HOLD",
+    "recommendation_citations": [
+      "offline_acceptance_rehearsal_summary_v1:fixture",
+      "reviewer_disposition_ledger_v1:fixture"
+    ]
+  },
+  "reviewer_owner": "PP&D public source registry maintainer",
+  "rollback_note": "Discard this audit packet and leave committed source registry fixtures unchanged.",
+  "offline_validation_commands": [
+    "python3 -m unittest ppd.tests.test_official_source_anchor_audit_packet_v1",
+    "python3 -m unittest discover -s ppd/tests -p 'test_*.py'"
+  ]
+}

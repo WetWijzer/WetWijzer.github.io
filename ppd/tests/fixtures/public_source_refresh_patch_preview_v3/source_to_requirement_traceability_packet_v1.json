@@ -1,0 +1,42 @@
+{
+  "traceability_packet_id": "source-to-requirement-traceability-packet-v1-fixture",
+  "source_traces": [
+    {
+      "source_id": "ppd-devhub-faq-public",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "required_citation_ids": [
+        "CITE-DEVHUB-FAQ-ACCOUNT-SERVICES",
+        "CITE-DEVHUB-FAQ-CORRECTIONS"
+      ],
+      "affected_requirements": [
+        "REQ-DEVHUB-ACCOUNT-001",
+        "REQ-DEVHUB-CORRECTIONS-001"
+      ],
+      "affected_processes": [
+        "PROC-DEVHUB-ACCOUNT-SETUP",
+        "PROC-DEVHUB-CORRECTIONS"
+      ],
+      "affected_guardrails": [
+        "GRD-AUTH-ATTENDANCE-001",
+        "GRD-CORRECTION-UPLOAD-GATE-001"
+      ]
+    },
+    {
+      "source_id": "ppd-submit-plans-online-public",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "required_citation_ids": [
+        "CITE-SUBMIT-PLANS-SINGLE-PDF",
+        "CITE-SUBMIT-PLANS-SEPARATE-SUPPORTING-DOCS"
+      ],
+      "affected_requirements": [
+        "REQ-DOCUMENT-SINGLE-PDF-001"
+      ],
+      "affected_processes": [
+        "PROC-DOCUMENT-PREPARATION"
+      ],
+      "affected_guardrails": [
+        "GRD-UPLOAD-STAGING-001"
+      ]
+    }
+  ]
+}

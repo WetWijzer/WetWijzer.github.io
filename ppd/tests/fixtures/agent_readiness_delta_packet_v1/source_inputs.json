@@ -1,0 +1,160 @@
+{
+  "public_source_refresh_patch_plan_v1": {
+    "plan_version": "public-source-refresh-patch-plan-v1",
+    "execution_policy": {
+      "recrawl": false,
+      "download": false,
+      "processor_execution": false,
+      "raw_body_storage": false,
+      "registry_mutation": false
+    },
+    "proposed_patch_rows": [
+      {
+        "patch_row_id": "psrpp-v1:queue-apply-permits-001:disp-001",
+        "row_type": "proposed_source_freshness_metadata_patch",
+        "execution_mode": "proposal_only",
+        "citations": [
+          {
+            "source_id": "src-ppd-apply-permits",
+            "url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+            "queue_item_id": "queue-apply-permits-001",
+            "disposition_id": "disp-001"
+          }
+        ],
+        "source_freshness_metadata": {
+          "source_id": "src-ppd-apply-permits",
+          "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+          "freshness_status": "reviewed_public_metadata_refresh_proposed",
+          "observed_at": "2026-05-30T00:00:00Z",
+          "reviewer": "fixture-reviewer"
+        },
+        "requirement_impact_links": [
+          {
+            "source_id": "src-ppd-apply-permits",
+            "requirement_id": "req-devhub-application-path",
+            "impact": "source_refresh_review_required"
+          },
+          {
+            "source_id": "src-ppd-apply-permits",
+            "requirement_id": "req-unsupported-email-path-check",
+            "impact": "source_refresh_review_required"
+          }
+        ],
+        "visible_page_review_notes": {
+          "title": "Apply for permits",
+          "visible_date_text": "Last updated May 2026",
+          "date_review_note": "Reviewer observed a visible page title and date label in fixture metadata only."
+        },
+        "affected_source_ids": ["src-ppd-apply-permits"],
+        "affected_requirement_ids": ["req-devhub-application-path", "req-unsupported-email-path-check"],
+        "rollback_checkpoints": [
+          {
+            "checkpoint_id": "rollback:src-ppd-apply-permits:sha256-previous-fixture",
+            "restore_source_id": "src-ppd-apply-permits",
+            "restore_freshness_status": "unchanged_before_proposed_refresh_patch"
+          }
+        ]
+      }
+    ],
+    "offline_validation_commands": [
+      ["python3", "-m", "pytest", "ppd/tests/test_public_source_refresh_patch_plan_v1.py"]
+    ]
+  },
+  "devhub_read_only_observation_promotion_plan_v1": {
+    "plan_version": "devhub_read_only_observation_promotion_plan_v1",
+    "fixture_first": true,
+    "offline_only": true,
+    "surface_map_fixture_update_proposals": [
+      {
+        "proposal_id": "devhub-read-only-observation-surface-map-proposal-v1-001",
+        "surface_id": "devhub-home-read-only",
+        "proposal_effect": "synthetic_fixture_update_only",
+        "active_surface_map_mutation": false,
+        "approved_disposition_id": "reviewer-disposition-devhub-home-read-only-001",
+        "page_heading": "DevHub Home",
+        "accessible_landmarks": ["main", "navigation", "status"],
+        "validation_messages": ["Signed-in status labels remain redacted synthetic labels only."],
+        "redaction_expectations": ["Private account values, browser artifacts, and raw authenticated values must be absent."],
+        "stop_before_action_gates": ["Stop before upload, submit, payment, scheduling, cancellation, or certification controls."],
+        "reviewer_owner": "ppd-devhub-readonly-reviewer",
+        "rollback_note": "Remove this proposed fixture update and retain the previously committed synthetic surface-map fixture.",
+        "offline_validation_commands": [
+          ["python3", "-m", "pytest", "ppd/tests/test_devhub_read_only_observation_promotion_plan_v1.py"]
+        ],
+        "citations": [
+          {
+            "source_evidence_id": "devhub-observation-synthetic-home-heading",
+            "source_label": "DevHub manual observation reviewer queue fixture"
+          }
+        ]
+      }
+    ],
+    "offline_validation_commands": [
+      ["python3", "-m", "pytest", "ppd/tests/test_devhub_read_only_observation_promotion_plan_v1.py"]
+    ]
+  },
+  "guardrail_regression_replay_queue_v1": {
+    "version": "guardrail-regression-replay-queue-v1",
+    "fixture_first": true,
+    "replay_cases": [
+      {
+        "id": "requirement-still-supported-pass",
+        "expected_outcome": "pass",
+        "fixture_refs": {
+          "requirement": "req.trade-permit.plan-review.threshold",
+          "process": "proc.trade-permit.review-routing",
+          "guardrail": "guardrail.require-cited-public-source",
+          "user_gap": "gap.none-for-threshold-check",
+          "devhub_action_classification": "devhub.read-only-status-check"
+        },
+        "citations": [
+          {"packet_id": "combined-promotion-dependency-fixture", "section": "combined_promotion_dependency_packet_v1"},
+          {"packet_id": "combined-promotion-dependency-fixture", "section": "affected_requirement_fixture_ids"}
+        ],
+        "blocked_action_check": {"expected": "none", "rule": "read-only replay must not ask the worker to perform an official DevHub action"},
+        "rollback_note": "Drop this replay row from the candidate queue if any cited fixture identifier is retired before promotion."
+      },
+      {
+        "id": "stale-evidence-block",
+        "expected_outcome": "block",
+        "fixture_refs": {
+          "requirement": "req.trade-permit.plan-review.threshold",
+          "process": "proc.trade-permit.review-routing",
+          "guardrail": "guardrail.block-stale-or-conflicting-evidence",
+          "user_gap": "gap.stale-public-source-date",
+          "devhub_action_classification": "devhub.read-only-status-check"
+        },
+        "citations": [
+          {"packet_id": "combined-promotion-dependency-fixture", "section": "combined_promotion_dependency_packet_v1"},
+          {"packet_id": "combined-promotion-dependency-fixture", "section": "affected_guardrail_fixture_ids"}
+        ],
+        "blocked_action_check": {"expected": "block", "rule": "replay must preserve the stale-evidence refusal"},
+        "rollback_note": "Keep the current active bundle unchanged and rerun the source-refresh fixture before replaying this case."
+      },
+      {
+        "id": "missing-exact-confirmation-block",
+        "expected_outcome": "block",
+        "fixture_refs": {
+          "requirement": "req.trade-permit.final-review-attestation",
+          "process": "proc.devhub.attended-final-action",
+          "guardrail": "guardrail.require-exact-confirmation-for-final-action",
+          "user_gap": "gap.missing-exact-confirmation",
+          "devhub_action_classification": "devhub.consequential-final-action"
+        },
+        "citations": [
+          {"packet_id": "combined-promotion-dependency-fixture", "section": "combined_promotion_dependency_packet_v1"},
+          {"packet_id": "combined-promotion-dependency-fixture", "section": "affected_user_gap_fixture_ids"}
+        ],
+        "blocked_action_check": {"expected": "block", "rule": "replay must block the final-action fixture until exact confirmation is present and reviewed"},
+        "rollback_note": "Rollback means leaving the active guardrail bundle in place and returning this replay to human review."
+      }
+    ],
+    "rollback_notes": [
+      "Drop retired replay rows before promotion.",
+      "Leave active guardrail bundles unchanged during delta packet review."
+    ],
+    "offline_validation_commands": [
+      "python3 -m unittest ppd.tests.test_guardrail_regression_replay_queue_v1"
+    ]
+  }
+}

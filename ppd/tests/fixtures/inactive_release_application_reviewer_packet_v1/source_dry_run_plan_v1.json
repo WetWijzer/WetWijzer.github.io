@@ -1,0 +1,191 @@
+{
+  "packet_type": "ppd.release_review.inactive_application_dry_run_plan.v1",
+  "packet_version": "v1",
+  "fixture_first": true,
+  "dry_run_only": true,
+  "metadata_only": true,
+  "consumed_input_ref": "release_reviewer_go_no_go_checklist_v1",
+  "ordered_dry_run_application_steps": [
+    {
+      "order": 1,
+      "step_id": "preflight-validate-reviewer-checklist",
+      "action": "Replay deterministic checklist validation from committed fixture inputs.",
+      "status": "pending_manual_review",
+      "source_refs": [
+        "release_reviewer_go_no_go_checklist_v1"
+      ]
+    },
+    {
+      "order": 2,
+      "step_id": "inventory-fixture-families",
+      "action": "Build fixture-family inventory for review without changing active fixtures.",
+      "status": "pending_manual_review",
+      "source_refs": [
+        "evidence_citation_coverage"
+      ]
+    },
+    {
+      "order": 3,
+      "step_id": "confirm-preflight-gates",
+      "action": "Confirm validation, rollback, and unresolved-risk gates before any later reviewed proposal.",
+      "status": "pending_manual_review",
+      "source_refs": [
+        "validation_commands",
+        "rollback_confirmations",
+        "unresolved_risk_placeholders"
+      ]
+    },
+    {
+      "order": 4,
+      "step_id": "record-no-release-disposition",
+      "action": "Record that this artifact is informational and leaves release state unchanged.",
+      "status": "pending_manual_review",
+      "source_refs": [
+        "non_application_no_release_notes"
+      ]
+    }
+  ],
+  "fixture_family_change_inventory": [
+    {
+      "family_id": "zoning-inactive-release-review",
+      "planned_change": "none",
+      "active_fixture_change": false,
+      "candidate_refs": [
+        "ppd/tests/fixtures/inactive_release_application_reviewer_packet_v1/zoning_family_candidate.json"
+      ],
+      "review_status": "pending_manual_review"
+    },
+    {
+      "family_id": "release-review",
+      "planned_change": "none",
+      "active_fixture_change": false,
+      "candidate_refs": [
+        "ppd/tests/fixtures/release_review/checklist_v1_valid.json"
+      ],
+      "review_status": "pending_manual_review"
+    }
+  ],
+  "preflight_validation_gates": [
+    {
+      "gate_id": "gate-checklist-validation-clean",
+      "status": "ready_for_replay",
+      "required": true,
+      "evidence_ref": "validate_release_reviewer_go_no_go_checklist_v1"
+    },
+    {
+      "gate_id": "gate-rollback-confirmations-present",
+      "status": "confirmed_from_checklist",
+      "required": true,
+      "evidence_ref": "rollback_readiness_confirmations"
+    },
+    {
+      "gate_id": "gate-validation-replay-commands-present",
+      "status": "ready_for_replay",
+      "required": true,
+      "evidence_ref": "validation_commands"
+    },
+    {
+      "gate_id": "gate-unresolved-risk-placeholders-present",
+      "status": "confirmed_from_checklist",
+      "required": true,
+      "evidence_ref": "unresolved_risk_placeholders"
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "rollback-discard-dry-run-plan",
+      "status": "ready_no_changes_applied",
+      "checkpoint": "Discard this dry-run plan; no active fixture or release-state restore is needed.",
+      "verification_commands": [
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ]
+    },
+    {
+      "checkpoint_id": "rollback-fixture-family-1",
+      "status": "ready_no_changes_applied",
+      "checkpoint": "Keep inactive release-review fixture family unchanged in this dry-run.",
+      "verification_commands": [
+        [
+          "python3",
+          "-m",
+          "py_compile",
+          "ppd/release_review/inactive_application_reviewer_packet_v1.py"
+        ]
+      ]
+    }
+  ],
+  "reviewer_approval_placeholders": [
+    {
+      "approval_id": "release-supervisor-dry-run-review",
+      "role": "release supervisor",
+      "disposition_placeholder": "pending_name_timestamp_and_go_no_go",
+      "required_before": "any_separate_future_release_application",
+      "source_refs": [
+        "release_reviewer_go_no_go_checklist_v1"
+      ]
+    },
+    {
+      "approval_id": "fixture-family-risk-review",
+      "role": "release reviewer",
+      "disposition_placeholder": "pending_name_timestamp_and_go_no_go",
+      "required_before": "any_separate_future_release_application",
+      "source_refs": [
+        "ppd/tests/fixtures/release_review/checklist_v1_valid.json"
+      ]
+    }
+  ],
+  "non_application_no_release_notes": [
+    {
+      "note_id": "no-active-fixture-application",
+      "note": "This plan is metadata only and leaves active fixture files unchanged."
+    },
+    {
+      "note_id": "no-release-state-change",
+      "note": "This plan does not update release state and is not a release decision."
+    },
+    {
+      "note_id": "no-live-or-devhub-work",
+      "note": "This plan uses committed fixture evidence only and performs no live source or DevHub work."
+    },
+    {
+      "note_id": "no-official-action",
+      "note": "This plan performs no official PP&D action and creates no private artifacts."
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ],
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/release_review/inactive_application_reviewer_packet_v1.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_inactive_release_application_reviewer_packet_v1.py"
+    ]
+  ],
+  "active_artifact_mutation_enabled": false,
+  "active_fixture_mutation_enabled": false,
+  "active_prompt_mutation_enabled": false,
+  "active_release_state_mutation_enabled": false,
+  "active_agent_state_mutation_enabled": false,
+  "artifact_mutation_enabled": false,
+  "fixture_mutation_enabled": false,
+  "prompt_mutation_enabled": false,
+  "release_state_mutation_enabled": false,
+  "agent_state_mutation_enabled": false,
+  "live_source_crawl_enabled": false,
+  "devhub_access_enabled": false,
+  "official_action_enabled": false
+}

@@ -1,0 +1,28 @@
+{
+  "matrix_id": "release-gate-decision-matrix-v1-fixture-20260530",
+  "matrix_version": "release_gate_decision_matrix_v1",
+  "decisions": [
+    {
+      "source_id": "portland-bds-title-33",
+      "reviewer_owner": "ppd-zoning-reviewer",
+      "review_status": "needs_review",
+      "defer_reason": null,
+      "rollback_notes": "Retain current public corpus metadata until reviewer approval.",
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/public_source_refresh_reviewer_queue.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_public_source_refresh_reviewer_queue.py"]
+      ]
+    },
+    {
+      "source_id": "portland-transportation-trn-10",
+      "reviewer_owner": "ppd-transportation-reviewer",
+      "review_status": "deferred",
+      "defer_reason": "Fixture metadata lacks a visible updated date and title match.",
+      "rollback_notes": "Do not update public transportation source metadata until the public title and visible updated-date evidence are reviewed.",
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/public_source_refresh_reviewer_queue.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_public_source_refresh_reviewer_queue.py"]
+      ]
+    }
+  ]
+}

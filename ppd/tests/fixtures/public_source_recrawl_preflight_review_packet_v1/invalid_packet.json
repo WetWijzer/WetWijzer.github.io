@@ -1,0 +1,26 @@
+{
+  "packet_version": "public_source_recrawl_preflight_review_packet_v1",
+  "packet_id": "public-recrawl-preflight-review-invalid-fixture",
+  "summary": "This invalid packet says live crawl completed and permit will be approved.",
+  "candidate_preflight_rows": [
+    {
+      "source_id": "bad-row",
+      "canonical_url": "https://example.com/private",
+      "official_anchor_citation": "uncited anchor",
+      "robots_decision_placeholder": "",
+      "policy_decision_placeholder": "",
+      "processor_handoff_dry_run_prerequisites": [],
+      "raw_body_persistence_exclusion_check": "",
+      "download_exclusion_check": "",
+      "reviewer_approval_placeholder": "",
+      "operator_note": "Submit permit and pay fee in DevHub after using storage_state.json.",
+      "raw_capture_reference": "raw PDF downloaded document"
+    }
+  ],
+  "browser_trace": "trace.zip",
+  "active_artifact_mutation": true,
+  "active_prompt_mutation": true,
+  "active_release_state_mutation": true,
+  "active_guardrail_mutation": true,
+  "validation_commands": []
+}

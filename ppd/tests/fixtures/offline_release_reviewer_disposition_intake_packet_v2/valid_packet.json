@@ -1,0 +1,149 @@
+{
+  "packet_type": "ppd.offline_release_reviewer_disposition_intake_packet.v2",
+  "packet_id": "offline-release-reviewer-disposition-intake-v2-fixture",
+  "fixture_only": true,
+  "reviewer_decision_rows": [
+    {
+      "reviewer_id": "ppd-release-reviewer-1",
+      "decision": "blocked",
+      "decided_at": "2026-05-30T00:00:00Z",
+      "rationale": "Fixture review remains blocked until the listed offline validation and carry-forward records are reviewed.",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "evidence_bundle_references": [
+    {
+      "bundle_id": "offline-release-evidence-bundle-v2-fixture",
+      "reference": "committed_fixture_evidence_bundle",
+      "reviewer_id": "ppd-release-reviewer-1",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "validation_transcript_review_placeholders": [
+    {
+      "transcript_id": "offline-validation-transcript-fixture",
+      "reviewer_id": "ppd-release-reviewer-1",
+      "review_placeholder": "pending_manual_transcript_review",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "rollback_readiness_confirmations": [
+    {
+      "confirmation_id": "rollback-readiness-confirmation-fixture",
+      "reviewer_id": "ppd-release-reviewer-1",
+      "confirmed": true,
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "unresolved_risk_notes": [
+    {
+      "risk_id": "offline-release-risk-manual-review-pending",
+      "owner": "ppd-release-reviewer-1",
+      "status": "carried_forward",
+      "note": "Manual review remains pending in this fixture-only intake packet.",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "evidence_summary_acknowledgements": [
+    {
+      "reviewer_id": "ppd-release-reviewer-1",
+      "acknowledged": true,
+      "summary_id": "evidence-summary-fixture-only",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "unresolved_blocker_carry_forward": [
+    {
+      "blocker_id": "offline-release-reviewer-blocker-1",
+      "carry_forward_owner": "ppd-release-reviewer-1",
+      "carry_forward_status": "blocked",
+      "carry_forward_reason": "Reviewer disposition remains held for fixture-only validation evidence review.",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "rollback_readiness_acknowledgements": [
+    {
+      "reviewer_id": "ppd-release-reviewer-1",
+      "acknowledged": true,
+      "checkpoint_id": "rollback-readiness-fixture-check",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "validation_replay_acknowledgements": [
+    {
+      "reviewer_id": "ppd-release-reviewer-1",
+      "acknowledged": true,
+      "replay_id": "validation-replay-fixture-check",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "no_go_reason_placeholders": [
+    {
+      "placeholder_id": "no-go-reason-required-before-reviewer-disposition",
+      "applies_to_decision": "no_go",
+      "reason_placeholder": "Reviewer must replace this placeholder with a cited fixture-only reason before recording a no-go disposition.",
+      "citations": [
+        {
+          "fixture_id": "offline-release-reviewer-disposition-intake-v2-valid",
+          "path": "ppd/tests/fixtures/offline_release_reviewer_disposition_intake_packet_v2/valid_packet.json"
+        }
+      ]
+    }
+  ],
+  "mutation_flags": {
+    "artifact": false,
+    "prompt": false,
+    "promotion": false,
+    "release_state": false,
+    "fixture": false,
+    "agent_state": false
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "handoff_id": "public-freshness-reviewer-handoff-v1-fixture",
+  "fixture_only": true,
+  "reviewer_handoff": [
+    {
+      "source_id": "PPD-SRC-PORTLAND-ZONING-001",
+      "reviewer_owner": "planning-policy-reviewer",
+      "reviewer_backup_owner": "ppd-guardrails-reviewer",
+      "freshness_signal": "hypothetical section update discovered during offline rehearsal",
+      "rollback_notes": "Remove generated rehearsal row and retain the previous cited zoning traceability fixture if validation fails.",
+      "citations": ["fixture://freshness-handoff#zoning-reviewer"]
+    },
+    {
+      "source_id": "PPD-SRC-PORTLAND-PERMIT-002",
+      "reviewer_owner": "permit-process-reviewer",
+      "reviewer_backup_owner": "ppd-guardrails-reviewer",
+      "freshness_signal": "hypothetical permit checklist wording change discovered during offline rehearsal",
+      "rollback_notes": "Remove generated rehearsal row and keep active permit registry entries unchanged if validation fails.",
+      "citations": ["fixture://freshness-handoff#permit-reviewer"]
+    }
+  ],
+  "attestations": {
+    "no_live_crawl": true,
+    "no_download": true,
+    "no_raw_body": true,
+    "no_active_registry_mutation": true
+  }
+}

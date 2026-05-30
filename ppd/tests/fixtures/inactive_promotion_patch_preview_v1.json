@@ -1,0 +1,108 @@
+{
+  "id": "inactive-promotion-patch-preview-v1",
+  "version": 1,
+  "status": "inactive_fixture_only",
+  "purpose": "Preview inactive promotion candidate rows before reviewer disposition without changing active PP&D artifacts.",
+  "consumes": [
+    "promotion-candidate-patch-plan-v1",
+    "inactive-process-model-fixture-family",
+    "inactive-guardrail-bundle-fixture-family",
+    "inactive-user-gap-fixture-family",
+    "inactive-agent-response-fixture-family"
+  ],
+  "non_mutation_scope": {
+    "active_fixtures": false,
+    "prompts": false,
+    "active_process_models": false,
+    "active_guardrails": false,
+    "release_state": false,
+    "agent_state": false
+  },
+  "validation_inventory": [
+    "validation:py-compile-inactive-promotion-patch-preview-v1",
+    "validation:pytest-inactive-promotion-patch-preview-v1",
+    "validation:ppd-daemon-self-test"
+  ],
+  "rollback_checkpoints": [
+    "rollback:remove-inactive-preview-fixture",
+    "rollback:rerun-promotion-candidate-plan-validation",
+    "rollback:notify-reviewer-disposition-owner"
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "reviewer_owner": "ppd-process-model-reviewer",
+      "signed": false,
+      "placeholder_reason": "Human review is intentionally pending."
+    },
+    {
+      "reviewer_owner": "ppd-guardrail-reviewer",
+      "signed": false,
+      "placeholder_reason": "Human review is intentionally pending."
+    }
+  ],
+  "preview_rows": [
+    {
+      "order": 1,
+      "id": "preview-process-model-candidate",
+      "candidate_row_id": "row-process-model-candidate",
+      "active_mutation": false,
+      "before_row": {
+        "fixture_family_id": "process-model-impact-proposal-v1-fixtures",
+        "inactive_row_present": false,
+        "review_status": "not_staged"
+      },
+      "after_row": {
+        "fixture_family_id": "process-model-impact-proposal-v1-fixtures",
+        "inactive_row_present": true,
+        "review_status": "blocked_pending_reviewer_signoff"
+      },
+      "source_evidence": [
+        "promotion-candidate-patch-plan-v1:row-process-model-candidate",
+        "process-model-impact-proposal-v1:recommended-candidate-change"
+      ],
+      "blocked_row_explanation": "Blocked until reviewer signoff and deterministic validation inventory are complete.",
+      "validation_inventory": [
+        "validation:py-compile-inactive-promotion-patch-preview-v1",
+        "validation:pytest-inactive-promotion-patch-preview-v1"
+      ],
+      "rollback_checkpoints": [
+        "rollback:remove-inactive-process-model-preview-row",
+        "rollback:restore-pre-preview-fixture-family-state"
+      ]
+    },
+    {
+      "order": 2,
+      "id": "preview-guardrail-bundle-candidate",
+      "candidate_row_id": "row-guardrail-bundle-candidate",
+      "active_mutation": false,
+      "before_row": {
+        "fixture_family_id": "guardrail-bundle-impact-proposal-v1-fixtures",
+        "inactive_row_present": false,
+        "review_status": "not_staged"
+      },
+      "after_row": {
+        "fixture_family_id": "guardrail-bundle-impact-proposal-v1-fixtures",
+        "inactive_row_present": true,
+        "review_status": "blocked_pending_reviewer_signoff"
+      },
+      "source_evidence": [
+        "promotion-candidate-patch-plan-v1:row-guardrail-bundle-candidate",
+        "guardrail-bundle-impact-proposal-v1:recommended-candidate-change"
+      ],
+      "blocked_row_explanation": "Blocked until reviewer signoff confirms the preview remains fixture-only and reversible.",
+      "validation_inventory": [
+        "validation:pytest-inactive-promotion-patch-preview-v1",
+        "validation:ppd-daemon-self-test"
+      ],
+      "rollback_checkpoints": [
+        "rollback:remove-inactive-guardrail-preview-row",
+        "rollback:restore-pre-preview-fixture-family-state"
+      ]
+    }
+  ],
+  "validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/inactive_promotion_patch_preview_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_inactive_promotion_patch_preview_v1.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

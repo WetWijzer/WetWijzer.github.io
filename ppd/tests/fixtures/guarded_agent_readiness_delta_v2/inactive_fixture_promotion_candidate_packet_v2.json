@@ -1,0 +1,57 @@
+{
+  "packet_id": "inactive-fixture-promotion-candidate-v2-20260530",
+  "packet_version": "inactive-fixture-promotion-candidate-packet-v2",
+  "inactive": true,
+  "path_hint": "ppd/tests/fixtures/guarded_agent_readiness_delta_v2/inactive_fixture_promotion_candidate_packet_v2.json",
+  "delta_candidates": [
+    {
+      "kind": "citation_traceability",
+      "title": "Trace citations before agent use",
+      "citations": ["fixture:ppd/tests/fixtures/guarded_agent_readiness_delta_v2/inactive_fixture_promotion_candidate_packet_v2.json#citation_traceability"],
+      "agent_facing_delta": "Require each agent-facing answer to retain fixture citation IDs for every promoted claim."
+    },
+    {
+      "kind": "missing_information_prompt",
+      "title": "Ask before filling missing permit facts",
+      "missing_information_prompts": ["Which permit number, address, or PP&D document identifier should be used?"],
+      "agent_facing_delta": "Ask for missing permit identifiers instead of inventing them."
+    },
+    {
+      "kind": "refusal_behavior",
+      "title": "Refuse official action requests",
+      "refusal_required": true,
+      "blocked_actions": ["official_submission", "payment", "upload"],
+      "agent_facing_delta": "Refuse requests to submit, pay, upload, certify, cancel, or otherwise perform official PP&D actions."
+    },
+    {
+      "kind": "blocked_consequential_action",
+      "title": "Block consequential automation",
+      "blocked_actions": ["devhub_access", "live_crawl", "captcha", "mfa"],
+      "agent_facing_delta": "Keep automation offline and fixture-bound unless a separate authorized workflow exists."
+    },
+    {
+      "kind": "reversible_draft_boundary",
+      "title": "Keep generated material reversible",
+      "reversible_draft_only": true,
+      "agent_facing_delta": "Produce drafts, checklists, and validation notes only; do not mutate active PP&D records."
+    },
+    {
+      "kind": "journal_event_safety",
+      "title": "Journal only safe offline events",
+      "journal_event_safe": true,
+      "agent_facing_delta": "Journal fixture validation metadata only, without auth state, traces, raw crawl output, or downloaded documents."
+    },
+    {
+      "kind": "rollback_readiness",
+      "title": "Preserve rollback readiness",
+      "rollback_ready": true,
+      "agent_facing_delta": "Keep packet outputs deterministic and replaceable so failed fixture promotions can be rolled back cleanly."
+    },
+    {
+      "kind": "offline_validation_command",
+      "title": "Expose exact offline validation",
+      "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+      "agent_facing_delta": "Report exact offline validation commands and do not require live PP&D access."
+    }
+  ]
+}

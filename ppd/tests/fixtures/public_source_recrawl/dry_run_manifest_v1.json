@@ -1,0 +1,32 @@
+{
+  "manifest_id": "fixture-public-source-recrawl-dry-run-20260530",
+  "manifest_version": "public_source_recrawl_dry_run_manifest_v1",
+  "fixture_first": true,
+  "live_network_invoked": false,
+  "documents_downloaded": false,
+  "raw_response_bodies_stored": false,
+  "devhub_accessed": false,
+  "candidate_sources": [
+    {
+      "source_id": "ppd-landing-page",
+      "canonical_url": "https://www.portland.gov/ppd",
+      "allow_reason": "ALLOW_OFFICIAL_PUBLIC_PPD_ANCHOR",
+      "robots_decision_placeholder": "REVIEWER_TO_CONFIRM_BEFORE_EXECUTION",
+      "policy_decision_placeholder": "REVIEWER_TO_CONFIRM_METADATA_ONLY_CAPTURE"
+    },
+    {
+      "source_id": "ppd-online-permitting-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "allow_reason": "ALLOW_OFFICIAL_PUBLIC_PPD_GUIDE",
+      "robots_decision_placeholder": "REVIEWER_TO_CONFIRM_BEFORE_EXECUTION",
+      "policy_decision_placeholder": "REVIEWER_TO_CONFIRM_METADATA_ONLY_CAPTURE"
+    },
+    {
+      "source_id": "portlandmaps-linked-reference",
+      "canonical_url": "https://www.portlandmaps.com",
+      "skip_reason": "SKIP_EXTERNAL_REFERENCE_REQUIRES_SEPARATE_POLICY_REVIEW",
+      "robots_decision_placeholder": "REVIEWER_TO_CONFIRM_BEFORE_EXECUTION",
+      "policy_decision_placeholder": "REVIEWER_TO_CONFIRM_SKIP_OR_DEFER"
+    }
+  ]
+}

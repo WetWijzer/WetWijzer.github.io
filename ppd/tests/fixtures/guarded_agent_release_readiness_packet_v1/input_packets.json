@@ -1,0 +1,294 @@
+{
+  "release_promotion_decision_packet_v1": {
+    "packet_version": "release_promotion_decision_packet_v1",
+    "packet_id": "release-promotion-decision-agent-readiness-v1-fixture",
+    "release_scope": {
+      "in_scope": [
+        "offline guarded agent readiness packet assembly",
+        "cited readiness and handoff rows"
+      ],
+      "out_of_scope": [
+        "prompt changes",
+        "active guardrail changes",
+        "agent state changes",
+        "release state changes",
+        "live source refresh",
+        "DevHub artifact changes"
+      ],
+      "boundary_statement": "This packet is fixture-first release readiness evidence only and does not mutate prompts, guardrails, agent state, release state, live sources, or DevHub artifacts."
+    },
+    "decision_rows": [
+      {
+        "decision": "hold for cited offline readiness review",
+        "rationale": "Release readiness can be reviewed from committed fixtures before any promotion action.",
+        "citations": [
+          "release:offline-readiness-boundary",
+          "release:manual-signoff-required"
+        ]
+      }
+    ],
+    "manual_signoff_placeholders": [
+      {
+        "role": "release supervisor",
+        "placeholder": "Review cited readiness rows before marking any release promotion complete."
+      }
+    ],
+    "validation_replay_commands": [
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ]
+    ],
+    "rollback_checkpoints": [
+      {
+        "checkpoint_id": "pre-agent-readiness-packet-v1",
+        "restore_command": [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ],
+        "verification_command": [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ],
+        "citations": [
+          "release:rollback-checkpoint"
+        ],
+        "notes": "Discard generated readiness output if review fails; committed inputs remain unchanged."
+      }
+    ],
+    "active_source_mutation": false,
+    "active_document_mutation": false,
+    "active_requirement_mutation": false,
+    "active_process_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_fixture_mutation": false,
+    "active_agent_state_mutation": false
+  },
+  "public_source_refresh_plan_v2": {
+    "schema_version": "source_to_requirement_traceability_packet_v1",
+    "packet_id": "fixture-source-to-requirement-traceability-001",
+    "fixture_first": true,
+    "traceability_rows": [
+      {
+        "trace_id": "trace-single-pdf-supporting-documents",
+        "source_id": "ppd-submit-plans-online",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "requirement_ids": [
+          "req-single-pdf-process-separate-supporting-documents"
+        ],
+        "process_ids": [
+          "process-submit-plans-online"
+        ],
+        "guardrail_bundle_ids": [
+          "guardrail-submit-plans-online-document-prep"
+        ],
+        "citations": [
+          "fixture-span-single-pdf-001"
+        ],
+        "trace_basis": "Fixture trace from public Single PDF guidance to document-preparation requirements and guardrails.",
+        "reviewer_owner": "PP&D document-preparation reviewer"
+      }
+    ]
+  },
+  "devhub_observed_surface_update_plan_v2": {
+    "packet_id": "devhub-observed-surface-update-plan-v2-fixture",
+    "source_packets": {
+      "devhub_observation_evidence_intake_packet_v1": {
+        "packet_id": "devhub-observation-evidence-intake-v1-fixture",
+        "observed_surfaces": [
+          {
+            "surface_id": "trade-permit-dashboard",
+            "page_heading": "Trade Permit Dashboard",
+            "observed_labels": [
+              "Permit status",
+              "Corrections requested",
+              "Messages"
+            ],
+            "selector_confidence": "medium",
+            "reviewer_owner": "permits-review-lead",
+            "redaction_checks": [
+              "redacted account labels only",
+              "no applicant field values"
+            ],
+            "rollback_note": "Reject this candidate if the reviewer cannot cite the committed intake packet and rehearsal step.",
+            "citations": [
+              {
+                "packet": "devhub_observation_evidence_intake_packet_v1",
+                "pointer": "/observed_surfaces/0"
+              }
+            ]
+          }
+        ]
+      },
+      "attended_devhub_observation_handoff_checklist_v1": {
+        "packet_id": "attended-devhub-observation-handoff-checklist-v1-fixture",
+        "manual_observation_checklists": [
+          {
+            "surface_id": "trade-permit-dashboard",
+            "page_heading": "Trade Permit Dashboard",
+            "reviewer_owner": "permits-review-lead",
+            "manual_attendance_gates": [
+              "reviewer present",
+              "stop before official controls"
+            ],
+            "stop_before_action_gates": [
+              "upload",
+              "submit",
+              "payment",
+              "scheduling"
+            ],
+            "citations": [
+              {
+                "packet": "attended_devhub_observation_handoff_checklist_v1",
+                "pointer": "/manual_observation_checklists/0"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "reviewer_owner_assignments": {
+      "trade-permit-dashboard": "permits-review-lead"
+    }
+  },
+  "user_gap_analysis_impact_proposal_v1": {
+    "proposal_id": "user_gap_analysis_impact_proposal_v1:case-demo-adu-001",
+    "proposal_version": "v1",
+    "fixture_first": true,
+    "affected_case_ids": [
+      "case-demo-adu-001"
+    ],
+    "affected_process_ids": [
+      "process-detached-adu-devhub-v1"
+    ],
+    "affected_guardrail_bundle_ids": [
+      "guardrail-detached-adu-devhub-v1"
+    ],
+    "proposed_impacts": [
+      {
+        "impact_id": "ugaip-v1-case-demo-adu-001-01-required_user_facts",
+        "category": "required_user_facts",
+        "citations": [
+          "process:detached-adu:required-facts",
+          "ppd-source:apply-permits"
+        ]
+      },
+      {
+        "impact_id": "ugaip-v1-case-demo-adu-001-03-missing_documents",
+        "category": "missing_documents",
+        "citations": [
+          "process:detached-adu:required-documents",
+          "ppd-source:submit-plans-online"
+        ]
+      },
+      {
+        "impact_id": "ugaip-v1-case-demo-adu-001-04-stale_or_conflicting_evidence",
+        "category": "stale_or_conflicting_evidence",
+        "citations": [
+          "freshness:property-summary:max-age-policy",
+          "user-doc:owner-worksheet"
+        ]
+      },
+      {
+        "impact_id": "ugaip-v1-case-demo-adu-001-05-required_confirmations",
+        "category": "required_confirmations",
+        "citations": [
+          "guardrail:exact-confirmation-submit"
+        ]
+      },
+      {
+        "impact_id": "ugaip-v1-case-demo-adu-001-06-blocked_actions",
+        "category": "blocked_actions",
+        "citations": [
+          "guardrail:attended-devhub-boundary",
+          "guardrail:no-payment-or-upload-automation"
+        ]
+      },
+      {
+        "impact_id": "ugaip-v1-case-demo-adu-001-07-next_safe_actions",
+        "category": "next_safe_actions",
+        "citations": [
+          "process:detached-adu:required-documents",
+          "guardrail:read-only-and-reversible-draft-only"
+        ]
+      }
+    ]
+  },
+  "agent_response_delta_proposal_v1": {
+    "packet_type": "ppd.guarded_agent_response_acceptance_packet.v1",
+    "fixture_first": true,
+    "metadata_only": true,
+    "case_id": "case-demo-adu-001",
+    "process_id": "process-detached-adu-devhub-v1",
+    "guardrail_bundle_id": "guardrail-detached-adu-devhub-v1",
+    "final_response_examples": [
+      {
+        "example_kind": "missing_facts",
+        "final_response": "I need the cited owner contact fact and the site plan readiness status before preparing local draft wording.",
+        "citations": [
+          "process:detached-adu:required-facts",
+          "ppd-source:submit-plans-online"
+        ],
+        "missing_items": [
+          "owner_phone",
+          "site_plan_pdf"
+        ]
+      },
+      {
+        "example_kind": "stale_conflicting_evidence",
+        "final_response": "The cited property summary is stale and the owner-name evidence conflicts, so those facts need review before relying on them.",
+        "citations": [
+          "freshness:property-summary:max-age-policy",
+          "user-doc:owner-worksheet"
+        ],
+        "bridge_notice_ids": [
+          "stale-property-summary",
+          "conflict-owner-name"
+        ]
+      },
+      {
+        "example_kind": "reversible_draft_limits",
+        "final_response": "I can prepare local checklist text from cited fixtures while keeping DevHub and official records unchanged.",
+        "citations": [
+          "guardrail:read-only-and-reversible-draft-only",
+          "ppd-source:devhub-submit-permit-application"
+        ],
+        "blocked_field_ids": [
+          "field-owner-phone",
+          "field-site-plan-readiness"
+        ]
+      },
+      {
+        "example_kind": "blocked_official_actions",
+        "final_response": "I cannot perform official submission, certification, payment, scheduling, cancellation, or official document attachment from this fixture review.",
+        "citations": [
+          "guardrail:attended-devhub-boundary",
+          "guardrail:exact-confirmation-submit",
+          "guardrail:no-payment-or-upload-automation"
+        ],
+        "blocked_action_ids": [
+          "submit_permit_request",
+          "upload_official_correction",
+          "pay_review_fee"
+        ]
+      },
+      {
+        "example_kind": "next_safe_read_only_steps",
+        "final_response": "The next safe step is to ask for missing facts or prepare a cited local document checklist without touching official systems.",
+        "citations": [
+          "process:detached-adu:required-documents",
+          "guardrail:read-only-and-reversible-draft-only"
+        ],
+        "read_only_action_ids": [
+          "ask_for_missing_owner_phone",
+          "draft_local_document_checklist"
+        ]
+      }
+    ]
+  }
+}

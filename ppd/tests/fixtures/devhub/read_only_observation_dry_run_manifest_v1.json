@@ -1,0 +1,337 @@
+{
+  "browser_or_session_artifacts_created": false,
+  "devhub_opened": false,
+  "forbidden_artifact_kinds": [
+    "auth_state",
+    "browser_profile",
+    "cookies",
+    "credentials",
+    "downloaded_documents",
+    "har",
+    "private_page_values",
+    "raw_authenticated_html",
+    "screenshots",
+    "session_storage",
+    "traces"
+  ],
+  "manifest_id": "devhub_attended_observation_dry_run_manifest_v1_fixture",
+  "manual_stop_checkpoints": [
+    {
+      "checkpoint_id": "stop_before_auth_boundary",
+      "required_response": "Stop and return manual handoff; do not automate or store credentials/session state.",
+      "when": "Any login, MFA, CAPTCHA, account creation, password recovery, or credential prompt is visible."
+    },
+    {
+      "checkpoint_id": "stop_before_private_value_capture",
+      "required_response": "Capture accessible role/name/state metadata only; redact values and leave reviewer placeholders.",
+      "when": "A page contains account, permit, address, owner, contractor, financial, uploaded-document, or other private values."
+    },
+    {
+      "checkpoint_id": "stop_before_reversible_draft_action",
+      "required_response": "Classify as reversible draft, require separate attended plan, and do not execute in this dry run.",
+      "when": "The next interaction would type, select, save, stage, upload, or otherwise mutate a draft."
+    },
+    {
+      "checkpoint_id": "stop_before_official_action",
+      "required_response": "Classify as consequential official and refuse automation without explicit separate guardrail flow.",
+      "when": "The next interaction would submit, certify, pay, purchase, schedule, cancel, withdraw, upload to record, or request official change."
+    }
+  ],
+  "mode": "offline_fixture_only",
+  "official_actions_allowed": false,
+  "offline_validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_observation_dry_run.py"
+    ]
+  ],
+  "prompt_changes_allowed": false,
+  "redacted_field_inventory_placeholders": [
+    {
+      "field_key": "signed_in_account_indicator",
+      "redaction_reason": "account_identity_private_value",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    },
+    {
+      "field_key": "my_permits_requests_link",
+      "redaction_reason": "navigation_label_only_no_private_value_expected",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    },
+    {
+      "field_key": "permit_request_row",
+      "redaction_reason": "permit_number_address_status_private_value",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    },
+    {
+      "field_key": "permit_request_detail_link",
+      "redaction_reason": "permit_number_private_value",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    },
+    {
+      "field_key": "status_message_region",
+      "redaction_reason": "case_status_private_value",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    },
+    {
+      "field_key": "fee_notice_region",
+      "redaction_reason": "financial_private_value",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    },
+    {
+      "field_key": "correction_request_region",
+      "redaction_reason": "review_comment_private_value",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    },
+    {
+      "field_key": "attachment_list_region",
+      "redaction_reason": "uploaded_document_metadata_private_value",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    },
+    {
+      "field_key": "inspection_results_region",
+      "redaction_reason": "inspection_result_private_value",
+      "stored_value": null,
+      "value_status": "placeholder_only_not_observed"
+    }
+  ],
+  "reviewer_observation_placeholders": [
+    {
+      "review_status": "not_observed_fixture_placeholder",
+      "reviewer_notes": null,
+      "step_id": "synthetic_observation_step_01",
+      "surface_id": "devhub_home_attended_redacted"
+    },
+    {
+      "review_status": "not_observed_fixture_placeholder",
+      "reviewer_notes": null,
+      "step_id": "synthetic_observation_step_02",
+      "surface_id": "my_permits_requests_attended_redacted"
+    },
+    {
+      "review_status": "not_observed_fixture_placeholder",
+      "reviewer_notes": null,
+      "step_id": "synthetic_observation_step_03",
+      "surface_id": "permit_detail_attended_redacted"
+    }
+  ],
+  "schema_version": "devhub_read_only_observation_dry_run_manifest_v1",
+  "source_preflight_packet_id": "devhub_attended_observation_preflight_packet_v1_fixture",
+  "synthetic_observation_steps": [
+    {
+      "auth_scope": "authenticated_attended_redacted",
+      "expected_accessible_role_capture_fields": [
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "signed-in account indicator",
+          "expected_accessible_role": "text",
+          "field_key": "signed_in_account_indicator",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        },
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "My Permits & Requests",
+          "expected_accessible_role": "link",
+          "field_key": "my_permits_requests_link",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        }
+      ],
+      "expected_landmarks": [
+        "banner",
+        "navigation",
+        "main"
+      ],
+      "manual_stop_checkpoint_refs": [
+        "stop_before_auth_boundary",
+        "stop_before_private_value_capture",
+        "stop_before_reversible_draft_action",
+        "stop_before_official_action"
+      ],
+      "navigation_policy": "manual_attended_only_no_browser_launched_by_dry_run",
+      "observation_goal": "Confirm the post-login home surface exposes navigation to account-scoped read-only areas without recording private values.",
+      "read_only_action_classification_refs": [
+        "read_only:view_devhub_home"
+      ],
+      "reviewer_observation_placeholder": {
+        "evidence_policy": "Do not attach screenshots, traces, HAR files, raw HTML, private values, or downloaded documents.",
+        "notes": null,
+        "observed": false,
+        "observed_at": null,
+        "reviewer": null
+      },
+      "step_id": "synthetic_observation_step_01",
+      "surface_id": "devhub_home_attended_redacted",
+      "surface_label": "DevHub Home",
+      "synthetic_sequence": 1
+    },
+    {
+      "auth_scope": "authenticated_attended_redacted",
+      "expected_accessible_role_capture_fields": [
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "permit or request row",
+          "expected_accessible_role": "row",
+          "field_key": "permit_request_row",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        },
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "permit or request detail link",
+          "expected_accessible_role": "link",
+          "field_key": "permit_request_detail_link",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        }
+      ],
+      "expected_landmarks": [
+        "main",
+        "table or list",
+        "pagination or filters when present"
+      ],
+      "manual_stop_checkpoint_refs": [
+        "stop_before_auth_boundary",
+        "stop_before_private_value_capture",
+        "stop_before_reversible_draft_action",
+        "stop_before_official_action"
+      ],
+      "navigation_policy": "manual_attended_only_no_browser_launched_by_dry_run",
+      "observation_goal": "Review only the accessible structure of account-scoped permit/request listings while redacting permit numbers, addresses, applicant names, and status details.",
+      "read_only_action_classification_refs": [
+        "read_only:review_my_permits_and_requests",
+        "read_only:review_permit_detail"
+      ],
+      "reviewer_observation_placeholder": {
+        "evidence_policy": "Do not attach screenshots, traces, HAR files, raw HTML, private values, or downloaded documents.",
+        "notes": null,
+        "observed": false,
+        "observed_at": null,
+        "reviewer": null
+      },
+      "step_id": "synthetic_observation_step_02",
+      "surface_id": "my_permits_requests_attended_redacted",
+      "surface_label": "My Permits & Requests",
+      "synthetic_sequence": 2
+    },
+    {
+      "auth_scope": "authenticated_attended_redacted",
+      "expected_accessible_role_capture_fields": [
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "status messages",
+          "expected_accessible_role": "region",
+          "field_key": "status_message_region",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        },
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "fees or balance due",
+          "expected_accessible_role": "region",
+          "field_key": "fee_notice_region",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        },
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "corrections or checksheets",
+          "expected_accessible_role": "region",
+          "field_key": "correction_request_region",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        },
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "attachments or documents",
+          "expected_accessible_role": "region",
+          "field_key": "attachment_list_region",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        },
+        {
+          "capture_policy": "record role/name/state only; never record private value",
+          "expected_accessible_name": "inspection results",
+          "expected_accessible_role": "region",
+          "field_key": "inspection_results_region",
+          "observed_accessible_name": null,
+          "observed_accessible_role": null,
+          "observed_state_placeholder": null,
+          "private_value_placeholder": "REDACTED_NOT_CAPTURED",
+          "reviewer_notes": null
+        }
+      ],
+      "expected_landmarks": [
+        "main",
+        "status section",
+        "documents or attachments section",
+        "messages section"
+      ],
+      "manual_stop_checkpoint_refs": [
+        "stop_before_auth_boundary",
+        "stop_before_private_value_capture",
+        "stop_before_reversible_draft_action",
+        "stop_before_official_action"
+      ],
+      "navigation_policy": "manual_attended_only_no_browser_launched_by_dry_run",
+      "observation_goal": "Classify read-only detail, status, fee notice, correction, attachment, and inspection result review points without recording page values or taking official actions.",
+      "read_only_action_classification_refs": [
+        "read_only:review_status_messages",
+        "read_only:review_fee_notice_without_payment",
+        "read_only:review_correction_request_without_upload",
+        "read_only:review_attachment_list_without_download",
+        "read_only:review_inspection_results_without_scheduling"
+      ],
+      "reviewer_observation_placeholder": {
+        "evidence_policy": "Do not attach screenshots, traces, HAR files, raw HTML, private values, or downloaded documents.",
+        "notes": null,
+        "observed": false,
+        "observed_at": null,
+        "reviewer": null
+      },
+      "step_id": "synthetic_observation_step_03",
+      "surface_id": "permit_detail_attended_redacted",
+      "surface_label": "Permit Detail",
+      "synthetic_sequence": 3
+    }
+  ]
+}

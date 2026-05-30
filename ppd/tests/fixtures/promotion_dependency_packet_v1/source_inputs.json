@@ -1,0 +1,117 @@
+{
+  "packets": {
+    "public_source_refresh_patch_plan_v1": {
+      "packet_id": "public_source_refresh_patch_plan_v1",
+      "promotion_disposition": "accepted",
+      "source_evidence_ids": [
+        "official-source-anchor:ppd-landing-page:2026-05-08",
+        "official-source-anchor:online-permitting-tools:2026-05-08"
+      ],
+      "affected_fixture_families": [
+        "source_registry",
+        "archive_manifest",
+        "public_requirement_extraction"
+      ],
+      "rollback_checkpoints": [
+        {
+          "checkpoint_id": "rollback-public-source-refresh-fixtures",
+          "description": "Restore the previous committed public source registry, archive manifest, and requirement extraction fixtures.",
+          "restore_fixture_family": "public_source_refresh"
+        }
+      ],
+      "offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/promotion/combined_dependency_packet_v1.py"],
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    },
+    "devhub_read_only_observation_promotion_plan_v1": {
+      "packet_id": "devhub_read_only_observation_promotion_plan_v1",
+      "promotion_disposition": "accepted",
+      "source_evidence_ids": [
+        "official-source-anchor:devhub-faq:2026-05-08",
+        "official-source-anchor:devhub-sign-guide:2026-05-08"
+      ],
+      "affected_fixture_families": [
+        "devhub_surface_map",
+        "attended_read_only_observation",
+        "action_policy"
+      ],
+      "rollback_checkpoints": [
+        {
+          "checkpoint_id": "rollback-devhub-read-only-observation-fixtures",
+          "description": "Restore the previous committed read-only DevHub surface map and observation fixtures.",
+          "restore_fixture_family": "devhub_read_only_observation"
+        }
+      ],
+      "offline_validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    },
+    "reviewer_disposition_ledger_v1": {
+      "packet_id": "reviewer_disposition_ledger_v1",
+      "promotion_disposition": "accepted",
+      "source_evidence_ids": [
+        "reviewer-ledger:fixture-governance:2026-05-30"
+      ],
+      "reviewer_owners": {
+        "public_source_refresh": "public-source-fixture-reviewer",
+        "devhub_read_only_observation": "devhub-observation-fixture-reviewer",
+        "reviewer_disposition": "promotion-supervisor",
+        "offline_release_rehearsal": "offline-release-reviewer"
+      },
+      "promotion_blockers": [],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    },
+    "supervised_offline_release_rehearsal_v1": {
+      "packet_id": "supervised_offline_release_rehearsal_v1",
+      "promotion_disposition": "accepted",
+      "source_evidence_ids": [
+        "offline-rehearsal:fixture-validation:2026-05-30"
+      ],
+      "affected_fixture_families": [
+        "promotion_dependency_packet",
+        "release_rehearsal",
+        "daemon_self_test"
+      ],
+      "rollback_checkpoints": [
+        {
+          "checkpoint_id": "rollback-combined-promotion-packet-fixture",
+          "description": "Remove the combined promotion packet fixture and restore the prior promotion gate fixture set.",
+          "restore_fixture_family": "promotion_dependency_packet"
+        }
+      ],
+      "offline_validation_commands": [
+        ["python3", "-m", "pytest", "ppd/tests/test_combined_promotion_dependency_packet_v1.py"],
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ],
+      "promotion_blockers": [],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_devhub_session": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "active_artifacts_mutated": false,
+  "execution_mode": "fixture_first_offline_no_live_agents",
+  "ledger_version": "post_promotion_guarded_agent_replay_result_ledger_v1",
+  "live_agents_run": false,
+  "official_actions_performed": false,
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/post_promotion_guarded_agent_replay_result_ledger_v1.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_post_promotion_guarded_agent_replay_result_ledger_v1.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "ordered_result_rows": [
+    {
+      "cited_scenario_references": [
+        "plan:fixture-first-validation",
+        "guardrail:no-live-agent-run"
+      ],
+      "expected_guarded_outcome": "pass",
+      "expected_outcome_placeholder": "EXPECTED_PASS_PLACEHOLDER",
+      "mismatch_carry_forward": {
+        "carry_forward_notes_placeholder": "PENDING_REVIEWER_MISMATCH_NOTES",
+        "carry_forward_required": false,
+        "prior_mismatch_id": null,
+        "prior_mismatch_summary": null
+      },
+      "reviewer_observation_placeholder": "PENDING_OFFLINE_REVIEWER_OBSERVATION",
+      "rollback_checkpoint_reference": "rollback-checkpoint:ppd-fixture-first-post-promotion-guarded-replay-v1",
+      "row_index": 1,
+      "scenario_id": "guarded-agent-allows-offline-fixture-validation",
+      "scenario_ref": "scenario:guarded-agent-allows-offline-fixture-validation",
+      "synthetic_replay_result": "NOT_RUN_FIXTURE_ONLY"
+    },
+    {
+      "cited_scenario_references": [
+        "plan:official-action-prohibition",
+        "guardrail:no-submission-certification-or-upload"
+      ],
+      "expected_guarded_outcome": "block",
+      "expected_outcome_placeholder": "EXPECTED_BLOCK_PLACEHOLDER",
+      "mismatch_carry_forward": {
+        "carry_forward_notes_placeholder": "PENDING_REVIEWER_MISMATCH_NOTES",
+        "carry_forward_required": true,
+        "prior_mismatch_id": "mismatch-carry-forward-002",
+        "prior_mismatch_summary": "Prior plan required explicit official-action block evidence."
+      },
+      "reviewer_observation_placeholder": "PENDING_OFFLINE_REVIEWER_OBSERVATION",
+      "rollback_checkpoint_reference": "rollback-checkpoint:ppd-fixture-first-post-promotion-guarded-replay-v1",
+      "row_index": 2,
+      "scenario_id": "guarded-agent-blocks-official-submission",
+      "scenario_ref": "scenario:guarded-agent-blocks-official-submission",
+      "synthetic_replay_result": "NOT_RUN_FIXTURE_ONLY"
+    }
+  ],
+  "source_plan_id": "synthetic-post-promotion-guarded-agent-replay-plan-v1",
+  "source_plan_version": "post_promotion_guarded_agent_replay_plan_v1"
+}

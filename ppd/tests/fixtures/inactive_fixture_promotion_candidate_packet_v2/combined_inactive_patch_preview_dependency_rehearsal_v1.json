@@ -1,0 +1,80 @@
+{
+  "rehearsal_version": "combined_inactive_patch_preview_dependency_rehearsal_v1",
+  "rehearsal_id": "inactive-rehearsal-20260530-fixture-promotion-v1",
+  "fixture_families": [
+    {
+      "fixture_family": "devhub-action-gates",
+      "owner": "ppd-devhub-guardrails"
+    },
+    {
+      "fixture_family": "permit-document-requirements",
+      "owner": "ppd-requirement-extraction"
+    }
+  ],
+  "preview_patches": [
+    {
+      "preview_patch_id": "patch-preview-devhub-action-gates-001",
+      "fixture_family": "devhub-action-gates",
+      "fixture_path": "ppd/tests/fixtures/inactive/devhub/action_gates_v1.json",
+      "dependency_ids": [
+        "dependency-rehearsal-devhub-attendance-policy",
+        "dependency-rehearsal-exact-confirmation-policy"
+      ],
+      "touches_active_artifacts": false,
+      "requires_live_source": false,
+      "requires_devhub": false,
+      "requires_official_action": false
+    },
+    {
+      "preview_patch_id": "patch-preview-permit-document-requirements-001",
+      "fixture_family": "permit-document-requirements",
+      "fixture_path": "ppd/tests/fixtures/inactive/requirements/permit_document_requirements_v1.json",
+      "dependency_ids": [
+        "dependency-rehearsal-source-citation-fixture",
+        "dependency-rehearsal-single-pdf-policy"
+      ],
+      "touches_active_artifacts": false,
+      "requires_live_source": false,
+      "requires_devhub": false,
+      "requires_official_action": false
+    }
+  ],
+  "prerequisite_validation_replays": [
+    {
+      "replay_id": "replay-devhub-action-gates-schema",
+      "preview_patch_id": "patch-preview-devhub-action-gates-001",
+      "validation_name": "inactive devhub action gate fixture schema replay",
+      "status": "ready_for_offline_replay",
+      "evidence_fixture_path": "ppd/tests/fixtures/inactive/devhub/action_gates_v1.json",
+      "replay_command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_fixture_promotion_candidate_packet_v2.py"
+      ]
+    },
+    {
+      "replay_id": "replay-permit-document-requirements-schema",
+      "preview_patch_id": "patch-preview-permit-document-requirements-001",
+      "validation_name": "inactive permit document requirement fixture schema replay",
+      "status": "ready_for_offline_replay",
+      "evidence_fixture_path": "ppd/tests/fixtures/inactive/requirements/permit_document_requirements_v1.json",
+      "replay_command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_fixture_promotion_candidate_packet_v2.py"
+      ]
+    }
+  ],
+  "rollback_plans": [
+    {
+      "preview_patch_id": "patch-preview-devhub-action-gates-001",
+      "rollback_plan_ref": "rollback-plan::inactive-fixture-promotion::devhub-action-gates::remove-candidate-only-packet"
+    },
+    {
+      "preview_patch_id": "patch-preview-permit-document-requirements-001",
+      "rollback_plan_ref": "rollback-plan::inactive-fixture-promotion::permit-document-requirements::remove-candidate-only-packet"
+    }
+  ]
+}

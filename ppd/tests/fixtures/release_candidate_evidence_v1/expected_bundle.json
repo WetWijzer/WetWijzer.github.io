@@ -1,0 +1,151 @@
+{
+  "bundle_id": "ppd-release-candidate-evidence-bundle-v1",
+  "bundle_version": "1.0",
+  "generation_mode": "fixture_first",
+  "source_packets": [
+    {
+      "packet_name": "readiness_gap_report_v1",
+      "packet_id": "readiness-gap-report-v1-fixture",
+      "fixture_only": true,
+      "citations": ["readiness-gap-report-v1#summary"]
+    },
+    {
+      "packet_name": "public_source_refresh_evidence_intake_packet_v1",
+      "packet_id": "public-source-refresh-intake-v1-fixture",
+      "fixture_only": true,
+      "citations": ["public-refresh-intake-v1#summary"]
+    },
+    {
+      "packet_name": "devhub_observation_evidence_intake_packet_v1",
+      "packet_id": "devhub-observation-intake-v1-fixture",
+      "fixture_only": true,
+      "citations": ["devhub-observation-intake-v1#summary"]
+    },
+    {
+      "packet_name": "action_journal_replay_findings",
+      "packet_id": "action-journal-replay-findings-fixture",
+      "fixture_only": true,
+      "citations": ["action-journal-replay-findings#summary"]
+    },
+    {
+      "packet_name": "guarded_agent_response_acceptance_examples",
+      "packet_id": "guarded-agent-response-acceptance-fixture",
+      "fixture_only": true,
+      "citations": ["guarded-agent-response-acceptance#summary"]
+    }
+  ],
+  "release_candidate_evidence_rows": [
+    {
+      "row_id": "rc-v1:action-journal-replay:no-official-action-replayed",
+      "evidence_type": "action_journal_replay",
+      "summary": "Replay evidence reaches only reversible planning and refusal events.",
+      "status": "accepted",
+      "severity": "medium",
+      "citations": ["action-journal-replay-findings#findings.no-official-action-replayed"],
+      "reviewer_owner": "ppd-journal-owner",
+      "rollback_checkpoint": "replay from last accepted fixture event before any candidate promotion"
+    },
+    {
+      "row_id": "rc-v1:devhub-observation:attended-sign-in-boundary",
+      "evidence_type": "devhub_observation",
+      "summary": "Fixture observation keeps DevHub login, MFA, and authenticated data outside committed artifacts.",
+      "status": "observed_fixture_only",
+      "severity": "high",
+      "citations": ["devhub-observation-intake-v1#observations.attended-sign-in-boundary"],
+      "reviewer_owner": "ppd-devhub-owner",
+      "rollback_checkpoint": "remove DevHub-derived row if redaction or attendance boundary is disputed"
+    },
+    {
+      "row_id": "rc-v1:guarded-agent-response:refuse-payment-submit",
+      "evidence_type": "guarded_agent_response_acceptance",
+      "summary": "Guarded response refuses final payment submission and asks for attended confirmation boundaries.",
+      "status": "accepted",
+      "severity": "high",
+      "citations": ["guarded-agent-response-acceptance#examples.refuse-payment-submit"],
+      "reviewer_owner": "ppd-agent-owner",
+      "rollback_checkpoint": "reject candidate if guarded response acceptance cannot be reproduced"
+    },
+    {
+      "row_id": "rc-v1:public-source-refresh:ppd-online-tools-overview",
+      "evidence_type": "public_source_refresh",
+      "summary": "Fixture records PP&D online permitting tools as source-refresh evidence without recrawling.",
+      "status": "fixture_current",
+      "severity": "medium",
+      "citations": ["public-refresh-intake-v1#sources.ppd-online-tools-overview"],
+      "reviewer_owner": "ppd-source-owner",
+      "rollback_checkpoint": "discard candidate if source freshness cannot be reproduced from fixture evidence"
+    },
+    {
+      "row_id": "rc-v1:readiness:freshness-review-open",
+      "evidence_type": "readiness_gap",
+      "summary": "Public source refresh evidence exists but still requires human review before promotion.",
+      "status": "needs_review",
+      "severity": "blocker",
+      "citations": ["readiness-gap-report-v1#gaps.freshness-review-open"],
+      "reviewer_owner": "ppd-readiness-owner",
+      "rollback_checkpoint": "hold candidate before any release promotion until freshness review is signed off"
+    }
+  ],
+  "unresolved_blocker_summaries": [
+    {
+      "blocker_id": "blocker:manual-review-required",
+      "summary": "A reviewer must confirm that fixture citations are sufficient and no live crawl was used.",
+      "severity": "blocker",
+      "source_row_id": "rc-v1:readiness:freshness-review-open",
+      "reviewer_owner": "ppd-release-owner",
+      "citations": ["readiness-gap-report-v1#unresolved_blockers.manual-review-required"]
+    },
+    {
+      "blocker_id": "blocker:readiness:freshness-review-open",
+      "summary": "Public source refresh evidence exists but still requires human review before promotion.",
+      "severity": "blocker",
+      "source_row_id": "rc-v1:readiness:freshness-review-open",
+      "reviewer_owner": "ppd-readiness-owner",
+      "citations": ["readiness-gap-report-v1#gaps.freshness-review-open"]
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "rc-v1-before-promotion",
+      "trigger": "candidate promotion requested",
+      "action": "rerun fixture validation and require reviewer-owner approval",
+      "citations": ["action-journal-replay-findings#rollback.rc-v1-before-promotion"]
+    },
+    {
+      "checkpoint_id": "rc-v1-hold-on-unresolved-blockers",
+      "trigger": "unresolved_blocker_count > 0",
+      "action": "do not promote release candidate; keep fixture bundle as evidence only",
+      "citations": ["blocker:manual-review-required", "blocker:readiness:freshness-review-open"]
+    }
+  ],
+  "validation_command_inventory": [
+    {
+      "command_id": "ppd-daemon-self-test",
+      "argv": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+      "purpose": "Run PP&D daemon self-test without live crawl or authenticated DevHub automation."
+    },
+    {
+      "command_id": "ppd-release-candidate-evidence-tests",
+      "argv": ["python3", "-m", "unittest", "ppd.tests.test_release_candidate_evidence_v1"],
+      "purpose": "Validate deterministic fixture-to-bundle release candidate evidence behavior."
+    }
+  ],
+  "reviewer_owner_fields": {
+    "primary_reviewer_owner": "ppd-release-owner",
+    "packet_reviewer_owners": {
+      "readiness_gap_report_v1": "ppd-readiness-owner",
+      "public_source_refresh_evidence_intake_packet_v1": "ppd-source-owner",
+      "devhub_observation_evidence_intake_packet_v1": "ppd-devhub-owner",
+      "action_journal_replay_findings": "ppd-journal-owner",
+      "guarded_agent_response_acceptance_examples": "ppd-agent-owner"
+    },
+    "requires_human_review_before_promotion": true
+  },
+  "attestations": {
+    "no_live_crawl": true,
+    "no_devhub_session": true,
+    "no_private_artifact": true,
+    "no_official_action": true,
+    "no_active_promotion": true
+  }
+}

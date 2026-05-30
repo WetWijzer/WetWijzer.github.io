@@ -1,0 +1,83 @@
+{
+  "packet_type": "ppd.public_source_freshness_recrawl_queue.v1",
+  "mode": "fixture_first_public_source_freshness_recrawl_queue",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "fixture_first": true,
+  "metadata_only": true,
+  "execution_policy": {
+    "network_allowed": false,
+    "network_invoked": false,
+    "live_crawl_allowed": false,
+    "live_crawl_executed": false,
+    "document_download_allowed": false,
+    "raw_data_persistence_allowed": false,
+    "processor_invocation_allowed": false,
+    "devhub_action_allowed": false,
+    "active_source_mutation_allowed": false,
+    "active_process_mutation_allowed": false,
+    "active_guardrail_mutation_allowed": false,
+    "active_prompt_mutation_allowed": false,
+    "active_release_state_mutation_allowed": false
+  },
+  "recrawl_candidate_rows": [
+    {
+      "row_id": "public-source-freshness-recrawl-row-001",
+      "source_id": "ppd-public-permit-requirements",
+      "candidate_reason": "fixture placeholder indicates stale or changed public metadata needs reviewer triage",
+      "review_state": "pending_reviewer_approval",
+      "source_family_priority": {
+        "source_family": "public-permitting-guidance",
+        "priority_band": "high",
+        "priority_order": 1
+      },
+      "official_source_anchor_ref": {
+        "anchor_id": "official-anchor-portland-permitting-guidance",
+        "label": "City of Portland permitting guidance public page",
+        "url": "https://www.portland.gov/ppd/permits",
+        "verified_on": "2026-05-30"
+      },
+      "stale_or_changed_evidence_placeholders": [
+        {
+          "placeholder_id": "stale-evidence-placeholder-001",
+          "evidence_type": "metadata_timestamp_delta",
+          "status": "placeholder_pending_offline_review"
+        }
+      ],
+      "robots_policy_preflight_placeholders": [
+        {
+          "placeholder_id": "robots-policy-preflight-placeholder-001",
+          "status": "manual_policy_review_required_before_any_separate_live_run"
+        }
+      ],
+      "processor_handoff_dry_run_refs": [
+        {
+          "ref_id": "processor-handoff-dry-run-ref-001",
+          "processor": "public_metadata_intake",
+          "mode": "dry_run_metadata_only"
+        }
+      ],
+      "reviewer_approval_placeholders": [
+        {
+          "placeholder_id": "reviewer-approval-placeholder-001",
+          "required": true,
+          "status": "pending"
+        }
+      ],
+      "row_constraints": {
+        "network_allowed": false,
+        "network_invoked": false,
+        "live_crawl_allowed": false,
+        "live_crawl_executed": false,
+        "document_download_allowed": false,
+        "raw_data_persistence_allowed": false,
+        "processor_invocation_allowed": false,
+        "devhub_action_allowed": false,
+        "active_source_mutation_allowed": false,
+        "active_process_mutation_allowed": false,
+        "active_guardrail_mutation_allowed": false,
+        "active_prompt_mutation_allowed": false,
+        "active_release_state_mutation_allowed": false
+      }
+    }
+  ]
+}

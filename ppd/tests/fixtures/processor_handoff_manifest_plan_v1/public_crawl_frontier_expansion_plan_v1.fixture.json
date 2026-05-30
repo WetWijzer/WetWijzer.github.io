@@ -1,0 +1,57 @@
+{
+  "plan_version": "public-crawl-frontier-expansion-plan-v1",
+  "allowed_hosts": [
+    "www.portland.gov",
+    "devhub.portlandoregon.gov",
+    "www.portlandoregon.gov",
+    "www.portlandmaps.com"
+  ],
+  "candidates": [
+    {
+      "source_id": "ppd-public-html-online-tools",
+      "source_evidence_ids": [
+        "official-source-anchor:online-permitting-tools"
+      ],
+      "requested_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "expected_content_type": "text/html"
+    },
+    {
+      "source_id": "ppd-public-pdf-fee-payment",
+      "source_evidence_ids": [
+        "official-source-anchor:fee-payment-guide"
+      ],
+      "requested_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "expected_content_type": "application/pdf"
+    },
+    {
+      "source_id": "ppd-skipped-private-devhub",
+      "source_evidence_ids": [
+        "official-source-anchor:devhub-public-portal"
+      ],
+      "requested_url": "https://devhub.portlandoregon.gov/secure/my-permits",
+      "canonical_url": "https://devhub.portlandoregon.gov/secure/my-permits",
+      "expected_content_type": "text/html",
+      "skip_reason": "private_authenticated"
+    },
+    {
+      "source_id": "ppd-skipped-outside-allowlist",
+      "source_evidence_ids": [
+        "official-source-anchor:outside-allowlist-negative-fixture"
+      ],
+      "requested_url": "https://example.com/vendor-form.pdf",
+      "canonical_url": "https://example.com/vendor-form.pdf",
+      "expected_content_type": "application/pdf"
+    },
+    {
+      "source_id": "ppd-skipped-unsupported-content-type",
+      "source_evidence_ids": [
+        "official-source-anchor:unsupported-content-type-negative-fixture"
+      ],
+      "requested_url": "https://www.portland.gov/ppd/assets/site-logo.png",
+      "canonical_url": "https://www.portland.gov/ppd/assets/site-logo.png",
+      "expected_content_type": "image/png"
+    }
+  ]
+}

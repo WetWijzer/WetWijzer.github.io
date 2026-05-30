@@ -1,0 +1,16 @@
+{
+  "manifest_id": "fixture-public-recrawl-dry-run-001",
+  "manifest_version": "public_source_recrawl_dry_run_manifest_v1",
+  "candidate_sources": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "allow_reason": "official public PP&D guidance"
+    },
+    {
+      "source_id": "outside-example",
+      "canonical_url": "https://example.com/not-ppd",
+      "skip_reason": "outside_allowlist"
+    }
+  ]
+}

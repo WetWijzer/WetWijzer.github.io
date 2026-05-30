@@ -1,0 +1,56 @@
+{
+  "guarded_agent_replay_acceptance_packet_v2": {
+    "version": 2,
+    "reviewer_acceptance_rows": [
+      {
+        "reviewer": "fixture-reviewer",
+        "accepted": true,
+        "reviewed_at": "2026-05-30T00:00:00Z"
+      }
+    ],
+    "scenario_to_evidence_traces": [
+      {
+        "scenario": "deterministic guarded replay fixture",
+        "evidence": [
+          "fixture transcript hash",
+          "fixture acceptance row"
+        ]
+      }
+    ],
+    "review_placeholders": {
+      "missing_fact_prompt_review": {
+        "status": "pending_review"
+      },
+      "blocked_action_review": {
+        "status": "pending_review"
+      },
+      "reversible_draft_preview_review": {
+        "status": "pending_review"
+      }
+    },
+    "unresolved_risk_notes": [
+      "Fixture-only acceptance still requires separate human review before any activation decision."
+    ],
+    "validation_commands": [
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ]
+    ],
+    "artifacts": [
+      "ppd/tests/fixtures/guarded_replay_acceptance_v2/packet.json"
+    ],
+    "claims": [
+      "Deterministic fixture-only replay validation."
+    ],
+    "mutation_flags": {
+      "active_prompt_mutation": false,
+      "active_contract_mutation": false,
+      "active_guardrail_mutation": false,
+      "active_source_mutation": false,
+      "active_surface_mutation": false,
+      "active_release_state_mutation": false
+    }
+  }
+}

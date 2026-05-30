@@ -1,0 +1,85 @@
+{
+  "version": "devhub-readonly-observation-reviewer-disposition-queue-v1",
+  "reviewer_owner": "ppd-devhub-observation-reviewer",
+  "attestations": {
+    "no_live_devhub": true,
+    "no_browser_artifacts": true,
+    "no_auth_state": true,
+    "no_fixture_changes_applied": true,
+    "no_active_surface_map_mutation": true,
+    "no_prompt_changes": true,
+    "no_release_state_updates": true
+  },
+  "offline_validation_replay_commands": [
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_observed_surface_inactive_patch_preview_v1.py"
+    ]
+  ],
+  "items": [
+    {
+      "item_id": "queue-alpha",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "disposition": "accept",
+      "disposition_reason": "Reviewer accepted the read-only selector clarification for offline fixture preview only.",
+      "reviewer_owner": "ppd-devhub-observation-reviewer",
+      "proposed_fields": {
+        "label": "Permit search input",
+        "selector": "form[data-devhub-fixture='permit-search'] input[name='q']",
+        "validation_message": "Search text is required before a read-only fixture preview can continue.",
+        "redaction_policy": "Redact owner names, account identifiers, email addresses, phone numbers, and street-unit details.",
+        "attendance_gate": "manual-review-recorded",
+        "selector_confidence_note": "Scoped selector retains stable fixture attribute and input name; confidence high."
+      },
+      "proposed_observation_evidence_ids": [
+        "obs-home-label-redacted",
+        "obs-home-selector-redacted",
+        "obs-extra-selector-scope"
+      ],
+      "blocked_actions": [],
+      "rollback_note": "Discard this preview output; no inactive fixture file was changed.",
+      "offline_validation_command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_devhub_observed_surface_inactive_patch_preview_v1.py"
+      ]
+    },
+    {
+      "item_id": "queue-beta",
+      "surface_id": "inactive-devhub-correction-upload",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "disposition": "block",
+      "disposition_reason": "Reviewer blocked upload-control preview because upload actions remain consequential.",
+      "reviewer_owner": "ppd-devhub-observation-reviewer",
+      "proposed_fields": {
+        "label": "Correction upload control blocked preview",
+        "selector": "button[data-devhub-fixture='correction-upload']",
+        "validation_message": "Correction uploads are excluded from inactive read-only patch preview.",
+        "redaction_policy": "Do not store uploaded files, document names, private record values, or browser artifacts.",
+        "attendance_gate": "manual-review-recorded",
+        "selector_confidence_note": "Selector is recorded only to carry the blocked action forward; no fixture patch may be applied."
+      },
+      "proposed_observation_evidence_ids": [
+        "obs-upload-label-redacted",
+        "obs-upload-blocked-action-redacted"
+      ],
+      "blocked_actions": [
+        {
+          "action_id": "upload-correction",
+          "reason": "Correction upload remains blocked until attended exact-confirmation guardrails are separately reviewed."
+        }
+      ],
+      "rollback_note": "Keep the upload fixture unchanged and carry the block into the next reviewer queue.",
+      "offline_validation_command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_devhub_observed_surface_inactive_patch_preview_v1.py"
+      ]
+    }
+  ]
+}

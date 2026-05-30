@@ -1,0 +1,77 @@
+{
+  "packet_version": "attended-devhub-readonly-observation-readiness-packet-v2",
+  "packet_id": "fixture-first-attended-devhub-readonly-observation-readiness-v2",
+  "source_checklist_id": "inactive-release-activation-checklist-v2",
+  "source_checklist_status": "inactive",
+  "release": "offline-devhub-readonly-observation-rehearsal",
+  "generated_from_fixture_at": "2026-05-30T00:00:00Z",
+  "mode": "fixture_first_offline_readiness",
+  "devhub_access": "not_requested",
+  "browser_artifacts": "not_created",
+  "official_action_scope": "blocked",
+  "ordered_attended_session_prerequisites": [
+    {
+      "order": 1,
+      "checklist_item_id": "manual-attendance-confirmed",
+      "title": "Confirm user attendance before any later observation",
+      "source_scope": "attended-readonly-devhub",
+      "readiness_gate": "manual_review_required",
+      "status": "pending_attended_readonly_review",
+      "requires_user_attendance": true,
+      "blocks_devhub_observation_until_resolved": true
+    }
+  ],
+  "manual_login_handoff_placeholders": [
+    {
+      "order": 1,
+      "handoff_id": "operator-visible-browser-start",
+      "status": "placeholder_pending_attended_session",
+      "required_before_observation": true,
+      "operator_note": "Open only a user-visible browser during a later attended session."
+    },
+    {
+      "order": 2,
+      "handoff_id": "user-completes-portlandoregon-sign-in",
+      "status": "placeholder_pending_user_action",
+      "required_before_observation": true,
+      "operator_note": "The user completes sign-in prompts manually; this packet stores no sign-in material."
+    }
+  ],
+  "read_only_surface_observation_placeholders": [
+    {
+      "order": 1,
+      "surface_group_id": "devhub-home-readonly",
+      "canonical_hosts": ["devhub.portlandoregon.gov"],
+      "surface_scope": "attended_devhub_read_only_review",
+      "observation_status": "placeholder_not_observed",
+      "expected_capture_fields": ["page_heading", "landmark_roles", "link_or_button_names", "status_text_labels"],
+      "reviewer_notes": null
+    },
+    {
+      "order": 2,
+      "surface_group_id": "devhub-my-permits-readonly",
+      "canonical_hosts": ["devhub.portlandoregon.gov"],
+      "surface_scope": "attended_devhub_read_only_review",
+      "observation_status": "placeholder_not_observed",
+      "expected_capture_fields": ["page_heading", "landmark_roles", "link_or_button_names", "status_text_labels"],
+      "reviewer_notes": null
+    }
+  ],
+  "redaction_checklist_placeholders": [
+    {"order": 1, "redaction_id": "credentials_and_tokens_absent", "status": "required_before_acceptance", "reviewer_confirmation": null},
+    {"order": 2, "redaction_id": "session_artifacts_absent", "status": "required_before_acceptance", "reviewer_confirmation": null},
+    {"order": 3, "redaction_id": "private_values_redacted", "status": "required_before_acceptance", "reviewer_confirmation": null},
+    {"order": 4, "redaction_id": "screenshots_traces_har_absent", "status": "required_before_acceptance", "reviewer_confirmation": null}
+  ],
+  "action_boundary_reminders": [
+    {"order": 1, "boundary_id": "read_only_only", "statement": "Observe account-scoped pages only after user attendance; do not edit page data."},
+    {"order": 2, "boundary_id": "manual_login_only", "statement": "The user handles credentials, MFA, CAPTCHA, and account prompts manually."},
+    {"order": 3, "boundary_id": "no_official_actions", "statement": "Do not upload, submit, certify, pay, schedule, cancel, purchase, withdraw, or change account settings."},
+    {"order": 4, "boundary_id": "no_private_artifacts", "statement": "Do not create or commit auth state, screenshots, traces, HAR files, raw page captures, or private session artifacts."}
+  ],
+  "exact_offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub_attended_readonly_observation_readiness_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_devhub_attended_readonly_observation_readiness_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

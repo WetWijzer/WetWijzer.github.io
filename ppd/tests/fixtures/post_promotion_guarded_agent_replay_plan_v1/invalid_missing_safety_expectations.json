@@ -1,0 +1,12 @@
+{
+  "replay_plan_version": "v1",
+  "plan_id": "invalid-missing-safety-expectations",
+  "scenarios": [
+    {
+      "scenario_id": "missing-required-safety-blocks",
+      "description": "Scenario has citations and outcome but omits required safety expectation sections.",
+      "citations": ["ppd-devhub-faqs#account-scoped-services"],
+      "expected_outcome": "block"
+    }
+  ]
+}

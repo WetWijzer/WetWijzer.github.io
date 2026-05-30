@@ -1,0 +1,55 @@
+{
+  "fixture_id": "guarded-action-policy-v1",
+  "default_redaction_checklist_refs": [
+    "devhub-account-identifiers",
+    "devhub-case-identifiers",
+    "devhub-applicant-contact-values",
+    "devhub-private-page-values"
+  ],
+  "attendance_preflight_template": {
+    "manual_login_required": true,
+    "browser_must_be_user_visible": true,
+    "operator_must_be_present": true,
+    "no_credential_collection": true,
+    "no_session_or_auth_state_storage": true,
+    "no_screenshots_traces_har_or_raw_private_values": true
+  },
+  "safe_read_only_actions": [
+    {
+      "action_id": "review_account_home_status",
+      "description": "Observe DevHub home structure and status labels without recording private values."
+    },
+    {
+      "action_id": "review_permit_request_list",
+      "description": "Observe list structure, filter labels, and status affordances without storing case values."
+    },
+    {
+      "action_id": "review_fee_notice",
+      "description": "Observe fee notice structure without storing payment details or private account values."
+    }
+  ],
+  "reversible_draft_actions": [
+    {
+      "action_id": "start_new_permit_application",
+      "description": "Application setup may change draft state and is not read-only."
+    }
+  ],
+  "consequential_official_actions": [
+    {
+      "action_id": "upload_correction_to_record",
+      "description": "Uploads attach materials to an official record and require exact confirmation."
+    },
+    {
+      "action_id": "submit_payment",
+      "description": "Payment execution is a financial official action and requires exact confirmation."
+    },
+    {
+      "action_id": "certify_or_submit_application",
+      "description": "Certification and submission are official actions."
+    },
+    {
+      "action_id": "schedule_or_cancel_inspection",
+      "description": "Inspection scheduling or cancellation changes official state."
+    }
+  ]
+}

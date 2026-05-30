@@ -1,0 +1,26 @@
+{
+  "version": "inactive_promotion_patch_preview_v1",
+  "promotion_candidates": [
+    {
+      "artifact_id": "inactive-preview-alpha",
+      "title": "Fixture promotion patch for inactive alpha source",
+      "reviewer_owner": "ppd-reviewer-a",
+      "rollback_checkpoint": "restore fixture inactive-preview-alpha before promotion application",
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/inactive_promotion_patch_preview_v1.json#promotion_candidates[0]"
+    },
+    {
+      "artifact_id": "inactive-preview-beta",
+      "title": "Fixture promotion patch for inactive beta source",
+      "reviewer_owner": "ppd-reviewer-b",
+      "rollback_checkpoint": "restore fixture inactive-preview-beta before promotion application",
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/inactive_promotion_patch_preview_v1.json#promotion_candidates[1]"
+    },
+    {
+      "artifact_id": "inactive-preview-gamma",
+      "title": "Fixture promotion patch for inactive gamma source",
+      "reviewer_owner": "ppd-reviewer-c",
+      "rollback_checkpoint": "restore fixture inactive-preview-gamma before promotion application",
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/inactive_promotion_patch_preview_v1.json#promotion_candidates[2]"
+    }
+  ]
+}

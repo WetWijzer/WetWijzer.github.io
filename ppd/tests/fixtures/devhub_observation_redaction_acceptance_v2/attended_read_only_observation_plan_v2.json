@@ -1,0 +1,61 @@
+{
+  "schema_version": "attended_devhub_read_only_observation_plan_v2",
+  "plan_id": "synthetic-devhub-readonly-observation-plan-v2",
+  "mode": "attended_read_only_observation",
+  "surface_id": "devhub.synthetic.readonly.permit-status",
+  "synthetic_fixture_only": true,
+  "observations": [
+    {
+      "order": 1,
+      "field_id": "page_heading",
+      "label": "Permit status",
+      "field_class": "public_ui_label",
+      "value_kind": "synthetic",
+      "redaction": "keep_synthetic_literal",
+      "review_reason": "Synthetic heading text is safe to retain for reviewer ordering."
+    },
+    {
+      "order": 2,
+      "field_id": "permit_number_value",
+      "label": "Permit number",
+      "field_class": "case_number",
+      "value_kind": "synthetic",
+      "redaction": "drop_value",
+      "review_reason": "Case numbers can identify an account-scoped record, so only the label and class may be retained."
+    },
+    {
+      "order": 3,
+      "field_id": "status_column_label",
+      "label": "Status",
+      "field_class": "public_ui_label",
+      "value_kind": "synthetic",
+      "redaction": "keep_label_only",
+      "review_reason": "Column label is not a private page value and supports reviewer comprehension."
+    },
+    {
+      "order": 4,
+      "field_id": "site_address_value",
+      "label": "Site address",
+      "field_class": "address",
+      "value_kind": "synthetic",
+      "redaction": "drop_value",
+      "review_reason": "Address-like values can identify a property or account-scoped record."
+    }
+  ],
+  "actions": [
+    {
+      "order": 1,
+      "action_id": "observe_status_labels",
+      "action_type": "review_permit_status_labels",
+      "boundary": "read_only",
+      "confirmation": "Reviewer may inspect labels only; no click changes state."
+    },
+    {
+      "order": 2,
+      "action_id": "submit_application",
+      "action_type": "submit",
+      "boundary": "consequential_official",
+      "confirmation": "Submission is outside this packet and remains blocked."
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "ledger_version": "inactive_fixture_promotion_diff_ledger_v1",
+  "generated_by": "ppd.inactive_fixture_promotion_diff_ledger",
+  "source_packets": {
+    "decision_packet_id": "release-promotion-decision-20260530-fixture-ledger",
+    "decision_packet_version": "release_promotion_decision_packet_v1",
+    "patch_preview_id": "inactive-promotion-preview-20260530-fixture-ledger",
+    "patch_preview_version": "inactive_promotion_patch_preview_v1"
+  },
+  "file_level_diff_summaries": [
+    {
+      "path": "ppd/tests/fixtures/inactive/devhub_standard_trade_permit/redacted_surface_map_v1.json",
+      "fixture_family": "devhub-standard-trade-permit",
+      "change_type": "add",
+      "deterministic_diff_summary": "Adds redacted inactive DevHub surface metadata for standard trade permit draft-readiness review.",
+      "added_lines": 82,
+      "removed_lines": 0,
+      "changed_lines": 82,
+      "content_hash_before": "",
+      "content_hash_after": "sha256:7f1f4a8d6b6a0c11111111111111111111111111111111111111111111111111111",
+      "source_decision": "promote",
+      "promotion_ready": true,
+      "blocked_reasons": []
+    },
+    {
+      "path": "ppd/tests/fixtures/inactive/fee_payment_guide/redacted_payment_notice_v1.json",
+      "fixture_family": "fee-payment-guide",
+      "change_type": "add",
+      "deterministic_diff_summary": "Adds inactive fee-payment notice metadata without payment details for financial guardrail review.",
+      "added_lines": 49,
+      "removed_lines": 0,
+      "changed_lines": 49,
+      "content_hash_before": "",
+      "content_hash_after": "sha256:2e8e38d47d220c2222222222222222222222222222222222222222222222222222",
+      "source_decision": "block",
+      "promotion_ready": false,
+      "blocked_reasons": [
+        "contains financial workflow references"
+      ]
+    }
+  ],
+  "fixture_family_readiness_rows": [
+    {
+      "fixture_family": "devhub-standard-trade-permit",
+      "decision": "promote",
+      "readiness": "ready",
+      "owner": "ppd-devhub-fixtures",
+      "reviewer_role": "devhub-workflow-reviewer",
+      "file_count": 1,
+      "required_validations": [
+        "guardrail_review",
+        "json_schema"
+      ],
+      "passed_validations": [
+        "guardrail_review",
+        "json_schema"
+      ],
+      "missing_validations": [],
+      "blocked_reasons": [],
+      "decision_rationale": "Inactive fixture preview contains only deterministic redacted workflow metadata."
+    },
+    {
+      "fixture_family": "fee-payment-guide",
+      "decision": "block",
+      "readiness": "blocked",
+      "owner": "ppd-fee-fixtures",
+      "reviewer_role": "financial-guardrail-reviewer",
+      "file_count": 1,
+      "required_validations": [
+        "financial_guardrail_review",
+        "json_schema"
+      ],
+      "passed_validations": [
+        "json_schema"
+      ],
+      "missing_validations": [
+        "financial_guardrail_review"
+      ],
+      "blocked_reasons": [
+        "contains financial workflow references",
+        "financial workflow requires separate exact-confirmation review"
+      ],
+      "decision_rationale": "Payment-related fixtures must remain inactive until financial guardrails are independently reviewed."
+    }
+  ],
+  "blocked_promotion_explanations": [
+    {
+      "fixture_family": "fee-payment-guide",
+      "blocked_reasons": [
+        "contains financial workflow references",
+        "financial workflow requires separate exact-confirmation review",
+        "missing validation: financial_guardrail_review"
+      ],
+      "affected_files": [
+        "ppd/tests/fixtures/inactive/fee_payment_guide/redacted_payment_notice_v1.json"
+      ],
+      "review_next_step": "Resolve blocked reasons in inactive fixtures or decision packet before promotion."
+    }
+  ],
+  "reviewer_owner_assignments": [
+    {
+      "fixture_family": "devhub-standard-trade-permit",
+      "owner": "ppd-devhub-fixtures",
+      "reviewer_role": "devhub-workflow-reviewer",
+      "review_scope": "inactive fixture promotion readiness",
+      "assigned_files": [
+        "ppd/tests/fixtures/inactive/devhub_standard_trade_permit/redacted_surface_map_v1.json"
+      ]
+    },
+    {
+      "fixture_family": "fee-payment-guide",
+      "owner": "ppd-fee-fixtures",
+      "reviewer_role": "financial-guardrail-reviewer",
+      "review_scope": "inactive fixture promotion readiness",
+      "assigned_files": [
+        "ppd/tests/fixtures/inactive/fee_payment_guide/redacted_payment_notice_v1.json"
+      ]
+    }
+  ],
+  "validation_command_inventory": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "json.tool",
+        "ppd/tests/fixtures/inactive_fixture_promotion_diff_ledger/inactive_promotion_patch_preview_v1.json"
+      ],
+      "purpose": "Validate inactive promotion patch preview fixture JSON syntax.",
+      "source": "patch_preview",
+      "required_before_promotion": true
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_inactive_fixture_promotion_diff_ledger.py"
+      ],
+      "purpose": "Validate deterministic inactive fixture promotion diff ledger generation.",
+      "source": "decision_packet",
+      "required_before_promotion": true
+    }
+  ],
+  "rollback_notes": [
+    {
+      "fixture_family": "devhub-standard-trade-permit",
+      "rollback_note": "If review fails, discard inactive candidate fixture replacements and keep active fixtures unchanged.",
+      "inactive_candidate_files": [
+        "ppd/tests/fixtures/inactive/devhub_standard_trade_permit/redacted_surface_map_v1.json"
+      ]
+    },
+    {
+      "fixture_family": "fee-payment-guide",
+      "rollback_note": "No promotion should occur while this family is blocked; active fixtures remain unchanged.",
+      "inactive_candidate_files": [
+        "ppd/tests/fixtures/inactive/fee_payment_guide/redacted_payment_notice_v1.json"
+      ]
+    }
+  ],
+  "safety_notes": [
+    "Ledger is derived from inactive fixture decision and preview packets only.",
+    "No active fixtures, release state, authenticated artifacts, or raw crawl outputs are modified."
+  ]
+}

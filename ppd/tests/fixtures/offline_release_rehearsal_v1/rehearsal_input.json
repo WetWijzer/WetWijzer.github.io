@@ -1,0 +1,129 @@
+{
+  "packet_type": "ppd.offline_release_rehearsal_input.v1",
+  "fixture_only": true,
+  "supervised": true,
+  "attestations": {
+    "no_live_crawl": true,
+    "no_devhub": true,
+    "no_private_artifact": true,
+    "no_official_action": true,
+    "no_active_promotion": true
+  },
+  "consumed_packets": [
+    {
+      "packet_id": "release_gate_decision_matrix_v1",
+      "schema_version": "ppd.release_gate_decision_matrix.v1",
+      "status": "defer_until_manual_review_closed",
+      "owner": "release supervisor",
+      "summary": "Decision matrix keeps release promotion unavailable until reviewer signoff is complete.",
+      "citations": [
+        "fixture://release-gate-decision-matrix-v1#overall-decision",
+        "fixture://release-gate-decision-matrix-v1#rollback-checkpoints"
+      ],
+      "manual_review_blockers": [
+        {
+          "blocker_id": "release_gate_defer_rows_need_signoff",
+          "disposition": "pending_manual_review",
+          "owner": "release supervisor",
+          "citations": [
+            "fixture://release-gate-decision-matrix-v1#defer-rows"
+          ]
+        }
+      ]
+    },
+    {
+      "packet_id": "public_source_refresh_reviewer_queue_v1",
+      "schema_version": "ppd.public_source_refresh_reviewer_queue.v1",
+      "status": "queued_for_manual_review",
+      "owner": "public source reviewer",
+      "summary": "Reviewer queue records source refresh candidates for offline citation review only.",
+      "citations": [
+        "fixture://public-source-refresh-reviewer-queue-v1#queue-summary",
+        "fixture://public-source-refresh-reviewer-queue-v1#reviewer-dispositions"
+      ],
+      "manual_review_blockers": [
+        {
+          "blocker_id": "public_source_refresh_queue_not_closed",
+          "disposition": "pending_manual_review",
+          "owner": "public source reviewer",
+          "citations": [
+            "fixture://public-source-refresh-reviewer-queue-v1#open-items"
+          ]
+        }
+      ]
+    },
+    {
+      "packet_id": "devhub_manual_observation_reviewer_queue_v1",
+      "schema_version": "ppd.devhub_manual_observation_reviewer_queue.v1",
+      "status": "queued_for_attended_review",
+      "owner": "DevHub observation reviewer",
+      "summary": "Manual observation queue contains only fixture notes and requires attended review before any browser activity.",
+      "citations": [
+        "fixture://devhub-manual-observation-reviewer-queue-v1#queue-summary",
+        "fixture://devhub-manual-observation-reviewer-queue-v1#attendance-required"
+      ],
+      "manual_review_blockers": [
+        {
+          "blocker_id": "devhub_observation_queue_requires_attended_review",
+          "disposition": "pending_manual_review",
+          "owner": "DevHub observation reviewer",
+          "citations": [
+            "fixture://devhub-manual-observation-reviewer-queue-v1#pending-observations"
+          ]
+        }
+      ]
+    },
+    {
+      "packet_id": "guarded_agent_response_acceptance_packet_v1",
+      "schema_version": "ppd.guarded_agent_response_acceptance_packet.v1",
+      "status": "accepted_with_guardrails",
+      "owner": "agent response reviewer",
+      "summary": "Accepted responses are limited to cited, reversible, non-consequential guidance.",
+      "citations": [
+        "fixture://guarded-agent-response-acceptance-packet-v1#accepted-responses",
+        "fixture://guarded-agent-response-acceptance-packet-v1#guardrail-checks"
+      ],
+      "manual_review_blockers": []
+    },
+    {
+      "packet_id": "release_candidate_evidence_bundle_v1",
+      "schema_version": "ppd.release_candidate_evidence_bundle.v1",
+      "status": "assembled_for_offline_rehearsal",
+      "owner": "release evidence reviewer",
+      "summary": "Evidence bundle lists fixture-only artifacts expected during the supervised offline rehearsal.",
+      "citations": [
+        "fixture://release-candidate-evidence-bundle-v1#bundle-summary",
+        "fixture://release-candidate-evidence-bundle-v1#expected-artifacts"
+      ],
+      "manual_review_blockers": [
+        {
+          "blocker_id": "release_candidate_evidence_requires_supervisor_acceptance",
+          "disposition": "pending_manual_review",
+          "owner": "release evidence reviewer",
+          "citations": [
+            "fixture://release-candidate-evidence-bundle-v1#supervisor-acceptance"
+          ]
+        }
+      ]
+    }
+  ],
+  "validation_command_inventory": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/offline_release_rehearsal_v1.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_offline_release_rehearsal_v1"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "packet_version": "action-journal-acceptance-packet-v1",
+  "fixture_first": true,
+  "commit_safe": true,
+  "purpose": "Acceptance packet for PP&D action journal examples derived only from deterministic fixtures.",
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "attestations": {
+    "no_credentials": true,
+    "no_cookies": true,
+    "no_auth_state": true,
+    "no_private_values": true,
+    "no_screenshots": true,
+    "no_traces": true,
+    "no_har": true,
+    "no_payment": true,
+    "no_private_local_paths": true,
+    "no_raw_crawl_or_pdf_bodies": true,
+    "no_uncited_event_evidence": true,
+    "no_unsupported_event_types": true,
+    "no_legal_or_permitting_outcome_guarantees": true,
+    "no_official_action": true,
+    "no_authenticated_devhub_session": true,
+    "no_downloaded_documents": true,
+    "no_active_source_mutation": true,
+    "no_active_surface_registry_mutation": true,
+    "no_active_guardrail_mutation": true,
+    "no_active_prompt_mutation": true,
+    "no_active_release_state_mutation": true,
+    "no_active_agent_state_mutation": true
+  },
+  "reviewer_owner_fields": {
+    "packet_owner": "ppd-fixture-maintainer",
+    "technical_reviewer": "ppd-reviewer",
+    "policy_reviewer": "ppd-policy-reviewer"
+  },
+  "event_type_coverage": [
+    "public_crawl_preflight",
+    "requirement_extraction",
+    "user_gap_analysis",
+    "reversible_draft_preview",
+    "devhub_read_only_observation",
+    "refusal"
+  ],
+  "mutation_flags": {
+    "source_mutation": false,
+    "source_registry_mutation": false,
+    "surface_registry_mutation": false,
+    "guardrail_mutation": false,
+    "prompt_mutation": false,
+    "release_state_mutation": false,
+    "agent_state_mutation": false,
+    "active_mutation_flags": []
+  },
+  "journal_events": [
+    {
+      "event_id": "aj-v1-public-crawl-preflight-001",
+      "event_type": "public_crawl_preflight",
+      "source_fixture": "ppd/tests/fixtures/public_crawl_preflight/sample_preflight.json",
+      "owner": "ppd-fixture-maintainer",
+      "reviewer": "ppd-reviewer",
+      "citations": [
+        {
+          "label": "Portland Permitting and Development public permit resources",
+          "url": "https://www.portland.gov/ppd"
+        }
+      ],
+      "redacted_evidence_summary": {
+        "summary": "Fixture confirms public index metadata and policy-safe crawl intent are represented as normalized labels.",
+        "redactions_applied": ["query_placeholders", "operator_notes"],
+        "raw_evidence_included": false
+      },
+      "commit_safe_reason": "Contains normalized fixture metadata, public citation labels, and no restricted browser or applicant artifacts."
+    },
+    {
+      "event_id": "aj-v1-requirement-extraction-001",
+      "event_type": "requirement_extraction",
+      "source_fixture": "ppd/tests/fixtures/requirement_extraction/sample_requirements.json",
+      "owner": "ppd-fixture-maintainer",
+      "reviewer": "ppd-policy-reviewer",
+      "citations": [
+        {
+          "label": "Portland residential permits public overview",
+          "url": "https://www.portland.gov/ppd/residential-permits"
+        }
+      ],
+      "redacted_evidence_summary": {
+        "summary": "Fixture records extracted requirement labels, citation URLs, and deterministic parser notes without applicant data.",
+        "redactions_applied": ["address_placeholders", "name_placeholders", "contact_placeholders"],
+        "raw_evidence_included": false
+      },
+      "commit_safe_reason": "Requirement examples are normalized labels and public citations only."
+    },
+    {
+      "event_id": "aj-v1-user-gap-analysis-001",
+      "event_type": "user_gap_analysis",
+      "source_fixture": "ppd/tests/fixtures/user_gap_analysis/sample_gap_analysis.json",
+      "owner": "ppd-fixture-maintainer",
+      "reviewer": "ppd-reviewer",
+      "citations": [
+        {
+          "label": "Portland Development Services permit guidance",
+          "url": "https://www.portland.gov/ppd/permits"
+        }
+      ],
+      "redacted_evidence_summary": {
+        "summary": "Fixture compares synthetic placeholders against public requirement labels and records missing non-sensitive categories.",
+        "redactions_applied": ["site_placeholder", "owner_placeholder", "contact_placeholder"],
+        "raw_evidence_included": false
+      },
+      "commit_safe_reason": "Uses synthetic placeholders and gap categories, not user submissions."
+    },
+    {
+      "event_id": "aj-v1-reversible-draft-preview-001",
+      "event_type": "reversible_draft_preview",
+      "source_fixture": "ppd/tests/fixtures/reversible_draft_preview/sample_preview.json",
+      "owner": "ppd-fixture-maintainer",
+      "reviewer": "ppd-policy-reviewer",
+      "citations": [
+        {
+          "label": "Portland permit application guidance",
+          "url": "https://www.portland.gov/ppd/permits/apply-permit"
+        }
+      ],
+      "redacted_evidence_summary": {
+        "summary": "Fixture shows a non-submittable draft preview with reversible changes, placeholders, and no certification step.",
+        "redactions_applied": ["applicant_placeholder", "parcel_placeholder", "fee_placeholder"],
+        "raw_evidence_included": false
+      },
+      "commit_safe_reason": "Preview is explicitly non-submittable and contains no official-action payload."
+    },
+    {
+      "event_id": "aj-v1-devhub-read-only-observation-001",
+      "event_type": "devhub_read_only_observation",
+      "source_fixture": "ppd/tests/fixtures/devhub_read_only_observation/sample_observation.json",
+      "owner": "ppd-fixture-maintainer",
+      "reviewer": "ppd-reviewer",
+      "citations": [
+        {
+          "label": "Portland DevHub public entry point",
+          "url": "https://devhub.portlandoregon.gov/"
+        }
+      ],
+      "redacted_evidence_summary": {
+        "summary": "Fixture records read-only page-state observations from public navigation labels and excludes account-scoped material.",
+        "redactions_applied": ["browser_runtime_artifacts", "account_scoped_material", "navigation_runtime_metadata"],
+        "raw_evidence_included": false
+      },
+      "commit_safe_reason": "Only public navigation labels and redacted observation categories are represented."
+    },
+    {
+      "event_id": "aj-v1-refusal-001",
+      "event_type": "refusal",
+      "source_fixture": "ppd/tests/fixtures/refusal/sample_refusal.json",
+      "owner": "ppd-fixture-maintainer",
+      "reviewer": "ppd-policy-reviewer",
+      "citations": [
+        {
+          "label": "Portland Development Services public services",
+          "url": "https://www.portland.gov/ppd"
+        }
+      ],
+      "redacted_evidence_summary": {
+        "summary": "Fixture demonstrates refusal for restricted attended or consequential requests while preserving only policy categories.",
+        "redactions_applied": ["user_request_placeholders", "account_scoped_material"],
+        "raw_evidence_included": false
+      },
+      "commit_safe_reason": "Refusal example preserves policy outcome without executing restricted automation."
+    }
+  ]
+}

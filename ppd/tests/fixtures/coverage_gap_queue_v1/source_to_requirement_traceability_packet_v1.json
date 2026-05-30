@@ -1,0 +1,40 @@
+{
+  "packet_id": "traceability-packet-v1-fixture-001",
+  "requirement_traces": [
+    {
+      "requirement_id": "req-form-intake-001",
+      "document_ids": ["doc-bds-intake-form"],
+      "source_ids": ["src-bds-intake-form"]
+    },
+    {
+      "requirement_id": "req-plan-pdf-001",
+      "document_ids": ["doc-plan-submittal-pdf"],
+      "source_ids": ["src-plan-submittal-pdf"]
+    },
+    {
+      "requirement_id": "req-fee-trigger-001",
+      "document_ids": ["doc-fee-schedule"],
+      "source_ids": ["src-fee-schedule"]
+    },
+    {
+      "requirement_id": "req-deadline-001",
+      "document_ids": ["doc-review-timeline"],
+      "source_ids": ["src-review-timeline"]
+    },
+    {
+      "requirement_id": "req-file-rule-001",
+      "document_ids": ["doc-electronic-files"],
+      "source_ids": ["src-electronic-files"]
+    },
+    {
+      "requirement_id": "req-permit-exception-001",
+      "document_ids": ["doc-permit-types"],
+      "source_ids": ["src-permit-types"]
+    },
+    {
+      "requirement_id": "req-action-gate-001",
+      "document_ids": ["doc-inspection-gates"],
+      "source_ids": ["src-inspection-gates"]
+    }
+  ]
+}

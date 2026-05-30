@@ -1,0 +1,203 @@
+{
+  "plan_type": "ppd.guardrail_impact_replay_plan.v2",
+  "plan_version": "v2",
+  "plan_id": "guardrail-impact-replay-plan-v2-fixture",
+  "fixture_only": true,
+  "replay_mode": "ordered_synthetic_guardrail_impact_cases",
+  "source_packet": {
+    "packet_type": "ppd.inactive_promotion_candidate_packet.v2",
+    "packet_version": "v2",
+    "source_rehearsal_id": "combined_recrawl_devhub_inactive_patch_dependency_rehearsal_v1"
+  },
+  "consumed_approved_dependency_row_ids": [
+    "dependency-001-devhub-application-guide-draft-surface"
+  ],
+  "case_order": [
+    "guardrail-impact-001-allow-reversible-review",
+    "guardrail-impact-001-block-official-final-action",
+    "guardrail-impact-001-escalate-gap-comparison"
+  ],
+  "ordered_replay_cases": [
+    {
+      "case_id": "guardrail-impact-001-allow-reversible-review",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "source_packet_ref": "inactive-promotion-candidate-packet-v2:dependency-001-devhub-application-guide-draft-surface",
+      "synthetic_case": true,
+      "replay_intent": "Review inactive fixture evidence and prepare only reversible draft guidance.",
+      "impacted_requirement_refs": [
+        "requirement:devhub-application-draft-save-for-later"
+      ],
+      "impacted_process_refs": [
+        "process:devhub-permit-application"
+      ],
+      "impacted_surface_refs": [
+        "devhub-permit-application-draft-surface"
+      ],
+      "expected_outcome": "allow",
+      "expected_guardrail_decision": "ALLOW",
+      "citation_placeholders": [
+        {
+          "citation_id": "citation-placeholder:guardrail-impact-001-allow-reversible-review:001",
+          "source_evidence_id": "source:ppd-devhub-guide-submit-permit-application#draft-save-for-later",
+          "citation_status": "pending_replay_resolution"
+        }
+      ],
+      "gap_analysis_comparison_placeholders": {
+        "baseline_gap_analysis_ref": "",
+        "candidate_gap_analysis_ref": "",
+        "comparison_status": "pending_offline_fixture_replay",
+        "expected_comparison_result": "no_active_gap_analysis_mutation"
+      },
+      "reviewer_hold_ref": "reviewer-hold:guardrail-impact-001-allow-reversible-review",
+      "compiled_guardrail_mutation": false,
+      "active_guardrail_mutation": false,
+      "active_process_mutation": false,
+      "active_requirement_mutation": false,
+      "active_prompt_mutation": false,
+      "active_release_state_mutation": false,
+      "prompt_mutation": false,
+      "agent_release_artifact_mutation": false
+    },
+    {
+      "case_id": "guardrail-impact-001-block-official-final-action",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "source_packet_ref": "inactive-promotion-candidate-packet-v2:dependency-001-devhub-application-guide-draft-surface",
+      "synthetic_case": true,
+      "replay_intent": "Refuse final consequential work derived from the inactive candidate evidence.",
+      "impacted_requirement_refs": [
+        "requirement:devhub-application-draft-save-for-later"
+      ],
+      "impacted_process_refs": [
+        "process:devhub-permit-application"
+      ],
+      "impacted_surface_refs": [
+        "devhub-permit-application-draft-surface"
+      ],
+      "expected_outcome": "block",
+      "expected_guardrail_decision": "BLOCK",
+      "citation_placeholders": [
+        {
+          "citation_id": "citation-placeholder:guardrail-impact-001-block-official-final-action:001",
+          "source_evidence_id": "source:ppd-devhub-guide-submit-permit-application#draft-save-for-later",
+          "citation_status": "pending_replay_resolution"
+        }
+      ],
+      "gap_analysis_comparison_placeholders": {
+        "baseline_gap_analysis_ref": "",
+        "candidate_gap_analysis_ref": "",
+        "comparison_status": "pending_offline_fixture_replay",
+        "expected_comparison_result": "no_active_gap_analysis_mutation"
+      },
+      "reviewer_hold_ref": "reviewer-hold:guardrail-impact-001-block-official-final-action",
+      "compiled_guardrail_mutation": false,
+      "active_guardrail_mutation": false,
+      "active_process_mutation": false,
+      "active_requirement_mutation": false,
+      "active_prompt_mutation": false,
+      "active_release_state_mutation": false,
+      "prompt_mutation": false,
+      "agent_release_artifact_mutation": false
+    },
+    {
+      "case_id": "guardrail-impact-001-escalate-gap-comparison",
+      "dependency_row_id": "dependency-001-devhub-application-guide-draft-surface",
+      "source_packet_ref": "inactive-promotion-candidate-packet-v2:dependency-001-devhub-application-guide-draft-surface",
+      "synthetic_case": true,
+      "replay_intent": "Hold for reviewer comparison when fixture gap analysis is missing, stale, or conflicting.",
+      "impacted_requirement_refs": [
+        "requirement:devhub-application-draft-save-for-later"
+      ],
+      "impacted_process_refs": [
+        "process:devhub-permit-application"
+      ],
+      "impacted_surface_refs": [
+        "devhub-permit-application-draft-surface"
+      ],
+      "expected_outcome": "escalate",
+      "expected_guardrail_decision": "ESCALATE",
+      "citation_placeholders": [
+        {
+          "citation_id": "citation-placeholder:guardrail-impact-001-escalate-gap-comparison:001",
+          "source_evidence_id": "source:ppd-devhub-guide-submit-permit-application#draft-save-for-later",
+          "citation_status": "pending_replay_resolution"
+        }
+      ],
+      "gap_analysis_comparison_placeholders": {
+        "baseline_gap_analysis_ref": "",
+        "candidate_gap_analysis_ref": "",
+        "comparison_status": "pending_offline_fixture_replay",
+        "expected_comparison_result": "no_active_gap_analysis_mutation"
+      },
+      "reviewer_hold_ref": "reviewer-hold:guardrail-impact-001-escalate-gap-comparison",
+      "compiled_guardrail_mutation": false,
+      "active_guardrail_mutation": false,
+      "active_process_mutation": false,
+      "active_requirement_mutation": false,
+      "active_prompt_mutation": false,
+      "active_release_state_mutation": false,
+      "prompt_mutation": false,
+      "agent_release_artifact_mutation": false
+    }
+  ],
+  "reviewer_hold_placeholders": [
+    {
+      "hold_id": "reviewer-hold:guardrail-impact-001-allow-reversible-review",
+      "case_id": "guardrail-impact-001-allow-reversible-review",
+      "hold_reason": "pending_manual_guardrail_impact_review",
+      "reviewer": "",
+      "reviewed_at": "",
+      "decision": "pending_manual_review",
+      "notes": ""
+    },
+    {
+      "hold_id": "reviewer-hold:guardrail-impact-001-block-official-final-action",
+      "case_id": "guardrail-impact-001-block-official-final-action",
+      "hold_reason": "pending_manual_guardrail_impact_review",
+      "reviewer": "",
+      "reviewed_at": "",
+      "decision": "pending_manual_review",
+      "notes": ""
+    },
+    {
+      "hold_id": "reviewer-hold:guardrail-impact-001-escalate-gap-comparison",
+      "case_id": "guardrail-impact-001-escalate-gap-comparison",
+      "hold_reason": "pending_manual_guardrail_impact_review",
+      "reviewer": "",
+      "reviewed_at": "",
+      "decision": "pending_manual_review",
+      "notes": ""
+    }
+  ],
+  "attestations": {
+    "fixture_first": true,
+    "consumes_inactive_promotion_candidate_packet_v2": true,
+    "compiled_guardrails_changed": false,
+    "prompts_changed": false,
+    "active_guardrails_changed": false,
+    "active_process_models_changed": false,
+    "active_requirements_changed": false,
+    "agent_release_artifacts_changed": false,
+    "live_crawl_performed": false,
+    "devhub_accessed": false,
+    "official_action_performed": false
+  },
+  "exact_offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/agent_readiness/guardrail_impact_replay_plan_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_guardrail_impact_replay_plan_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "preview_version": "devhub-observed-surface-inactive-patch-preview-v2",
+  "source_fixture_versions": {
+    "update_plan": "devhub-observed-surface-update-plan-v2",
+    "handoff_checklist": "attended-devhub-observation-handoff-checklist-v1",
+    "inactive_surfaces": "inactive-devhub-surface-fixtures-v1"
+  },
+  "reviewer_owner": "ppd-devhub-fixture-reviewer",
+  "rollback_checkpoints": [
+    "discard-preview-json",
+    "leave-live-devhub-untouched",
+    "remove-generated-preview",
+    "restore-inactive-fixtures"
+  ],
+  "validation_inventory": [
+    {
+      "name": "update_plan_fixture",
+      "status": "present",
+      "count": 2
+    },
+    {
+      "name": "handoff_checklist_fixture",
+      "status": "present",
+      "count": 2
+    },
+    {
+      "name": "inactive_surface_fixtures",
+      "status": "present",
+      "count": 2
+    },
+    {
+      "name": "preview_rows",
+      "status": "derived",
+      "count": 12
+    },
+    {
+      "name": "blocked_rows",
+      "status": "derived",
+      "count": 6
+    }
+  ],
+  "rows": [
+    {
+      "row_id": "inactive-permit-search:label",
+      "update_id": "update-alpha",
+      "surface_id": "inactive-permit-search",
+      "field": "label",
+      "before": "Permit search",
+      "after": "Permit search input",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "inactive-permit-search:selector",
+      "update_id": "update-alpha",
+      "surface_id": "inactive-permit-search",
+      "field": "selector",
+      "before": "input[name='q']",
+      "after": "form[data-devhub-fixture='permit-search'] input[name='q']",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "inactive-permit-search:validation_message",
+      "update_id": "update-alpha",
+      "surface_id": "inactive-permit-search",
+      "field": "validation_message",
+      "before": "Enter a value.",
+      "after": "Search term is required before a fixture preview can proceed.",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "inactive-permit-search:redaction_policy",
+      "update_id": "update-alpha",
+      "surface_id": "inactive-permit-search",
+      "field": "redaction_policy",
+      "before": "Redact private values.",
+      "after": "Redact owner names, account IDs, email addresses, phone numbers, and street-unit details.",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "inactive-permit-search:attendance_gate",
+      "update_id": "update-alpha",
+      "surface_id": "inactive-permit-search",
+      "field": "attendance_gate",
+      "before": "attended-review-recorded",
+      "after": "attended-review-recorded",
+      "status": "unchanged",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "inactive-permit-search:selector_confidence_note",
+      "update_id": "update-alpha",
+      "surface_id": "inactive-permit-search",
+      "field": "selector_confidence_note",
+      "before": "Fixture selector is plausible but under-scoped.",
+      "after": "Fixture selector includes form scope and stable input name; confidence high.",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "inactive-upload-action:label",
+      "update_id": "update-beta",
+      "surface_id": "inactive-upload-action",
+      "field": "label",
+      "before": "Upload",
+      "after": "Upload action disabled preview",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "official DevHub actions are not allowed for preview rows"
+      ]
+    },
+    {
+      "row_id": "inactive-upload-action:selector",
+      "update_id": "update-beta",
+      "surface_id": "inactive-upload-action",
+      "field": "selector",
+      "before": "button.upload",
+      "after": "button[data-devhub-fixture='upload']",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "official DevHub actions are not allowed for preview rows"
+      ]
+    },
+    {
+      "row_id": "inactive-upload-action:validation_message",
+      "update_id": "update-beta",
+      "surface_id": "inactive-upload-action",
+      "field": "validation_message",
+      "before": "Choose a file.",
+      "after": "Uploads are excluded from fixture-first preview.",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "official DevHub actions are not allowed for preview rows"
+      ]
+    },
+    {
+      "row_id": "inactive-upload-action:redaction_policy",
+      "update_id": "update-beta",
+      "surface_id": "inactive-upload-action",
+      "field": "redaction_policy",
+      "before": "Do not store files.",
+      "after": "No uploaded documents or private values may be committed.",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "official DevHub actions are not allowed for preview rows"
+      ]
+    },
+    {
+      "row_id": "inactive-upload-action:attendance_gate",
+      "update_id": "update-beta",
+      "surface_id": "inactive-upload-action",
+      "field": "attendance_gate",
+      "before": "attended-review-recorded",
+      "after": "attended-review-recorded",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "official DevHub actions are not allowed for preview rows"
+      ]
+    },
+    {
+      "row_id": "inactive-upload-action:selector_confidence_note",
+      "update_id": "update-beta",
+      "surface_id": "inactive-upload-action",
+      "field": "selector_confidence_note",
+      "before": "Upload selector is intentionally blocked for read-only preview.",
+      "after": "Blocked because upload actions are outside read-only preview scope.",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "official DevHub actions are not allowed for preview rows"
+      ]
+    }
+  ]
+}

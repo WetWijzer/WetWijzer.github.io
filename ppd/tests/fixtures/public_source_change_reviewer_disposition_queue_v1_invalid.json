@@ -1,0 +1,22 @@
+{
+  "version": "public_source_change_reviewer_disposition_queue_v1",
+  "reviewer_decision_rows": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "disposition": "needs_review",
+      "impact_references": [
+        {}
+      ],
+      "promotion_blocked": true,
+      "review_notes": "The live crawl is complete and this guarantees permit approval. The agent will submit the permit application.",
+      "auth_state": "forbidden",
+      "raw_pdf": "forbidden",
+      "active_source_mutation": true
+    }
+  ],
+  "buckets": {
+    "changed": []
+  },
+  "rollback_checkpoints": [],
+  "validation_commands": []
+}

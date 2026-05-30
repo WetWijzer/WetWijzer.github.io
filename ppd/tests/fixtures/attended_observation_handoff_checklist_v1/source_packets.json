@@ -1,0 +1,45 @@
+{
+  "devhub_read_only_observation_rehearsal_v1": {
+    "fixture_id": "devhub-read-only-observation-rehearsal-v1-fixture",
+    "mode": "fixture_first_read_only_observation",
+    "browser_launched": false,
+    "observed_surfaces": [
+      {
+        "surface_id": "devhub-home-readonly",
+        "page_heading": "DevHub Home",
+        "actions": [
+          {"action_id": "review-home-heading", "label": "DevHub Home", "classification": "safe_read_only"},
+          {"action_id": "review-my-permits-link", "label": "My Permits & Requests", "classification": "safe_read_only"}
+        ],
+        "fields": [
+          {"field_id": "account-display-name", "label": "Account display name", "redaction_state": "redacted"},
+          {"field_id": "permit-count", "label": "Permit count", "redaction_state": "synthetic"}
+        ]
+      },
+      {
+        "surface_id": "devhub-permit-detail-readonly",
+        "page_heading": "Permit Detail",
+        "actions": [
+          {"action_id": "review-status-summary", "label": "Status", "classification": "safe_read_only"},
+          {"action_id": "upload-corrections", "label": "Upload corrections", "classification": "consequential_upload"},
+          {"action_id": "pay-fees", "label": "Pay fees", "classification": "financial_action"}
+        ],
+        "fields": [
+          {"field_id": "permit-number", "label": "Permit number", "redaction_state": "redacted"},
+          {"field_id": "status-label", "label": "Status label", "redaction_state": "synthetic"}
+        ]
+      }
+    ]
+  },
+  "action_classification_fixture": {
+    "fixture_id": "devhub-action-classification-v1-fixture",
+    "actions": [
+      {"action_id": "review-status-summary", "label": "Review permit status", "classification": "safe_read_only"},
+      {"action_id": "upload-corrections", "label": "Upload corrections", "classification": "consequential_upload"},
+      {"action_id": "submit-application", "label": "Submit application", "classification": "consequential_submission"},
+      {"action_id": "certify-acknowledgement", "label": "Certify acknowledgement", "classification": "consequential_certification"},
+      {"action_id": "pay-fees", "label": "Pay fees", "classification": "financial_payment"},
+      {"action_id": "schedule-inspection", "label": "Schedule inspection", "classification": "consequential_scheduling"}
+    ]
+  }
+}

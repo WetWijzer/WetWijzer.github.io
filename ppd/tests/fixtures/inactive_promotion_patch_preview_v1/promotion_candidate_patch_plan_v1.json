@@ -1,0 +1,62 @@
+{
+  "plan_id": "candidate_patch_plan_v1_fixture",
+  "promotion_candidates": [
+    {
+      "candidate_id": "promote-plumbing-ready",
+      "inactive_fixture_id": "inactive-plumbing-fixture-v1",
+      "promotion_target": "active_trade_fixture_family",
+      "patch_summary": "Promote inactive plumbing fixture coverage into reviewer-visible active candidate output.",
+      "patch": {
+        "content_hash": "sha256:inactive-plumbing-after",
+        "schema_version": "fixture-v1"
+      },
+      "validation_refs": [
+        "promotion-candidate-plan-v1",
+        "fixture-schema-v1"
+      ],
+      "rollback_checkpoint_id": "rollback-plumbing-ready"
+    },
+    {
+      "candidate_id": "promote-electrical-ready",
+      "inactive_fixture_id": "inactive-electrical-fixture-v1",
+      "promotion_target": "active_trade_fixture_family",
+      "patch_summary": "Promote inactive electrical fixture coverage into reviewer-visible active candidate output.",
+      "patch": {
+        "content_hash": "sha256:inactive-electrical-after",
+        "schema_version": "fixture-v1"
+      },
+      "validation_refs": [
+        "promotion-candidate-plan-v1",
+        "inactive-family-manifest-v1",
+        "fixture-schema-v1"
+      ],
+      "rollback_checkpoint_id": "rollback-electrical-ready"
+    },
+    {
+      "candidate_id": "promote-mechanical-blocked",
+      "inactive_fixture_id": "inactive-mechanical-fixture-v1",
+      "promotion_target": "active_trade_fixture_family",
+      "patch_summary": "Blocked candidate retained for reviewer explanation coverage.",
+      "patch": {
+        "content_hash": "sha256:inactive-mechanical-after",
+        "schema_version": "fixture-v1"
+      },
+      "validation_refs": [
+        "promotion-candidate-plan-v1"
+      ],
+      "validation_errors": [
+        "missing_required_document_fixture"
+      ]
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "rollback-electrical-ready",
+      "restore_fixture_id": "inactive-electrical-fixture-v1"
+    },
+    {
+      "checkpoint_id": "rollback-plumbing-ready",
+      "restore_fixture_id": "inactive-plumbing-fixture-v1"
+    }
+  ]
+}

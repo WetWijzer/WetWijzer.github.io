@@ -1,0 +1,12 @@
+{
+  "version": "attended-devhub-observation-handoff-checklist-v1",
+  "reviewer_owner": "ppd-devhub-fixture-reviewer",
+  "attendance_gates": {
+    "attended-review-recorded": "ready",
+    "authenticated-session-confirmed": "blocked"
+  },
+  "rollback_checkpoints": [
+    "remove-generated-preview",
+    "leave-live-devhub-untouched"
+  ]
+}

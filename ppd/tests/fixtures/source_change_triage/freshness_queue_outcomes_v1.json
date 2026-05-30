@@ -1,0 +1,60 @@
+{
+  "queue_id": "synthetic-public-freshness-queue-v1",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "outcomes": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "normalized_document_id": "doc-devhub-faq-v1",
+      "previous_content_hash": "sha256:1111111111111111",
+      "observed_content_hash": "sha256:2222222222222222",
+      "fetch_status": "success",
+      "extraction_status": "success",
+      "candidate_requirement_refs": ["req-devhub-account", "req-upload-corrections-gated"],
+      "candidate_process_refs": ["process-devhub-account-setup", "process-corrections"],
+      "candidate_guardrail_refs": ["guardrail-devhub-auth", "guardrail-official-upload"],
+      "citation_evidence_ids_before": ["evidence-devhub-faq-account", "evidence-devhub-faq-corrections"],
+      "citation_evidence_ids_after": ["evidence-devhub-faq-account", "evidence-devhub-faq-corrections"],
+      "live_source_access": false,
+      "raw_body_persisted": false,
+      "public_artifact_promotion_requested": false,
+      "official_action_claimed": false
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "normalized_document_id": "doc-submit-plans-online-v1",
+      "previous_content_hash": "sha256:3333333333333333",
+      "observed_content_hash": "sha256:3333333333333333",
+      "fetch_status": "success",
+      "extraction_status": "success",
+      "candidate_requirement_refs": ["req-single-pdf-process", "req-supporting-documents-separate"],
+      "candidate_process_refs": ["process-document-preparation"],
+      "candidate_guardrail_refs": ["guardrail-upload-staging"],
+      "citation_evidence_ids_before": ["evidence-single-pdf", "evidence-supporting-pdfs"],
+      "citation_evidence_ids_after": ["evidence-single-pdf", "evidence-supporting-pdfs"],
+      "live_source_access": false,
+      "raw_body_persisted": false,
+      "public_artifact_promotion_requested": false,
+      "official_action_claimed": false
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "normalized_document_id": "doc-fee-payment-guide-v1",
+      "previous_content_hash": "sha256:4444444444444444",
+      "observed_content_hash": "sha256:5555555555555555",
+      "fetch_status": "success",
+      "extraction_status": "success",
+      "candidate_requirement_refs": ["req-payment-final-submit-gated", "req-payment-details-private"],
+      "candidate_process_refs": ["process-fee-payment"],
+      "candidate_guardrail_refs": ["guardrail-financial-action", "guardrail-exact-confirmation"],
+      "citation_evidence_ids_before": ["evidence-payment-review", "evidence-final-submit"],
+      "citation_evidence_ids_after": ["evidence-payment-review"],
+      "live_source_access": false,
+      "raw_body_persisted": false,
+      "public_artifact_promotion_requested": false,
+      "official_action_claimed": false
+    }
+  ]
+}

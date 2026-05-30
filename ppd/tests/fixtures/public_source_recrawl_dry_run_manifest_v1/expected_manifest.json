@@ -1,0 +1,227 @@
+{
+  "manifest_version": "public_source_recrawl_dry_run_manifest_v1",
+  "manifest_id": "public_source_recrawl_dry_run_manifest_v1:from:public-recrawl-preflight-review-20260530-dry-run-manifest-fixture",
+  "input_packet_version": "public_source_recrawl_preflight_review_packet_v1",
+  "input_packet_id": "public-recrawl-preflight-review-20260530-dry-run-manifest-fixture",
+  "fixture_first": true,
+  "side_effect_boundary": {
+    "network_requests_allowed": false,
+    "document_downloads_allowed": false,
+    "raw_response_body_storage_allowed": false,
+    "devhub_access_allowed": false,
+    "processor_invocation_allowed": false,
+    "active_source_mutation_allowed": false,
+    "active_process_mutation_allowed": false,
+    "active_guardrail_mutation_allowed": false,
+    "active_prompt_mutation_allowed": false
+  },
+  "synthetic_request_rows": [
+    {
+      "request_order": 1,
+      "synthetic_request_id": "synthetic-recrawl-request:v1:001:ppd-online-permitting-tools",
+      "source_id": "ppd-online-permitting-tools",
+      "requested_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "official_anchor_citation": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "allow_reason": "official_anchor_policy_preflight_ready",
+      "skipped_reason": null,
+      "expected_content_type": "text/html",
+      "expected_metadata_only_capture": {
+        "redirect_chain_placeholder": [],
+        "http_status_placeholder": null,
+        "content_hash_placeholder": null,
+        "etag_placeholder": null,
+        "last_modified_placeholder": null,
+        "capture_started_at_placeholder": null,
+        "capture_finished_at_placeholder": null,
+        "normalized_document_id_placeholder": "normalized-document:placeholder:v1:ppd-online-permitting-tools",
+        "no_raw_body_persisted": true
+      },
+      "processor_suite_adapter_ref": {
+        "adapter_id": "processor-suite-adapter:public-html-metadata-only:v1",
+        "adapter_module": "ppd.crawler.processor_suite",
+        "processor_name": "ipfs-datasets-public-html-archive-adapter",
+        "processor_version": "placeholder-version"
+      },
+      "preflight_review_refs": {
+        "robots_decision_placeholder": "Reviewer must record robots result before processor handoff.",
+        "policy_decision_placeholder": "Reviewer must record PP&D allowlist and policy decision before processor handoff.",
+        "raw_body_persistence_exclusion_check": "No raw response body may be persisted in committed artifacts.",
+        "download_exclusion_check": "No downloaded documents may be committed from this preflight packet.",
+        "processor_handoff_dry_run_prerequisites": [
+          "Run PP&D-local policy preflight in dry-run mode.",
+          "Confirm processor handoff manifest plan contains metadata-only output references."
+        ]
+      },
+      "reviewer_hold_placeholder": "pending_reviewer_hold_or_release_decision",
+      "reviewer_approve_placeholder": "Pending named reviewer approval before any handoff."
+    },
+    {
+      "request_order": 2,
+      "synthetic_request_id": "synthetic-recrawl-request:v1:002:ppd-fee-payment-guide",
+      "source_id": "ppd-fee-payment-guide",
+      "requested_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "official_anchor_citation": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "allow_reason": "official_anchor_policy_preflight_ready",
+      "skipped_reason": null,
+      "expected_content_type": "application/pdf",
+      "expected_metadata_only_capture": {
+        "redirect_chain_placeholder": [],
+        "http_status_placeholder": null,
+        "content_hash_placeholder": null,
+        "etag_placeholder": null,
+        "last_modified_placeholder": null,
+        "capture_started_at_placeholder": null,
+        "capture_finished_at_placeholder": null,
+        "normalized_document_id_placeholder": "normalized-document:placeholder:v1:ppd-fee-payment-guide",
+        "no_raw_body_persisted": true
+      },
+      "processor_suite_adapter_ref": {
+        "adapter_id": "processor-suite-adapter:public-pdf-metadata-only:v1",
+        "adapter_module": "ppd.crawler.processor_suite",
+        "processor_name": "ipfs-datasets-public-pdf-archive-adapter",
+        "processor_version": "placeholder-version"
+      },
+      "preflight_review_refs": {
+        "robots_decision_placeholder": "Reviewer must record robots result before processor handoff.",
+        "policy_decision_placeholder": "Reviewer must record PP&D allowlist and policy decision before processor handoff.",
+        "raw_body_persistence_exclusion_check": "No raw response body may be persisted in committed artifacts.",
+        "download_exclusion_check": "No downloaded documents may be committed from this preflight packet.",
+        "processor_handoff_dry_run_prerequisites": [
+          "Run PP&D-local policy preflight in dry-run mode.",
+          "Confirm PDF handling remains metadata-only until a reviewed capture packet exists."
+        ]
+      },
+      "reviewer_hold_placeholder": "pending_reviewer_hold_or_release_decision",
+      "reviewer_approve_placeholder": "Pending named reviewer approval before any handoff."
+    },
+    {
+      "request_order": 3,
+      "synthetic_request_id": "synthetic-recrawl-request:v1:003:ppd-devhub-public-portal",
+      "source_id": "ppd-devhub-public-portal",
+      "requested_url": "https://devhub.portlandoregon.gov",
+      "canonical_url": "https://devhub.portlandoregon.gov",
+      "official_anchor_citation": "https://devhub.portlandoregon.gov",
+      "allow_reason": null,
+      "skipped_reason": "portal_access_deferred_no_devhub_access",
+      "expected_content_type": "text/html",
+      "expected_metadata_only_capture": {
+        "redirect_chain_placeholder": [],
+        "http_status_placeholder": null,
+        "content_hash_placeholder": null,
+        "etag_placeholder": null,
+        "last_modified_placeholder": null,
+        "capture_started_at_placeholder": null,
+        "capture_finished_at_placeholder": null,
+        "normalized_document_id_placeholder": null,
+        "no_raw_body_persisted": true
+      },
+      "processor_suite_adapter_ref": {
+        "adapter_id": "processor-suite-adapter:metadata-only-skip:v1",
+        "adapter_module": "ppd.crawler.processor_suite",
+        "processor_name": "no-processor-dry-run-skip",
+        "processor_version": "not-applicable"
+      },
+      "preflight_review_refs": {
+        "robots_decision_placeholder": "Reviewer must record robots result before processor handoff.",
+        "policy_decision_placeholder": "Reviewer must record PP&D allowlist and policy decision before processor handoff.",
+        "raw_body_persistence_exclusion_check": "No raw response body may be persisted in committed artifacts.",
+        "download_exclusion_check": "No downloaded documents may be committed from this preflight packet.",
+        "processor_handoff_dry_run_prerequisites": [
+          "Keep this row as a synthetic skip until a separate reviewer approves public portal access.",
+          "Confirm no account-scoped workflow is represented by this row."
+        ]
+      },
+      "reviewer_hold_placeholder": "pending_reviewer_hold_or_release_decision",
+      "reviewer_approve_placeholder": "Pending named reviewer approval before any handoff."
+    }
+  ],
+  "expected_metadata_only_capture_fields": [
+    "source_id",
+    "requested_url",
+    "canonical_url",
+    "redirect_chain_placeholder",
+    "http_status_placeholder",
+    "content_type_placeholder",
+    "content_hash_placeholder",
+    "etag_placeholder",
+    "last_modified_placeholder",
+    "capture_started_at_placeholder",
+    "capture_finished_at_placeholder",
+    "processor_adapter_ref",
+    "normalized_document_id_placeholder",
+    "skipped_reason",
+    "no_raw_body_persisted"
+  ],
+  "freshness_monitor_update_placeholders": [
+    {
+      "source_id": "ppd-online-permitting-tools",
+      "synthetic_request_id": "synthetic-recrawl-request:v1:001:ppd-online-permitting-tools",
+      "current_freshness_status_placeholder": "pending_metadata_capture_review",
+      "proposed_next_check_placeholder": null,
+      "freshness_monitor_mutation_allowed": false,
+      "reviewer_required_before_update": true
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "synthetic_request_id": "synthetic-recrawl-request:v1:002:ppd-fee-payment-guide",
+      "current_freshness_status_placeholder": "pending_metadata_capture_review",
+      "proposed_next_check_placeholder": null,
+      "freshness_monitor_mutation_allowed": false,
+      "reviewer_required_before_update": true
+    },
+    {
+      "source_id": "ppd-devhub-public-portal",
+      "synthetic_request_id": "synthetic-recrawl-request:v1:003:ppd-devhub-public-portal",
+      "current_freshness_status_placeholder": "pending_metadata_capture_review",
+      "proposed_next_check_placeholder": null,
+      "freshness_monitor_mutation_allowed": false,
+      "reviewer_required_before_update": true
+    }
+  ],
+  "reviewer_disposition_placeholders": [
+    {
+      "source_id": "ppd-online-permitting-tools",
+      "synthetic_request_id": "synthetic-recrawl-request:v1:001:ppd-online-permitting-tools",
+      "hold_reason_placeholder": "pending_reviewer_disposition",
+      "approve_reason_placeholder": "pending_reviewer_disposition",
+      "reviewer_name_placeholder": null,
+      "reviewed_at_placeholder": null,
+      "approved_for_live_recrawl": false
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "synthetic_request_id": "synthetic-recrawl-request:v1:002:ppd-fee-payment-guide",
+      "hold_reason_placeholder": "pending_reviewer_disposition",
+      "approve_reason_placeholder": "pending_reviewer_disposition",
+      "reviewer_name_placeholder": null,
+      "reviewed_at_placeholder": null,
+      "approved_for_live_recrawl": false
+    },
+    {
+      "source_id": "ppd-devhub-public-portal",
+      "synthetic_request_id": "synthetic-recrawl-request:v1:003:ppd-devhub-public-portal",
+      "hold_reason_placeholder": "pending_reviewer_disposition",
+      "approve_reason_placeholder": "pending_reviewer_disposition",
+      "reviewer_name_placeholder": null,
+      "reviewed_at_placeholder": null,
+      "approved_for_live_recrawl": false
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/crawler/public_source_recrawl_dry_run_manifest_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_public_source_recrawl_dry_run_manifest_v1.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "active_source_mutation": false,
+  "active_process_mutation": false,
+  "active_guardrail_mutation": false,
+  "active_prompt_mutation": false,
+  "freshness_monitor_mutation": false,
+  "network_request_performed": false,
+  "document_download_performed": false,
+  "raw_response_body_stored": false,
+  "devhub_access_performed": false,
+  "processor_invoked": false
+}

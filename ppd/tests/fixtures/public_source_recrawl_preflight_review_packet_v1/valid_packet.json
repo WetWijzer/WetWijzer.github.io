@@ -1,0 +1,31 @@
+{
+  "packet_version": "public_source_recrawl_preflight_review_packet_v1",
+  "packet_id": "public-recrawl-preflight-review-20260530-fixture",
+  "summary": "Offline-only review packet for public PP&D source recrawl candidates.",
+  "candidate_preflight_rows": [
+    {
+      "source_id": "ppd-online-permitting-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "official_anchor_citation": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "robots_decision_placeholder": "Reviewer must record robots result before processor handoff.",
+      "policy_decision_placeholder": "Reviewer must record PP&D allowlist and policy decision before processor handoff.",
+      "processor_handoff_dry_run_prerequisites": [
+        "Run PP&D-local policy preflight in dry-run mode.",
+        "Confirm processor handoff manifest plan contains metadata-only output references."
+      ],
+      "raw_body_persistence_exclusion_check": "No raw response body may be persisted in committed artifacts.",
+      "download_exclusion_check": "No downloaded documents may be committed from this preflight packet.",
+      "reviewer_approval_placeholder": "Pending named reviewer approval before any handoff.",
+      "validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ]
+    }
+  ],
+  "active_artifact_mutation": false,
+  "active_prompt_mutation": false,
+  "active_release_state_mutation": false,
+  "active_guardrail_mutation": false,
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

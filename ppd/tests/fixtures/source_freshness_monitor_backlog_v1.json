@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "packet_id": "ppd-public-source-freshness-monitor-backlog-v1",
+  "scope": "fixture_first_metadata_only_public_source_monitoring",
+  "source_anchors": [
+    {
+      "id": "anchor-portland-zoning-code-title-33",
+      "label": "Portland Title 33 Planning and Zoning Code",
+      "official_url": "https://www.portland.gov/code/33",
+      "source_owner": "City of Portland",
+      "crawl_policy": "metadata_only_no_body_persistence",
+      "citation": {
+        "label": "Portland Title 33 Planning and Zoning Code",
+        "url": "https://www.portland.gov/code/33",
+        "verified_on": "2026-05-30"
+      }
+    },
+    {
+      "id": "anchor-portland-bds-land-use-review-fees",
+      "label": "BDS Land Use Review fees and forms landing page",
+      "official_url": "https://www.portland.gov/bds/land-use-review-fees-and-types",
+      "source_owner": "City of Portland Bureau of Development Services",
+      "crawl_policy": "metadata_only_no_body_persistence",
+      "citation": {
+        "label": "BDS Land Use Review fees and forms landing page",
+        "url": "https://www.portland.gov/bds/land-use-review-fees-and-types",
+        "verified_on": "2026-05-30"
+      }
+    },
+    {
+      "id": "anchor-portland-permit-forms",
+      "label": "Portland permit forms and applications landing page",
+      "official_url": "https://www.portland.gov/bds/permit-review-process/applications",
+      "source_owner": "City of Portland Bureau of Development Services",
+      "crawl_policy": "metadata_only_no_body_persistence",
+      "citation": {
+        "label": "Portland permit forms and applications landing page",
+        "url": "https://www.portland.gov/bds/permit-review-process/applications",
+        "verified_on": "2026-05-30"
+      }
+    }
+  ],
+  "freshness_schedules": [
+    {
+      "id": "schedule-title-33-monthly",
+      "anchor_id": "anchor-portland-zoning-code-title-33",
+      "cadence": "monthly",
+      "known_signal": "code page last-modified metadata or official revision notice"
+    },
+    {
+      "id": "schedule-fees-quarterly",
+      "anchor_id": "anchor-portland-bds-land-use-review-fees",
+      "cadence": "quarterly",
+      "known_signal": "fee schedule publication or form link metadata change"
+    },
+    {
+      "id": "schedule-forms-monthly",
+      "anchor_id": "anchor-portland-permit-forms",
+      "cadence": "monthly",
+      "known_signal": "application form link metadata change"
+    }
+  ],
+  "impacted_ids": [
+    {
+      "id": "REQ-ZONING-CODE-AUTHORITY",
+      "kind": "requirement",
+      "description": "Requirement answers must cite current official zoning code anchors before PP&D publication."
+    },
+    {
+      "id": "PROC-LAND-USE-REVIEW-INTAKE",
+      "kind": "process",
+      "description": "Land use intake workflows depend on current review type, fee, and form source anchors."
+    },
+    {
+      "id": "GUARDRAIL-NO-LIVE-CRAWL-PROMOTION",
+      "kind": "guardrail",
+      "description": "Freshness monitoring may propose review work but must not promote source changes automatically."
+    }
+  ],
+  "synthetic_change_categories": [
+    {
+      "id": "synthetic-last-modified-drift",
+      "description": "Fixture simulates metadata timestamp drift without fetching source bodies."
+    },
+    {
+      "id": "synthetic-link-inventory-delta",
+      "description": "Fixture simulates added, removed, or renamed official links."
+    },
+    {
+      "id": "synthetic-policy-effective-date-delta",
+      "description": "Fixture simulates changed effective-date metadata from an official anchor."
+    }
+  ],
+  "offline_validation_commands": [
+    {
+      "id": "validate-packet-schema",
+      "argv": [
+        "python3",
+        "ppd/source_freshness_monitor_backlog.py",
+        "ppd/tests/fixtures/source_freshness_monitor_backlog_v1.json"
+      ],
+      "network": false
+    },
+    {
+      "id": "run-focused-tests",
+      "argv": [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_source_freshness_monitor_backlog.py"
+      ],
+      "network": false
+    }
+  ],
+  "work_items": [
+    {
+      "order": 1,
+      "id": "monitor-title-33-metadata-first",
+      "title": "Build metadata-only freshness check for Title 33 anchor",
+      "anchor_ids": ["anchor-portland-zoning-code-title-33"],
+      "schedule_ids": ["schedule-title-33-monthly"],
+      "impacted_ids": ["REQ-ZONING-CODE-AUTHORITY", "GUARDRAIL-NO-LIVE-CRAWL-PROMOTION"],
+      "synthetic_change_category_ids": ["synthetic-last-modified-drift", "synthetic-policy-effective-date-delta"],
+      "offline_validation_command_ids": ["validate-packet-schema", "run-focused-tests"],
+      "promotion_policy": "do_not_promote_source_changes"
+    },
+    {
+      "order": 2,
+      "id": "monitor-land-use-fees-link-inventory",
+      "title": "Build fixture replay for land use fee and review type link inventory changes",
+      "anchor_ids": ["anchor-portland-bds-land-use-review-fees"],
+      "schedule_ids": ["schedule-fees-quarterly"],
+      "impacted_ids": ["PROC-LAND-USE-REVIEW-INTAKE", "GUARDRAIL-NO-LIVE-CRAWL-PROMOTION"],
+      "synthetic_change_category_ids": ["synthetic-link-inventory-delta"],
+      "offline_validation_command_ids": ["validate-packet-schema", "run-focused-tests"],
+      "promotion_policy": "do_not_promote_source_changes"
+    },
+    {
+      "order": 3,
+      "id": "monitor-permit-forms-link-inventory",
+      "title": "Build fixture replay for permit application form link changes",
+      "anchor_ids": ["anchor-portland-permit-forms"],
+      "schedule_ids": ["schedule-forms-monthly"],
+      "impacted_ids": ["PROC-LAND-USE-REVIEW-INTAKE", "GUARDRAIL-NO-LIVE-CRAWL-PROMOTION"],
+      "synthetic_change_category_ids": ["synthetic-link-inventory-delta", "synthetic-last-modified-drift"],
+      "offline_validation_command_ids": ["validate-packet-schema", "run-focused-tests"],
+      "promotion_policy": "do_not_promote_source_changes"
+    }
+  ]
+}

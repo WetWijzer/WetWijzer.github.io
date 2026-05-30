@@ -1,0 +1,259 @@
+{
+  "guardrail_to_agent_explanation_packet": {
+    "packet_type": "ppd.guardrail_to_agent_explanation_packet.v1",
+    "fixture_first": true,
+    "metadata_only": true,
+    "case_id": "case-synthetic-agent-response-acceptance",
+    "process_id": "ppd-single-pdf-plan-review-v1",
+    "guardrail_bundle_id": "guardrail-explanation-single-pdf-v1",
+    "citation_index": [
+      {
+        "evidence_id": "ev-submit-plans-online-single-pdf",
+        "title": "Submit Plans Online / Single PDF Process",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "freshness_status": "current"
+      },
+      {
+        "evidence_id": "ev-devhub-submit-application-guide",
+        "title": "DevHub permit application guide",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+        "freshness_status": "current"
+      },
+      {
+        "evidence_id": "ev-devhub-fee-payment-guide",
+        "title": "How to pay fees",
+        "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "freshness_status": "current"
+      }
+    ],
+    "explanation_templates": [
+      {
+        "kind": "missing_facts",
+        "missing_facts": ["project_scope_summary"],
+        "missing_documents": ["single_pdf_plan_set"],
+        "citation_ids": ["ev-devhub-submit-application-guide", "ev-submit-plans-online-single-pdf"]
+      },
+      {
+        "kind": "blocked_official_actions",
+        "actions": [
+          {
+            "action_id": "submit-permit-request",
+            "status": "blocked",
+            "requires_exact_confirmation": true,
+            "requires_user_attendance": true,
+            "official_action_executed": false
+          },
+          {
+            "action_id": "upload-plans-to-official-record",
+            "status": "blocked",
+            "requires_exact_confirmation": true,
+            "requires_user_attendance": true,
+            "official_action_executed": false
+          },
+          {
+            "action_id": "pay-review-fees",
+            "status": "blocked",
+            "requires_exact_confirmation": true,
+            "requires_user_attendance": true,
+            "official_action_executed": false
+          }
+        ],
+        "citation_ids": ["ev-devhub-submit-application-guide", "ev-submit-plans-online-single-pdf", "ev-devhub-fee-payment-guide"]
+      },
+      {
+        "kind": "reversible_draft_limits",
+        "actions": [
+          {
+            "action_id": "summarize-readiness-from-fixtures",
+            "may_upload": false,
+            "may_submit": false,
+            "may_pay": false
+          }
+        ],
+        "citation_ids": ["ev-devhub-submit-application-guide", "ev-submit-plans-online-single-pdf"]
+      },
+      {
+        "kind": "stale_conflicting_evidence",
+        "status": "refresh_or_human_review_required",
+        "stale_evidence": [{"evidence_id": "fixture-user-upload-inventory"}],
+        "conflicting_evidence": [{"conflict_id": "fixture-plan-set-label-conflict"}],
+        "citation_ids": ["ev-devhub-submit-application-guide"]
+      },
+      {
+        "kind": "next_safe_read_only_actions",
+        "actions": ["review-cited-public-guidance", "summarize-readiness-from-fixtures"],
+        "readiness_adapter_refs": ["adapter-output-next-safe-action"],
+        "citation_ids": ["ev-devhub-submit-application-guide", "ev-submit-plans-online-single-pdf"]
+      }
+    ]
+  },
+  "offline_agent_readiness_adapter_outputs": [
+    {
+      "response_id": "adapter-output-missing-information",
+      "example_kind": "missing_information_prompt",
+      "ready": false,
+      "message": "Ask for missing fixture fields before drafting readiness language.",
+      "citations": ["guardrail-bundle-fixtures-v1", "user-gap-analysis-fixtures-v1"],
+      "safe_next_action_classes": ["ask_missing_information", "remain_read_only"]
+    },
+    {
+      "response_id": "adapter-output-stale-conflict",
+      "example_kind": "stale_or_conflicting_evidence_notice",
+      "ready": false,
+      "message": "Surface stale or conflicting fixture evidence before relying on the draft.",
+      "citations": ["agent-facing-readiness-contract-coverage-packet-v3", "process-model-fixtures-v1"],
+      "safe_next_action_classes": ["surface_conflict", "ask_missing_information"]
+    },
+    {
+      "response_id": "adapter-output-reversible-preview",
+      "example_kind": "reversible_draft_preview",
+      "ready": true,
+      "message": "Produce a draft preview only and keep official systems unchanged.",
+      "citations": ["guardrail-bundle-fixtures-v1", "process-model-fixtures-v1", "user-gap-analysis-fixtures-v1"],
+      "safe_next_action_classes": ["draft_local_preview", "remain_read_only"]
+    },
+    {
+      "response_id": "adapter-output-blocked-action",
+      "example_kind": "blocked_action_explanation",
+      "ready": false,
+      "message": "The requested official action is blocked by fixture guardrails.",
+      "citations": ["guardrail-bundle-fixtures-v1", "process-model-fixtures-v1", "user-gap-analysis-fixtures-v1"],
+      "safe_next_action_classes": ["explain_block", "read_only_summary"]
+    },
+    {
+      "response_id": "adapter-output-next-safe-action",
+      "example_kind": "next_safe_read_only_action",
+      "ready": true,
+      "message": "Compare committed fixtures and prepare a cited local readiness note.",
+      "citations": ["agent-facing-readiness-contract-coverage-packet-v3", "process-model-fixtures-v1", "user-gap-analysis-fixtures-v1", "guardrail-bundle-fixtures-v1"],
+      "safe_next_action_classes": ["compare_fixtures", "read_only_summary"]
+    }
+  ],
+  "user_gap_analysis_to_draft_preview_bridge_v1": {
+    "analysis_id": "user-gap-analysis::handoff-v4::agent-response-acceptance",
+    "bridge_version": "draft_preview_bridge_v1",
+    "case_id": "case-synthetic-agent-response-acceptance",
+    "process_id": "ppd-single-pdf-plan-review-v1",
+    "handoff_id": "handoff-v4::agent-response-acceptance",
+    "cited_missing_fact_prompts": [
+      {
+        "prompt_id": "prompt::project_scope_summary",
+        "fact_id": "project_scope_summary",
+        "prompt": "What project scope summary should be used for the local readiness note?",
+        "citations": ["ev-devhub-submit-application-guide"],
+        "blocks_draft_fields": ["draft-field::project-scope"]
+      },
+      {
+        "prompt_id": "prompt::single_pdf_plan_set",
+        "fact_id": "single_pdf_plan_set",
+        "prompt": "Is the plan set ready as the cited Single PDF Process expects?",
+        "citations": ["ev-submit-plans-online-single-pdf"],
+        "blocks_draft_fields": ["draft-field::plan-set-readiness"]
+      }
+    ],
+    "stale_conflict_notices": [
+      {
+        "notice_id": "stale_evidence::fixture-user-upload-inventory",
+        "notice_type": "stale_evidence",
+        "fact_id": "single_pdf_plan_set",
+        "message": "The synthetic document inventory must be rechecked before draft preview values depend on it.",
+        "citations": ["ev-submit-plans-online-single-pdf"],
+        "blocks_draft_fields": ["draft-field::plan-set-readiness"]
+      },
+      {
+        "notice_id": "conflicting_evidence::fixture-plan-set-label-conflict",
+        "notice_type": "conflicting_evidence",
+        "fact_id": "single_pdf_plan_set",
+        "message": "The synthetic document labels disagree and need user review before draft preview readiness is treated as resolved.",
+        "citations": ["ev-devhub-submit-application-guide"],
+        "blocks_draft_fields": ["draft-field::plan-set-readiness"]
+      }
+    ],
+    "field_level_draft_blockers": [
+      {
+        "field_id": "draft-field::project-scope",
+        "label": "Project scope summary",
+        "blocked": true,
+        "blocking_fact_ids": ["project_scope_summary"],
+        "citations": ["ev-devhub-submit-application-guide"]
+      },
+      {
+        "field_id": "draft-field::plan-set-readiness",
+        "label": "Single PDF plan set readiness",
+        "blocked": true,
+        "blocking_fact_ids": ["single_pdf_plan_set"],
+        "citations": ["ev-submit-plans-online-single-pdf"]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "checkpoint_id": "checkpoint::preview-only",
+        "label": "User reviews the preview as reversible local draft content only.",
+        "required_before": "draft_preview_review",
+        "citations": ["ev-devhub-submit-application-guide"]
+      }
+    ],
+    "next_safe_read_only_actions": [
+      {
+        "action_id": "read::review-single-pdf-guidance",
+        "label": "Review cited Single PDF Process guidance before asking for document readiness facts.",
+        "classification": "read_only",
+        "citations": ["ev-submit-plans-online-single-pdf"]
+      },
+      {
+        "action_id": "read::review-devhub-submit-guide",
+        "label": "Review cited DevHub permit application guidance for dynamic questions and save-for-later limits.",
+        "classification": "read_only",
+        "citations": ["ev-devhub-submit-application-guide"]
+      }
+    ],
+    "attestations": {
+      "no_private_file_attestation": true,
+      "no_devhub_attestation": true,
+      "no_official_action_attestation": true
+    }
+  },
+  "action_journal_replay_fixture": {
+    "packet_version": "action-journal-acceptance-packet-v1",
+    "fixture_first": true,
+    "commit_safe": true,
+    "journal_events": [
+      {
+        "event_id": "aj-v1-user-gap-analysis-001",
+        "event_type": "user_gap_analysis",
+        "source_fixture": "ppd/tests/fixtures/user_gap_analysis/sample_gap_analysis.json",
+        "citations": [{"label": "PP&D public permit guidance", "url": "https://www.portland.gov/ppd"}],
+        "redacted_evidence_summary": {
+          "summary": "Synthetic gap categories are replayed without user-specific values.",
+          "redactions_applied": ["site_placeholder", "owner_placeholder"],
+          "raw_evidence_included": false
+        },
+        "commit_safe_reason": "Uses synthetic placeholders and public citations only."
+      },
+      {
+        "event_id": "aj-v1-reversible-draft-preview-001",
+        "event_type": "reversible_draft_preview",
+        "source_fixture": "ppd/tests/fixtures/reversible_draft_preview/sample_preview.json",
+        "citations": [{"label": "DevHub public guide", "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"}],
+        "redacted_evidence_summary": {
+          "summary": "Local draft preview replay contains no official-action payload.",
+          "redactions_applied": ["applicant_placeholder", "parcel_placeholder"],
+          "raw_evidence_included": false
+        },
+        "commit_safe_reason": "Preview is local-only and non-submittable."
+      },
+      {
+        "event_id": "aj-v1-refusal-001",
+        "event_type": "refusal",
+        "source_fixture": "ppd/tests/fixtures/refusal/sample_refusal.json",
+        "citations": [{"label": "PP&D public services", "url": "https://www.portland.gov/ppd"}],
+        "redacted_evidence_summary": {
+          "summary": "Restricted attended or consequential requests are represented as policy categories only.",
+          "redactions_applied": ["request_placeholder"],
+          "raw_evidence_included": false
+        },
+        "commit_safe_reason": "Refusal example preserves policy outcome without restricted automation."
+      }
+    ]
+  }
+}

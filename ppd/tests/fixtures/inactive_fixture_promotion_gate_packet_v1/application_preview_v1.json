@@ -1,0 +1,26 @@
+{
+  "packet_type": "ppd.inactive_fixture_promotion_application_preview.v1",
+  "packet_version": "v1",
+  "mode": "offline_fixture_preview_only",
+  "source_evidence_ids": [
+    "fixture-preview:permit-application:row-1",
+    "fixture-preview:permit-application:row-2"
+  ],
+  "preview_rows": [
+    {
+      "row_id": "application-preview-row-1",
+      "candidate_fixture": "inactive-permit-application-fixture-a",
+      "source_evidence_ids": ["fixture-preview:permit-application:row-1"],
+      "status": "ready_for_gate_review"
+    },
+    {
+      "row_id": "application-preview-row-2",
+      "candidate_fixture": "inactive-permit-application-fixture-b",
+      "source_evidence_ids": ["fixture-preview:permit-application:row-2"],
+      "status": "ready_for_gate_review"
+    }
+  ],
+  "active_fixture_promotion": false,
+  "active_prompt_mutation": false,
+  "official_action_performed": false
+}

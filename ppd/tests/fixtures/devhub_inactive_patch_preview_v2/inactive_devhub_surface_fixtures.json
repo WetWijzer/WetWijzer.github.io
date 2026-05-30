@@ -1,0 +1,25 @@
+{
+  "version": "inactive-devhub-surface-fixtures-v1",
+  "inactive_surfaces": [
+    {
+      "surface_id": "inactive-permit-search",
+      "state": "inactive",
+      "label": "Permit search",
+      "selector": "input[name='q']",
+      "validation_message": "Enter a value.",
+      "redaction_policy": "Redact private values.",
+      "attendance_gate": "attended-review-recorded",
+      "selector_confidence_note": "Fixture selector is plausible but under-scoped."
+    },
+    {
+      "surface_id": "inactive-upload-action",
+      "state": "inactive",
+      "label": "Upload",
+      "selector": "button.upload",
+      "validation_message": "Choose a file.",
+      "redaction_policy": "Do not store files.",
+      "attendance_gate": "attended-review-recorded",
+      "selector_confidence_note": "Upload selector is intentionally blocked for read-only preview."
+    }
+  ]
+}

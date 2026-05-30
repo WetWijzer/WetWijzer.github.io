@@ -1,1 +1,1 @@
-"""PP&D release-candidate helpers."""
+"""Release validation helpers for PP&D guardrail workspaces."""

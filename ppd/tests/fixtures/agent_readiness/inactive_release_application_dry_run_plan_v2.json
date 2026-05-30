@@ -1,0 +1,151 @@
+{
+  "schema_version": "inactive_release_application_dry_run_plan_v2",
+  "plan_id": "inactive-release-application-dry-run-plan-v2-fixture",
+  "release_state": "inactive_post_release_dry_run",
+  "workflows": [
+    {
+      "workflow_id": "building-permit-plan-review",
+      "title": "Building permit request with plan review",
+      "synthetic_user_goal": "I want help preparing a DevHub building permit request for plan review, but I have not confirmed every application fact yet.",
+      "known_facts": [
+        "The applicant is preparing a building permit request that may require plan review",
+        "The user wants offline preparation only before opening DevHub"
+      ],
+      "missing_facts": [
+        "property address or verified property identifier",
+        "permit type and scope of work",
+        "whether plans, calculations, and supporting documents are complete separate PDFs",
+        "applicant role and authorization to apply"
+      ],
+      "blocked_actions": [
+        {
+          "label": "submit permit application",
+          "reason": "submission is an official consequential DevHub action",
+          "required_gate": "attended user review and exact action-specific confirmation"
+        },
+        {
+          "label": "upload application documents",
+          "reason": "uploading private documents changes an authenticated application record",
+          "required_gate": "attended DevHub session with user-selected files and exact confirmation"
+        }
+      ],
+      "reversible_drafts": [
+        {
+          "draft_id": "building-plan-review-gap-summary",
+          "surface": "offline_agent_response",
+          "fields": [
+            {
+              "name": "permit_scope_summary",
+              "value_source": "user_confirmed_scope_of_work"
+            },
+            {
+              "name": "document_readiness_checklist",
+              "value_source": "matched_document_inventory"
+            }
+          ]
+        }
+      ],
+      "source_evidence_ids": [
+        "source:ppd-apply-permits",
+        "source:devhub-submit-permit-application-guide",
+        "source:submit-plans-online-single-pdf"
+      ]
+    },
+    {
+      "workflow_id": "standard-trade-permit-readiness",
+      "title": "Standard trade permit readiness with license-dependent facts",
+      "synthetic_user_goal": "I want to know whether a standard trade permit can be drafted from my known facts without making a purchase.",
+      "known_facts": [
+        "The user is asking for readiness analysis before any purchase or submission",
+        "The request may depend on contractor license facts in the DevHub profile"
+      ],
+      "missing_facts": [
+        "trade permit category",
+        "contractor license status or owner-performer eligibility",
+        "fixture or equipment counts",
+        "job site address"
+      ],
+      "blocked_actions": [
+        {
+          "label": "purchase standard trade permit",
+          "reason": "purchase is a financial and official permitting action",
+          "required_gate": "attended user action with payment guardrails and exact confirmation"
+        },
+        {
+          "label": "enter payment details",
+          "reason": "payment detail entry is outside reversible draft assistance",
+          "required_gate": "manual user control of payment workflow"
+        }
+      ],
+      "reversible_drafts": [
+        {
+          "draft_id": "trade-permit-readiness-preview",
+          "surface": "offline_agent_response",
+          "fields": [
+            {
+              "name": "license_readiness",
+              "value_source": "confirmed_license_or_owner_performer_fact"
+            },
+            {
+              "name": "fixture_count_summary",
+              "value_source": "user_supplied_fixture_counts"
+            }
+          ]
+        }
+      ],
+      "source_evidence_ids": [
+        "source:online-permitting-tools-overview",
+        "source:devhub-faqs",
+        "source:standard-trade-permit-guide"
+      ]
+    },
+    {
+      "workflow_id": "corrections-upload-blocked",
+      "title": "Corrections upload request stops at attended handoff",
+      "synthetic_user_goal": "I have a permit correction notice and want help preparing what to upload without the agent uploading anything.",
+      "known_facts": [
+        "The user has a correction workflow in mind",
+        "The user wants preparation and explanation before authenticated action"
+      ],
+      "missing_facts": [
+        "permit or application number",
+        "review group or checksheet context",
+        "corrected document names and readiness",
+        "user confirmation that the selected files are final for upload"
+      ],
+      "blocked_actions": [
+        {
+          "label": "upload corrections",
+          "reason": "correction upload is an authenticated consequential DevHub workflow",
+          "required_gate": "attended DevHub session and exact user confirmation for the specific files"
+        },
+        {
+          "label": "certify correction response",
+          "reason": "certification or acknowledgement cannot be automated by the agent",
+          "required_gate": "manual user certification"
+        }
+      ],
+      "reversible_drafts": [
+        {
+          "draft_id": "correction-response-staging-preview",
+          "surface": "offline_agent_response",
+          "fields": [
+            {
+              "name": "correction_response_summary",
+              "value_source": "user_supplied_correction_notice"
+            },
+            {
+              "name": "candidate_upload_manifest",
+              "value_source": "local_user_selected_document_inventory"
+            }
+          ]
+        }
+      ],
+      "source_evidence_ids": [
+        "source:devhub-faqs",
+        "source:upload-corrections-guide",
+        "source:spp-file-naming-standards"
+      ]
+    }
+  ]
+}

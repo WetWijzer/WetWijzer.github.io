@@ -1,0 +1,64 @@
+{
+  "checklist_id": "inactive-release-activation-checklist-v2",
+  "status": "inactive",
+  "release": "public-refresh-readiness-v2",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "activation_items": [
+    {
+      "item_id": "public-source-prerequisites",
+      "title": "Confirm ordered public-source refresh prerequisites",
+      "source_scope": "official_public_ppd_sources",
+      "readiness_gate": "manual_review_required"
+    },
+    {
+      "item_id": "allowlist-robots-placeholders",
+      "title": "Prepare allowlist and robots review placeholders",
+      "source_scope": "public_hosts_only",
+      "readiness_gate": "manual_review_required"
+    },
+    {
+      "item_id": "source-freshness-placeholders",
+      "title": "Prepare source freshness comparison placeholders",
+      "source_scope": "metadata_manifests_only",
+      "readiness_gate": "offline_diff_required"
+    },
+    {
+      "item_id": "raw-body-non-persistence",
+      "title": "Attest that raw public bodies are not persisted in git",
+      "source_scope": "commit_safe_metadata_only",
+      "readiness_gate": "attestation_required"
+    },
+    {
+      "item_id": "affected-guardrail-review",
+      "title": "Prepare affected guardrail review placeholders",
+      "source_scope": "guardrail_metadata_only",
+      "readiness_gate": "manual_review_required"
+    }
+  ],
+  "source_groups": [
+    {
+      "source_group_id": "portland_gov_ppd_public_guidance",
+      "canonical_hosts": ["www.portland.gov"],
+      "current_manifest_ref": "placeholder_current_public_guidance_manifest"
+    },
+    {
+      "source_group_id": "devhub_public_guidance",
+      "canonical_hosts": ["devhub.portlandoregon.gov", "www.portland.gov"],
+      "current_manifest_ref": "placeholder_current_devhub_public_manifest"
+    }
+  ],
+  "affected_guardrail_bundles": [
+    {
+      "guardrail_bundle_id": "permit_application_submission_guardrails",
+      "review_reason": "Public guidance refresh may change required facts, documents, acknowledgements, or submission gates."
+    },
+    {
+      "guardrail_bundle_id": "fee_payment_guardrails",
+      "review_reason": "Public guidance refresh may change payment instructions, fee triggers, or financial action gates."
+    },
+    {
+      "guardrail_bundle_id": "corrections_upload_guardrails",
+      "review_reason": "Public guidance refresh may change upload correction prerequisites or official-record action gates."
+    }
+  ]
+}

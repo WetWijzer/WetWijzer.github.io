@@ -1,0 +1,129 @@
+{
+  "preview_version": "devhub_observed_surface_inactive_patch_preview_v1",
+  "mode": "inactive_patch_preview",
+  "surface_state": "inactive",
+  "fixture_scope": "inactive_devhub_surface_fixture_preview",
+  "devhub_execution": "none",
+  "promotion_claim": "none",
+  "inactive_fixture_previews": [
+    {
+      "preview_id": "preview-unsafe",
+      "surface_id": "devhub-home-read-only-fixture",
+      "before": {
+        "fixture_label": "baseline"
+      },
+      "after": {
+        "fixture_label": "candidate"
+      },
+      "observation_evidence_ids": [
+        "obs-unsafe"
+      ]
+    }
+  ],
+  "observation_evidence": [
+    {
+      "evidence_id": "obs-unsafe",
+      "citation": "offline redacted fixture observation ledger entry obs-unsafe",
+      "observed_at": "2026-05-30T00:00:00Z",
+      "summary": "Unsafe fixture used only to validate rejection paths."
+    }
+  ],
+  "observation_evidence_preservation_checks": [
+    {
+      "evidence_id": "obs-unsafe",
+      "preserved": true,
+      "check": "preserved"
+    }
+  ],
+  "unchanged_surface_inventory": [
+    {
+      "surface_id": "devhub-permit-detail-read-only-fixture",
+      "reason": "unchanged"
+    }
+  ],
+  "blocked_action_carry_forward": [
+    {
+      "action_id": "unsafe-action",
+      "explanation": "carried forward"
+    }
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "role": "ppd_surface_reviewer",
+      "status": "pending",
+      "notes_placeholder": "pending reviewer notes"
+    }
+  ],
+  "rollback_notes": [
+    "Rollback note present."
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_observed_surface_inactive_patch_preview_v1.py"
+    ]
+  ],
+  "validation_inventory": [
+    {
+      "check": "before_after_inactive_fixture_previews",
+      "status": "present"
+    },
+    {
+      "check": "observation_evidence_citations",
+      "status": "present"
+    },
+    {
+      "check": "observation_evidence_preservation",
+      "status": "present"
+    },
+    {
+      "check": "unchanged_surface_inventory",
+      "status": "present"
+    },
+    {
+      "check": "blocked_action_carry_forward_explanations",
+      "status": "present"
+    },
+    {
+      "check": "reviewer_signoff_placeholders",
+      "status": "present"
+    },
+    {
+      "check": "rollback_notes",
+      "status": "present"
+    },
+    {
+      "check": "validation_commands",
+      "status": "present"
+    },
+    {
+      "check": "artifact_exclusion",
+      "status": "present"
+    },
+    {
+      "check": "text_claim_exclusion",
+      "status": "present"
+    },
+    {
+      "check": "mutation_scope",
+      "status": "present"
+    }
+  ],
+  "mutation_flags": {
+    "inactive_devhub_surface_fixture_preview": true,
+    "active_devhub_surface_mutation": true
+  },
+  "artifact_manifest": [
+    {
+      "artifact_id": "unsafe-private-browser-data",
+      "kind": "screenshot auth_state playwright_trace har cookie browser_context"
+    },
+    {
+      "artifact_id": "unsafe-raw-data",
+      "kind": "raw crawl raw pdf downloaded pdf warc"
+    }
+  ],
+  "notes": "This invalid fixture says live DevHub execution and applied promotion occurred, approval guaranteed, and asks to submit application, upload file, schedule inspection, certify, cancel permit, and complete payment."
+}

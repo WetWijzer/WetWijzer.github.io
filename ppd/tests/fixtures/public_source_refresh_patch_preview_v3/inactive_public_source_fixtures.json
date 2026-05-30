@@ -1,0 +1,46 @@
+{
+  "fixture_inventory_id": "inactive-public-source-fixtures-for-preview-v3",
+  "sources": [
+    {
+      "source_id": "ppd-devhub-faq-public",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "artifact_state": "inactive",
+      "before": {
+        "document_id": "inactive-doc-devhub-faq-before",
+        "content_hash": "sha256:devhub-faq-before-fixture",
+        "citation_ids": [
+          "CITE-DEVHUB-FAQ-ACCOUNT-SERVICES",
+          "CITE-DEVHUB-FAQ-CORRECTIONS"
+        ]
+      },
+      "after": {
+        "document_id": "inactive-doc-devhub-faq-after",
+        "content_hash": "sha256:devhub-faq-after-fixture",
+        "citation_ids": [
+          "CITE-DEVHUB-FAQ-ACCOUNT-SERVICES",
+          "CITE-DEVHUB-FAQ-CORRECTIONS"
+        ]
+      }
+    },
+    {
+      "source_id": "ppd-submit-plans-online-public",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "artifact_state": "inactive",
+      "before": {
+        "document_id": "inactive-doc-submit-plans-before",
+        "content_hash": "sha256:submit-plans-before-fixture",
+        "citation_ids": [
+          "CITE-SUBMIT-PLANS-SINGLE-PDF",
+          "CITE-SUBMIT-PLANS-SEPARATE-SUPPORTING-DOCS"
+        ]
+      },
+      "after": {
+        "document_id": "inactive-doc-submit-plans-after",
+        "content_hash": "sha256:submit-plans-after-fixture",
+        "citation_ids": [
+          "CITE-SUBMIT-PLANS-SINGLE-PDF"
+        ]
+      }
+    }
+  ]
+}

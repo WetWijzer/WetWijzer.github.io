@@ -1,0 +1,69 @@
+{
+  "packet_version": "public_source_change_triage_packet_v1",
+  "packet_id": "fixture-public-change-triage-001",
+  "generated_from": "committed_fixture",
+  "requires_live_crawl": false,
+  "changes_release_state": false,
+  "claims_official_action": false,
+  "changes": [
+    {
+      "change_id": "chg-devhub-faq-upload-corrections",
+      "source_id": "src-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "triage_status": "changed",
+      "review_priority": 1,
+      "summary": "Fixture notes changed public guidance around correction upload review.",
+      "changed_fields": ["devhub_action_guidance", "correction_upload_reference"],
+      "unchanged_fields": ["auth_scope", "payment_boundary"],
+      "impact_references": [
+        {
+          "reference_id": "impact-corrections-upload-gate",
+          "reference_type": "guardrail_bundle",
+          "target_id": "guardrail-devhub-corrections-upload",
+          "impact": "Reviewer must verify exact-confirmation language before promotion.",
+          "citation": {
+            "source_id": "src-devhub-faq",
+            "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+            "section": "Uploading corrections",
+            "quote": "Upload corrections remains an authenticated workflow."
+          }
+        }
+      ]
+    },
+    {
+      "change_id": "chg-forms-index-no-change",
+      "source_id": "src-permit-forms-index",
+      "canonical_url": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+      "triage_status": "unchanged",
+      "review_priority": 5,
+      "summary": "Fixture records no reviewer-visible change to permit forms index metadata.",
+      "changed_fields": [],
+      "unchanged_fields": ["title", "canonical_url", "document_links"],
+      "impact_references": []
+    },
+    {
+      "change_id": "chg-file-standards-needs-review",
+      "source_id": "src-spp-file-standards",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "triage_status": "needs_review",
+      "review_priority": 2,
+      "summary": "Fixture requires human review because the normalized diff is ambiguous.",
+      "changed_fields": ["file_naming_rule_candidate"],
+      "unchanged_fields": [],
+      "impact_references": [
+        {
+          "reference_id": "impact-single-pdf-file-rule",
+          "reference_type": "requirement_node",
+          "target_id": "requirement-single-pdf-file-naming",
+          "impact": "Reviewer must decide whether file preparation requirements changed.",
+          "citation": {
+            "source_id": "src-spp-file-standards",
+            "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+            "section": "Preparing PDFs",
+            "quote": "File naming requirements are reviewed from normalized public text only."
+          }
+        }
+      ]
+    }
+  ]
+}

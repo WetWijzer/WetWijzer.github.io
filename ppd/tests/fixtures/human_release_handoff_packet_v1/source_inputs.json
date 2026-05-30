@@ -1,0 +1,42 @@
+{
+  "offline_acceptance_rehearsal_summary_v1": {
+    "status": "passed",
+    "citation": "offline_acceptance_rehearsal_summary_v1:fixture",
+    "fixture_families": [
+      "ppd/tests/fixtures/offline_acceptance_rehearsal_summary_v1",
+      "ppd/tests/fixtures/ordinance_fixture_family"
+    ],
+    "checks": [
+      {
+        "id": "acceptance-summary-loads",
+        "status": "passed",
+        "fixture_family": "ppd/tests/fixtures/offline_acceptance_rehearsal_summary_v1",
+        "citation": "offline_acceptance_rehearsal_summary_v1:checks:acceptance-summary-loads"
+      }
+    ],
+    "unresolved_blockers": []
+  },
+  "reviewer_disposition_ledger_v1": {
+    "status": "approved",
+    "citation": "reviewer_disposition_ledger_v1:fixture",
+    "fixture_families": [
+      "ppd/tests/fixtures/reviewer_disposition_ledger_v1"
+    ],
+    "dispositions": [
+      {
+        "reviewer": "fixture-reviewer",
+        "disposition": "approved",
+        "summary": "Offline fixture evidence is sufficient for a human apply recommendation.",
+        "fixture_family": "ppd/tests/fixtures/reviewer_disposition_ledger_v1",
+        "citation": "reviewer_disposition_ledger_v1:dispositions:fixture-reviewer"
+      }
+    ]
+  },
+  "rollback_note": "If post-apply validation fails, revert the release change and retain the daemon candidate on hold pending a fresh fixture-backed review.",
+  "post_apply_validation_checklist": [
+    "Run unittest discovery for ppd/tests.",
+    "Confirm the offline acceptance rehearsal summary fixture remains passed.",
+    "Confirm the reviewer disposition ledger fixture remains approved.",
+    "Confirm no unresolved blockers were introduced after apply."
+  ]
+}

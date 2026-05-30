@@ -1,0 +1,235 @@
+{
+  "schema_id": "portland_ppd.active_promotion_application_manifest",
+  "schema_version": "1.0.0",
+  "manifest_id": "active-promotion-application-manifest-v1-fixture",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "mode": "fixture_first_no_live_actions",
+  "task_id": "checkbox-50",
+  "supervisor_task_id": "supervisor-20260530-823",
+  "non_actions": [
+    "no_patches_applied",
+    "no_active_artifacts_edited",
+    "no_prompts_changed",
+    "no_release_state_updated",
+    "no_live_sources_crawled",
+    "no_devhub_accessed",
+    "no_official_actions_performed"
+  ],
+  "input_packets": [
+    {
+      "packet_id": "active-promotion-approval-intake-packet-v1",
+      "packet_version": "1.0.0",
+      "fixture_path": "ppd/tests/fixtures/active_promotion_approval_intake_packet_v1.json",
+      "consumption_mode": "deterministic_fixture_reference"
+    }
+  ],
+  "target_fixture_family_rows": [
+    {
+      "row_id": "active-promotion-family-row-001",
+      "fixture_family": "approval_intake",
+      "source_packet_id": "active-promotion-approval-intake-packet-v1",
+      "source_artifact_ref": "inactive-artifact://approval-intake-packet-v1",
+      "destination_artifact_placeholder": "active-artifact-placeholder://approval-intake-packet-v1",
+      "expected_checksum_placeholder": "sha256:PLACEHOLDER_APPROVAL_INTAKE_PACKET_V1",
+      "validation_replay_id": "replay-001-load-intake-packet",
+      "rollback_checkpoint_ref": "rollback-checkpoint://before-active-promotion-fixture-load",
+      "reviewer_approval_placeholder": "reviewer-approval://approval-intake-owner"
+    },
+    {
+      "row_id": "active-promotion-family-row-002",
+      "fixture_family": "promotion_manifest",
+      "source_packet_id": "active-promotion-approval-intake-packet-v1",
+      "source_artifact_ref": "inactive-artifact://application-manifest-v1",
+      "destination_artifact_placeholder": "active-artifact-placeholder://application-manifest-v1",
+      "expected_checksum_placeholder": "sha256:PLACEHOLDER_APPLICATION_MANIFEST_V1",
+      "validation_replay_id": "replay-002-materialize-family-rows",
+      "rollback_checkpoint_ref": "rollback-checkpoint://before-active-promotion-manifest-materialization",
+      "reviewer_approval_placeholder": "reviewer-approval://promotion-manifest-owner"
+    },
+    {
+      "row_id": "active-promotion-family-row-003",
+      "fixture_family": "validation_replay",
+      "source_packet_id": "active-promotion-approval-intake-packet-v1",
+      "source_artifact_ref": "inactive-artifact://validation-replay-inventory-v1",
+      "destination_artifact_placeholder": "active-artifact-placeholder://validation-replay-inventory-v1",
+      "expected_checksum_placeholder": "sha256:PLACEHOLDER_VALIDATION_REPLAY_INVENTORY_V1",
+      "validation_replay_id": "replay-003-verify-checksum-placeholders",
+      "rollback_checkpoint_ref": "rollback-checkpoint://before-active-promotion-validation-replay",
+      "reviewer_approval_placeholder": "reviewer-approval://validation-reviewer"
+    },
+    {
+      "row_id": "active-promotion-family-row-004",
+      "fixture_family": "rollback_checkpoint",
+      "source_packet_id": "active-promotion-approval-intake-packet-v1",
+      "source_artifact_ref": "inactive-artifact://rollback-checkpoint-references-v1",
+      "destination_artifact_placeholder": "active-artifact-placeholder://rollback-checkpoint-references-v1",
+      "expected_checksum_placeholder": "sha256:PLACEHOLDER_ROLLBACK_CHECKPOINT_REFERENCES_V1",
+      "validation_replay_id": "replay-004-verify-rollback-references",
+      "rollback_checkpoint_ref": "rollback-checkpoint://before-active-promotion-rollback-reference-linking",
+      "reviewer_approval_placeholder": "reviewer-approval://rollback-reviewer"
+    },
+    {
+      "row_id": "active-promotion-family-row-005",
+      "fixture_family": "reviewer_approval",
+      "source_packet_id": "active-promotion-approval-intake-packet-v1",
+      "source_artifact_ref": "inactive-artifact://reviewer-approval-placeholders-v1",
+      "destination_artifact_placeholder": "active-artifact-placeholder://reviewer-approval-placeholders-v1",
+      "expected_checksum_placeholder": "sha256:PLACEHOLDER_REVIEWER_APPROVALS_V1",
+      "validation_replay_id": "replay-005-verify-reviewer-placeholders",
+      "rollback_checkpoint_ref": "rollback-checkpoint://before-active-promotion-reviewer-placeholder-linking",
+      "reviewer_approval_placeholder": "reviewer-approval://final-promotion-reviewer"
+    }
+  ],
+  "source_inactive_artifact_references": [
+    {
+      "artifact_ref": "inactive-artifact://approval-intake-packet-v1",
+      "artifact_kind": "fixture_packet",
+      "status": "inactive_reference_only"
+    },
+    {
+      "artifact_ref": "inactive-artifact://application-manifest-v1",
+      "artifact_kind": "fixture_manifest",
+      "status": "inactive_reference_only"
+    },
+    {
+      "artifact_ref": "inactive-artifact://validation-replay-inventory-v1",
+      "artifact_kind": "fixture_validation_inventory",
+      "status": "inactive_reference_only"
+    },
+    {
+      "artifact_ref": "inactive-artifact://rollback-checkpoint-references-v1",
+      "artifact_kind": "fixture_rollback_inventory",
+      "status": "inactive_reference_only"
+    },
+    {
+      "artifact_ref": "inactive-artifact://reviewer-approval-placeholders-v1",
+      "artifact_kind": "fixture_review_inventory",
+      "status": "inactive_reference_only"
+    }
+  ],
+  "destination_active_artifact_placeholders": [
+    {
+      "placeholder_ref": "active-artifact-placeholder://approval-intake-packet-v1",
+      "target_path_placeholder": "public/corpus/portland-or/current/PLACEHOLDER_APPROVAL_INTAKE_PACKET_V1.json",
+      "write_policy": "placeholder_only_no_write"
+    },
+    {
+      "placeholder_ref": "active-artifact-placeholder://application-manifest-v1",
+      "target_path_placeholder": "public/corpus/portland-or/current/PLACEHOLDER_APPLICATION_MANIFEST_V1.json",
+      "write_policy": "placeholder_only_no_write"
+    },
+    {
+      "placeholder_ref": "active-artifact-placeholder://validation-replay-inventory-v1",
+      "target_path_placeholder": "public/corpus/portland-or/current/PLACEHOLDER_VALIDATION_REPLAY_INVENTORY_V1.json",
+      "write_policy": "placeholder_only_no_write"
+    },
+    {
+      "placeholder_ref": "active-artifact-placeholder://rollback-checkpoint-references-v1",
+      "target_path_placeholder": "public/corpus/portland-or/current/PLACEHOLDER_ROLLBACK_CHECKPOINT_REFERENCES_V1.json",
+      "write_policy": "placeholder_only_no_write"
+    },
+    {
+      "placeholder_ref": "active-artifact-placeholder://reviewer-approval-placeholders-v1",
+      "target_path_placeholder": "public/corpus/portland-or/current/PLACEHOLDER_REVIEWER_APPROVALS_V1.json",
+      "write_policy": "placeholder_only_no_write"
+    }
+  ],
+  "expected_checksum_placeholders": [
+    {
+      "artifact_ref": "active-artifact-placeholder://approval-intake-packet-v1",
+      "algorithm": "sha256",
+      "expected": "sha256:PLACEHOLDER_APPROVAL_INTAKE_PACKET_V1"
+    },
+    {
+      "artifact_ref": "active-artifact-placeholder://application-manifest-v1",
+      "algorithm": "sha256",
+      "expected": "sha256:PLACEHOLDER_APPLICATION_MANIFEST_V1"
+    },
+    {
+      "artifact_ref": "active-artifact-placeholder://validation-replay-inventory-v1",
+      "algorithm": "sha256",
+      "expected": "sha256:PLACEHOLDER_VALIDATION_REPLAY_INVENTORY_V1"
+    },
+    {
+      "artifact_ref": "active-artifact-placeholder://rollback-checkpoint-references-v1",
+      "algorithm": "sha256",
+      "expected": "sha256:PLACEHOLDER_ROLLBACK_CHECKPOINT_REFERENCES_V1"
+    },
+    {
+      "artifact_ref": "active-artifact-placeholder://reviewer-approval-placeholders-v1",
+      "algorithm": "sha256",
+      "expected": "sha256:PLACEHOLDER_REVIEWER_APPROVALS_V1"
+    }
+  ],
+  "ordered_validation_replay_inventory": [
+    {
+      "order": 1,
+      "replay_id": "replay-001-load-intake-packet",
+      "assertion": "referenced intake packet fixture is present or intentionally unresolved as a placeholder"
+    },
+    {
+      "order": 2,
+      "replay_id": "replay-002-materialize-family-rows",
+      "assertion": "target fixture-family rows are stable, sorted, and deterministic"
+    },
+    {
+      "order": 3,
+      "replay_id": "replay-003-verify-checksum-placeholders",
+      "assertion": "checksum fields are placeholders and do not claim active artifact integrity"
+    },
+    {
+      "order": 4,
+      "replay_id": "replay-004-verify-rollback-references",
+      "assertion": "rollback checkpoint references exist as fixture references only"
+    },
+    {
+      "order": 5,
+      "replay_id": "replay-005-verify-reviewer-placeholders",
+      "assertion": "reviewer approval placeholders are explicit and non-authorizing"
+    }
+  ],
+  "rollback_checkpoint_references": [
+    {
+      "checkpoint_ref": "rollback-checkpoint://before-active-promotion-fixture-load",
+      "scope": "fixture_load"
+    },
+    {
+      "checkpoint_ref": "rollback-checkpoint://before-active-promotion-manifest-materialization",
+      "scope": "manifest_materialization"
+    },
+    {
+      "checkpoint_ref": "rollback-checkpoint://before-active-promotion-validation-replay",
+      "scope": "validation_replay"
+    },
+    {
+      "checkpoint_ref": "rollback-checkpoint://before-active-promotion-rollback-reference-linking",
+      "scope": "rollback_reference_linking"
+    },
+    {
+      "checkpoint_ref": "rollback-checkpoint://before-active-promotion-reviewer-placeholder-linking",
+      "scope": "reviewer_placeholder_linking"
+    }
+  ],
+  "reviewer_approval_placeholders": [
+    {
+      "placeholder_ref": "reviewer-approval://approval-intake-owner",
+      "approval_state": "placeholder_not_approved"
+    },
+    {
+      "placeholder_ref": "reviewer-approval://promotion-manifest-owner",
+      "approval_state": "placeholder_not_approved"
+    },
+    {
+      "placeholder_ref": "reviewer-approval://validation-reviewer",
+      "approval_state": "placeholder_not_approved"
+    },
+    {
+      "placeholder_ref": "reviewer-approval://rollback-reviewer",
+      "approval_state": "placeholder_not_approved"
+    },
+    {
+      "placeholder_ref": "reviewer-approval://final-promotion-reviewer",
+      "approval_state": "placeholder_not_approved"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "ppd.devhub_manual_observation_reviewer_queue.v1",
+  "items": [
+    {
+      "id": "devhub-observation-001",
+      "recommended_disposition": "defer",
+      "reviewer_owner": "ppd-devhub-reviewer",
+      "decision_rationale": "Manual observation requires a reviewer-owned follow-up artifact before any release promotion.",
+      "dependency_order": 2,
+      "rollback_note": "Keep the observation out of release inputs until a cited manual note is committed.",
+      "expected_follow_up_artifact": "ppd/tests/fixtures/devhub_manual_observation_reviewer_queue_v1/manual-observation-note.json",
+      "offline_validation_command": "python3 ppd/reviewer_disposition_ledger_v1.py",
+      "citations": [
+        {
+          "label": "DevHub manual observation reviewer queue v1 fixture",
+          "path": "ppd/tests/fixtures/reviewer_disposition_ledger_v1/devhub_manual_observation_reviewer_queue_v1.json",
+          "locator": "items[0]"
+        }
+      ],
+      "attestations": {
+        "no_live": true,
+        "no_auth": true,
+        "no_private_artifact": true,
+        "no_official_action": true,
+        "no_active_mutation": true
+      }
+    }
+  ]
+}

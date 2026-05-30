@@ -1,0 +1,82 @@
+{
+  "schema": "ppd.combined_inactive_patch_preview_dependency_rehearsal.v1",
+  "mode": "fixture_first_offline_only",
+  "source_inputs": {
+    "public_source_change_inactive_patch_preview_v1": "fixture://ppd/tests/fixtures/public_source_change_inactive_patch_preview_v1.json",
+    "devhub_observed_surface_inactive_patch_preview_v1": "fixture://ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1.json"
+  },
+  "ordered_dependency_rows": [
+    {
+      "order": 1,
+      "family": "public_source",
+      "dependency_id": "public-source-change-preview-v1",
+      "depends_on": [],
+      "promotion_state": "inactive_blocked",
+      "citation_evidence_ids": ["citation-public-001"],
+      "observation_evidence_ids": [],
+      "carry_forward_note": "Remain inactive until reviewer confirms citation lineage and active corpus targets are intentionally unchanged."
+    },
+    {
+      "order": 2,
+      "family": "devhub_observed_surface",
+      "dependency_id": "devhub-observed-surface-preview-v1",
+      "depends_on": ["public-source-change-preview-v1"],
+      "promotion_state": "inactive_blocked",
+      "citation_evidence_ids": ["citation-public-001"],
+      "observation_evidence_ids": ["observation-devhub-001"],
+      "carry_forward_note": "Carry forward blocked promotion because DevHub evidence is fixture-only and no authenticated surface access occurred."
+    }
+  ],
+  "evidence_joins": [
+    {
+      "join_id": "join-public-devhub-001",
+      "dependency_ids": ["public-source-change-preview-v1", "devhub-observed-surface-preview-v1"],
+      "citation_evidence_ids": ["citation-public-001"],
+      "observation_evidence_ids": ["observation-devhub-001"],
+      "join_basis": "Shared inactive preview rehearsal identifier; no live crawl or DevHub session required."
+    }
+  ],
+  "unchanged_family_inventory": [
+    "active_source_artifacts",
+    "active_surface_artifacts",
+    "active_requirement_artifacts",
+    "active_process_artifacts",
+    "active_guardrail_artifacts",
+    "prompts",
+    "release_state"
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "role": "public_source_reviewer",
+      "status": "pending",
+      "notes": "Confirm citation evidence is sufficient before any future promotion."
+    },
+    {
+      "role": "devhub_surface_reviewer",
+      "status": "pending",
+      "notes": "Confirm observed-surface evidence was not produced from live DevHub access in this rehearsal."
+    }
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint": "before_fixture_adoption",
+      "expected_state": "No active artifact mutations have been applied."
+    },
+    {
+      "checkpoint": "before_promotion_request",
+      "expected_state": "Inactive rows can be discarded without source, surface, requirement, process, guardrail, prompt, or release-state rollback."
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_combined_inactive_patch_preview_dependency_rehearsal_v1.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "prohibited_actions_confirmed_absent": [
+    "fixture_changes_applied",
+    "live_source_crawl",
+    "devhub_access",
+    "prompt_change",
+    "release_state_update",
+    "active_artifact_mutation"
+  ]
+}

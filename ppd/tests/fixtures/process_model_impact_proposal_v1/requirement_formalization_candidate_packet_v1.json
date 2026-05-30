@@ -1,0 +1,202 @@
+{
+  "packet_id": "requirement-formalization-candidate-packet-v1-fixture",
+  "packet_version": "requirement_formalization_candidate_packet_v1",
+  "source_evidence": [
+    {
+      "evidence_id": "ev-devhub-account-required",
+      "source_id": "src-devhub-sign-guide",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-sign-guide",
+      "title": "DevHub account and sign-in guide",
+      "span": "DevHub online permitting services require a PortlandOregon.gov sign-in flow.",
+      "retrieved_at": "2026-05-08"
+    },
+    {
+      "evidence_id": "ev-single-pdf-separate-documents",
+      "source_id": "src-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "title": "Submit Plans Online / Single PDF Process",
+      "span": "Drawing plans are prepared as one PDF while applications, calculations, and other supporting documents are separate PDFs.",
+      "retrieved_at": "2026-05-08"
+    },
+    {
+      "evidence_id": "ev-file-naming-standards",
+      "source_id": "src-spp-file-naming",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "title": "File naming standards and preparing PDFs",
+      "span": "PP&D guidance provides file naming and PDF preparation standards for uploaded plan review documents.",
+      "retrieved_at": "2026-05-08"
+    },
+    {
+      "evidence_id": "ev-fee-payment-financial",
+      "source_id": "src-pay-fees",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "title": "How to pay fees",
+      "span": "Fee payment includes payment detail entry and a final submit-payment action.",
+      "retrieved_at": "2026-05-08"
+    },
+    {
+      "evidence_id": "ev-devhub-dynamic-save",
+      "source_id": "src-submit-permit-application",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "title": "DevHub permit application guide",
+      "span": "Permit applications can include dynamic questions, save-for-later behavior, required uploads, acknowledgements, and post-submission status tracking.",
+      "retrieved_at": "2026-05-08"
+    },
+    {
+      "evidence_id": "ev-some-email-paths",
+      "source_id": "src-apply-permits",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "title": "Apply for permits",
+      "span": "Some permit types must be submitted by email or other paths, so DevHub cannot be assumed to cover every permit.",
+      "retrieved_at": "2026-05-08"
+    },
+    {
+      "evidence_id": "ev-trade-license-profile",
+      "source_id": "src-standard-trade-guide",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "title": "Online permitting tools overview",
+      "span": "Contractor license data on the DevHub profile can affect available fixture options for standard trade permits.",
+      "retrieved_at": "2026-05-08"
+    },
+    {
+      "evidence_id": "ev-corrections-upload-status",
+      "source_id": "src-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "title": "DevHub FAQs",
+      "span": "Uploading corrections is an authenticated workflow with permit lookup and review-group status checks.",
+      "retrieved_at": "2026-05-08"
+    }
+  ],
+  "candidates": [
+    {
+      "requirement_id": "req-user-devhub-account",
+      "requirement_type": "precondition",
+      "impact_category": "required_user_facts",
+      "summary": "Record whether the user has a DevHub-capable PortlandOregon.gov account before online permitting assistance.",
+      "subject": "applicant or authorized representative",
+      "action": "confirm",
+      "object": "DevHub account access",
+      "conditions": ["online permitting service is being used"],
+      "permit_types": ["all"],
+      "process_stage": "account setup or manual login",
+      "source_evidence_ids": ["ev-devhub-account-required"],
+      "formalization_status": "candidate",
+      "human_review_status": "needs_review",
+      "confidence": 0.91
+    },
+    {
+      "requirement_id": "req-doc-single-pdf-plan-set",
+      "requirement_type": "document_requirement",
+      "impact_category": "required_documents",
+      "summary": "For plan review workflows, propose a required complete drawing plan set PDF distinct from applications, calculations, and other supporting PDFs.",
+      "subject": "applicant",
+      "action": "prepare",
+      "object": "single drawing plan set PDF",
+      "conditions": ["permit request requires plan review"],
+      "permit_types": ["building_plan_review"],
+      "process_stage": "document preparation",
+      "source_evidence_ids": ["ev-single-pdf-separate-documents"],
+      "formalization_status": "candidate",
+      "human_review_status": "needs_review",
+      "confidence": 0.89
+    },
+    {
+      "requirement_id": "req-file-naming-pdf-standards",
+      "requirement_type": "obligation",
+      "impact_category": "file_rules",
+      "object_kind": "file_rule",
+      "summary": "Uploaded plan review documents should be checked against PP&D file naming and PDF preparation standards before staging.",
+      "subject": "agent",
+      "action": "validate",
+      "object": "upload file names and PDF preparation",
+      "conditions": ["documents are staged for upload"],
+      "permit_types": ["building_plan_review"],
+      "process_stage": "upload staging",
+      "source_evidence_ids": ["ev-file-naming-standards"],
+      "formalization_status": "candidate",
+      "human_review_status": "needs_review",
+      "confidence": 0.87
+    },
+    {
+      "requirement_id": "req-fee-payment-exact-confirmation",
+      "requirement_type": "fee_trigger",
+      "impact_category": "fees",
+      "summary": "Fee payment workflows require a financial gate before payment detail entry or final submit-payment actions.",
+      "subject": "agent",
+      "action": "block_until_confirmed",
+      "object": "payment detail entry and final payment submission",
+      "conditions": ["fees are due or a payment workflow is opened"],
+      "permit_types": ["all"],
+      "process_stage": "fee payment",
+      "source_evidence_ids": ["ev-fee-payment-financial"],
+      "formalization_status": "candidate",
+      "human_review_status": "needs_review",
+      "confidence": 0.94
+    },
+    {
+      "requirement_id": "req-deadline-save-for-later-review",
+      "requirement_type": "deadline",
+      "impact_category": "deadlines",
+      "summary": "Saved draft and post-submission status states should be reviewed for visible deadline or expiration messages before the agent proposes a next action.",
+      "subject": "agent",
+      "action": "review",
+      "object": "visible deadline, expiration, or status messages",
+      "conditions": ["save-for-later or post-submission status tracking is used"],
+      "deadline_or_temporal_scope": "before proposing the next DevHub action",
+      "permit_types": ["all"],
+      "process_stage": "application data entry",
+      "source_evidence_ids": ["ev-devhub-dynamic-save"],
+      "formalization_status": "candidate",
+      "human_review_status": "needs_review",
+      "confidence": 0.78
+    },
+    {
+      "requirement_id": "req-unsupported-devhub-not-universal",
+      "requirement_type": "prohibition",
+      "impact_category": "unsupported_paths",
+      "summary": "Do not assume DevHub is the supported submission path for every permit type; route email or other official paths to manual review.",
+      "subject": "agent",
+      "action": "must_not_assume",
+      "object": "DevHub availability for every permit type",
+      "conditions": ["permit type is not explicitly covered by cited DevHub guidance"],
+      "permit_types": ["all"],
+      "process_stage": "permit type selection",
+      "source_evidence_ids": ["ev-some-email-paths"],
+      "formalization_status": "candidate",
+      "human_review_status": "needs_review",
+      "confidence": 0.9
+    },
+    {
+      "requirement_id": "req-exception-trade-license-fixtures",
+      "requirement_type": "exception",
+      "impact_category": "exceptions",
+      "summary": "For standard trade permits, available fixture options may depend on contractor license data in the DevHub profile.",
+      "subject": "standard trade permit applicant",
+      "action": "confirm",
+      "object": "contractor license profile facts before fixture selection",
+      "conditions": ["standard trade permit includes fixture selection"],
+      "permit_types": ["standard_trade"],
+      "process_stage": "eligibility screening",
+      "source_evidence_ids": ["ev-trade-license-profile"],
+      "formalization_status": "candidate",
+      "human_review_status": "needs_review",
+      "confidence": 0.82
+    },
+    {
+      "requirement_id": "req-gate-corrections-upload",
+      "requirement_type": "action_gate",
+      "impact_category": "action_gates",
+      "summary": "Correction uploads are consequential authenticated actions and require attendance, exact confirmation, and status review before upload.",
+      "subject": "agent",
+      "action": "require_exact_confirmation",
+      "object": "correction upload to official record",
+      "conditions": ["correction upload workflow is opened"],
+      "permit_types": ["building_plan_review"],
+      "process_stage": "corrections/checksheets",
+      "source_evidence_ids": ["ev-corrections-upload-status"],
+      "formalization_status": "candidate",
+      "human_review_status": "needs_review",
+      "confidence": 0.93
+    }
+  ]
+}

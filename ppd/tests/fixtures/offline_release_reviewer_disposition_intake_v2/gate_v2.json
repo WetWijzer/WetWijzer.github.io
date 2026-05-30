@@ -1,0 +1,53 @@
+{
+  "schema_version": "ppd.offline_release_rehearsal_gate.v2",
+  "gate_packet_id": "fixture-offline-release-rehearsal-gate-v2-001",
+  "reviewer_gates": [
+    {
+      "order": 2,
+      "gate_id": "rollback",
+      "reviewer": "release_manager",
+      "review_area": "rollback readiness",
+      "recommended_disposition": "conditional_go",
+      "evidence_summary": {
+        "summary": "Rollback evidence bundle is present for offline review.",
+        "evidence_ids": ["ev-rollback-001"]
+      },
+      "rollback_readiness": {
+        "summary": "Rollback checklist is rehearsed with no official action taken.",
+        "evidence_ids": ["ev-rollback-001", "ev-rollback-002"]
+      },
+      "validation_replay": {
+        "summary": "Validation replay transcript exists in fixture form.",
+        "evidence_ids": ["ev-validation-001"]
+      }
+    },
+    {
+      "order": 1,
+      "gate_id": "evidence",
+      "reviewer": "policy_reviewer",
+      "review_area": "evidence summary",
+      "recommended_disposition": "review_required",
+      "evidence_summary": {
+        "summary": "Evidence summary requires reviewer acknowledgement.",
+        "evidence_ids": ["ev-summary-001", "ev-summary-002"]
+      },
+      "rollback_readiness": {
+        "summary": "Rollback readiness is not the primary gate for this reviewer.",
+        "evidence_ids": []
+      },
+      "validation_replay": {
+        "summary": "Replay acknowledgement is pending reviewer intake.",
+        "evidence_ids": ["ev-validation-001"]
+      }
+    }
+  ],
+  "unresolved_blockers": [
+    {
+      "id": "blocker-001",
+      "severity": "high",
+      "owner": "release_manager",
+      "description": "Final no-go rationale has not been selected.",
+      "required_resolution": "Reviewer must either clear the blocker or enter a no-go reason."
+    }
+  ]
+}

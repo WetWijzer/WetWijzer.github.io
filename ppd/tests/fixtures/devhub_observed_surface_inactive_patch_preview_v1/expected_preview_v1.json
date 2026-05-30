@@ -1,0 +1,272 @@
+{
+  "preview_version": "devhub-observed-surface-inactive-patch-preview-v1",
+  "source_fixture_versions": {
+    "reviewer_disposition_queue": "devhub-readonly-observation-reviewer-disposition-queue-v1",
+    "inactive_surface_fixtures": "inactive-devhub-observed-surface-fixtures-v1"
+  },
+  "mode": "fixture_first_offline_preview_only",
+  "reviewer_owner": "ppd-devhub-observation-reviewer",
+  "preview_rows": [
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-correction-upload:label",
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "field": "label",
+      "before": "Upload correction",
+      "after": "Correction upload control blocked preview",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "Reviewer blocked upload-control preview because upload actions remain consequential.",
+        "Official correction uploads are consequential and cannot be preview-applied.",
+        "Correction upload remains blocked until attended exact-confirmation guardrails are separately reviewed."
+      ]
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-correction-upload:selector",
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "field": "selector",
+      "before": "button.upload-correction",
+      "after": "button[data-devhub-fixture='correction-upload']",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "Reviewer blocked upload-control preview because upload actions remain consequential.",
+        "Official correction uploads are consequential and cannot be preview-applied.",
+        "Correction upload remains blocked until attended exact-confirmation guardrails are separately reviewed."
+      ]
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-correction-upload:validation_message",
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "field": "validation_message",
+      "before": "Choose a file.",
+      "after": "Correction uploads are excluded from inactive read-only patch preview.",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "Reviewer blocked upload-control preview because upload actions remain consequential.",
+        "Official correction uploads are consequential and cannot be preview-applied.",
+        "Correction upload remains blocked until attended exact-confirmation guardrails are separately reviewed."
+      ]
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-correction-upload:redaction_policy",
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "field": "redaction_policy",
+      "before": "Do not store files or private document names.",
+      "after": "Do not store uploaded files, document names, private record values, or browser artifacts.",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "Reviewer blocked upload-control preview because upload actions remain consequential.",
+        "Official correction uploads are consequential and cannot be preview-applied.",
+        "Correction upload remains blocked until attended exact-confirmation guardrails are separately reviewed."
+      ]
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-correction-upload:attendance_gate",
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "field": "attendance_gate",
+      "before": "manual-review-recorded",
+      "after": "manual-review-recorded",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "Reviewer blocked upload-control preview because upload actions remain consequential.",
+        "Official correction uploads are consequential and cannot be preview-applied.",
+        "Correction upload remains blocked until attended exact-confirmation guardrails are separately reviewed."
+      ]
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-correction-upload:selector_confidence_note",
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "field": "selector_confidence_note",
+      "before": "Upload selector is intentionally blocked for read-only preview.",
+      "after": "Selector is recorded only to carry the blocked action forward; no fixture patch may be applied.",
+      "status": "blocked",
+      "read_only": true,
+      "blocked_explanations": [
+        "Reviewer blocked upload-control preview because upload actions remain consequential.",
+        "Official correction uploads are consequential and cannot be preview-applied.",
+        "Correction upload remains blocked until attended exact-confirmation guardrails are separately reviewed."
+      ]
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-home-permit-search:label",
+      "queue_item_id": "queue-alpha",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "field": "label",
+      "before": "Permit search",
+      "after": "Permit search input",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-home-permit-search:selector",
+      "queue_item_id": "queue-alpha",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "field": "selector",
+      "before": "input[name='q']",
+      "after": "form[data-devhub-fixture='permit-search'] input[name='q']",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-home-permit-search:validation_message",
+      "queue_item_id": "queue-alpha",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "field": "validation_message",
+      "before": "Enter a search value.",
+      "after": "Search text is required before a read-only fixture preview can continue.",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-home-permit-search:redaction_policy",
+      "queue_item_id": "queue-alpha",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "field": "redaction_policy",
+      "before": "Redact private account and permit values.",
+      "after": "Redact owner names, account identifiers, email addresses, phone numbers, and street-unit details.",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-home-permit-search:attendance_gate",
+      "queue_item_id": "queue-alpha",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "field": "attendance_gate",
+      "before": "manual-review-recorded",
+      "after": "manual-review-recorded",
+      "status": "unchanged",
+      "read_only": true,
+      "blocked_explanations": []
+    },
+    {
+      "row_id": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json:inactive-devhub-home-permit-search:selector_confidence_note",
+      "queue_item_id": "queue-alpha",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "field": "selector_confidence_note",
+      "before": "Selector is plausible but under-scoped.",
+      "after": "Scoped selector retains stable fixture attribute and input name; confidence high.",
+      "status": "previewable",
+      "read_only": true,
+      "blocked_explanations": []
+    }
+  ],
+  "evidence_preservation_checks": [
+    {
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "before_evidence_ids": [
+        "obs-upload-label-redacted",
+        "obs-upload-blocked-action-redacted"
+      ],
+      "after_evidence_ids": [
+        "obs-upload-label-redacted",
+        "obs-upload-blocked-action-redacted"
+      ],
+      "status": "preserved"
+    },
+    {
+      "queue_item_id": "queue-alpha",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "before_evidence_ids": [
+        "obs-home-label-redacted",
+        "obs-home-selector-redacted"
+      ],
+      "after_evidence_ids": [
+        "obs-home-label-redacted",
+        "obs-home-selector-redacted",
+        "obs-extra-selector-scope"
+      ],
+      "status": "preserved"
+    }
+  ],
+  "unchanged_surface_inventory": [
+    {
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_b.json",
+      "surface_id": "inactive-permit-detail-status",
+      "state": "inactive",
+      "inventory_status": "unchanged_not_in_preview_scope"
+    }
+  ],
+  "blocked_action_carry_forward": [
+    {
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "source": "fixture",
+      "action_id": "upload-correction",
+      "carry_forward_explanation": "Official correction uploads are consequential and cannot be preview-applied."
+    },
+    {
+      "queue_item_id": "queue-beta",
+      "fixture_path": "ppd/tests/fixtures/devhub_observed_surface_inactive_patch_preview_v1/inactive_surface_file_a.json",
+      "surface_id": "inactive-devhub-correction-upload",
+      "source": "reviewer_queue",
+      "action_id": "upload-correction",
+      "carry_forward_explanation": "Correction upload remains blocked until attended exact-confirmation guardrails are separately reviewed."
+    }
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "queue_item_id": "queue-beta",
+      "surface_id": "inactive-devhub-correction-upload",
+      "reviewer_owner": "ppd-devhub-observation-reviewer",
+      "signoff_status": "placeholder_pending_human_review",
+      "signoff_note": "Reviewer must confirm the preview before any later fixture edit is proposed."
+    },
+    {
+      "queue_item_id": "queue-alpha",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "reviewer_owner": "ppd-devhub-observation-reviewer",
+      "signoff_status": "placeholder_pending_human_review",
+      "signoff_note": "Reviewer must confirm the preview before any later fixture edit is proposed."
+    }
+  ],
+  "rollback_notes": [
+    {
+      "queue_item_id": "queue-beta",
+      "surface_id": "inactive-devhub-correction-upload",
+      "rollback_note": "Keep the upload fixture unchanged and carry the block into the next reviewer queue."
+    },
+    {
+      "queue_item_id": "queue-alpha",
+      "surface_id": "inactive-devhub-home-permit-search",
+      "rollback_note": "Discard this preview output; no inactive fixture file was changed."
+    }
+  ],
+  "offline_validation_replay_commands": [
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_observed_surface_inactive_patch_preview_v1.py"
+    ]
+  ]
+}

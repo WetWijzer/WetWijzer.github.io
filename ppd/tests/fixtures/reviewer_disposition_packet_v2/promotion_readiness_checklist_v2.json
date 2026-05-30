@@ -1,0 +1,32 @@
+{
+  "version": "promotion_readiness_checklist_v2",
+  "checklist_items": [
+    {
+      "id": "ready-alpha-contract",
+      "artifact_id": "inactive-preview-alpha",
+      "status": "ready",
+      "owner": "ppd-reviewer-a",
+      "summary": "Alpha fixture contract and patch preview are internally consistent.",
+      "validation_command": ["python3", "-m", "py_compile", "ppd/reviewer_disposition_packet_v2.py"],
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/promotion_readiness_checklist_v2.json#checklist_items[0]"
+    },
+    {
+      "id": "block-beta-missing-citation",
+      "artifact_id": "inactive-preview-beta",
+      "status": "blocked",
+      "owner": "ppd-reviewer-b",
+      "summary": "Beta fixture is missing a required offline evidence citation.",
+      "validation_command": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/promotion_readiness_checklist_v2.json#checklist_items[1]"
+    },
+    {
+      "id": "defer-gamma-owner-review",
+      "artifact_id": "inactive-preview-gamma",
+      "status": "deferred",
+      "owner": "ppd-reviewer-c",
+      "summary": "Gamma fixture requires reviewer-owner confirmation before promotion.",
+      "validation_command": ["python3", "-m", "pytest", "ppd/tests/test_reviewer_disposition_packet_v2.py"],
+      "citation": "ppd/tests/fixtures/reviewer_disposition_packet_v2/promotion_readiness_checklist_v2.json#checklist_items[2]"
+    }
+  ]
+}

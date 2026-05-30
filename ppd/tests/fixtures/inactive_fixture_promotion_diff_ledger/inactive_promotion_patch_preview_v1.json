@@ -1,0 +1,44 @@
+{
+  "preview_id": "inactive-promotion-preview-20260530-fixture-ledger",
+  "preview_version": "inactive_promotion_patch_preview_v1",
+  "files": [
+    {
+      "path": "ppd/tests/fixtures/inactive/devhub_standard_trade_permit/redacted_surface_map_v1.json",
+      "fixture_family": "devhub-standard-trade-permit",
+      "change_type": "add",
+      "summary": "Adds redacted inactive DevHub surface metadata for standard trade permit draft-readiness review.",
+      "added_lines": 82,
+      "removed_lines": 0,
+      "changed_lines": 82,
+      "content_hash_before": "",
+      "content_hash_after": "sha256:7f1f4a8d6b6a0c11111111111111111111111111111111111111111111111111111",
+      "blocked_reasons": []
+    },
+    {
+      "path": "ppd/tests/fixtures/inactive/fee_payment_guide/redacted_payment_notice_v1.json",
+      "fixture_family": "fee-payment-guide",
+      "change_type": "add",
+      "summary": "Adds inactive fee-payment notice metadata without payment details for financial guardrail review.",
+      "added_lines": 49,
+      "removed_lines": 0,
+      "changed_lines": 49,
+      "content_hash_before": "",
+      "content_hash_after": "sha256:2e8e38d47d220c2222222222222222222222222222222222222222222222222222",
+      "blocked_reasons": [
+        "contains financial workflow references"
+      ]
+    }
+  ],
+  "validation_commands": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "json.tool",
+        "ppd/tests/fixtures/inactive_fixture_promotion_diff_ledger/inactive_promotion_patch_preview_v1.json"
+      ],
+      "purpose": "Validate inactive promotion patch preview fixture JSON syntax.",
+      "required_before_promotion": true
+    }
+  ]
+}

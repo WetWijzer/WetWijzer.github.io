@@ -1,0 +1,80 @@
+{
+  "packet_type": "ppd.devhub.attended_observation_handoff_checklist.v1",
+  "packet_id": "attended-devhub-observation-handoff-checklist-v1-fixture",
+  "fixture_first": true,
+  "offline_only": true,
+  "devhub_launched": false,
+  "browser_automation_performed": false,
+  "source_packets": {
+    "devhub_read_only_observation_rehearsal_v1": {
+      "consumed": true,
+      "fixture_id": "devhub-read-only-observation-rehearsal-v1-fixture"
+    },
+    "action_classification_fixture": {
+      "consumed": true,
+      "fixture_id": "devhub-action-classification-v1-fixture"
+    }
+  },
+  "manual_observation_checklists": [
+    {
+      "checklist_id": "manual-observe-devhub-home-readonly",
+      "surface_id": "devhub-home-readonly",
+      "manual_only": true,
+      "reviewer_ready": true,
+      "items": [
+        "Confirm only visible headings, labels, landmarks, and redacted field categories are reviewed.",
+        "Confirm no private value, browser artifact, or downloaded document is captured.",
+        "Stop before any control that would change an official record."
+      ]
+    }
+  ],
+  "visible_ui_evidence_expectations": [
+    {
+      "surface_id": "devhub-home-readonly",
+      "expected_visible_labels": ["DevHub Home", "My Permits & Requests", "Account display name"],
+      "requires_screenshot": false,
+      "raw_values_allowed": false,
+      "reviewer_evidence_note": "Reviewer confirms visible UI labels from the attended screen; committed packet stores labels and redaction states only."
+    }
+  ],
+  "redaction_checks": [
+    {"check_id": "no_auth_state", "required": true, "allowed": false, "reviewer_must_confirm_absent": true},
+    {"check_id": "no_cookies", "required": true, "allowed": false, "reviewer_must_confirm_absent": true},
+    {"check_id": "no_har_or_traces", "required": true, "allowed": false, "reviewer_must_confirm_absent": true},
+    {"check_id": "no_screenshots", "required": true, "allowed": false, "reviewer_must_confirm_absent": true},
+    {"check_id": "no_raw_authenticated_values", "required": true, "allowed": false, "reviewer_must_confirm_absent": true},
+    {"check_id": "no_downloaded_documents", "required": true, "allowed": false, "reviewer_must_confirm_absent": true}
+  ],
+  "attendance_checkpoints": [
+    {
+      "checkpoint_id": "attendance-before-devhub-home-readonly",
+      "surface_id": "devhub-home-readonly",
+      "reviewer_present": true,
+      "manual_login_only": true,
+      "automates_login": false,
+      "stop_if_user_absent": true
+    }
+  ],
+  "stop_before_action_gates": [
+    {"gate_id": "stop-before-upload-corrections", "action_kind": "upload", "action_id": "upload-corrections", "classification": "consequential_upload", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false},
+    {"gate_id": "stop-before-submit-application", "action_kind": "submit", "action_id": "submit-application", "classification": "consequential_submission", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false},
+    {"gate_id": "stop-before-pay-fees", "action_kind": "payment", "action_id": "pay-fees", "classification": "financial_payment", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false},
+    {"gate_id": "stop-before-schedule-inspection", "action_kind": "scheduling", "action_id": "schedule-inspection", "classification": "consequential_scheduling", "stop_before_action": true, "requires_attendance": true, "requires_exact_confirmation": true, "automated_execution_allowed": false}
+  ],
+  "rollback_notes": [
+    {"note_id": "rollback-close-review-only-session", "manual_only": true, "note": "If the reviewer sees a consequential control, stop observation and close the attended browser without saving or confirming any official action."}
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub/attended_observation_handoff_checklist_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_attended_observation_handoff_checklist_v1.py"]
+  ],
+  "attestations": {
+    "no_login_automation": true,
+    "no_session_state": true,
+    "no_click_through": true,
+    "no_upload": true,
+    "no_submit": true,
+    "no_payment": true,
+    "no_scheduling": true
+  }
+}

@@ -11,6 +11,12 @@
   "launches_devhub": false,
   "network_requests_made": false,
   "mutates_surface_registry": false,
+  "active_devhub_surface_mutation": false,
+  "active_guardrail_mutation": false,
+  "active_source_mutation": false,
+  "active_prompt_mutation": false,
+  "active_contract_mutation": false,
+  "active_release_state_mutation": false,
   "source_packets": {
     "devhub_attended_read_only_pilot_runbook": {
       "packet_id": "devhub-attended-read-only-pilot-runbook-v1",
@@ -32,11 +38,19 @@
       "synthetic_only": true,
       "no_raw_values": true,
       "redacted_state_summary": "Synthetic attended home summary records only headings, landmarks, and disabled consequential controls.",
+      "allowed_observation_fields": [
+        "page_heading",
+        "route_pattern",
+        "accessible_landmarks",
+        "navigation_labels",
+        "disabled_consequential_control_presence",
+        "manual_handoff_gate_label"
+      ],
       "observed_elements": [
         "page_heading",
         "main_navigation_landmarks",
         "permit_summary_status_labels",
-        "disabled_submit_upload_payment_schedule_cancel_controls"
+        "disabled_consequential_controls"
       ],
       "citations": [
         "devhub-attended-read-only-pilot-runbook-v1",
@@ -49,6 +63,13 @@
       "synthetic_only": true,
       "no_raw_values": true,
       "redacted_state_summary": "Synthetic permit detail status view records normalized labels and handoff gates without private permit values.",
+      "allowed_observation_fields": [
+        "status_label_shape",
+        "review_group_label_shape",
+        "read_only_tab_labels",
+        "validation_message_shape",
+        "manual_handoff_gate_label"
+      ],
       "observed_elements": [
         "status_label_shape",
         "review_group_label_shape",
@@ -69,22 +90,44 @@
       "allowed": true,
       "no_state_change": true,
       "records_private_values": false,
+      "allowed_observation_fields": [
+        "page_heading",
+        "route_pattern",
+        "accessible_landmarks"
+      ],
       "description": "Record synthetic heading, route pattern, and accessibility landmark metadata only.",
       "citations": [
         "devhub-attended-read-only-pilot-runbook-v1"
       ]
     },
     {
-      "action_id": "record_disabled_consequential_control_presence",
-      "label": "Record disabled consequential control presence",
+      "action_id": "record_disabled_control_presence",
+      "label": "Record disabled control presence",
       "action_class": "read_only_metadata_observation",
       "allowed": true,
       "no_state_change": true,
       "records_private_values": false,
+      "allowed_observation_fields": [
+        "disabled_consequential_control_presence",
+        "manual_handoff_gate_label"
+      ],
       "description": "Record that consequential controls are disabled or require manual handoff, without invoking them.",
       "citations": [
         "devhub-attended-read-only-pilot-launch-readiness-v1",
         "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    }
+  ],
+  "manual_login_handoff_reminders": [
+    {
+      "reminder_id": "manual_sign_in_only",
+      "trigger": "Any sign-in, credential, MFA, CAPTCHA, account creation, or security prompt appears.",
+      "operator_only": true,
+      "agent_action": "stop_and_handoff_to_operator",
+      "operator_note": "The operator completes login, MFA, CAPTCHA, and security prompts manually outside this fixture.",
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-attended-read-only-pilot-launch-readiness-v1"
       ]
     }
   ],
@@ -108,6 +151,84 @@
       "official_action_allowed": false,
       "citations": [
         "devhub-attended-read-only-pilot-launch-readiness-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    }
+  ],
+  "forbidden_browser_artifact_attestations": [
+    {
+      "attestation_id": "no_auth_state",
+      "attested_absent": true,
+      "review_note": "No auth state artifact is present.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_storage_state",
+      "attested_absent": true,
+      "review_note": "No storage state artifact is present.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_session_files",
+      "attested_absent": true,
+      "review_note": "No private session files are present.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_screenshots",
+      "attested_absent": true,
+      "review_note": "No screenshots are present.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_traces",
+      "attested_absent": true,
+      "review_note": "No traces are present.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_har",
+      "attested_absent": true,
+      "review_note": "No HAR artifacts are present.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_downloaded_documents",
+      "attested_absent": true,
+      "review_note": "No downloaded documents are present.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    }
+  ],
+  "redaction_review_placeholders": [
+    {
+      "placeholder_id": "private_value_review_placeholder",
+      "review_status": "synthetic_review_complete",
+      "contains_private_values": false,
+      "review_note": "Placeholder records that private values must be reviewed and omitted before any packet is committed.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "placeholder_id": "raw_text_review_placeholder",
+      "review_status": "synthetic_review_complete",
+      "contains_private_values": false,
+      "review_note": "Placeholder records that raw authenticated text must not be committed.",
+      "citations": [
         "devhub-read-only-observation-redaction-review-synthetic-v1"
       ]
     }
@@ -162,8 +283,20 @@
     "no_trace": true,
     "no_har": true,
     "no_surface_registry_mutation": true,
-    "no_private_session_files": true
+    "no_private_session_files": true,
+    "no_downloaded_documents": true
   },
+  "timeout_and_manual_handoff_notes": [
+    {
+      "note_id": "observation_timeout_handoff",
+      "timeout_seconds": 300,
+      "on_timeout_agent_action": "stop_and_handoff_to_operator",
+      "operator_note": "On timeout, stop the observation and hand control to the operator without retrying authenticated steps.",
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1"
+      ]
+    }
+  ],
   "offline_validation_commands": [
     [
       "python3",
