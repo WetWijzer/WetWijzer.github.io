@@ -1,0 +1,33 @@
+{
+  "manifest_id": "guardrail-bundle-promotion-preview-v3-fixture-manifest",
+  "disposition_summary_ref": "inline-attended-review-disposition-summary-v3",
+  "guardrail_regression_replay_source_packets": "../guardrail_regression_replay_matrix_v3/source_packets.json",
+  "attended_review_disposition_summary_v3": {
+    "version": "attended-review-disposition-summary-v3",
+    "rollback_verification": {
+      "verified": true,
+      "evidence": "reviewer checked no release-state changes"
+    },
+    "rows": [
+      {
+        "disposition": "accept",
+        "citation": "City of Portland PP&D public page, captured fixture citation A",
+        "rationale": "Public source text matches the extracted field.",
+        "reviewer_owners": ["reviewer-a"]
+      },
+      {
+        "disposition": "defer",
+        "citation": "City of Portland PP&D public page, captured fixture citation B",
+        "rationale": "Needs a later public-source check.",
+        "reviewer_owners": ["reviewer-b"],
+        "follow_up_task": "task:ppd-follow-up-001"
+      },
+      {
+        "disposition": "reject",
+        "citation": "City of Portland PP&D public page, captured fixture citation C",
+        "rationale": "The extracted value is unsupported by the cited source.",
+        "reviewer_owners": ["reviewer-c"]
+      }
+    ]
+  }
+}

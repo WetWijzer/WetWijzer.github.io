@@ -1,0 +1,38 @@
+{
+  "packet_id": "agent-consumer-release-handoff-invalid",
+  "capability_claims": [
+    {
+      "id": "approval-claim",
+      "claim": "The agent successfully ran live DevHub automation and guarantees the permit will be approved."
+    }
+  ],
+  "supported_scenarios": [],
+  "blocked_scenarios": [
+    {
+      "description": "Blocks payment"
+    }
+  ],
+  "reversible_draft_boundaries": {
+    "allowed_scope": ["drafts only"]
+  },
+  "reviewer_owners": [
+    {
+      "owner": "ppd-reviewer"
+    }
+  ],
+  "controls": [
+    {
+      "id": "submit_permit",
+      "kind": "consequential",
+      "enabled": true
+    }
+  ],
+  "mutation_flags": {
+    "prompt": true,
+    "guardrail": true,
+    "surface_registry": true,
+    "agent_state": true
+  },
+  "session_token": "Bearer abc.def.ghi",
+  "notes": "Applicant email and private case fact appeared in /home/user/private/devhub/session.json. The processor executed live and approval is assured."
+}

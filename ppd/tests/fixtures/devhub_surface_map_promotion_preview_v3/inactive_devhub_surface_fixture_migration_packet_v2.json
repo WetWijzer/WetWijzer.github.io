@@ -1,0 +1,47 @@
+{
+  "packet_id": "inactive-devhub-surface-fixture-migration-packet-v2-fixture",
+  "packet_version": 2,
+  "attestations": {
+    "no_live_devhub": true,
+    "no_auth_state": true,
+    "no_screenshot": true,
+    "no_trace": true,
+    "no_har": true,
+    "no_active_surface_registry_mutation": true
+  },
+  "inactive_surfaces": [
+    {
+      "surface_id": "devhub-permit-search",
+      "surface_name": "DevHub permit search fixture",
+      "target_fixture": "ppd/tests/fixtures/devhub/surfaces/permit_search.json",
+      "citations": ["fixture://inactive-packet-v2/devhub-permit-search#surface"],
+      "selector_confidence_before": 0.62,
+      "selector_confidence_after": 0.86,
+      "synthetic_actions_before": [
+        {"row_id": "before-search-1", "action": "fill", "selector": "#q", "value_kind": "permit_id"}
+      ],
+      "synthetic_actions_after": [
+        {"row_id": "after-search-1", "action": "fill", "selector": "input[name='search']", "value_kind": "permit_id"},
+        {"row_id": "after-search-2", "action": "click", "selector": "button[type='submit']", "value_kind": "none"}
+      ],
+      "dependency_order": ["redact_fixture_account_hint", "replace_inactive_surface", "run_offline_preview_tests"],
+      "rollback_checkpoints": ["restore previous permit_search fixture", "remove generated preview candidate"]
+    },
+    {
+      "surface_id": "devhub-record-detail",
+      "surface_name": "DevHub record detail fixture",
+      "target_fixture": "ppd/tests/fixtures/devhub/surfaces/record_detail.json",
+      "citations": ["fixture://inactive-packet-v2/devhub-record-detail#surface"],
+      "selector_confidence_before": 0.51,
+      "selector_confidence_after": 0.78,
+      "synthetic_actions_before": [
+        {"row_id": "before-detail-1", "action": "click", "selector": ".record", "value_kind": "none"}
+      ],
+      "synthetic_actions_after": [
+        {"row_id": "after-detail-1", "action": "click", "selector": "[data-testid='record-link']", "value_kind": "none"}
+      ],
+      "dependency_order": ["manual_selector_review", "replace_inactive_surface", "run_offline_preview_tests"],
+      "rollback_checkpoints": ["restore previous record_detail fixture", "retain manual handoff note"]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "preview_version": 3,
+  "guardrail_bundle_id": "ppd-demo-bundle-preview",
+  "process_id": "demo-public-process",
+  "predicate_patch_candidates": [
+    {
+      "predicate_id": "requires-public-source-citation",
+      "operation": "replace",
+      "citations": ["public-source:ppd-devhub-faq:section-safe-actions"],
+      "summary": "Require cited public evidence before proposing a reversible draft action."
+    }
+  ],
+  "before_predicate_rows": [
+    {"predicate_id": "requires-public-source-citation", "expression": "citation_count >= 1"}
+  ],
+  "after_predicate_rows": [
+    {"predicate_id": "requires-public-source-citation", "expression": "public_citation_count >= 1"}
+  ],
+  "explanation_template_deltas": [
+    {
+      "template_id": "missing-public-citation",
+      "before": "Need evidence.",
+      "after": "I need a cited public PP&D source before treating this requirement as usable."
+    }
+  ],
+  "blocked_action_regression_checks": [
+    {
+      "check_id": "blocks-official-actions",
+      "blocked_action": "consequential_official_action",
+      "expected": "blocked"
+    }
+  ],
+  "dependency_order": [
+    "source_evidence",
+    "predicate_patch_candidates",
+    "blocked_action_regression_checks",
+    "rollback_checkpoints"
+  ],
+  "rollback_checkpoints": [
+    {
+      "checkpoint_id": "pre-promotion-preview",
+      "state_ref": "committed-public-fixture-only"
+    }
+  ],
+  "mutation_flags": {
+    "guardrail_mutation": false,
+    "prompt_mutation": false,
+    "source_mutation": false,
+    "surface_registry_mutation": false,
+    "monitoring_mutation": false,
+    "release_state_mutation": false,
+    "agent_state_mutation": false
+  }
+}

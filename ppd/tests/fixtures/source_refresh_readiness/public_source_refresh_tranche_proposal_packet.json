@@ -1,0 +1,28 @@
+{
+  "packet_id": "fixture-public-source-refresh-tranche-proposal-20260529",
+  "packet_timestamp": "2026-05-29T00:00:00Z",
+  "sources": [
+    {
+      "source_id": "ppd-online-tools-overview",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "proposed_decision": "include_refresh",
+      "expected_content_type": "text/html",
+      "owner": "ppd-public-refresh-operator",
+      "citations": [
+        "plan:official-source-anchors:online-permitting-tools-overview",
+        "proposal:tranche-1:metadata-only-refresh"
+      ]
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "proposed_decision": "defer_download",
+      "expected_content_type": "application/pdf",
+      "owner": "ppd-public-refresh-operator",
+      "citations": [
+        "plan:official-source-anchors:fee-payment-guide",
+        "proposal:tranche-1:download-deferred"
+      ]
+    }
+  ]
+}

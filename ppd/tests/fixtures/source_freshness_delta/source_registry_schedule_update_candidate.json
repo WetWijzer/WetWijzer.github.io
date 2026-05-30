@@ -1,0 +1,33 @@
+{
+  "packet_id": "schedule-candidate-20260529-fixture",
+  "packet_type": "source_registry_schedule_update_candidate",
+  "created_at": "2026-05-29T00:10:00Z",
+  "schedule_candidates": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "recommended_crawl_frequency": "daily",
+      "schedule_rationale": "DevHub FAQ is high-change operational guidance.",
+      "offline_follow_up_queue": "source-schedule-review",
+      "evidence_ids": [
+        "schedule:ppd-devhub-faq:daily-candidate"
+      ]
+    },
+    {
+      "source_id": "ppd-file-naming-standards",
+      "recommended_crawl_frequency": "weekly",
+      "schedule_rationale": "File naming standards remain on weekly monitoring.",
+      "evidence_ids": [
+        "schedule:ppd-file-naming-standards:weekly-candidate"
+      ]
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "recommended_crawl_frequency": "weekly",
+      "schedule_rationale": "Single PDF process requires offline owner review before any registry schedule update.",
+      "offline_follow_up_queue": "source-schedule-review",
+      "evidence_ids": [
+        "schedule:ppd-submit-plans-online:weekly-candidate"
+      ]
+    }
+  ]
+}

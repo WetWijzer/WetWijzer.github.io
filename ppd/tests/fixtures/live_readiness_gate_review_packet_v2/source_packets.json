@@ -1,0 +1,302 @@
+{
+  "public_recrawl_operator_packet_v2": {
+    "packetType": "ppd_public_recrawl_operator_packet",
+    "schemaVersion": 2,
+    "packet_id": "public-recrawl-operator-packet-v2-fixture",
+    "seed_batches": [
+      {
+        "batch_id": "ppd-public-guidance-seeds",
+        "citations": [
+          "official-source-anchor:ppd-landing-page"
+        ],
+        "seeds": [
+          {
+            "seed_url": "https://www.portland.gov/ppd",
+            "canonical_url": "https://www.portland.gov/ppd",
+            "robots_decision": {
+              "decision": "allow_preflight_only"
+            },
+            "citations": [
+              "official-source-anchor:ppd-landing-page"
+            ]
+          },
+          {
+            "seed_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+            "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+            "robots_decision": {
+              "decision": "allow_preflight_only"
+            },
+            "citations": [
+              "official-source-anchor:online-permitting-tools"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "devhub_attended_readonly_runbook_refresh_packet_v2": {
+    "packet_type": "devhub_attended_readonly_runbook_refresh_packet_v2",
+    "packet_version": 2,
+    "packet_id": "devhub-attended-readonly-runbook-refresh-packet-v2-fixture",
+    "mode": "fixture_first_offline_runbook_refresh",
+    "consumes": {
+      "surface_registry_refresh_acceptance_packet_v2": "surface-registry-refresh-acceptance-v2-fixture",
+      "devhub_attended_readonly_observation_packet_v2": "devhub-attended-readonly-observation-v2-fixture",
+      "devhub_attended_readonly_launch_readiness_packet": "devhub-attended-readonly-launch-readiness-fixture"
+    },
+    "operator_checklist_deltas": [
+      {
+        "delta_id": "runbook-delta:devhub-home-status-label",
+        "decision": "accepted",
+        "delta_type": "add_read_only_operator_checklist_item",
+        "surface_id": "devhub-home",
+        "action_id": "review-status-summary",
+        "operator_checklist_text": "Add read-only verification for DevHub Home status labels; record only cited redacted metadata.",
+        "reviewer_owner": "ppd-devhub-reviewer",
+        "implementation_owner": "ppd-runbook-owner",
+        "citations": [
+          "surface-refresh:devhub-home-status-label"
+        ]
+      }
+    ],
+    "allowed_read_only_verification_steps": [
+      {
+        "step_id": "verify:devhub-home-status-label",
+        "surface_id": "devhub-home",
+        "action_id": "review-status-summary",
+        "read_only": true,
+        "official_action_allowed": false,
+        "allowed_operator_actions": [
+          "observe page heading or landmark label",
+          "compare redacted label against cited fixture expectation",
+          "record reviewer decision without private values"
+        ],
+        "requires_attended_reviewer": true,
+        "citations": [
+          "surface-refresh:devhub-home-status-label"
+        ]
+      }
+    ],
+    "manual_login_mfa_captcha_handoff_boundaries": [
+      {
+        "boundary_id": "manual-login-mfa-captcha-boundary",
+        "trigger": "DevHub login, credentials, MFA, CAPTCHA, password recovery, account creation, or security prompts appear.",
+        "human_operator_required": true,
+        "agent_may_request_credentials": false,
+        "agent_may_store_credentials": false,
+        "agent_may_automate_mfa_or_captcha": false,
+        "account_creation_allowed": false,
+        "official_action_allowed_after_handoff": false,
+        "citations": [
+          "launch-readiness:manual-stop-points"
+        ]
+      }
+    ],
+    "redaction_requirements": [
+      {
+        "requirement_id": "redaction:redacted-metadata-only",
+        "required": true,
+        "private_values_allowed": false,
+        "browser_artifacts_allowed": false,
+        "raw_authenticated_values_allowed": false,
+        "passes_when": "Only public labels, redacted fixture ids, and reviewer decisions are recorded.",
+        "citations": [
+          "launch-readiness:redaction-checklist"
+        ]
+      }
+    ],
+    "reviewer_owner_fields": {
+      "reviewer_owner": "ppd-devhub-reviewer",
+      "implementation_owner": "ppd-runbook-owner",
+      "safety_owner": "ppd-safety-reviewer"
+    },
+    "offline_validation_commands": [
+      [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_devhub_attended_readonly_runbook_refresh_packet_v2.py"
+      ],
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ]
+    ],
+    "attestations": {
+      "no_live_devhub_access": true,
+      "no_auth_state_created_read_or_stored": true,
+      "no_browser_artifact_created_or_stored": true,
+      "no_runbook_mutation": true
+    },
+    "validation_status": "fixture_runbook_refresh_packet_pending_reviewer_application"
+  },
+  "offline_safe_assist_release_candidate_packet_v2": {
+    "packet_id": "offline-safe-assist-release-candidate-packet-v2",
+    "packet_version": "v2",
+    "mode": "fixture_first_offline_validation",
+    "candidate_status": "release_candidate_blocked_for_live_release",
+    "fixture_inputs": {
+      "prompt_refresh_release_handoff": {
+        "filename": "prompt_refresh_release_handoff_v2.json",
+        "citation": "prompt_refresh_release_handoff:prompt-refresh-release-handoff-v2:v2"
+      },
+      "draft_preview_agent_handoff_acceptance": {
+        "filename": "draft_preview_agent_handoff_acceptance_packet_v2.json",
+        "citation": "draft_preview_agent_handoff_acceptance:draft-preview-agent-handoff-acceptance-v2:v2"
+      },
+      "guardrail_refresh_regression_matrix": {
+        "filename": "guardrail_refresh_regression_matrix_v2.json",
+        "citation": "guardrail_refresh_regression_matrix:guardrail-refresh-regression-matrix-v2:v2"
+      },
+      "surface_registry_refresh_acceptance": {
+        "filename": "surface_registry_refresh_acceptance_packet_v2.json",
+        "citation": "surface_registry_refresh_acceptance:surface-registry-refresh-acceptance-v2:v2"
+      },
+      "release_rollback_readiness": {
+        "filename": "release_rollback_readiness_fixtures_v2.json",
+        "citation": "release_rollback_readiness:release-rollback-readiness-v2:v2"
+      }
+    },
+    "notes": {
+      "candidate_source_notes": {
+        "summary": "Candidate is sourced only from committed offline PP&D fixtures.",
+        "citations": [
+          "prompt_refresh_release_handoff:prompt-refresh-release-handoff-v2:v2"
+        ]
+      },
+      "candidate_process_notes": {
+        "summary": "Draft-preview assistance remains limited to reversible local preview and user-visible gap analysis.",
+        "citations": [
+          "draft_preview_agent_handoff_acceptance:draft-preview-agent-handoff-acceptance-v2:v2"
+        ]
+      },
+      "candidate_guardrail_notes": {
+        "summary": "Regression matrix gates consequential actions and requires attended exact confirmation.",
+        "citations": [
+          "guardrail_refresh_regression_matrix:guardrail-refresh-regression-matrix-v2:v2"
+        ]
+      },
+      "candidate_surface_notes": {
+        "summary": "Surface registry compatibility is accepted only for offline safe-read and reversible-draft surfaces.",
+        "citations": [
+          "surface_registry_refresh_acceptance:surface-registry-refresh-acceptance-v2:v2"
+        ]
+      },
+      "candidate_prompt_compatibility_notes": {
+        "summary": "Prompt refresh handoff is compatible with offline validation mode that disables generated completions.",
+        "citations": [
+          "prompt_refresh_release_handoff:prompt-refresh-release-handoff-v2:v2"
+        ]
+      },
+      "candidate_rollback_notes": {
+        "summary": "Rollback is prerequisite-gated and must remain offline until explicit operator authorization exists.",
+        "citations": [
+          "release_rollback_readiness:release-rollback-readiness-v2:v2"
+        ]
+      }
+    },
+    "blocked_consequential_action_gates": [
+      {
+        "gate_id": "blocked-submit-permit-request",
+        "action": "submit permit request",
+        "status": "blocked_until_user_attended_exact_confirmation",
+        "citations": [
+          "guardrail_refresh_regression_matrix:guardrail-refresh-regression-matrix-v2:v2"
+        ]
+      },
+      {
+        "gate_id": "blocked-certify-acknowledgement",
+        "action": "certify acknowledgement",
+        "status": "blocked_until_user_attended_exact_confirmation",
+        "citations": [
+          "guardrail_refresh_regression_matrix:guardrail-refresh-regression-matrix-v2:v2"
+        ]
+      },
+      {
+        "gate_id": "blocked-upload-correction-to-official-record",
+        "action": "upload correction to official record",
+        "status": "blocked_until_user_attended_exact_confirmation",
+        "citations": [
+          "surface_registry_refresh_acceptance:surface-registry-refresh-acceptance-v2:v2"
+        ]
+      },
+      {
+        "gate_id": "blocked-pay-fees",
+        "action": "pay fees",
+        "status": "blocked_until_user_attended_exact_confirmation",
+        "citations": [
+          "draft_preview_agent_handoff_acceptance:draft-preview-agent-handoff-acceptance-v2:v2"
+        ]
+      },
+      {
+        "gate_id": "blocked-purchase-trade-permit",
+        "action": "purchase trade permit",
+        "status": "blocked_until_user_attended_exact_confirmation",
+        "citations": [
+          "surface_registry_refresh_acceptance:surface-registry-refresh-acceptance-v2:v2"
+        ]
+      },
+      {
+        "gate_id": "blocked-schedule-inspection",
+        "action": "schedule inspection",
+        "status": "blocked_until_user_attended_exact_confirmation",
+        "citations": [
+          "surface_registry_refresh_acceptance:surface-registry-refresh-acceptance-v2:v2"
+        ]
+      },
+      {
+        "gate_id": "blocked-cancel-permit-request",
+        "action": "cancel permit request",
+        "status": "blocked_until_user_attended_exact_confirmation",
+        "citations": [
+          "release_rollback_readiness:release-rollback-readiness-v2:v2"
+        ]
+      },
+      {
+        "gate_id": "blocked-withdraw-permit-request",
+        "action": "withdraw permit request",
+        "status": "blocked_until_user_attended_exact_confirmation",
+        "citations": [
+          "release_rollback_readiness:release-rollback-readiness-v2:v2"
+        ]
+      }
+    ],
+    "rollback_prerequisites": [
+      "blocked consequential-action gates are present",
+      "offline validation commands pass",
+      "rollback owner confirms no release-state mutation"
+    ],
+    "offline_validation_commands": [
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ],
+      [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_offline_safe_assist_rc_v2.py"
+      ]
+    ],
+    "attestations": {
+      "no_live_release": true,
+      "no_live_devhub": true,
+      "no_llm": true,
+      "no_crawler": true,
+      "no_processor": true,
+      "no_release_state_mutation": true
+    },
+    "mutation_flags": {
+      "source_mutation_active": false,
+      "process_mutation_active": false,
+      "guardrail_mutation_active": false,
+      "surface_registry_mutation_active": false,
+      "prompt_mutation_active": false,
+      "monitoring_mutation_active": false,
+      "release_state_mutation_active": false,
+      "agent_state_mutation_active": false
+    }
+  }
+}

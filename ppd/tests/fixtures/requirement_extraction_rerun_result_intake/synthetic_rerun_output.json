@@ -1,0 +1,51 @@
+{
+  "artifact_type": "synthetic_requirement_extraction_rerun_output",
+  "fixture_id": "synthetic-rerun-output-20260529-001",
+  "results": [
+    {
+      "decision": "accepted",
+      "requirement_id": "REQ-DEVHUB-LOGIN-001",
+      "process_id": "PROC-FIXTURE-RERUN",
+      "guardrail_ids": ["GRD-NO-LIVE-EXTRACTION"],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "rationale": "Fixture evidence contains the expected login precondition and no conflicting extraction output.",
+      "evidence": [
+        {
+          "source_fixture": "devhub-login-rerun.fixture.json",
+          "selector": "$.requirements[0].preconditions[0]",
+          "quote": "Reviewer must use the committed fixture login state only."
+        }
+      ]
+    },
+    {
+      "decision": "deferred",
+      "requirement_id": "REQ-PERMIT-SEARCH-002",
+      "process_id": "PROC-RESULT-INTAKE",
+      "guardrail_ids": ["GRD-NO-PROCESSOR"],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "rationale": "Fixture evidence identifies the permit search field but does not include enough cited output to accept the normalization rule.",
+      "evidence": [
+        {
+          "source_fixture": "permit-search-rerun.fixture.json",
+          "selector": "$.results[1].fields.search_term",
+          "quote": "permit number or address accepted as search input"
+        }
+      ]
+    },
+    {
+      "decision": "rejected",
+      "requirement_id": "REQ-CITATION-003",
+      "process_id": "PROC-RESULT-INTAKE",
+      "guardrail_ids": ["GRD-NO-ACTIVE-MUTATION"],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "rationale": "Fixture output lacks a stable citation target, so the result must not be admitted into active requirement artifacts.",
+      "evidence": [
+        {
+          "source_fixture": "citation-rerun.fixture.json",
+          "selector": "$.results[2].citations",
+          "quote": "citation target unavailable in synthetic output"
+        }
+      ]
+    }
+  ]
+}

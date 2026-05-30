@@ -1,0 +1,13 @@
+{
+  "packet_id": "live-readiness-authorization-checklist-packet-v2",
+  "packet_version": 2,
+  "approved_for_fixture_dry_run": true,
+  "authorization_scope": "offline fixture planning only",
+  "prohibited_actions": [
+    "live crawl",
+    "processor execution",
+    "raw body capture",
+    "document download",
+    "source registry mutation"
+  ]
+}

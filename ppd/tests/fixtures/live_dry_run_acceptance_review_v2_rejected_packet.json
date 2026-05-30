@@ -1,0 +1,44 @@
+{
+  "version": "live-dry-run-acceptance-review-packet-v2",
+  "decision": "accepted",
+  "observation_decisions": [
+    {
+      "id": "obs-uncited",
+      "decision": "accepted"
+    }
+  ],
+  "review_decisions": [
+    {
+      "id": "review-missing-rationale",
+      "decision": "rejected"
+    }
+  ],
+  "reviewer_owners": [],
+  "incident_dispositions": [
+    {
+      "id": "incident-open",
+      "status": "open"
+    }
+  ],
+  "abort_dispositions": [
+    {
+      "id": "abort-pending",
+      "disposition": "pending"
+    }
+  ],
+  "notes": [
+    "Includes authenticated applicant email from a DevHub account.",
+    "References raw crawl output and browser state artifacts.",
+    "Claims live execution clicked submit and uploaded corrections.",
+    "Plans to automate MFA and solve CAPTCHA.",
+    "States the permit will be approved and legal compliance guaranteed.",
+    "Includes final payment and scheduled inspection language."
+  ],
+  "mutation_flags": [
+    {
+      "scope": "guardrail",
+      "active": true
+    },
+    "active source_registry update"
+  ]
+}

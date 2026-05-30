@@ -1,0 +1,94 @@
+{
+  "packet_type": "ppd_public_source_refresh_execution_readiness",
+  "mode": "metadata_only_execution_readiness_review",
+  "consumed_packet_refs": [
+    "fixture://public-source-refresh-dry-run-acceptance-checklist",
+    "fixture://source-refresh-runbook-candidate"
+  ],
+  "launch_gates": [
+    {
+      "gate_id": "policy-evidence-before-launch",
+      "decision": "blocked-until-human-review",
+      "citation_refs": [
+        "fixture://public-source-refresh-dry-run-acceptance-checklist#preflight-policy-evidence"
+      ]
+    },
+    {
+      "gate_id": "metadata-only-output-before-launch",
+      "decision": "metadata-only-review-required",
+      "citation_refs": [
+        "fixture://public-source-refresh-dry-run-acceptance-checklist#metadata-only-outputs"
+      ]
+    }
+  ],
+  "go_no_go_decisions": [
+    {
+      "decision": "no-go-until-human-review",
+      "reason": "Execution readiness remains blocked until operator and reviewer prerequisites are confirmed.",
+      "citation_refs": [
+        "fixture://public-source-refresh-dry-run-acceptance-checklist#reviewer-owner-acceptance"
+      ]
+    }
+  ],
+  "operator_prerequisites": [
+    "Operator confirms allowlist and robots evidence from consumed fixture packets.",
+    "Operator confirms no authenticated URL, live download, processor execution, or state mutation is requested."
+  ],
+  "abort_triggers": [
+    "Abort if a target URL leaves the public PP&D allowlist.",
+    "Abort if a target appears authenticated or account scoped.",
+    "Abort if any command would fetch, download, crawl, or process live sources.",
+    "Abort if any readiness field enables registry, schedule, source, requirement, guardrail, or release-state mutation."
+  ],
+  "expected_metadata_only_outputs": [
+    "Reviewer-visible readiness decision with citations to consumed packets.",
+    "Metadata-only list of prerequisites, abort triggers, owner fields, and blocked live-execution operations."
+  ],
+  "expected_metadata_only_result_records": [
+    {
+      "record_id": "readiness-decision-record",
+      "metadata_only": true,
+      "description": "Cited reviewer-facing launch decision without raw body, download, processor, or mutation output."
+    },
+    {
+      "record_id": "blocked-operation-record",
+      "metadata_only": true,
+      "description": "Metadata-only list of blocked live execution, authenticated access, and state mutation surfaces."
+    }
+  ],
+  "reviewer_owners": {
+    "primary_reviewer": "ppd-refresh-reviewer",
+    "execution_owner": "ppd-refresh-owner"
+  },
+  "source_scope": [
+    {
+      "source_id": "ppd-online-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "allowlist_evidence_refs": [
+        "fixture://public-source-refresh-dry-run-acceptance-checklist#allowlist-ppd-online-tools"
+      ],
+      "robots_evidence_refs": [
+        "fixture://public-source-refresh-dry-run-acceptance-checklist#robots-ppd-online-tools"
+      ]
+    },
+    {
+      "source_id": "devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "allowlist_evidence_refs": [
+        "fixture://public-source-refresh-dry-run-acceptance-checklist#allowlist-devhub-faq"
+      ],
+      "robots_evidence_refs": [
+        "fixture://public-source-refresh-dry-run-acceptance-checklist#robots-devhub-faq"
+      ]
+    }
+  ],
+  "safe_operator_command": "python3 -m unittest ppd.tests.test_public_source_refresh_execution_readiness",
+  "mutation_boundary": {
+    "registry_mutation_allowed": false,
+    "schedule_mutation_allowed": false,
+    "source_mutation_allowed": false,
+    "requirement_mutation_allowed": false,
+    "guardrail_mutation_allowed": false,
+    "release_state_mutation_allowed": false
+  }
+}

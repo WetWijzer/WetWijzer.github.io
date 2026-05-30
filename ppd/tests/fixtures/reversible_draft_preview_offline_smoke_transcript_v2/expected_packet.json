@@ -1,0 +1,21 @@
+{
+  "packet_type": "ppd.reversible_draft_preview_offline_smoke_transcript.v2",
+  "packet_id": "reversible-draft-preview-offline-smoke-transcript-v2-fixture",
+  "mode": "fixture_first_offline_smoke_transcript",
+  "required_output_ids": [
+    "preview_availability",
+    "missing_information_followups",
+    "refusal_of_consequential_actions",
+    "exact_confirmation_wording",
+    "offline_validation_commands",
+    "side_effect_attestations"
+  ],
+  "required_attestations": {
+    "no_live_llm": true,
+    "no_devhub": true,
+    "no_private_document": true,
+    "no_pdf_write": true,
+    "no_prompt": true,
+    "no_agent_state_mutation": true
+  }
+}

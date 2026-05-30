@@ -1,0 +1,16 @@
+{
+  "packet_id": "reversible-draft-preview-fixture",
+  "schema_version": "ppd.reversible_draft_preview.v1",
+  "draft_previews": [
+    {
+      "citation_id": "draft-local-form-preview",
+      "label": "local form-field draft preview from cited fixture facts",
+      "boundary": "preview only; no upload, certification, submission, or DevHub mutation"
+    },
+    {
+      "citation_id": "draft-pdf-value-preview",
+      "label": "local PDF value preview for user review",
+      "boundary": "reversible local draft; no private path or raw document content committed"
+    }
+  ]
+}

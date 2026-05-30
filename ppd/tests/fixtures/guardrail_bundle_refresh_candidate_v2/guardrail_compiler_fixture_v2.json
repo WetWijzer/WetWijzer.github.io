@@ -1,0 +1,59 @@
+{
+  "fixture_id": "guardrail-compiler-fixture-v2-001",
+  "source_evidence_ids": [
+    "evidence:ppd-submit-plans-online:single-pdf-process",
+    "evidence:ppd-devhub-guide-submit-permit-application:certification-step",
+    "evidence:ppd-devhub-guide-submit-permit-application:submit-step"
+  ],
+  "deterministic_predicates": [
+    {
+      "predicate_id": "predicate:upload-staging-remains-reversible",
+      "predicate_kind": "reversible_action",
+      "expression": "action == 'stage_upload' and official_record_mutation == false",
+      "citation_ids": [
+        "evidence:ppd-submit-plans-online:single-pdf-process"
+      ]
+    },
+    {
+      "predicate_id": "predicate:certification-requires-exact-confirmation",
+      "predicate_kind": "exact_confirmation",
+      "expression": "action == 'certify_acknowledgement' requires exact_user_confirmation",
+      "citation_ids": [
+        "evidence:ppd-devhub-guide-submit-permit-application:certification-step"
+      ]
+    },
+    {
+      "predicate_id": "predicate:submit-action-blocked-without-attendance",
+      "predicate_kind": "refused_action",
+      "expression": "action == 'submit_permit_request' and user_attending != true blocks automation",
+      "citation_ids": [
+        "evidence:ppd-devhub-guide-submit-permit-application:submit-step"
+      ]
+    }
+  ],
+  "reversible_action_predicates": [
+    {
+      "predicate_id": "predicate:upload-staging-remains-reversible",
+      "action_type": "stage_upload",
+      "citation_ids": [
+        "evidence:ppd-submit-plans-online:single-pdf-process"
+      ]
+    }
+  ],
+  "exact_confirmation_predicates": [
+    {
+      "predicate_id": "predicate:certification-requires-exact-confirmation",
+      "action_type": "certify_acknowledgement",
+      "citation_ids": [
+        "evidence:ppd-devhub-guide-submit-permit-application:certification-step"
+      ]
+    },
+    {
+      "predicate_id": "predicate:submit-action-blocked-without-attendance",
+      "action_type": "submit_permit_request",
+      "citation_ids": [
+        "evidence:ppd-devhub-guide-submit-permit-application:submit-step"
+      ]
+    }
+  ]
+}

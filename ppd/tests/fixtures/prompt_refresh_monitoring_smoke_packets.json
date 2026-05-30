@@ -1,0 +1,91 @@
+{
+  "valid": {
+    "packet_id": "prompt-refresh-smoke-valid",
+    "observations": [
+      {
+        "text": "Fixture-only monitoring transcript records that the prompt refresh checklist was reviewed without running live systems.",
+        "citations": ["fixture:prompt-refresh-checklist"]
+      }
+    ],
+    "escalation_decision": {
+      "decision": "no_escalation",
+      "rationale": "Deterministic fixture contains no evidence of blocked refresh or production drift."
+    },
+    "rollback_trigger_checks": [
+      {
+        "name": "prompt_refresh_guardrail_regression",
+        "checked": true,
+        "triggered": false
+      }
+    ],
+    "allowed_validation_commands": [
+      ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+      "python3 -m pytest ppd/tests/test_prompt_refresh_monitoring_smoke.py"
+    ],
+    "mutation_flags": {
+      "source": false,
+      "schedule": false,
+      "prompt": false,
+      "guardrail": false,
+      "surface_registry": false,
+      "monitoring": false,
+      "release_state": false,
+      "agent_state": false
+    }
+  },
+  "invalid": {
+    "uncited_observation": {
+      "observations": [{"text": "Uncited observation."}],
+      "escalation_decision": {"decision": "none", "rationale": "fixture"},
+      "rollback_trigger_checks": [{"name": "rollback", "checked": true}],
+      "allowed_validation_commands": ["python3 ppd/daemon/ppd_daemon.py --self-test"]
+    },
+    "missing_escalation": {
+      "observations": [{"text": "Cited observation.", "citations": ["fixture:a"]}],
+      "rollback_trigger_checks": [{"name": "rollback", "checked": true}],
+      "allowed_validation_commands": ["python3 ppd/daemon/ppd_daemon.py --self-test"]
+    },
+    "missing_rollback": {
+      "observations": [{"text": "Cited observation.", "citations": ["fixture:a"]}],
+      "escalation_decision": {"decision": "none", "rationale": "fixture"},
+      "allowed_validation_commands": ["python3 ppd/daemon/ppd_daemon.py --self-test"]
+    },
+    "missing_allowed_commands": {
+      "observations": [{"text": "Cited observation.", "citations": ["fixture:a"]}],
+      "escalation_decision": {"decision": "none", "rationale": "fixture"},
+      "rollback_trigger_checks": [{"name": "rollback", "checked": true}]
+    },
+    "private_authenticated_fact": {
+      "observations": [{"text": "Authenticated DevHub account fact was used.", "citations": ["fixture:a"]}],
+      "escalation_decision": {"decision": "none", "rationale": "fixture"},
+      "rollback_trigger_checks": [{"name": "rollback", "checked": true}],
+      "allowed_validation_commands": ["python3 ppd/daemon/ppd_daemon.py --self-test"]
+    },
+    "raw_crawl_output": {
+      "observations": [{"text": "Cited observation.", "citations": ["fixture:a"]}],
+      "raw_crawl_output": "raw",
+      "escalation_decision": {"decision": "none", "rationale": "fixture"},
+      "rollback_trigger_checks": [{"name": "rollback", "checked": true}],
+      "allowed_validation_commands": ["python3 ppd/daemon/ppd_daemon.py --self-test"]
+    },
+    "live_execution_claim": {
+      "observations": [{"text": "We executed the live crawler against DevHub.", "citations": ["fixture:a"]}],
+      "escalation_decision": {"decision": "none", "rationale": "fixture"},
+      "rollback_trigger_checks": [{"name": "rollback", "checked": true}],
+      "allowed_validation_commands": ["python3 ppd/daemon/ppd_daemon.py --self-test"]
+    },
+    "outcome_guarantee": {
+      "observations": [{"text": "The permit will issue and approval is assured.", "citations": ["fixture:a"]}],
+      "escalation_decision": {"decision": "none", "rationale": "fixture"},
+      "rollback_trigger_checks": [{"name": "rollback", "checked": true}],
+      "allowed_validation_commands": ["python3 ppd/daemon/ppd_daemon.py --self-test"]
+    },
+    "mutation_flag": {
+      "observations": [{"text": "Cited observation.", "citations": ["fixture:a"]}],
+      "escalation_decision": {"decision": "none", "rationale": "fixture"},
+      "rollback_trigger_checks": [{"name": "rollback", "checked": true}],
+      "allowed_validation_commands": ["python3 ppd/daemon/ppd_daemon.py --self-test"],
+      "active_prompt_mutation": true
+    }
+  }
+}

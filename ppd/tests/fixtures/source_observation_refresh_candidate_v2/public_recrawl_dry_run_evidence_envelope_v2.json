@@ -1,0 +1,25 @@
+{
+  "schema_version": "public_recrawl_dry_run_evidence_envelope_v2",
+  "evidence": [
+    {
+      "source_id": "permit-center-fees",
+      "evidence_id": "evidence-001",
+      "observed_at": "2026-05-29T00:00:00Z",
+      "metadata": {
+        "url": "https://www.portland.gov/ppd/permit-center/fees",
+        "http_status": 200,
+        "content_type": "text/html"
+      }
+    },
+    {
+      "source_id": "legacy-zoning-cache",
+      "evidence_id": "evidence-002",
+      "observed_at": "2026-05-29T00:00:00Z",
+      "metadata": {
+        "url": "https://www.portland.gov/ppd/zoning",
+        "http_status": 200,
+        "content_type": "text/html"
+      }
+    }
+  ]
+}

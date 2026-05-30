@@ -1,0 +1,54 @@
+{
+  "fixture_id": "synthetic-devhub-action-classification-read-only-observation-v1",
+  "actions": [
+    {
+      "surface_id": "devhub-public-landing",
+      "action_id": "observe-public-guidance",
+      "label": "Observe public guidance text",
+      "classification": "read_only_observation",
+      "rationale": "Reading visible public portal guidance does not advance an authenticated workflow."
+    },
+    {
+      "surface_id": "devhub-public-landing",
+      "action_id": "sign-in-register",
+      "label": "Sign In/Register",
+      "classification": "authentication_boundary",
+      "rationale": "Authentication must remain a manual user-attended boundary."
+    },
+    {
+      "surface_id": "devhub-authenticated-application-summary",
+      "action_id": "review-status-labels",
+      "label": "Review visible status labels",
+      "classification": "read_only_observation",
+      "rationale": "Observation can cite labels but must not store private case values."
+    },
+    {
+      "surface_id": "devhub-authenticated-application-summary",
+      "action_id": "upload-corrections",
+      "label": "Upload corrections",
+      "classification": "consequential_upload",
+      "rationale": "Uploading documents changes an official account-scoped workflow and requires attendance and exact confirmation."
+    },
+    {
+      "surface_id": "devhub-authenticated-application-summary",
+      "action_id": "submit-application",
+      "label": "Submit application",
+      "classification": "consequential_submission",
+      "rationale": "Submission is an official action that must be blocked by this rehearsal."
+    },
+    {
+      "surface_id": "devhub-authenticated-application-summary",
+      "action_id": "pay-fees",
+      "label": "Pay fees",
+      "classification": "financial_action",
+      "rationale": "Payment is a financial workflow requiring separate user-attended guardrails."
+    },
+    {
+      "surface_id": "devhub-authenticated-application-summary",
+      "action_id": "schedule-inspection",
+      "label": "Schedule inspection",
+      "classification": "consequential_scheduling",
+      "rationale": "Scheduling changes an official inspection workflow and is outside read-only observation."
+    }
+  ]
+}

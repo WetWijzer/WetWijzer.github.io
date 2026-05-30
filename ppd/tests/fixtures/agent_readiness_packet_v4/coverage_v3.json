@@ -1,0 +1,13 @@
+{
+  "packet_id": "agent-facing-readiness-contract-coverage-packet-v3",
+  "covered_contracts": [
+    "agent_goal",
+    "evidence_refs",
+    "requested_action",
+    "safe_next_actions"
+  ],
+  "evidence_status": {
+    "process-checkpoint-sequence": "conflicting",
+    "address-normalization-note": "stale"
+  }
+}

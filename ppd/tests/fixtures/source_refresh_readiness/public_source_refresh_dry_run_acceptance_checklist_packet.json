@@ -1,0 +1,31 @@
+{
+  "packet_id": "fixture-public-source-refresh-dry-run-acceptance-20260529",
+  "packet_timestamp": "2026-05-29T00:00:00Z",
+  "sources": [
+    {
+      "source_id": "ppd-online-tools-overview",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "dry_run_status": "accepted_metadata_only",
+      "reviewer": "ppd-public-refresh-reviewer",
+      "citations": [
+        "dry-run:robots-policy-reviewed",
+        "dry-run:no-raw-body-persistence"
+      ]
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "dry_run_status": "blocked_download_would_be_required",
+      "reviewer": "ppd-public-refresh-reviewer",
+      "citations": [
+        "dry-run:pdf-download-not-authorized",
+        "dry-run:no-live-fetch"
+      ]
+    }
+  ],
+  "abort_triggers": [
+    "response requires authentication or account-scoped access",
+    "operator observes redirect to payment, upload, submission, certification, or scheduling workflow",
+    "metadata-only capture would require storing raw response body"
+  ]
+}

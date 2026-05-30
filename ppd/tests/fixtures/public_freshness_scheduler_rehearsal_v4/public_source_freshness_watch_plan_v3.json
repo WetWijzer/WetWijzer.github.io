@@ -1,0 +1,57 @@
+{
+  "schema": "ppd.public_source_freshness_watch_plan.v3",
+  "watch_plan": [
+    {
+      "source_id": "portland-zoning-code",
+      "priority": 1,
+      "freshness_cadence": "P7D",
+      "freshness_signal": "public metadata updated timestamp",
+      "last_seen_metadata_at": "2026-05-20T00:00:00Z",
+      "requires": [
+        "registry-promotion-preview",
+        "source-registry-fixture"
+      ],
+      "reviewer_owner": {
+        "team": "ppd-code-review",
+        "review_required": true
+      },
+      "citations": [
+        {
+          "label": "watch-plan-v3:portland-zoning-code",
+          "field": "last_seen_metadata_at"
+        }
+      ]
+    },
+    {
+      "source_id": "portland-archived-fee-schedule",
+      "priority": 2,
+      "freshness_cadence": "manual-review",
+      "freshness_signal": "archive landing page metadata",
+      "last_seen_metadata_at": "2026-04-18T00:00:00Z",
+      "requires": [
+        "archival-owner-confirmation"
+      ],
+      "citations": [
+        {
+          "label": "watch-plan-v3:portland-archived-fee-schedule",
+          "field": "freshness_signal"
+        }
+      ]
+    },
+    {
+      "source_id": "portland-building-code",
+      "priority": 3,
+      "action": "defer",
+      "defer_reason": "awaiting reviewer confirmation of registry promotion preview",
+      "freshness_cadence": "P14D",
+      "freshness_signal": "public permit-code metadata",
+      "last_seen_metadata_at": "2026-05-01T00:00:00Z",
+      "citations": [
+        {
+          "label": "watch-plan-v3:portland-building-code",
+          "field": "defer_reason"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "ppd.source_registry.fixtures.v1",
+  "sources": [
+    {
+      "source_id": "portland-zoning-code",
+      "public_url": "https://www.portland.gov/code/33",
+      "source_type": "public-code-index",
+      "citations": [
+        {
+          "label": "source-registry-fixture:portland-zoning-code",
+          "field": "public_url"
+        }
+      ]
+    },
+    {
+      "source_id": "portland-building-code",
+      "public_url": "https://www.portland.gov/bds",
+      "source_type": "public-department-index",
+      "citations": [
+        {
+          "label": "source-registry-fixture:portland-building-code",
+          "field": "public_url"
+        }
+      ]
+    },
+    {
+      "source_id": "portland-archived-fee-schedule",
+      "public_url": "https://www.portland.gov/archives",
+      "source_type": "public-archive-index",
+      "citations": [
+        {
+          "label": "source-registry-fixture:portland-archived-fee-schedule",
+          "field": "public_url"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "candidate_version": "devhub_read_only_surface_observation_refresh_candidate_v2",
+  "source_fixtures": {
+    "live_dry_run_acceptance_review_packet_v2": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/live_dry_run_acceptance_review_packet_v2.json",
+    "attended_devhub_read_only_evidence_envelope_v2": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/attended_devhub_read_only_evidence_envelope_v2.json",
+    "surface_registry_refresh_review_fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json"
+  },
+  "observations": [
+    {
+      "surface_id": "permit-search",
+      "surface_name": "Permit Search",
+      "synthetic_observation": "Permit search exposes query fields, filter labels, and result-count copy suitable for selector review.",
+      "synthetic_action_candidate": "Observe read-only permit search filters and result metadata without changing records.",
+      "read_only": true,
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/live_dry_run_acceptance_review_packet_v2.json",
+          "field": "accepted_actions[permit-search]",
+          "supports": "action"
+        },
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/attended_devhub_read_only_evidence_envelope_v2.json",
+          "field": "evidence[permit-search]",
+          "supports": "surface"
+        }
+      ]
+    },
+    {
+      "surface_id": "case-status",
+      "surface_name": "Case Status",
+      "synthetic_observation": "Case status view exposes read-only status text, tab labels, and detail links for reviewer confirmation.",
+      "synthetic_action_candidate": "Observe read-only case status labels and navigation affordances without changing records.",
+      "read_only": true,
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/live_dry_run_acceptance_review_packet_v2.json",
+          "field": "accepted_actions[case-status]",
+          "supports": "action"
+        },
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/attended_devhub_read_only_evidence_envelope_v2.json",
+          "field": "evidence[case-status]",
+          "supports": "surface"
+        }
+      ]
+    }
+  ],
+  "selector_confidence_notes": [
+    {
+      "surface_id": "permit-search",
+      "confidence": "medium",
+      "note": "Selectors should prefer labelled controls over layout positions in the synthetic candidate.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[permit-search].selector_confidence"
+        }
+      ]
+    },
+    {
+      "surface_id": "case-status",
+      "confidence": "low",
+      "note": "Status labels require reviewer confirmation before any live selector promotion.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[case-status].selector_confidence"
+        }
+      ]
+    }
+  ],
+  "manual_handoff_dispositions": [
+    {
+      "surface_id": "permit-search",
+      "required": false,
+      "reason": "Fixture evidence is sufficient for read-only observation refresh review.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[permit-search].manual_handoff_required"
+        }
+      ]
+    },
+    {
+      "surface_id": "case-status",
+      "required": true,
+      "reason": "Fixture indicates dynamic status labels that need attended review.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[case-status].manual_handoff_required"
+        }
+      ]
+    }
+  ],
+  "redaction_dispositions": [
+    {
+      "surface_id": "permit-search",
+      "disposition": "none",
+      "reason": "Fixture includes labels only and no applicant, credential, or account values.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[permit-search].redaction"
+        }
+      ]
+    },
+    {
+      "surface_id": "case-status",
+      "disposition": "synthetic-only",
+      "reason": "Candidate must remain synthetic and omit case identifiers.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[case-status].redaction"
+        }
+      ]
+    }
+  ],
+  "reviewer_owner_fields": [
+    {
+      "surface_id": "permit-search",
+      "reviewer_owner": "ppd-surface-review"
+    },
+    {
+      "surface_id": "case-status",
+      "reviewer_owner": "ppd-reviewer-owner"
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/devhub_surface_observation_refresh_candidate_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "attestations": {
+    "no_live_devhub": true,
+    "no_auth_state": true,
+    "no_screenshot": true,
+    "no_trace": true,
+    "no_har": true,
+    "no_surface_registry_mutation": true
+  }
+}

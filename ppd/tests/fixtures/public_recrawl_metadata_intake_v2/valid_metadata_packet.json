@@ -1,0 +1,22 @@
+{
+  "packet_version": "public-recrawl-post-run-metadata-intake-v2",
+  "run_id": "fixture-run-20260529",
+  "captured_urls": [
+    {
+      "url": "https://www.portland.gov/ppd/devhub-faqs",
+      "decision": "captured",
+      "decision_citation_ids": ["official-source-anchor:devhub-faqs"],
+      "redirect_chain": ["https://www.portland.gov/ppd/devhub-faqs"],
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "decision": "skipped",
+      "decision_citation_ids": ["official-source-anchor:fee-payment-guide"],
+      "skipped_reason": "raw download persistence is not permitted by this metadata intake",
+      "skip_evidence_ids": ["policy:no-raw-download-artifacts"]
+    }
+  ]
+}

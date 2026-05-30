@@ -1,0 +1,22 @@
+{
+  "packet_id": "fixture-traceability-review-20260529",
+  "packet_type": "requirement_to_guardrail_traceability_review",
+  "traceability_findings": [
+    {
+      "requirement_id": "REQ-FEE-PAYMENT-001",
+      "source_id": "SRC-FEE-PAYMENT-GUIDE",
+      "guardrail_id": "GR-PAYMENT-FINAL-SUBMIT",
+      "reviewer_owner": "guardrail-traceability-reviewer",
+      "reviewer_backup": "financial-action-reviewer",
+      "finding_summary": "Payment requirement must be rerun before final-submit guardrail review, without payment workflow automation."
+    },
+    {
+      "requirement_id": "REQ-DEVHUB-UPLOAD-001",
+      "source_id": "SRC-SUBMIT-PLANS-ONLINE",
+      "guardrail_id": "GR-UPLOAD-CONSEQUENTIAL-ACTION",
+      "reviewer_owner": "guardrail-traceability-reviewer",
+      "reviewer_backup": "requirements-reviewer",
+      "finding_summary": "Upload correction trace needs a cited metadata-only rerun item."
+    }
+  ]
+}

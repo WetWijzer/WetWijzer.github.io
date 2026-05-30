@@ -1,0 +1,97 @@
+{
+  "packet_id": "fixture-first-live-dry-run-operator-briefing-packet-v2",
+  "packet_version": 2,
+  "mode": "fixture_first_live_dry_run_briefing_only",
+  "source_packets": {
+    "public_recrawl_live_dry_run_plan_v2": {
+      "packet_id": "public-recrawl-live-dry-run-plan-v2",
+      "scope": "Public recrawl planning only; fixture validation precedes any live crawl.",
+      "artifact_policy": "Do not commit raw crawl output, downloaded documents, browser traces, or newly captured live pages."
+    },
+    "attended_devhub_read_only_live_dry_run_plan_v2": {
+      "packet_id": "attended-devhub-read-only-live-dry-run-plan-v2",
+      "read_only_boundary": "Human-attended observation only; no authentication state or browser artifacts may be persisted.",
+      "human_attendance": "A human operator must be present for any DevHub read-only observation.",
+      "prohibited_actions": [
+        "authenticate",
+        "submit",
+        "upload",
+        "certify",
+        "cancel",
+        "pay",
+        "create_account"
+      ]
+    },
+    "live_readiness_authorization_checklist_packet_v2": {
+      "packet_id": "live-readiness-authorization-checklist-packet-v2",
+      "authorization_gate": "No live execution is authorized by this fixture packet.",
+      "stop_conditions": [
+        "CAPTCHA or MFA prompt",
+        "payment or account creation request",
+        "official submission, certification, cancellation, or upload path",
+        "request to persist auth state, traces, downloads, screenshots, or raw crawl output"
+      ]
+    }
+  },
+  "go_no_go_briefing_notes": [
+    {
+      "decision": "go_only_for_offline_fixture_validation",
+      "note": "Proceed only with deterministic fixture validation and cited briefing review; do not begin live crawling or authenticated browser automation.",
+      "citations": [
+        "public_recrawl_live_dry_run_plan_v2.scope",
+        "attended_devhub_read_only_live_dry_run_plan_v2.read_only_boundary",
+        "live_readiness_authorization_checklist_packet_v2.authorization_gate"
+      ]
+    },
+    {
+      "decision": "no_go_for_live_execution",
+      "note": "Any step that would mutate release state, create auth artifacts, submit official actions, or persist browser traces is outside this packet.",
+      "citations": [
+        "attended_devhub_read_only_live_dry_run_plan_v2.prohibited_actions",
+        "live_readiness_authorization_checklist_packet_v2.stop_conditions"
+      ]
+    }
+  ],
+  "required_human_attendance_checkpoints": [
+    {
+      "checkpoint": "pre_run_scope_review",
+      "required_attendee": "task supervisor or delegated PP&D operator",
+      "purpose": "Confirm fixture inputs, cited source packet versions, and no-live-execution boundaries before validation.",
+      "citations": ["live_readiness_authorization_checklist_packet_v2.authorization_gate"]
+    },
+    {
+      "checkpoint": "devhub_read_only_observation",
+      "required_attendee": "human operator physically present at the browser session",
+      "purpose": "Observe only; do not authenticate, submit, upload, certify, cancel, or persist browser artifacts.",
+      "citations": ["attended_devhub_read_only_live_dry_run_plan_v2.human_attendance"]
+    },
+    {
+      "checkpoint": "post_run_artifact_review",
+      "required_attendee": "task supervisor or delegated PP&D reviewer",
+      "purpose": "Review redacted briefing artifacts and confirm no private session state or raw crawl output was created.",
+      "citations": ["public_recrawl_live_dry_run_plan_v2.artifact_policy"]
+    }
+  ],
+  "independent_stop_conditions": [
+    "Any prompt for CAPTCHA, MFA, payment, account creation, submission, certification, cancellation, or upload.",
+    "Any request to store cookies, tokens, auth state, session files, traces, screenshots, downloads, or raw crawl output.",
+    "Any mismatch between fixture packet versions and the cited briefing notes.",
+    "Any command or operator instruction that would mutate release state or perform an official action."
+  ],
+  "artifact_redaction_expectations": [
+    "Briefing artifacts must contain citations and derived notes only, not raw DevHub pages or downloaded documents.",
+    "Private identifiers, cookies, tokens, credentials, browser profiles, screenshots, traces, and session storage must be absent.",
+    "Public recrawl examples must be fixture excerpts or stable public references, not newly captured live output."
+  ],
+  "allowed_offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "py_compile", "ppd/live_dry_run_operator_briefing_packet_v2.py"]
+  ],
+  "attestations": {
+    "no_live_execution": true,
+    "no_auth_state": true,
+    "no_browser_artifact": true,
+    "no_official_action": true,
+    "no_release_state_mutation": true
+  }
+}

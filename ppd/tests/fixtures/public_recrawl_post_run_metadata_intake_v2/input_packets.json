@@ -1,0 +1,158 @@
+{
+  "operator_packet_v2": {
+    "packetType": "ppd_public_recrawl_operator_packet",
+    "schemaVersion": 2,
+    "generatedAt": "2026-05-29T00:00:00Z",
+    "mode": "fixture_first_public_metadata_recrawl_review",
+    "seed_batches": [
+      {
+        "batch_id": "ppd-public-anchors-20260529",
+        "source_evidence_ids": ["ppd-plan-official-source-anchors-20260508"],
+        "seeds": [
+          {
+            "url": "https://www.portland.gov/ppd",
+            "source_evidence_ids": ["ppd-plan-official-source-anchors-20260508"],
+            "robots_decision": {
+              "decision": "manual_preflight_required_before_any_separate_live_run",
+              "metadata_only": true
+            }
+          },
+          {
+            "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+            "source_evidence_ids": ["ppd-plan-official-source-anchors-20260508"],
+            "robots_decision": {
+              "decision": "manual_preflight_required_before_any_separate_live_run",
+              "metadata_only": true
+            }
+          }
+        ]
+      }
+    ],
+    "operator_controls": {
+      "network_allowed": false,
+      "processor_invoked": false,
+      "persist_raw_body": false,
+      "apply_source_updates": false,
+      "apply_schedule_updates": false,
+      "apply_requirement_updates": false,
+      "apply_process_updates": false,
+      "apply_guardrail_updates": false,
+      "apply_prompt_updates": false,
+      "apply_monitoring_updates": false,
+      "apply_release_state_updates": false
+    },
+    "abort_conditions": [
+      "Stop if any seed lacks a current robots or skip decision.",
+      "Stop if any URL points outside the public PP&D allowlist.",
+      "Stop if any packet content references authenticated paths, raw bodies, downloads, archives, live crawls, processor execution, outcome guarantees, or state mutation."
+    ],
+    "post_run_review_prompts": [
+      "Review metadata-only results in a separate promotion packet before registry or release-state changes."
+    ]
+  },
+  "source_refresh_runbook": {
+    "packet_type": "source_refresh_runbook_candidate",
+    "packet_version": "1.1",
+    "reviewer_owner_fields": {
+      "primary_reviewer": "ppd_public_sources_reviewer",
+      "backup_reviewer": "ppd_guardrails_reviewer",
+      "review_queue": "source-refresh-metadata-only"
+    },
+    "candidate_sources": [
+      {
+        "source_id": "ppd-landing-page",
+        "canonical_url": "https://www.portland.gov/ppd",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_guidance",
+        "refresh_reason": "daily PP&D public landing page freshness review",
+        "processor_policy": "metadata_only_no_processor",
+        "rate_limit_window": {
+          "window": "metadata-only review; no live request window opened",
+          "max_requests_per_window": 0,
+          "evidence_ref": "rate-limit-evidence:metadata-only:2026-05-08"
+        },
+        "robots_policy": {
+          "decision": "allowed_by_fixture_preflight",
+          "evidence_ref": "robots-evidence:www.portland.gov:2026-05-08"
+        },
+        "policy_evidence": {
+          "decision": "public_first_party_guidance",
+          "evidence_ref": "policy-evidence:official-source-anchor:ppd"
+        }
+      },
+      {
+        "source_id": "ppd-online-tools-overview",
+        "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+        "source_type": "public_html",
+        "owning_surface": "ppd_public_guidance",
+        "refresh_reason": "daily DevHub and online tools guidance freshness review",
+        "processor_policy": "metadata_only_no_processor",
+        "rate_limit_window": {
+          "window": "metadata-only review; no live request window opened",
+          "max_requests_per_window": 0,
+          "evidence_ref": "rate-limit-evidence:metadata-only:2026-05-08"
+        },
+        "robots_policy": {
+          "decision": "allowed_by_fixture_preflight",
+          "evidence_ref": "robots-evidence:www.portland.gov:2026-05-08"
+        },
+        "policy_evidence": {
+          "decision": "public_first_party_guidance",
+          "evidence_ref": "policy-evidence:official-source-anchor:online-permitting-tools"
+        }
+      }
+    ]
+  },
+  "source_refresh_metadata_intake_fixture": {
+    "packet_id": "public-source-refresh-metadata-intake-20260529-fixture",
+    "synthetic_metadata_only_capture_records": [
+      {
+        "capture_id": "synthetic-capture-ppd-landing-page",
+        "source_id": "ppd-landing-page",
+        "canonical_url": "https://www.portland.gov/ppd",
+        "requested_url": "https://www.portland.gov/ppd",
+        "final_url": "https://www.portland.gov/ppd",
+        "redirect_chain": ["https://www.portland.gov/ppd"],
+        "http_status": 200,
+        "content_hash": "sha256:fixturemetadataonlyppdlanding000000000000000000000000000000000001",
+        "previous_content_hash": "sha256:fixturemetadataonlyppdlanding000000000000000000000000000000000000",
+        "content_type": "text/html; charset=utf-8",
+        "checked_at": "2026-05-29T00:00:00Z",
+        "freshness_status": "changed_hash_needs_review",
+        "reviewer_owner": "ppd-public-source-refresh-rehearsal-reviewer",
+        "citation_refs": ["public-source-refresh-launch-rehearsal-transcript-20260529-fixture-first"],
+        "metadata_only": true,
+        "synthetic": true,
+        "raw_body_persisted": false,
+        "document_downloaded": false,
+        "processor_invoked": false,
+        "registry_mutated": false,
+        "schedule_mutated": false
+      },
+      {
+        "capture_id": "synthetic-capture-online-tools-skipped",
+        "source_id": "ppd-online-tools-overview",
+        "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+        "requested_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+        "final_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+        "redirect_chain": ["https://www.portland.gov/ppd/how-use-online-permitting-tools"],
+        "http_status": null,
+        "content_hash": "",
+        "previous_content_hash": "",
+        "content_type": "not_captured",
+        "checked_at": "2026-05-29T00:00:00Z",
+        "freshness_status": "skipped_pending_operator_review",
+        "skipped_reason": "operator_not_selected_for_metadata_only_capture",
+        "reviewer_owner": "ppd-public-source-refresh-rehearsal-reviewer",
+        "citation_refs": ["public-source-refresh-launch-rehearsal-transcript-20260529-fixture-first"],
+        "metadata_only": true,
+        "synthetic": true,
+        "raw_body_persisted": false,
+        "document_downloaded": false,
+        "processor_invoked": false,
+        "registry_mutated": false,
+        "schedule_mutated": false
+      }
+    ]
+  }
+}

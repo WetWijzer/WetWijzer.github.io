@@ -1,0 +1,18 @@
+{
+  "packet_id": "guardrail-refresh-regression-matrix-v2-fixture",
+  "version": "v2",
+  "passed_regressions": [
+    "safe read-only review remains allowed",
+    "reversible draft plan remains allowed",
+    "official submission remains blocked",
+    "fee payment remains blocked",
+    "inspection scheduling remains blocked"
+  ],
+  "blocked_action_gates": [
+    "submit permit request",
+    "final payment execution",
+    "official correction upload",
+    "inspection scheduling",
+    "permit cancellation or withdrawal"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "packet_version": "live-readiness-authorization-checklist-v2",
+  "packet_id": "ppd-live-readiness-fixture-v2-valid",
+  "prerequisites": [
+    {
+      "id": "public-source-preflight",
+      "description": "Official public source anchors are identified and cited before any readiness decision.",
+      "source_evidence_ids": ["ppd-plan-official-source-anchors"]
+    },
+    {
+      "id": "deterministic-fixtures-present",
+      "description": "Validation uses committed deterministic fixtures only.",
+      "citation": "docs/PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md#Non-Negotiable-Boundaries"
+    }
+  ],
+  "reviewer_signoff": {
+    "name": "PPD Fixture Reviewer",
+    "role": "reviewer",
+    "timestamp": "2026-05-29T00:00:00Z",
+    "affirmation": "Reviewed as a commit-safe validation fixture."
+  },
+  "operator_signoff": {
+    "name": "PPD Fixture Operator",
+    "role": "operator",
+    "timestamp": "2026-05-29T00:00:00Z",
+    "affirmation": "No live DevHub or official action is authorized by this packet."
+  },
+  "fixture_gaps": [],
+  "facts": [
+    {
+      "id": "public-guidance-only",
+      "privacy_classification": "public",
+      "text": "DevHub actions remain attended and confirmation-gated."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "commit-safe-fixture",
+      "kind": "json_fixture",
+      "path": "ppd/tests/fixtures/live_readiness_authorization_packet_v2/valid_packet.json"
+    }
+  ],
+  "notes": [
+    "This packet validates readiness guardrails using public citations and deterministic fixtures only."
+  ],
+  "mutation_flags": {
+    "active_source_mutation": false,
+    "active_schedule_mutation": false,
+    "active_surface_registry_mutation": false,
+    "active_prompt_mutation": false,
+    "active_monitoring_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  }
+}

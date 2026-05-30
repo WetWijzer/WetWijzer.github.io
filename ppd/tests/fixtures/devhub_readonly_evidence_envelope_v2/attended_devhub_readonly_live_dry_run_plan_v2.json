@@ -1,0 +1,23 @@
+{
+  "version": "attended-devhub-readonly-live-dry-run-plan-v2",
+  "visible_surface_labels": [
+    "DevHub dashboard landing surface",
+    "Permit search read-only results surface",
+    "Application detail read-only metadata surface"
+  ],
+  "allowed_read_only_checks": [
+    "Confirm page title and URL origin after operator handoff",
+    "Read visible permit or application labels already shown to the operator without copying values",
+    "Record only synthetic observations derived from this fixture"
+  ],
+  "manual_login_mfa_captcha_handoff_notes": [
+    "Operator completes sign-in, MFA, and CAPTCHA manually outside automation control",
+    "Automation pauses before authenticated review surfaces and resumes only after explicit operator handoff",
+    "Credential and browser persistence material is excluded from committed evidence"
+  ],
+  "operator_abort_conditions": [
+    "Any prompt for official application action",
+    "Any request to automate CAPTCHA, MFA, account creation, or credential entry",
+    "Any unexpected navigation outside read-only DevHub review surfaces"
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "user_gap_fixture": {
+    "case_id": "case::adu-demo-fixture",
+    "known_facts": {
+      "fact::site-address": "1221 SW Fixture Ave",
+      "fact::permit-type": "Detached ADU",
+      "fact::property-owner": "",
+      "fact::contractor-license": "CCB-000000"
+    },
+    "matched_documents": [
+      {
+        "document_id": "doc::old-site-plan",
+        "label": "Existing site plan draft",
+        "status": "stale",
+        "citation_ids": ["src::single-pdf-process::separate-documents"]
+      }
+    ],
+    "stale_evidence": [
+      {
+        "fact_id": "fact::site-plan-prepared",
+        "message": "The matched site plan draft predates the cited Single PDF Process fixture and must be rechecked before draft preview values depend on it.",
+        "citation_ids": ["src::single-pdf-process::separate-documents"],
+        "blocks_draft_fields": ["draft-field::site-plan-file"]
+      }
+    ],
+    "conflicting_evidence": [
+      {
+        "fact_id": "fact::property-owner",
+        "message": "The owner field is blank while the draft handoff packet contains an owner-dependent acknowledgement checkpoint.",
+        "citation_ids": ["src::devhub-submit-guide::dynamic-questions"],
+        "blocks_draft_fields": ["draft-field::property-owner"]
+      }
+    ]
+  },
+  "process_model_fixture": {
+    "process_id": "process::detached-adu-devhub-preview",
+    "permit_type": "Detached ADU",
+    "required_user_facts": [
+      {
+        "fact_id": "fact::site-address",
+        "prompt": "Confirm the project site address for the Detached ADU draft preview.",
+        "citation_ids": ["src::devhub-submit-guide::dynamic-questions"],
+        "blocks_draft_fields": ["draft-field::site-address"]
+      },
+      {
+        "fact_id": "fact::property-owner",
+        "prompt": "Who is the property owner that should be reviewed before any owner-dependent acknowledgement is shown?",
+        "citation_ids": ["src::devhub-submit-guide::dynamic-questions"],
+        "blocks_draft_fields": ["draft-field::property-owner"]
+      },
+      {
+        "fact_id": "fact::site-plan-prepared",
+        "prompt": "Do you have a current site plan prepared as a separate PDF from applications, calculations, and other supporting documents?",
+        "citation_ids": ["src::single-pdf-process::separate-documents"],
+        "blocks_draft_fields": ["draft-field::site-plan-file"]
+      }
+    ],
+    "required_documents": [
+      {
+        "document_id": "required-doc::site-plan-pdf",
+        "label": "Current site plan PDF",
+        "citation_ids": ["src::single-pdf-process::separate-documents"]
+      }
+    ]
+  },
+  "guardrail_fixture": {
+    "guardrail_bundle_id": "guardrail::draft-preview-bridge-v1-fixture",
+    "user_review_checkpoints": [
+      {
+        "checkpoint_id": "checkpoint::no-certification",
+        "label": "Stop before any acknowledgement, certification, upload, submission, scheduling, cancellation, or payment action.",
+        "required_before": "consequential_official_action",
+        "citation_ids": ["src::devhub-submit-guide::acknowledgement"]
+      }
+    ],
+    "next_safe_read_only_actions": [
+      {
+        "action_id": "read::review-single-pdf-guidance",
+        "label": "Review cited Single PDF Process guidance before asking the user for document readiness facts.",
+        "classification": "read_only",
+        "requires_devhub_auth": false,
+        "citation_ids": ["src::single-pdf-process::separate-documents"]
+      },
+      {
+        "action_id": "read::review-devhub-submit-guide",
+        "label": "Review cited DevHub permit application guidance for dynamic questions and save-for-later limits.",
+        "classification": "read_only",
+        "requires_devhub_auth": false,
+        "citation_ids": ["src::devhub-submit-guide::dynamic-questions"]
+      },
+      {
+        "action_id": "devhub::open-my-permits",
+        "label": "Open authenticated DevHub My Permits.",
+        "classification": "read_only",
+        "requires_devhub_auth": true,
+        "citation_ids": ["src::devhub-faq::account-services"]
+      },
+      {
+        "action_id": "official::submit-application",
+        "label": "Submit the permit application.",
+        "classification": "consequential_official",
+        "requires_devhub_auth": true,
+        "citation_ids": ["src::devhub-submit-guide::acknowledgement"]
+      }
+    ]
+  },
+  "handoff_packet_v4": {
+    "handoff_id": "handoff-v4::adu-demo-fixture",
+    "packet_version": "reversible_draft_preview_handoff_v4",
+    "preview_mode": "offline_fixture",
+    "official_action_performed": false,
+    "draft_fields": [
+      {
+        "field_id": "draft-field::site-address",
+        "label": "Project site address",
+        "requires_fact_ids": ["fact::site-address"]
+      },
+      {
+        "field_id": "draft-field::property-owner",
+        "label": "Property owner name",
+        "requires_fact_ids": ["fact::property-owner"]
+      },
+      {
+        "field_id": "draft-field::site-plan-file",
+        "label": "Site plan PDF readiness",
+        "requires_fact_ids": ["fact::site-plan-prepared"]
+      }
+    ],
+    "handoff_actions": [
+      {
+        "action_id": "preview::render-local-draft-summary",
+        "classification": "reversible_draft"
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "checkpoint_id": "checkpoint::preview-only",
+        "label": "User must review the preview as reversible local draft content only.",
+        "required_before": "draft_preview_review",
+        "citation_ids": ["src::devhub-submit-guide::save-for-later"]
+      }
+    ]
+  }
+}

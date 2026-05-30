@@ -1,0 +1,260 @@
+{
+  "fixture_id": "guardrail-to-agent-explanation-synthetic-case-v1",
+  "source_evidence": [
+    {
+      "evidence_id": "ev-submit-plans-online-single-pdf",
+      "source_type": "public_html",
+      "title": "Submit Plans Online / Single PDF Process",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "last_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "current",
+      "no_raw_body_persisted": true
+    },
+    {
+      "evidence_id": "ev-devhub-submit-application-guide",
+      "source_type": "public_html",
+      "title": "DevHub permit application guide",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "last_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "current",
+      "no_raw_body_persisted": true
+    },
+    {
+      "evidence_id": "ev-devhub-fee-payment-guide",
+      "source_type": "public_pdf",
+      "title": "How to pay fees",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "last_verified_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "current",
+      "no_raw_body_persisted": true
+    }
+  ],
+  "guardrail_bundle": {
+    "guardrail_bundle_id": "guardrail-explanation-single-pdf-v1",
+    "process_id": "ppd-single-pdf-plan-review-v1",
+    "source_evidence_ids": [
+      "ev-submit-plans-online-single-pdf",
+      "ev-devhub-submit-application-guide",
+      "ev-devhub-fee-payment-guide"
+    ],
+    "validation_status": "fixture_validated",
+    "deterministic_predicates": [
+      {
+        "predicate_id": "predicate-project-scope-required",
+        "predicate": "requires_missing_fact_answer",
+        "fact_id": "project_scope_summary",
+        "agent_instruction": "Ask for project scope metadata before preparing a local draft checklist.",
+        "source_evidence_ids": [
+          "ev-devhub-submit-application-guide"
+        ]
+      }
+    ],
+    "reversible_action_predicates": [
+      {
+        "predicate_id": "predicate-local-readiness-summary",
+        "action_id": "summarize-readiness-from-fixtures",
+        "action": "summarize readiness from committed fixtures",
+        "classification": "reversible_draft",
+        "source_evidence_ids": [
+          "ev-submit-plans-online-single-pdf",
+          "ev-devhub-submit-application-guide"
+        ]
+      }
+    ],
+    "refused_action_predicates": [
+      {
+        "predicate_id": "predicate-refuse-submit-permit-request",
+        "action_id": "submit-permit-request",
+        "action": "submit permit request",
+        "classification": "submission",
+        "refusal_reason": "Submitting a permit request is an official PP&D action and requires attended user control with exact confirmation.",
+        "source_evidence_ids": [
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-refuse-upload-plans",
+        "action_id": "upload-plans-to-official-record",
+        "action": "upload plans to official record",
+        "classification": "upload_to_official_record",
+        "refusal_reason": "Uploading plans to the official DevHub record is consequential and must remain an attended handoff.",
+        "source_evidence_ids": [
+          "ev-submit-plans-online-single-pdf",
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-refuse-pay-review-fees",
+        "action_id": "pay-review-fees",
+        "action": "pay PP&D review fees",
+        "classification": "payment",
+        "refusal_reason": "Fee payment is a financial workflow and must stop before payment detail entry or final payment submission.",
+        "source_evidence_ids": [
+          "ev-devhub-fee-payment-guide"
+        ]
+      }
+    ],
+    "exact_confirmation_predicates": [
+      {
+        "predicate_id": "predicate-confirm-submit-permit-request",
+        "confirmation_id": "submit-permit-request",
+        "action_id": "submit-permit-request",
+        "confirmation_text": "I confirm that I am ready to submit this PP&D permit request in DevHub.",
+        "source_evidence_ids": [
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-confirm-upload-plans",
+        "confirmation_id": "upload-plans-to-official-record",
+        "action_id": "upload-plans-to-official-record",
+        "confirmation_text": "I confirm that I am ready to upload these plans to the official DevHub record.",
+        "source_evidence_ids": [
+          "ev-submit-plans-online-single-pdf",
+          "ev-devhub-submit-application-guide"
+        ]
+      },
+      {
+        "predicate_id": "predicate-confirm-pay-review-fees",
+        "confirmation_id": "pay-review-fees",
+        "action_id": "pay-review-fees",
+        "confirmation_text": "I confirm that I am ready to pay these PP&D review fees in DevHub.",
+        "source_evidence_ids": [
+          "ev-devhub-fee-payment-guide"
+        ]
+      }
+    ]
+  },
+  "user_gap_analysis": {
+    "case_id": "case-synthetic-guardrail-explanation",
+    "process_id": "ppd-single-pdf-plan-review-v1",
+    "guardrail_bundle_id": "guardrail-explanation-single-pdf-v1",
+    "known_facts": [
+      {
+        "fact_id": "has_devhub_account",
+        "presence": "present",
+        "value_policy": "presence_only"
+      }
+    ],
+    "matched_documents": [],
+    "missing_facts": [
+      "project_scope_summary"
+    ],
+    "missing_documents": [
+      "single_pdf_plan_set"
+    ],
+    "stale_evidence": [
+      {
+        "evidence_id": "fixture-user-upload-inventory",
+        "reason": "User-provided document inventory has not been refreshed in this synthetic fixture."
+      }
+    ],
+    "conflicting_evidence": [
+      {
+        "conflict_id": "fixture-plan-set-label-conflict",
+        "reason": "One synthetic document label says plans while another says application packet."
+      }
+    ],
+    "required_confirmations": [
+      {
+        "confirmation_id": "submit-permit-request",
+        "action_id": "submit-permit-request"
+      },
+      {
+        "confirmation_id": "upload-plans-to-official-record",
+        "action_id": "upload-plans-to-official-record"
+      },
+      {
+        "confirmation_id": "pay-review-fees",
+        "action_id": "pay-review-fees"
+      }
+    ],
+    "blocked_actions": [
+      {
+        "action_id": "submit-permit-request",
+        "classification": "submission",
+        "reason": "Missing project scope and plan set; final submission also requires attended exact confirmation."
+      },
+      {
+        "action_id": "upload-plans-to-official-record",
+        "classification": "upload_to_official_record",
+        "reason": "Official upload is blocked until the user is present and confirms the exact action."
+      },
+      {
+        "action_id": "pay-review-fees",
+        "classification": "payment",
+        "reason": "Payment is blocked until the user is present, reviews the fees, and confirms the exact payment action."
+      }
+    ],
+    "next_safe_actions": [
+      {
+        "next_safe_action_id": "summarize-readiness-from-fixtures",
+        "action_id": "summarize-readiness-from-fixtures",
+        "classification": "reversible_draft"
+      },
+      {
+        "next_safe_action_id": "review-cited-public-guidance",
+        "action_id": "review-cited-public-guidance",
+        "classification": "read_only"
+      }
+    ]
+  },
+  "blocked_action_fixtures": [
+    {
+      "fixture_id": "blocked-action-submit-permit-request",
+      "action_id": "submit-permit-request",
+      "classification": "submission",
+      "reason": "Submission is an official PP&D action and is fixture-blocked."
+    },
+    {
+      "fixture_id": "blocked-action-upload-plans-to-official-record",
+      "action_id": "upload-plans-to-official-record",
+      "classification": "upload_to_official_record",
+      "reason": "Upload to the official record is fixture-blocked."
+    },
+    {
+      "fixture_id": "blocked-action-pay-review-fees",
+      "action_id": "pay-review-fees",
+      "classification": "payment",
+      "reason": "Payment is fixture-blocked before payment detail entry or final payment submission."
+    }
+  ],
+  "agent_readiness_adapter_outputs": [
+    {
+      "response_id": "adapter-output-missing-information",
+      "example_kind": "missing_information_prompt",
+      "ready": false,
+      "safe_next_action_classes": [
+        "ask_missing_information"
+      ],
+      "citations": [
+        "guardrail-bundle-fixtures-v1",
+        "user-gap-analysis-fixtures-v1"
+      ]
+    },
+    {
+      "response_id": "adapter-output-blocked-action",
+      "example_kind": "blocked_action_explanation",
+      "ready": false,
+      "safe_next_action_classes": [
+        "explain_block"
+      ],
+      "citations": [
+        "guardrail-bundle-fixtures-v1",
+        "blocked-action-fixtures-v1"
+      ]
+    },
+    {
+      "response_id": "adapter-output-next-safe-action",
+      "example_kind": "next_safe_read_only_action",
+      "ready": true,
+      "safe_next_action_classes": [
+        "read_only_summary",
+        "draft_local_preview"
+      ],
+      "citations": [
+        "agent-facing-readiness-contract-coverage-packet-v3"
+      ]
+    }
+  ]
+}

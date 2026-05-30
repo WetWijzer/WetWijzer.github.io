@@ -1,0 +1,47 @@
+{
+  "schema_version": "post-dry-run-guardrail-impact-review-v2",
+  "review_id": "review-dry-run-refresh-proposal-001",
+  "guardrail_bundle_id": "bundle-building-permit-draft-v1",
+  "predicate_ids": [
+    "predicate-requires-exact-confirmation-before-submit"
+  ],
+  "rollback_notes": "No active state was changed. Keep the current compiled bundle and discard the dry-run candidate.",
+  "reviewer_owners": [
+    {
+      "owner_id": "ppd-guardrail-review",
+      "role": "policy reviewer"
+    }
+  ],
+  "blocked_action_checks": [
+    {
+      "action_id": "submit-permit-request",
+      "blocked": true,
+      "citation_ids": [
+        "src-devhub-submit-guide-certification-step"
+      ],
+      "rationale": "Consequential actions require attendance and exact confirmation."
+    }
+  ],
+  "impact_decisions": [
+    {
+      "decision_id": "decision-refresh-source-surface-001",
+      "predicate_ids": [
+        "predicate-requires-exact-confirmation-before-submit"
+      ],
+      "citation_ids": [
+        "src-devhub-submit-guide-certification-step",
+        "src-public-permit-center-fees"
+      ],
+      "outcome": "Keep consequential actions blocked during draft-only dry runs."
+    }
+  ],
+  "mutation_flags": {
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_source_mutation": false,
+    "active_surface_registry_mutation": false,
+    "active_monitoring_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  }
+}

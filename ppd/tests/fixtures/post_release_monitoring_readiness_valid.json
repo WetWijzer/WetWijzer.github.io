@@ -1,0 +1,31 @@
+{
+  "packet_id": "post-release-monitoring-readiness-fixture",
+  "release_id": "fixture-release",
+  "monitoring_checks": [
+    {
+      "check_id": "source-freshness-report-present",
+      "description": "Confirm the offline source freshness report fixture can be parsed.",
+      "source_evidence_ids": ["source:ppd-plan:change-monitoring"],
+      "escalation_threshold": "any missing fixture report blocks release monitoring signoff"
+    },
+    {
+      "check_id": "guardrail-bundle-validation-present",
+      "description": "Confirm guardrail validation output is available from deterministic tests.",
+      "citations": ["source:ppd-plan:guardrail-bundle"],
+      "escalation_threshold": "any failed deterministic guardrail validation blocks release monitoring signoff"
+    }
+  ],
+  "escalation_thresholds": {
+    "missing_fixture": "block",
+    "failed_guardrail_validation": "block"
+  },
+  "rollback": {
+    "owner": "PPD release steward",
+    "procedure": "Revert the local PP&D readiness proposal and rerun offline validation."
+  },
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/monitoring/readiness.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_post_release_monitoring_readiness.py"]
+  ],
+  "notes": "Offline fixture-only readiness packet; no live automation or outcome guarantees."
+}

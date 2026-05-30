@@ -1,0 +1,38 @@
+{
+  "fixture_id": "local-pdf-field-mapping-fixtures-v4-20260530",
+  "fixture_kind": "local_pdf_field_mapping_fixtures_v4",
+  "workflow_id": "ppd-demo-permit-readiness",
+  "pdf_template_id": "ppd-demo-application-preview-template",
+  "citation_ids": [
+    "process-model-fixtures-v1",
+    "user-gap-analysis-fixtures-v1",
+    "guardrail-bundle-fixtures-v1"
+  ],
+  "known_fact_keys": [
+    "permit_address"
+  ],
+  "fields": [
+    {
+      "field_id": "permit-address-line",
+      "field_label": "Permit address",
+      "fact_key": "permit_address",
+      "draft_display": "Use the fixture permit-address fact after user review.",
+      "missing_fact_question": "What is the permit address for the draft preview?",
+      "citation_ids": [
+        "process-model-fixtures-v1",
+        "user-gap-analysis-fixtures-v1"
+      ]
+    },
+    {
+      "field_id": "applicant-role-checkbox",
+      "field_label": "Applicant role",
+      "fact_key": "applicant_role",
+      "draft_display": "Select the applicant-role fixture option only after user review.",
+      "missing_fact_question": "What applicant role should be used for the draft preview?",
+      "citation_ids": [
+        "user-gap-analysis-fixtures-v1",
+        "guardrail-bundle-fixtures-v1"
+      ]
+    }
+  ]
+}

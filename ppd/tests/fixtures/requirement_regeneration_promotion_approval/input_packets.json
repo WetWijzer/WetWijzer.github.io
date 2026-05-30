@@ -1,0 +1,36 @@
+{
+  "candidate_packet": {
+    "packet_id": "requirement-regeneration-promotion-candidate-packet",
+    "citations": ["candidate-packet#fixture"],
+    "expected_offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+    "candidate_deltas": [
+      {
+        "id": "delta-approved-fixture-first-promotion",
+        "citations": ["candidate-packet#delta-approved-fixture-first-promotion"],
+        "impacted_artifact_ids": ["artifact.requirement-regeneration.packet"],
+        "rollback_plan": "Revert the approval packet fixture to the last accepted version and rerun offline validation."
+      },
+      {
+        "id": "delta-deferred-missing-freshness",
+        "citations": ["candidate-packet#delta-deferred-missing-freshness"],
+        "impacted_artifact_ids": ["artifact.requirement-regeneration.delta"]
+      }
+    ]
+  },
+  "release_blocker_packet": {
+    "packet_id": "release-blocker-closure-review-packet",
+    "citations": ["release-blocker-review#closed"],
+    "release_blockers_closed": true,
+    "closed_blockers": [{"id": "blocker.fixture-regeneration-reviewed"}],
+    "open_blockers": [],
+    "blocked_delta_ids": [],
+    "impacted_artifact_ids": ["artifact.release-blocker.review"]
+  },
+  "freshness_packet": {
+    "packet_id": "agent-freshness-regression-acceptance-packet",
+    "citations": ["freshness-acceptance#accepted"],
+    "freshness_regression_accepted": true,
+    "accepted_delta_ids": ["delta-approved-fixture-first-promotion"],
+    "impacted_artifact_ids": ["artifact.agent-freshness.acceptance"]
+  }
+}

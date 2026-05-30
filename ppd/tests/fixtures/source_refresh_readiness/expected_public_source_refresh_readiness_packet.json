@@ -1,0 +1,138 @@
+{
+  "schema_version": "ppd-public-source-refresh-readiness-v1",
+  "packet_id": "fixture-public-source-refresh-readiness-20260529",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "inputs": {
+    "tranche_proposal_packet_id": "fixture-public-source-refresh-tranche-proposal-20260529",
+    "dry_run_acceptance_packet_id": "fixture-public-source-refresh-dry-run-acceptance-20260529",
+    "runbook_candidate_id": "fixture-public-source-refresh-runbook-candidate-20260529"
+  },
+  "execution_scope": "fixture_first_public_source_refresh_readiness",
+  "per_source_go_no_go": [
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "decision": "no_go",
+      "reasons": [
+        "proposal decision is defer_download",
+        "dry-run acceptance is blocked_download_would_be_required"
+      ],
+      "citations": [
+        "dry-run:no-live-fetch",
+        "dry-run:pdf-download-not-authorized",
+        "plan:official-source-anchors:fee-payment-guide",
+        "proposal:tranche-1:download-deferred",
+        "runbook:download-deferred-until-explicit-approval",
+        "runbook:financial-workflow-boundary"
+      ],
+      "reviewer_owner": "ppd-public-refresh-reviewer",
+      "operator_owner": "ppd-public-refresh-operator"
+    },
+    {
+      "source_id": "ppd-online-tools-overview",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "decision": "go",
+      "reasons": [
+        "proposal, dry-run checklist, and runbook all support metadata-only refresh readiness"
+      ],
+      "citations": [
+        "dry-run:no-raw-body-persistence",
+        "dry-run:robots-policy-reviewed",
+        "plan:official-source-anchors:online-permitting-tools-overview",
+        "proposal:tranche-1:metadata-only-refresh",
+        "runbook:metadata-only-capture-record",
+        "runbook:no-processor-before-review"
+      ],
+      "reviewer_owner": "ppd-public-refresh-reviewer",
+      "operator_owner": "ppd-public-refresh-operator"
+    }
+  ],
+  "operator_attendance_prerequisites": [
+    "operator is present and can stop the run before any live fetch is attempted",
+    "reviewer has approved the exact source list and metadata-only capture fields",
+    "network, download, processor, and registry mutation switches remain disabled for readiness review"
+  ],
+  "abort_triggers": [
+    "any source resolves outside the approved public allowlist",
+    "any step would invoke a processor or mutate the source registry before reviewer approval",
+    "any workflow requests credentials, MFA, CAPTCHA, payment, upload, submission, certification, scheduling, or account creation",
+    "metadata-only capture would require storing raw response body",
+    "operator observes redirect to payment, upload, submission, certification, or scheduling workflow",
+    "response requires authentication or account-scoped access"
+  ],
+  "expected_metadata_only_capture_records": [
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "capture_mode": "metadata_only",
+      "expected_content_type": "application/pdf",
+      "expected_fields": [
+        "source_id",
+        "canonical_url",
+        "http_status",
+        "content_type",
+        "content_hash",
+        "capture_started_at",
+        "capture_finished_at",
+        "processor_name",
+        "processor_version",
+        "skipped_reason",
+        "no_raw_body_persisted"
+      ],
+      "forbidden_fields": [
+        "raw_body",
+        "downloaded_document_path",
+        "authenticated_session_state",
+        "private_page_value"
+      ]
+    },
+    {
+      "source_id": "ppd-online-tools-overview",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "capture_mode": "metadata_only",
+      "expected_content_type": "text/html",
+      "expected_fields": [
+        "source_id",
+        "canonical_url",
+        "http_status",
+        "content_type",
+        "content_hash",
+        "capture_started_at",
+        "capture_finished_at",
+        "processor_name",
+        "processor_version",
+        "skipped_reason",
+        "no_raw_body_persisted"
+      ],
+      "forbidden_fields": [
+        "raw_body",
+        "downloaded_document_path",
+        "authenticated_session_state",
+        "private_page_value"
+      ]
+    }
+  ],
+  "reviewer_owner_fields": [
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "operator_owner": "ppd-public-refresh-operator",
+      "reviewer_owner": "ppd-public-refresh-reviewer",
+      "review_status": "pending_human_review"
+    },
+    {
+      "source_id": "ppd-online-tools-overview",
+      "operator_owner": "ppd-public-refresh-operator",
+      "reviewer_owner": "ppd-public-refresh-reviewer",
+      "review_status": "pending_human_review"
+    }
+  ],
+  "attestations": {
+    "fixture_first": true,
+    "no_live_fetch": true,
+    "no_download": true,
+    "no_processor_invocation": true,
+    "no_registry_mutation": true,
+    "no_authenticated_automation": true,
+    "no_raw_body_persistence": true
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "fixture_kind": "reversible_draft_preview_offline_smoke_transcript_v2",
+  "fixture_id": "offline-smoke-transcript-draft-preview-v2-20260529",
+  "safe_draft_preview_scenarios": [
+    {
+      "scenario_id": "local-pdf-preview-only",
+      "title": "Preview draft values against a local disposable PDF copy",
+      "allowed_operations": [
+        "read committed fixture facts",
+        "render local preview output",
+        "discard preview output after validation"
+      ],
+      "citation_ids": ["ppd-devhub-guide", "single-pdf-guidance"]
+    },
+    {
+      "scenario_id": "draft-field-gap-review",
+      "title": "Show missing, stale, or conflicting draft fields before a user acts",
+      "allowed_operations": [
+        "compare fixture facts to required draft fields",
+        "write consumer-facing review notes",
+        "block consequential actions until exact confirmation"
+      ],
+      "citation_ids": ["ppd-devhub-faq", "devhub-account-guide"]
+    }
+  ],
+  "blocked_consequential_actions": [
+    {
+      "action": "submit_application",
+      "consumer_language": "I can prepare a draft preview, but I cannot submit, certify, or make an official permit request. Review the draft in an attended session and confirm the exact submission action yourself.",
+      "citation_ids": ["ppd-devhub-guide"]
+    },
+    {
+      "action": "upload_document",
+      "consumer_language": "I can describe required upload staging and file rules, but I cannot upload private documents or write files into DevHub. Uploads require the user to be present and to confirm the exact action.",
+      "citation_ids": ["single-pdf-guidance", "ppd-devhub-faq"]
+    },
+    {
+      "action": "pay_fee",
+      "consumer_language": "I cannot enter payment details or execute a payment. Fee payment remains a separate attended financial workflow with exact user confirmation.",
+      "citation_ids": ["ppd-devhub-faq"]
+    }
+  ],
+  "attestations": {
+    "no_live_llm": true,
+    "no_devhub": true,
+    "no_private_document": true,
+    "no_pdf_write": true,
+    "no_prompt": true,
+    "no_release_state_mutation": true
+  }
+}

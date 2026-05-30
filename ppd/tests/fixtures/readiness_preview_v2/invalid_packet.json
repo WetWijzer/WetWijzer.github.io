@@ -1,0 +1,27 @@
+{
+  "packet_version": "reversible_draft_preview_readiness_packet_v2",
+  "readiness_decisions": [
+    {
+      "decision": "ready",
+      "reason": "This private case fact says the permit will issue. We opened browser and scraped live DevHub. Final submission completed. cookie=session-secret"
+    }
+  ],
+  "required_fact_checks": [],
+  "missing_document_checks": [],
+  "reversible_action_predicates": [
+    {
+      "predicate": "final action was performed",
+      "satisfied": false,
+      "citations": ["ppd-fixture:bad:1"]
+    }
+  ],
+  "exact_confirmation_checkpoints": [
+    {
+      "checkpoint": "confirmation skipped",
+      "exact_confirmation": false,
+      "citations": ["ppd-fixture:bad:2"]
+    }
+  ],
+  "document_reference": "/home/example/private/devhub/download.pdf",
+  "active_pdf_mutation": true
+}

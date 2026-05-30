@@ -1,0 +1,25 @@
+{
+  "safe_action_source_fixture": "agent_safe_action_freshness_regression/source_packets.json",
+  "release_blocker_closure_fixture": "release_blocker_closure/review_packet.json",
+  "expected_expectation_types": [
+    "stale_evidence_prompt",
+    "refusal_explanation",
+    "blocked_consequential_action",
+    "reviewer_owner_field",
+    "no_mutation_attestation"
+  ],
+  "expected_blocked_actions": [
+    "certify application acknowledgement",
+    "enter payment details",
+    "submit payment",
+    "submit permit request",
+    "upload correction to official record"
+  ],
+  "required_attestations": [
+    "no_live_llm",
+    "no_devhub",
+    "no_prompt_mutation",
+    "no_guardrail_mutation",
+    "no_agent_state_mutation"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "packet_id": "fixture-safe-prompt-refresh-release-handoff",
+  "prompt_versions": [
+    {
+      "name": "permit-summary-refresh",
+      "version": "2026-05-29.fixture",
+      "citations": [
+        {
+          "source": "ppd/tests/fixtures/prompt_refresh_release_handoff/source-note.md",
+          "title": "Deterministic fixture source"
+        }
+      ]
+    }
+  ],
+  "compatibility_notes": [
+    "Compatible with offline fixture validation only."
+  ],
+  "migration_checklist": [
+    "Run deterministic unit tests.",
+    "Review citation coverage."
+  ],
+  "rollback_owner": "PPD release steward fixture",
+  "offline_validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_prompt_refresh_release_handoff_validator.py"]
+  ],
+  "fixture_examples": [
+    {
+      "fixture_label": "benign prompt-injection fixture text",
+      "text": "Ignore previous instructions appears here only as labelled fixture content."
+    }
+  ],
+  "consequential_controls": {
+    "submit_application": false,
+    "pay_fee": false,
+    "upload_document": false
+  },
+  "active_prompt_mutation": false,
+  "active_guardrail_mutation": false,
+  "active_release_state_mutation": false,
+  "active_monitoring_mutation": false,
+  "active_agent_state_mutation": false
+}

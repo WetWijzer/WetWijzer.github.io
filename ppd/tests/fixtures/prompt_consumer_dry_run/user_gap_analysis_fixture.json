@@ -1,0 +1,31 @@
+{
+  "packet_id": "user-gap-analysis-adu-case-fixture",
+  "schema_version": "ppd.user_gap_analysis.v1",
+  "case_id": "adu-intake-dry-run-case",
+  "missing_facts": [
+    {
+      "citation_id": "missing-property-address",
+      "label": "property address or Portland Maps property identifier"
+    },
+    {
+      "citation_id": "missing-contractor-license",
+      "label": "contractor license and role facts needed before assuming trade-permit fixture options"
+    }
+  ],
+  "missing_documents": [
+    {
+      "citation_id": "missing-single-pdf-plan-set",
+      "label": "single PDF plan set separated from application forms and supporting calculations"
+    }
+  ],
+  "next_safe_actions": [
+    {
+      "citation_id": "safe-summarize-known-facts",
+      "label": "summarize fixture-known case facts"
+    },
+    {
+      "citation_id": "safe-list-missing-items",
+      "label": "list missing facts, stale evidence, conflicting evidence, and required confirmations"
+    }
+  ]
+}

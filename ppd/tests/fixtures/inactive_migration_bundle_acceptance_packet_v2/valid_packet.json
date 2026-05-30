@@ -1,0 +1,91 @@
+{
+  "packet_type": "ppd.inactive_migration_bundle_acceptance_packet.v2",
+  "packet_version": 2,
+  "packet_id": "inactive-migration-bundle-acceptance-packet-v2-fixture",
+  "mode": "fixture_first_inactive_acceptance_only",
+  "bundle_acceptance_rows": [
+    {
+      "row_id": "accept-row-001",
+      "bundle_id": "inactive-migration-bundle-fixture-001",
+      "decision": "accept",
+      "rationale": "Fixture-only migration row is cited, owner-reviewed, cross-checked, and remains inactive.",
+      "target_ids": {
+        "source_ids": ["source-ppd-devhub-faq-public"],
+        "surface_ids": ["surface-devhub-public-help-fixture"],
+        "guardrail_ids": ["guardrail-devhub-consequential-action-block-fixture"]
+      },
+      "reviewer_owner": "ppd-offline-reviewer",
+      "rollback_checkpoint": "Remove the fixture-only acceptance row and rebuild the inactive packet from committed fixtures.",
+      "citations": ["ppd-plan:non-negotiable-boundaries", "fixture:source-surface-guardrail-cross-check"]
+    },
+    {
+      "row_id": "defer-row-001",
+      "bundle_id": "inactive-migration-bundle-fixture-002",
+      "decision": "defer",
+      "rationale": "Fixture-only row is intentionally deferred until an additional public-source citation is available.",
+      "target_ids": {
+        "source_ids": ["source-ppd-online-tools-public"],
+        "surface_ids": ["surface-devhub-public-tools-fixture"],
+        "guardrail_ids": ["guardrail-devhub-attended-handoff-fixture"]
+      },
+      "reviewer_owner": "ppd-offline-reviewer",
+      "rollback_checkpoint": "Keep the deferred fixture row out of active artifacts and regenerate after citation review.",
+      "citations": ["ppd-plan:authenticated-devhub-boundaries", "fixture:deferred-cross-check"]
+    },
+    {
+      "row_id": "reject-row-001",
+      "bundle_id": "inactive-migration-bundle-fixture-003",
+      "decision": "reject",
+      "rationale": "Fixture-only row is rejected because the inactive acceptance packet must not advance uncited targets.",
+      "target_ids": {
+        "source_ids": ["source-ppd-submit-plans-public"],
+        "surface_ids": ["surface-devhub-upload-help-fixture"],
+        "guardrail_ids": ["guardrail-upload-attendance-required-fixture"]
+      },
+      "reviewer_owner": "ppd-offline-reviewer",
+      "rollback_checkpoint": "Drop the rejected fixture row from the candidate set before any later inactive review.",
+      "citations": ["ppd-plan:single-pdf-public-guidance", "fixture:rejected-cross-check"]
+    }
+  ],
+  "cross_artifact_consistency_checks": [
+    {
+      "check_id": "cross-check-accept-001",
+      "source_id": "source-ppd-devhub-faq-public",
+      "surface_id": "surface-devhub-public-help-fixture",
+      "guardrail_id": "guardrail-devhub-consequential-action-block-fixture",
+      "status": "consistent",
+      "rationale": "Public DevHub help, fixture surface naming, and guardrail target all describe inactive review metadata only.",
+      "reviewer_owner": "ppd-offline-reviewer",
+      "citations": ["fixture:source-surface-guardrail-cross-check"]
+    },
+    {
+      "check_id": "cross-check-defer-001",
+      "source_id": "source-ppd-online-tools-public",
+      "surface_id": "surface-devhub-public-tools-fixture",
+      "guardrail_id": "guardrail-devhub-attended-handoff-fixture",
+      "status": "deferred_with_reason",
+      "rationale": "The row is held inactive until the cited public-source mapping is reviewed again.",
+      "reviewer_owner": "ppd-offline-reviewer",
+      "citations": ["fixture:deferred-cross-check"]
+    },
+    {
+      "check_id": "cross-check-reject-001",
+      "source_id": "source-ppd-submit-plans-public",
+      "surface_id": "surface-devhub-upload-help-fixture",
+      "guardrail_id": "guardrail-upload-attendance-required-fixture",
+      "status": "rejected_with_reason",
+      "rationale": "The candidate is rejected in the inactive packet because citation review did not support acceptance.",
+      "reviewer_owner": "ppd-offline-reviewer",
+      "citations": ["fixture:rejected-cross-check"]
+    }
+  ],
+  "attestations": {
+    "fixture_first_offline_only": true,
+    "no_private_or_authenticated_facts": true,
+    "no_raw_crawl_pdf_session_or_browser_artifacts": true,
+    "no_live_execution_or_active_promotion": true,
+    "no_legal_or_permitting_outcome_guarantees": true,
+    "no_consequential_action_language": true,
+    "no_active_source_surface_guardrail_prompt_monitoring_release_or_agent_mutation": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "packetType": "ppd_public_recrawl_operator_packet",
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-29T00:00:00Z",
+  "seed_batches": [
+    {
+      "batch_id": "uncited-live-batch",
+      "seeds": [
+        {
+          "url": "https://example.com/outside"
+        },
+        {
+          "url": "https://devhub.portlandoregon.gov/permits/123?token=secret",
+          "source_evidence_ids": [
+            "fixture-evidence"
+          ],
+          "robots_decision": {
+            "decision": "allow"
+          }
+        }
+      ]
+    }
+  ],
+  "operator_controls": {
+    "live_crawl": true,
+    "processor_invoked": "executed",
+    "raw_body": "raw response body",
+    "download_path": "/tmp/ppd/private/download.pdf",
+    "archive_ref": "warc://local/private-run.warc",
+    "apply_source_updates": true,
+    "apply_schedule_updates": true,
+    "apply_requirement_updates": true,
+    "apply_process_updates": true,
+    "apply_guardrail_updates": true,
+    "apply_prompt_updates": true,
+    "apply_monitoring_updates": true,
+    "apply_release_state_updates": true,
+    "outcome_guarantee": "Permit will be approved"
+  },
+  "notes": "The live crawl executed, processor invoked, and permit will be issued."
+}

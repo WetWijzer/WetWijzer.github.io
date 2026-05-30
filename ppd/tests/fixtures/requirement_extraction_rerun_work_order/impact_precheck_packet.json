@@ -1,0 +1,22 @@
+{
+  "packet_id": "fixture-impact-precheck-20260529",
+  "packet_type": "requirement_extraction_impact_precheck",
+  "impacted_requirements": [
+    {
+      "requirement_id": "REQ-DEVHUB-UPLOAD-001",
+      "source_id": "SRC-SUBMIT-PLANS-ONLINE",
+      "guardrail_id": "GR-UPLOAD-CONSEQUENTIAL-ACTION",
+      "reviewer_owner": "requirements-reviewer",
+      "reviewer_backup": "guardrail-reviewer",
+      "note": "Upload guidance may affect consequential action gating metadata."
+    },
+    {
+      "requirement_id": "REQ-FEE-PAYMENT-001",
+      "source_id": "SRC-FEE-PAYMENT-GUIDE",
+      "guardrail_id": "GR-PAYMENT-FINAL-SUBMIT",
+      "reviewer_owner": "requirements-reviewer",
+      "reviewer_backup": "financial-action-reviewer",
+      "note": "Fee payment source impact must remain metadata-only before any rerun."
+    }
+  ]
+}

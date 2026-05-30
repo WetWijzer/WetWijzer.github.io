@@ -1,0 +1,64 @@
+{
+  "packet_type": "devhub_attended_readonly_pilot_operator_transcript_packet",
+  "packet_version": 1,
+  "packet_id": "devhub-attended-readonly-observation-packet-v2-fixture-20260529",
+  "source_packet_type": "devhub_attended_readonly_launch_readiness_packet",
+  "source_packet_id": "devhub-attended-readonly-launch-readiness-fixture-20260529",
+  "pilot_id": "devhub-attended-readonly-observation-packet-v2-fixture-20260529",
+  "mode": "fixture_first_attended_readonly_simulation",
+  "reviewer_owner_fields": {
+    "reviewer_owner": "ppd-surface-reviewer",
+    "implementation_owner": "ppd-devhub-automation-owner",
+    "safety_owner": "ppd-guardrail-owner"
+  },
+  "ordered_operator_observations": [
+    {
+      "sequence": 1,
+      "kind": "manual_user_attendance_checkpoint",
+      "checkpoint_id": "checkpoint:manual-attendance-before-devhub",
+      "operator_observation": "Fixture states that any future DevHub observation requires a present user and separate live approval.",
+      "requires_live_user_presence": true,
+      "simulated_only": true
+    },
+    {
+      "sequence": 2,
+      "kind": "redacted_page_state_summary",
+      "page_state_id": "page-state:devhub-home-redacted-summary",
+      "page_label": "DevHub Home",
+      "redacted_summary": "Only generic landmarks and labels are represented; no account values or private permit details are present.",
+      "redactions_applied": ["account identifiers omitted", "permit values omitted"],
+      "contains_private_devhub_data": false,
+      "simulated_only": true
+    },
+    {
+      "sequence": 3,
+      "kind": "selector_confidence_confirmation",
+      "selector_id": "selector:devhub-home-status-card-heading",
+      "confidence": "high",
+      "basis": "Fixture review confirms a stable accessible heading label for read-only status review.",
+      "requires_live_verification_before_use": true,
+      "simulated_only": true
+    }
+  ],
+  "guardrail_attestations": {
+    "no_browser_launched": true,
+    "no_auth_state_created_or_read": true,
+    "no_private_devhub_data_read": true,
+    "no_screenshots_captured": true,
+    "no_traces_captured": true,
+    "no_downloads_created": true,
+    "no_official_action_taken": true
+  },
+  "prohibited_artifacts": {
+    "browser_sessions": [],
+    "auth_state_files": [],
+    "screenshots": [],
+    "traces": [],
+    "raw_crawl_outputs": [],
+    "downloaded_documents": []
+  },
+  "source_launch_readiness_packet": {
+    "packet_type": "devhub_attended_readonly_launch_readiness_packet",
+    "packet_id": "devhub-attended-readonly-launch-readiness-fixture-20260529"
+  }
+}

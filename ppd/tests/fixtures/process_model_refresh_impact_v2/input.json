@@ -1,0 +1,124 @@
+{
+  "packet_id": "fixture-process-model-refresh-impact-v2-input",
+  "requirement_regeneration_work_order_v2": {
+    "packet_type": "ppd.requirement_regeneration_work_order_v2",
+    "packet_id": "fixture-requirement-regeneration-work-order-v2",
+    "fixture_only": true,
+    "queued_requirement_decisions": [
+      {
+        "queue_item_id": "requirement-regeneration-v2.req-devhub-upload-corrections-attended",
+        "requirement_id": "req-devhub-upload-corrections-attended",
+        "decision": "regenerate",
+        "source_id": "ppd-devhub-faq",
+        "source_evidence_ids": ["ev-devhub-faq-upload-corrections", "ppd-devhub-faq"],
+        "source_evidence_expectations": ["confirm DevHub correction upload remains attended and consequential"],
+        "reviewer_owner": "ppd-human-review"
+      },
+      {
+        "queue_item_id": "requirement-regeneration-v2.req-plan-set-single-pdf",
+        "requirement_id": "req-plan-set-single-pdf",
+        "decision": "review",
+        "source_id": "ppd-single-pdf-guidance",
+        "source_evidence_ids": ["ev-single-pdf-plan-set", "ppd-single-pdf-guidance"],
+        "source_evidence_expectations": ["confirm Single PDF guidance still supports one plan-set PDF plus separate supporting documents"],
+        "reviewer_owner": "ppd-document-reviewer"
+      },
+      {
+        "queue_item_id": "requirement-regeneration-v2.req-standard-trade-license-profile",
+        "requirement_id": "req-standard-trade-license-profile",
+        "decision": "unchanged",
+        "source_id": "ppd-standard-trade-guide",
+        "source_evidence_ids": ["ev-standard-trade-license-profile", "ppd-standard-trade-guide"],
+        "source_evidence_expectations": ["confirm contractor license profile guidance remains unchanged"],
+        "reviewer_owner": "ppd-trade-permit-reviewer"
+      }
+    ],
+    "attestations": {
+      "no_live_extraction": true,
+      "no_crawler_invocation": true,
+      "no_processor_invocation": true,
+      "no_devhub_invocation": true,
+      "no_requirement_mutation": true,
+      "no_process_mutation": true,
+      "no_guardrail_mutation": true,
+      "no_prompt_mutation": true,
+      "no_release_state_mutation": true
+    }
+  },
+  "process_model_impact_review_fixture": {
+    "packet_id": "fixture-process-impact-review-v2",
+    "affected_process_ids": ["process-devhub-corrections", "process-document-preparation", "process-standard-trade-permit"],
+    "reviewer_owners": ["ppd-process-reviewer"],
+    "process_stage_impact_claims": [
+      {
+        "claim_id": "claim-devhub-corrections-upload-stage",
+        "affected_requirement_ids": ["req-devhub-upload-corrections-attended"],
+        "process_stage": "corrections/checksheets",
+        "impact": "Regenerated correction-upload requirement may affect only attended review and correction upload staging notes.",
+        "source_evidence_ids": ["ev-devhub-faq-upload-corrections"]
+      },
+      {
+        "claim_id": "claim-document-preparation-single-pdf",
+        "affected_requirement_ids": ["req-plan-set-single-pdf"],
+        "process_stage": "document preparation",
+        "impact": "Single PDF source evidence remains under human review before any process-model refresh is applied.",
+        "source_evidence_ids": ["ev-single-pdf-plan-set"]
+      },
+      {
+        "claim_id": "claim-standard-trade-license-profile",
+        "affected_requirement_ids": ["req-standard-trade-license-profile"],
+        "process_stage": "eligibility screening",
+        "impact": "Unchanged trade-license profile requirement retains existing eligibility-screening stage notes.",
+        "source_evidence_ids": ["ev-standard-trade-license-profile"]
+      }
+    ],
+    "unsupported_paths": [
+      {
+        "path_id": "unsupported-devhub-correction-official-upload",
+        "process_stage": "corrections/checksheets",
+        "note": "Official correction upload remains outside unattended automation and requires reviewer/user handoff.",
+        "source_evidence_ids": ["ev-devhub-faq-upload-corrections"],
+        "reviewer_owner": "ppd-human-review"
+      }
+    ],
+    "blocked_action_carryovers": [
+      {
+        "action_id": "submit-or-certify-permit-request",
+        "process_stage": "submission",
+        "reason": "Submission and certification remain exact-confirmation gated and unsupported for this offline impact packet.",
+        "source_evidence_ids": ["ev-devhub-faq-upload-corrections", "ev-single-pdf-plan-set"]
+      }
+    ]
+  },
+  "guardrail_bundle_update_candidate_fixture": {
+    "packet_type": "fixture_first_guardrail_bundle_update_candidate_packet",
+    "packet_id": "fixture-guardrail-bundle-update-candidate-v2",
+    "candidate_status": "draft_requires_human_review",
+    "active_guardrail_bundle_id": "guardrail-devhub-consequential-actions",
+    "affected_process_ids": ["process-devhub-corrections", "process-document-preparation"],
+    "affected_guardrail_ids": ["guardrail-devhub-consequential-actions", "guardrail-document-preparation", "guardrail-license-profile-check"],
+    "reviewer_owners": ["ppd-guardrail-reviewer"],
+    "cited_predicate_additions": [
+      {
+        "predicate_id": "predicate-devhub-correction-upload-attended",
+        "operation": "add_candidate_predicate",
+        "source_evidence_ids": ["ev-devhub-faq-upload-corrections"],
+        "activation_allowed": false
+      },
+      {
+        "predicate_id": "predicate-single-pdf-human-review",
+        "operation": "review_candidate_predicate",
+        "source_evidence_ids": ["ev-single-pdf-plan-set"],
+        "activation_allowed": false
+      }
+    ],
+    "cited_predicate_removals": [
+      {
+        "predicate_id": "predicate-superseded-correction-upload-shortcut",
+        "operation": "remove_candidate_predicate",
+        "source_evidence_ids": ["ev-devhub-faq-upload-corrections"],
+        "activation_allowed": false
+      }
+    ]
+  }
+}

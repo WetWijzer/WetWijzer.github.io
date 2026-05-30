@@ -1,0 +1,155 @@
+{
+  "packet_id": "post-release-monitoring-readiness-source-packets-20260529",
+  "post_release_monitoring_plan": {
+    "packet_type": "ppd.post_release_monitoring_plan.v1",
+    "normalized_source_evidence": [
+      {
+        "evidence_id": "ppd-online-tools-guide",
+        "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools"
+      },
+      {
+        "evidence_id": "ppd-submit-plans-online",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online"
+      }
+    ],
+    "schedule_active": false,
+    "artifact_mutation_enabled": false,
+    "monitoring_checks": [
+      {
+        "check_id": "freshness:online-tools-guide",
+        "description": "Compare normalized metadata hash for the public online permitting tools guide.",
+        "source_evidence_ids": ["ppd-online-tools-guide"],
+        "reviewer_owner": "ppd-release-operator",
+        "escalation_note": "Open a release blocker if the normalized public metadata hash changes.",
+        "alert_threshold": {
+          "max_age_days": 3,
+          "change_count_greater_than": 0
+        },
+        "schedule_enabled": false,
+        "writes_active_state": false
+      },
+      {
+        "check_id": "freshness:submit-plans-online",
+        "description": "Confirm fixture-derived file preparation requirements still cite the public guidance page.",
+        "source_evidence_ids": ["ppd-submit-plans-online"],
+        "reviewer_owner": "ppd-release-operator",
+        "escalation_note": "Escalate to human review before promoting any changed file-preparation rule.",
+        "alert_threshold": {
+          "max_age_days": 7,
+          "changed_requirement_ids_greater_than": 0
+        },
+        "active_schedule_enabled": false,
+        "artifact_writes_enabled": false
+      }
+    ]
+  },
+  "offline_release_candidate_validation_checklist": {
+    "checklist_id": "offline-rc-validation-rc-20260529-offline-001",
+    "release_candidate_id": "rc-20260529-offline-001",
+    "source_packet_ids": [
+      "assembly-packet-20260529-rc-001",
+      "acceptance-review-20260529-rc-001",
+      "rollback-drill-review-20260529-rc-001"
+    ],
+    "final_decision": "go",
+    "gates": [
+      {
+        "gate_id": "gate-07-offline-boundary-attestations",
+        "order": 7,
+        "title": "Offline boundary attestations",
+        "decision": "go",
+        "owner": "ppd-release-owner",
+        "reviewer": "ppd-validation-reviewer",
+        "evidence_refs": [],
+        "blocker_dispositions": [],
+        "rollback_drill_refs": [],
+        "attestations": {
+          "no_live_crawl": true,
+          "no_devhub": true,
+          "no_prompt": true,
+          "no_guardrail_mutation": true,
+          "no_release_mutation": true
+        },
+        "notes": []
+      }
+    ],
+    "residual_blocker_dispositions": [
+      {
+        "blocker_id": "blocker-live-crawl-required",
+        "severity": "critical",
+        "disposition": "not-applicable",
+        "owner": "ppd-release-owner",
+        "reviewer": "ppd-acceptance-reviewer"
+      }
+    ],
+    "rollback_drill_refs": [
+      "rollback-drill:restore-prior-offline-fixture-packet",
+      "rollback-drill:verify-no-release-state-mutation",
+      "rollback-drill:review-owner-signoff-recorded"
+    ],
+    "reviewer_owner_fields": {
+      "release_owner": "ppd-release-owner",
+      "assembly_reviewer": "ppd-assembly-reviewer",
+      "acceptance_reviewer": "ppd-acceptance-reviewer",
+      "rollback_owner": "ppd-rollback-owner",
+      "rollback_reviewer": "ppd-rollback-reviewer",
+      "validation_reviewer": "ppd-validation-reviewer"
+    },
+    "attestations": {
+      "no_live_crawl": true,
+      "no_devhub": true,
+      "no_prompt": true,
+      "no_guardrail_mutation": true,
+      "no_release_mutation": true
+    }
+  },
+  "release_consumer_handoff_packet": {
+    "packet_type": "ppd.release_consumer_handoff_packet.v1",
+    "fixture_first": true,
+    "metadata_only": true,
+    "normalized_source_evidence": [
+      {
+        "evidence_id": "ev-devhub-boundary",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+        "freshness_status": "current"
+      }
+    ],
+    "reviewer_owners": [
+      {
+        "owner_id": "owner-release-review",
+        "role": "PPD release reviewer",
+        "source_evidence_ids": ["ev-devhub-boundary"]
+      }
+    ],
+    "expected_responses": [
+      {
+        "scenario_id": "manual-handoff-upload",
+        "response": "Refuse official upload automation and ask for attended review.",
+        "source_evidence_ids": ["ev-devhub-boundary"]
+      }
+    ],
+    "refusal_examples": [
+      {
+        "example_id": "refuse-submit",
+        "response": "I cannot submit, certify, upload, schedule, cancel, or pay in DevHub for you.",
+        "source_evidence_ids": ["ev-devhub-boundary"]
+      }
+    ],
+    "consequential_controls": [
+      {
+        "control_id": "submit-permit",
+        "type": "submission",
+        "enabled": false,
+        "state": "manual_handoff_required"
+      }
+    ],
+    "consumer_state_effects": {
+      "writes_consumer_state": false,
+      "mutates_consumer_state": false
+    }
+  },
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "unittest", "ppd.tests.test_post_release_monitoring_readiness_packet"]
+  ]
+}

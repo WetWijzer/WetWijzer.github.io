@@ -1,0 +1,138 @@
+{
+  "supported_process_ids": [
+    "single_pdf_process"
+  ],
+  "user_gap_fixture": {
+    "case_id": "case-offline-fixture-001",
+    "process_id": "single_pdf_process",
+    "known_facts": {
+      "property_address": "123 SW Test Ave",
+      "project_description": "Basement alteration with no exterior work"
+    },
+    "stale_evidence": [
+      {
+        "fact_id": "property_address",
+        "message": "The property address was copied from an older user note and needs user confirmation before draft preview review.",
+        "citation_ids": [
+          "ppd-submit-plans-online::single-pdf-separate-documents"
+        ],
+        "blocks_draft_fields": [
+          "property_address"
+        ]
+      }
+    ],
+    "conflicting_evidence": []
+  },
+  "process_model_fixture": {
+    "process_id": "single_pdf_process",
+    "required_user_facts": [
+      {
+        "fact_id": "property_address",
+        "prompt": "Confirm the property address for the draft preview.",
+        "citation_ids": [
+          "ppd-submit-plans-online::single-pdf-separate-documents"
+        ],
+        "blocks_draft_fields": [
+          "property_address"
+        ]
+      },
+      {
+        "fact_id": "project_description",
+        "prompt": "Confirm the short project description for the local draft preview.",
+        "citation_ids": [
+          "ppd-apply-permits::request-information"
+        ],
+        "blocks_draft_fields": [
+          "project_description"
+        ]
+      },
+      {
+        "fact_id": "single_pdf_plan_ready",
+        "prompt": "Confirm whether drawing plans are combined into one PDF, with applications and calculations separate.",
+        "citation_ids": [
+          "ppd-submit-plans-online::single-pdf-separate-documents"
+        ],
+        "blocks_draft_fields": [
+          "plan_package_readiness"
+        ]
+      }
+    ]
+  },
+  "guardrail_fixture": {
+    "process_id": "single_pdf_process",
+    "user_review_checkpoints": [
+      {
+        "checkpoint_id": "checkpoint::local-preview-only",
+        "label": "User review is required before treating the local draft preview as ready.",
+        "required_before": "draft_preview_review",
+        "citation_ids": [
+          "ppd-devhub-guide::acknowledgement-review"
+        ]
+      }
+    ],
+    "next_safe_read_only_actions": [
+      {
+        "action_id": "action::review-public-single-pdf-guidance",
+        "label": "Review public Single PDF Process guidance.",
+        "classification": "read_only",
+        "requires_devhub_auth": false,
+        "citation_ids": [
+          "ppd-submit-plans-online::single-pdf-separate-documents"
+        ]
+      }
+    ]
+  },
+  "handoff_packet_v4": {
+    "handoff_id": "handoff-offline-fixture-001",
+    "process_id": "single_pdf_process",
+    "preview_mode": "offline_fixture",
+    "official_action_performed": false,
+    "draft_fields": [
+      {
+        "field_id": "property_address",
+        "label": "Property address",
+        "requires_fact_ids": [
+          "property_address"
+        ],
+        "proposed_value": "123 SW Test Ave",
+        "value_source_fact_ids": [
+          "property_address"
+        ]
+      },
+      {
+        "field_id": "project_description",
+        "label": "Project description",
+        "requires_fact_ids": [
+          "project_description"
+        ],
+        "proposed_value": "Basement alteration with no exterior work",
+        "value_source_fact_ids": [
+          "project_description"
+        ]
+      },
+      {
+        "field_id": "plan_package_readiness",
+        "label": "Plan package readiness",
+        "requires_fact_ids": [
+          "single_pdf_plan_ready"
+        ]
+      }
+    ],
+    "handoff_actions": [
+      {
+        "action_id": "action::render-local-preview",
+        "classification": "read_only"
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "checkpoint_id": "checkpoint::confirm-fixture-facts",
+        "label": "User must confirm fixture-derived facts before relying on the preview.",
+        "required_before": "draft_preview_review",
+        "citation_ids": [
+          "ppd-apply-permits::request-information"
+        ]
+      }
+    ]
+  }
+}

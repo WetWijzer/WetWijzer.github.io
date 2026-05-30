@@ -1,0 +1,318 @@
+{
+  "source_packets": {
+    "refresh_implementation_proposal_v2": {
+      "proposal_version": "refresh_implementation_proposal_v2",
+      "fixture_first": true,
+      "source_fixtures": {
+        "public_source_observation_refresh_candidate_v2": "ppd/tests/fixtures/refresh_implementation_proposal_v2/public_source_observation_refresh_candidate_v2.json",
+        "devhub_read_only_surface_observation_refresh_candidate_v2": "ppd/tests/fixtures/refresh_implementation_proposal_v2/devhub_read_only_surface_observation_refresh_candidate_v2.json",
+        "post_dry_run_guardrail_impact_review_v2": "ppd/tests/fixtures/refresh_implementation_proposal_v2/post_dry_run_guardrail_impact_review_v2.json"
+      },
+      "proposed_source_patch_rows": [
+        {
+          "patch_id": "source-patch-permit-center-fees",
+          "patch_kind": "source_registry_metadata_review_row",
+          "proposal_scope": "proposed-only",
+          "source_id": "permit-center-fees",
+          "affected_source_ids": [
+            "permit-center-fees"
+          ],
+          "reviewer_owner": "ppd-fees-reviewer",
+          "dependency_after": [
+            "validate-input-fixtures"
+          ],
+          "rollback_note": "Discard this proposed row and keep the current source registry unchanged.",
+          "citations": [
+            {
+              "fixture": "ppd/tests/fixtures/refresh_implementation_proposal_v2/public_source_observation_refresh_candidate_v2.json",
+              "field": "candidates[permit-center-fees]"
+            }
+          ]
+        }
+      ],
+      "proposed_surface_patch_rows": [
+        {
+          "patch_id": "surface-patch-devhub-home-read-only",
+          "patch_kind": "surface_registry_read_only_review_row",
+          "proposal_scope": "proposed-only",
+          "surface_id": "devhub-home-read-only",
+          "read_only": true,
+          "selector_confidence": "medium",
+          "manual_handoff_required": true,
+          "redaction_disposition": "synthetic-only",
+          "reviewer_owner": "ppd-devhub-reviewer",
+          "dependency_after": [
+            "review-source-patch-rows"
+          ],
+          "rollback_note": "Discard this proposed row and keep the current surface registry unchanged.",
+          "citations": [
+            {
+              "fixture": "ppd/tests/fixtures/refresh_implementation_proposal_v2/devhub_read_only_surface_observation_refresh_candidate_v2.json",
+              "field": "observations[devhub-home-read-only]"
+            }
+          ]
+        }
+      ],
+      "proposed_guardrail_patch_rows": [
+        {
+          "patch_id": "guardrail-patch-read-only-home",
+          "patch_kind": "guardrail_predicate_review_row",
+          "proposal_scope": "proposed-only",
+          "decision_id": "read-only-home",
+          "guardrail_bundle_id": "guardrail-bundle-refresh-v2",
+          "predicate_ids": [
+            "allow-read-only-review"
+          ],
+          "dependency_after": [
+            "review-surface-patch-rows"
+          ],
+          "rollback_note": "Discard proposed guardrail rows; current guardrail bundle remains unchanged.",
+          "citations": [
+            {
+              "fixture": "ppd/tests/fixtures/refresh_implementation_proposal_v2/post_dry_run_guardrail_impact_review_v2.json",
+              "field": "impact_decisions[read-only-home]",
+              "citation_ids": [
+                "guardrail-v2:allow-read-only"
+              ]
+            }
+          ]
+        },
+        {
+          "patch_id": "guardrail-block-official-record-change",
+          "patch_kind": "blocked_consequential_action_review_row",
+          "proposal_scope": "proposed-only",
+          "action_id": "official_record_change",
+          "blocked": true,
+          "dependency_after": [
+            "review-guardrail-patch-rows"
+          ],
+          "rollback_note": "Discard proposed guardrail rows; current guardrail bundle remains unchanged.",
+          "citations": [
+            {
+              "fixture": "ppd/tests/fixtures/refresh_implementation_proposal_v2/post_dry_run_guardrail_impact_review_v2.json",
+              "field": "blocked_action_checks[official_record_change]",
+              "citation_ids": [
+                "guardrail-v2:block-official-actions"
+              ]
+            }
+          ]
+        }
+      ],
+      "reviewer_owner_fields": [
+        {
+          "scope": "source:permit-center-fees",
+          "reviewer_owner": "ppd-fees-reviewer"
+        },
+        {
+          "scope": "surface:devhub-home-read-only",
+          "reviewer_owner": "ppd-devhub-reviewer"
+        },
+        {
+          "scope": "guardrail-impact-review",
+          "reviewer_owner": "ppd-guardrail-reviewer"
+        }
+      ],
+      "dependency_ordering": [
+        "validate-input-fixtures",
+        "review-source-patch-rows",
+        "review-surface-patch-rows",
+        "review-guardrail-patch-rows",
+        "rollback-readiness-check"
+      ],
+      "rollback_notes": [
+        {
+          "scope": "source-patch-rows",
+          "note": "No registry write is performed; discard proposed source rows to roll back this proposal.",
+          "citations": [
+            {
+              "fixture": "ppd/tests/fixtures/refresh_implementation_proposal_v2/public_source_observation_refresh_candidate_v2.json",
+              "field": "candidates"
+            }
+          ]
+        },
+        {
+          "scope": "surface-patch-rows",
+          "note": "No surface registry write is performed; discard proposed surface rows to roll back this proposal.",
+          "citations": [
+            {
+              "fixture": "ppd/tests/fixtures/refresh_implementation_proposal_v2/devhub_read_only_surface_observation_refresh_candidate_v2.json",
+              "field": "observations"
+            }
+          ]
+        },
+        {
+          "scope": "guardrail-patch-rows",
+          "note": "Discard proposed guardrail rows; current guardrail bundle remains unchanged.",
+          "citations": [
+            {
+              "fixture": "ppd/tests/fixtures/refresh_implementation_proposal_v2/post_dry_run_guardrail_impact_review_v2.json",
+              "field": "rollback_notes"
+            }
+          ]
+        }
+      ],
+      "offline_validation_commands": [
+        [
+          "python3",
+          "-m",
+          "py_compile",
+          "ppd/refresh_implementation_proposal_v2.py"
+        ],
+        [
+          "python3",
+          "-m",
+          "unittest",
+          "ppd.tests.test_refresh_implementation_proposal_v2"
+        ],
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_live_devhub": true,
+        "no_processor": true,
+        "no_registry_mutation": true,
+        "no_guardrail_mutation": true,
+        "no_prompt_mutation": true,
+        "no_release_state_mutation": true
+      }
+    },
+    "agent_readiness_replay_packet_v2": {
+      "packet_type": "ppd.agent_readiness_replay_packet.v2",
+      "packet_id": "fixture-agent-readiness-replay-v2",
+      "fixture_only": true,
+      "replay_mode": "offline_fixture_first_agent_readiness_replay_v2",
+      "input_packet_ids": {
+        "refresh_implementation_proposal_v2": "refresh-implementation-proposal-v2-agent-readiness-replay",
+        "user_gap_analysis_fixture": "existing-user-gap-analysis-fixtures-agent-readiness-replay-v2",
+        "guardrail_bundle_fixture": "guardrail-bundle-fixture-agent-readiness-replay-v2"
+      },
+      "source_evidence_ids": [
+        "gap-analysis-v2:missing-facts",
+        "gap-analysis-v2:stale-evidence",
+        "gap-analysis-v2:conflicting-evidence",
+        "guardrail-v2:block-official-actions",
+        "guardrail-v2:allow-read-only-draft",
+        "proposal-v2:offline-validation"
+      ],
+      "expected_missing_fact_prompts": [
+        {
+          "prompt_id": "missing-fact-1",
+          "fact_id": "contractor_license_status",
+          "prompt": "Please confirm the contractor license status or state that no contractor license applies before local draft choices are prepared.",
+          "source_evidence_ids": [
+            "gap-analysis-v2:missing-facts"
+          ]
+        },
+        {
+          "prompt_id": "missing-fact-2",
+          "fact_id": "supporting_documents_are_separate_pdfs",
+          "prompt": "Please confirm whether applications, calculations, and supporting documents are prepared as separate PDFs from drawing plans.",
+          "source_evidence_ids": [
+            "gap-analysis-v2:missing-facts"
+          ]
+        }
+      ],
+      "stale_evidence_notices": [
+        {
+          "notice_id": "stale-evidence-1",
+          "evidence_id": "property-owner-authorization-placeholder",
+          "notice": "The property-owner authorization evidence is stale and needs cited review before relying on it.",
+          "source_evidence_ids": [
+            "gap-analysis-v2:stale-evidence"
+          ]
+        }
+      ],
+      "conflicting_evidence_notices": [
+        {
+          "notice_id": "conflict-1",
+          "conflict_id": "single-pdf-vs-supporting-pdf-separation",
+          "notice": "The case contains conflicting file-preparation assumptions; a reviewer must reconcile drawing-plan PDF guidance with separate supporting-document PDFs.",
+          "source_evidence_ids": [
+            "gap-analysis-v2:conflicting-evidence"
+          ]
+        }
+      ],
+      "blocked_action_explanations": [
+        {
+          "action_id": "official_record_change",
+          "action_class": "official_record_change",
+          "explanation": "Blocked: the replay packet can explain fixture evidence and draft reversible local text, but cannot change official records.",
+          "source_evidence_ids": [
+            "guardrail-v2:block-official-actions"
+          ]
+        },
+        {
+          "action_id": "financial_checkout_entry",
+          "action_class": "financial_checkout",
+          "explanation": "Blocked: financial checkout entry remains outside fixture replay and requires a separate attended checkpoint.",
+          "source_evidence_ids": [
+            "guardrail-v2:block-official-actions"
+          ]
+        }
+      ],
+      "next_safe_actions": [
+        {
+          "action_id": "read_cited_gap_summary",
+          "action_class": "read_only",
+          "description": "Review the cited missing facts, stale evidence, and conflicting evidence with the user.",
+          "source_evidence_ids": [
+            "gap-analysis-v2:missing-facts",
+            "gap-analysis-v2:stale-evidence",
+            "gap-analysis-v2:conflicting-evidence"
+          ]
+        },
+        {
+          "action_id": "prepare_local_draft_question_list",
+          "action_class": "reversible_draft",
+          "description": "Prepare a local draft question list for reviewer approval without changing any external system.",
+          "source_evidence_ids": [
+            "proposal-v2:offline-validation",
+            "gap-analysis-v2:missing-facts"
+          ]
+        }
+      ],
+      "reviewer_owner_fields": [
+        {
+          "field_id": "agent-readiness-reviewer",
+          "owner": "PP&D task supervisor",
+          "reviewer_owner": "PP&D agent readiness reviewer",
+          "review_status": "pending_human_review",
+          "source_evidence_ids": [
+            "gap-analysis-v2:missing-facts",
+            "guardrail-v2:block-official-actions"
+          ]
+        }
+      ],
+      "offline_validation_commands": [
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ],
+        [
+          "python3",
+          "-m",
+          "unittest",
+          "ppd.tests.test_agent_readiness_replay_packet_v2"
+        ]
+      ],
+      "attestations": {
+        "fixture_first": true,
+        "no_live_llm": true,
+        "no_devhub": true,
+        "no_user_data": true,
+        "no_official_action": true,
+        "no_prompt_mutation": true,
+        "no_guardrail_mutation": true,
+        "no_source_mutation": true,
+        "no_surface_registry_mutation": true,
+        "no_release_state_mutation": true,
+        "no_agent_state_mutation": true
+      }
+    }
+  }
+}

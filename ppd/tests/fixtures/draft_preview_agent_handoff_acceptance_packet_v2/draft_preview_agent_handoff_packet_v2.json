@@ -1,0 +1,200 @@
+{
+  "packet_version": "draft-preview-agent-handoff-packet-v2",
+  "source_fixture_ids": [
+    "offline-smoke-transcript-draft-preview-v2-20260529",
+    "local-review-packet-draft-preview-v2-20260529",
+    "prompt-refresh-release-handoff-fixtures-20260529"
+  ],
+  "fixture_provenance": [
+    {
+      "path_name": "reversible_draft_preview_offline_smoke_transcript_v2.json",
+      "sha256": "fixture-first-acceptance-test-provenance"
+    },
+    {
+      "path_name": "local_draft_preview_review_packet_v2.json",
+      "sha256": "fixture-first-acceptance-test-provenance"
+    },
+    {
+      "path_name": "prompt_refresh_release_handoff_fixtures.json",
+      "sha256": "fixture-first-acceptance-test-provenance"
+    }
+  ],
+  "consumer_facing_handoff_notes": [
+    {
+      "note_id": "preview-is-not-submission",
+      "body": "This handoff supports draft preview only. It can explain fixture-backed draft values and gaps, but it does not submit, certify, upload, schedule, cancel, or pay anything.",
+      "citations": [
+        {
+          "citation_id": "ppd-devhub-guide",
+          "title": "PP&D DevHub permit application guide",
+          "source": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+          "quote_or_fact": "Permit application workflows can include dynamic questions, save-for-later behavior, required uploads, acknowledgement, certification, and post-submission status tracking."
+        },
+        {
+          "citation_id": "ppd-devhub-faq",
+          "title": "PP&D DevHub FAQs",
+          "source": "https://www.portland.gov/ppd/devhub-faqs",
+          "quote_or_fact": "DevHub supports account-scoped permitting services including permit requests, correction uploads, inspection scheduling, and fee payment."
+        }
+      ]
+    },
+    {
+      "note_id": "devhub-attendance-required",
+      "body": "Any DevHub action that changes an official application or account state requires an attended user session and exact action confirmation.",
+      "citations": [
+        {
+          "citation_id": "devhub-account-guide",
+          "title": "PP&D DevHub account and sign-in guide",
+          "source": "https://www.portland.gov/ppd/devhub-sign-guide",
+          "quote_or_fact": "Online permitting services require a DevHub user account with PortlandOregon.gov credentials."
+        },
+        {
+          "citation_id": "ppd-devhub-guide",
+          "title": "PP&D DevHub permit application guide",
+          "source": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+          "quote_or_fact": "Permit application workflows can include dynamic questions, save-for-later behavior, required uploads, acknowledgement, certification, and post-submission status tracking."
+        }
+      ]
+    },
+    {
+      "note_id": "documents-stay-local",
+      "body": "The packet may reference document preparation rules, but it does not include private documents, local private paths, PDF bytes, screenshots, traces, HAR files, or authenticated page values.",
+      "citations": [
+        {
+          "citation_id": "single-pdf-guidance",
+          "title": "PP&D Submit Plans Online / Single PDF Process",
+          "source": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "quote_or_fact": "Drawing plans are prepared together in one PDF while applications, calculations, and supporting documents are uploaded as separate PDFs."
+        }
+      ]
+    }
+  ],
+  "supported_safe_draft_preview_scenarios": [
+    {
+      "scenario_id": "local-pdf-preview-only",
+      "title": "Preview draft values against a local disposable PDF copy",
+      "allowed_operations": [
+        "read committed fixture facts",
+        "render local preview output",
+        "discard preview output after validation"
+      ],
+      "citations": [
+        {
+          "citation_id": "ppd-devhub-guide",
+          "title": "PP&D DevHub permit application guide",
+          "source": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+          "quote_or_fact": "Permit application workflows can include dynamic questions, save-for-later behavior, required uploads, acknowledgement, certification, and post-submission status tracking."
+        },
+        {
+          "citation_id": "single-pdf-guidance",
+          "title": "PP&D Submit Plans Online / Single PDF Process",
+          "source": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "quote_or_fact": "Drawing plans are prepared together in one PDF while applications, calculations, and supporting documents are uploaded as separate PDFs."
+        }
+      ]
+    },
+    {
+      "scenario_id": "draft-field-gap-review",
+      "title": "Show missing, stale, or conflicting draft fields before a user acts",
+      "allowed_operations": [
+        "compare fixture facts to required draft fields",
+        "write consumer-facing review notes",
+        "block consequential actions until exact confirmation"
+      ],
+      "citations": [
+        {
+          "citation_id": "ppd-devhub-faq",
+          "title": "PP&D DevHub FAQs",
+          "source": "https://www.portland.gov/ppd/devhub-faqs",
+          "quote_or_fact": "DevHub supports account-scoped permitting services including permit requests, correction uploads, inspection scheduling, and fee payment."
+        },
+        {
+          "citation_id": "devhub-account-guide",
+          "title": "PP&D DevHub account and sign-in guide",
+          "source": "https://www.portland.gov/ppd/devhub-sign-guide",
+          "quote_or_fact": "Online permitting services require a DevHub user account with PortlandOregon.gov credentials."
+        }
+      ]
+    }
+  ],
+  "blocked_consequential_action_language": [
+    {
+      "action": "submit_application",
+      "consumer_language": "I can prepare a draft preview, but I cannot submit, certify, or make an official permit request. Review the draft in an attended session and confirm the exact submission action yourself.",
+      "citations": [
+        {
+          "citation_id": "ppd-devhub-guide",
+          "title": "PP&D DevHub permit application guide",
+          "source": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+          "quote_or_fact": "Permit application workflows can include dynamic questions, save-for-later behavior, required uploads, acknowledgement, certification, and post-submission status tracking."
+        }
+      ]
+    },
+    {
+      "action": "upload_document",
+      "consumer_language": "I can describe required upload staging and file rules, but I cannot upload private documents or write files into DevHub. Uploads require the user to be present and to confirm the exact action.",
+      "citations": [
+        {
+          "citation_id": "single-pdf-guidance",
+          "title": "PP&D Submit Plans Online / Single PDF Process",
+          "source": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "quote_or_fact": "Drawing plans are prepared together in one PDF while applications, calculations, and supporting documents are uploaded as separate PDFs."
+        },
+        {
+          "citation_id": "ppd-devhub-faq",
+          "title": "PP&D DevHub FAQs",
+          "source": "https://www.portland.gov/ppd/devhub-faqs",
+          "quote_or_fact": "DevHub supports account-scoped permitting services including permit requests, correction uploads, inspection scheduling, and fee payment."
+        }
+      ]
+    },
+    {
+      "action": "pay_fee",
+      "consumer_language": "I cannot enter payment details or execute a payment. Fee payment remains a separate attended financial workflow with exact user confirmation.",
+      "citations": [
+        {
+          "citation_id": "ppd-devhub-faq",
+          "title": "PP&D DevHub FAQs",
+          "source": "https://www.portland.gov/ppd/devhub-faqs",
+          "quote_or_fact": "DevHub supports account-scoped permitting services including permit requests, correction uploads, inspection scheduling, and fee payment."
+        }
+      ]
+    }
+  ],
+  "required_exact_confirmation_reminders": [
+    {
+      "trigger": "submit_application",
+      "reminder": "Before submission, require the user to state the exact permit application action, target application, and that they are ready to submit in the attended DevHub session."
+    },
+    {
+      "trigger": "upload_document",
+      "reminder": "Before upload, require the user to identify the exact file, target application or permit number, and upload control in the attended DevHub session."
+    },
+    {
+      "trigger": "pay_fee",
+      "reminder": "Before payment, require the user to confirm the exact fee, payment method handling, and final payment action in the attended DevHub session."
+    },
+    {
+      "trigger": "schedule_or_cancel_inspection",
+      "reminder": "Before scheduling or cancellation, require the user to confirm the exact permit, inspection type, date or cancellation target, and official action."
+    }
+  ],
+  "rollback_owner_fields": {
+    "owner": "PP&D draft preview fixture maintainer",
+    "contact_route": "repository issue or daemon task note",
+    "rollback_scope": "Remove or replace the generated draft preview handoff packet fixtures and rerun offline validation; no DevHub or release state rollback is required because the packet has no live side effects."
+  },
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/draft_preview_agent_handoff_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_draft_preview_agent_handoff_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "attestations": {
+    "no_live_llm": true,
+    "no_devhub": true,
+    "no_private_document": true,
+    "no_pdf_write": true,
+    "no_prompt": true,
+    "no_release_state_mutation": true
+  }
+}

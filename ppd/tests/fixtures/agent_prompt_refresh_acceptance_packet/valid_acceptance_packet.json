@@ -1,0 +1,53 @@
+{
+  "packet_type": "ppd.agent_prompt_refresh_acceptance_packet.v1",
+  "packet_id": "agent-prompt-refresh-acceptance-20260529-fixture-first",
+  "fixture_first": true,
+  "acceptance_decisions": [
+    {
+      "decision_id": "accept-safe-read-only-boundary-copy",
+      "decision": "accepted",
+      "accepted_rationale": "The candidate copy keeps PP&D agent behavior limited to cited safe read-only review and reversible draft preview.",
+      "scenario_refs": ["fee-notice-read-only-review"],
+      "source_evidence_ids": ["ev-devhub-boundary", "ev-fee-payment-boundary"]
+    },
+    {
+      "decision_id": "defer-payment-wording",
+      "decision": "deferred",
+      "deferred_rationale": "Payment wording remains deferred until a reviewer reconciles the fee-payment guide source freshness.",
+      "blocked_action_refs": ["payment", "submit-payment"],
+      "source_evidence_ids": ["ev-fee-payment-boundary"]
+    },
+    {
+      "decision_id": "reject-submit-automation-language",
+      "decision": "rejected",
+      "rejected_rationale": "Submit automation wording is rejected because official DevHub submission remains an attended manual handoff.",
+      "blocked_action_refs": ["submit", "certify", "upload"],
+      "source_evidence_ids": ["ev-devhub-boundary"]
+    }
+  ],
+  "rollback_notes": [
+    {
+      "note_id": "rollback.prompt-acceptance-review-only",
+      "instruction": "Discard accepted prompt-refresh decisions if any cited source packet is superseded before a separate promotion packet is approved.",
+      "source_evidence_ids": ["ev-devhub-boundary"]
+    }
+  ],
+  "reviewer_owners": [
+    {
+      "owner": "PP&D prompt refresh reviewer",
+      "role": "prompt_refresh_acceptance_owner",
+      "source_evidence_ids": ["ev-devhub-boundary"]
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "unittest", "ppd.tests.test_agent_prompt_refresh_acceptance_packet"]
+  ],
+  "consequential_controls_enabled": false,
+  "active_prompt_mutation": false,
+  "active_guardrail_mutation": false,
+  "active_surface_registry_mutation": false,
+  "active_monitoring_mutation": false,
+  "active_release_state_mutation": false,
+  "active_agent_state_mutation": false
+}

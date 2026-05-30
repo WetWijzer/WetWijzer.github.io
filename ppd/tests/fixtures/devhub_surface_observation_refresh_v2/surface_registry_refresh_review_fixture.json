@@ -1,0 +1,27 @@
+{
+  "fixture_version": "surface_registry_refresh_review_fixture",
+  "surfaces": [
+    {
+      "surface_id": "permit-search",
+      "surface_name": "Permit Search",
+      "selector_confidence": "medium",
+      "selector_note": "Selectors should prefer labelled controls over layout positions in the synthetic candidate.",
+      "manual_handoff_required": false,
+      "manual_handoff_reason": "Fixture evidence is sufficient for read-only observation refresh review.",
+      "redaction": "none",
+      "redaction_reason": "Fixture includes labels only and no applicant, address, credential, or account values.",
+      "reviewer_owner": "ppd-surface-review"
+    },
+    {
+      "surface_id": "case-status",
+      "surface_name": "Case Status",
+      "selector_confidence": "low",
+      "selector_note": "Status labels require reviewer confirmation before any live selector promotion.",
+      "manual_handoff_required": true,
+      "manual_handoff_reason": "Fixture indicates dynamic status labels that need attended review.",
+      "redaction": "synthetic-only",
+      "redaction_reason": "Candidate must remain synthetic and omit case identifiers.",
+      "reviewer_owner": "ppd-reviewer-owner"
+    }
+  ]
+}

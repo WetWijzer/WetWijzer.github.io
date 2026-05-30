@@ -1,0 +1,51 @@
+{
+  "review_packet_id": "guardrail-refresh-review-20260529-fixture",
+  "affected_guardrail_bundle_ids": [
+    "ppd.guardrail.refresh.fixture"
+  ],
+  "rollback_notes": "Revert the candidate guardrail refresh packet and keep the previous cited bundle active if offline validation fails.",
+  "reviewer_owners": [
+    "ppd-regression-review"
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/logic/guardrail_refresh_regression_review.py"
+    ]
+  ],
+  "expectations": [
+    {
+      "expectation_id": "draft_actions_remain_non_consequential",
+      "statement": "Guardrail refresh regression review packets must preserve draft-only behavior and block consequential official actions unless a separate attended confirmation gate applies.",
+      "citations": [
+        {
+          "source_evidence_id": "plan.non_negotiable_boundaries.official_changes"
+        }
+      ]
+    },
+    {
+      "expectation_id": "committed_packets_are_offline_and_redacted",
+      "statement": "Committed regression review packets contain cited expectations, rollback notes, reviewer owners, offline validation commands, and no private authenticated material.",
+      "citations": [
+        {
+          "source_evidence_id": "plan.action_journal.commit_safe_events"
+        }
+      ]
+    }
+  ],
+  "controls": {
+    "allow_payment": false,
+    "allow_upload": false,
+    "allow_submission": false,
+    "allow_schedule_inspection": false
+  },
+  "mutations": {
+    "prompt_mutation_enabled": false,
+    "guardrail_mutation_enabled": false,
+    "surface_registry_mutation_enabled": false,
+    "monitoring_mutation_enabled": false,
+    "release_state_mutation_enabled": false
+  }
+}

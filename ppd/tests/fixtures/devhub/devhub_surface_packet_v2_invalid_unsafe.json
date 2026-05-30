@@ -1,0 +1,39 @@
+{
+  "packet_type": "devhub_surface_fixture_migration_packet",
+  "packet_version": 2,
+  "status": "inactive",
+  "surface_rows": [
+    {
+      "id": "surface-unsafe",
+      "surface": "account page",
+      "selector": ".private-value",
+      "authenticated_value": "owner dashboard",
+      "selector_confidence": {
+        "before_check": "selector was seen once"
+      },
+      "disposition": "auto_apply"
+    }
+  ],
+  "action_rows": [
+    {
+      "id": "action-unsafe",
+      "action": "submit application and pay fee",
+      "selector": "#submit",
+      "citation": "",
+      "selector_confidence_before": "present before migration",
+      "password": "example",
+      "notes": "Playwright completed in DevHub, saved screenshot.png, trace.zip, and network.har. Approval guaranteed and permit issued."
+    }
+  ],
+  "session_id": "abc123",
+  "credential_note": "bearer token copied from a browser cookie",
+  "consequential_actions_enabled": true,
+  "mutation_flags": {
+    "surface_registry_mutation_enabled": true,
+    "guardrail_mutation_enabled": true,
+    "prompt_mutation_enabled": true,
+    "monitoring_mutation_enabled": true,
+    "release_state_mutation_enabled": true,
+    "agent_state_mutation_enabled": true
+  }
+}

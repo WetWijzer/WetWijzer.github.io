@@ -1,0 +1,286 @@
+{
+  "packet_id": "fixture-local-pdf-draft-preview-plan-v2-001",
+  "packet_type": "local_pdf_draft_preview_plan_v2",
+  "fixture_first": true,
+  "preview_only": true,
+  "generated_from": {
+    "live_crawl": false,
+    "authenticated_devhub_session": false,
+    "private_document": false,
+    "downloaded_document": false,
+    "raw_pdf_read": false,
+    "pdf_binary_written": false,
+    "official_upload": false,
+    "guardrail_mutation": false
+  },
+  "consumed_fixture_packets": [
+    {
+      "fixture_role": "reversible_draft_preview_readiness_v2",
+      "path": "ppd/tests/fixtures/draft_preview_readiness_v2/source_packets.json",
+      "consumed_sections": [
+        "guardrail_refresh_regression_matrix_v2",
+        "process_to_gap_analysis_refresh_packet_v2",
+        "surface_registry_refresh_acceptance_packet_v2"
+      ],
+      "use_in_plan": "Confirms local draft preview is allowed only as a reversible, fixture-only, preview-write action while private document inputs, live DevHub actions, PDF writes, uploads, and guardrail mutations remain blocked."
+    },
+    {
+      "fixture_role": "file_preparation_compliance",
+      "path": "ppd/tests/fixtures/file_preparation_guardrails/synthetic_metadata_findings.json",
+      "consumed_sections": [
+        "document_metadata_findings"
+      ],
+      "use_in_plan": "Turns synthetic file naming, searchable PDF, and owner authorization compliance findings into missing-document blockers and withheld-field reasons before any official action."
+    },
+    {
+      "fixture_role": "synthetic_fillable_pdf_fields",
+      "path": "ppd/tests/fixtures/pdf_draft_preview/synthetic_permit_draft_form.json",
+      "consumed_sections": [
+        "fields"
+      ],
+      "use_in_plan": "Supplies synthetic field names, field types, draftability, required status, and choice options without reading or writing a PDF binary."
+    }
+  ],
+  "source_evidence": [
+    {
+      "evidence_id": "evidence-apply-permits-v2",
+      "source_title": "Apply for permits",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "citation_label": "PP&D public permit application guidance",
+      "supports": [
+        "project and applicant facts are needed before meaningful permit draft review"
+      ]
+    },
+    {
+      "evidence_id": "evidence-devhub-guide-v2",
+      "source_title": "DevHub permit application guide",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "citation_label": "DevHub application review and submission guidance",
+      "supports": [
+        "acknowledgement, certification, upload, and submission remain consequential actions"
+      ]
+    },
+    {
+      "evidence_id": "evidence-submit-plans-v2",
+      "source_title": "Submit Plans Online / Single PDF Process",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "citation_label": "Single PDF and supporting document preparation guidance",
+      "supports": [
+        "drawing plans, applications, calculations, and supporting documents must be prepared and checked as separate PDFs before upload"
+      ]
+    },
+    {
+      "evidence_id": "evidence-file-standards-v2",
+      "source_title": "File Naming Standards and Preparing PDFs",
+      "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "citation_label": "PP&D file preparation standards",
+      "supports": [
+        "file naming and searchable PDF compliance must be resolved before upload staging"
+      ]
+    }
+  ],
+  "field_mapping_decisions": [
+    {
+      "pdf_field_name": "project_address",
+      "field_type": "text",
+      "decision": "map_for_preview",
+      "draft_value_policy": "synthetic_redacted_or_fixture_value_only",
+      "source_evidence_ids": [
+        "evidence-apply-permits-v2"
+      ],
+      "required_fixture_inputs": [
+        "case.property.site_address"
+      ],
+      "reviewer_owner_field": "permit_intake_reviewer"
+    },
+    {
+      "pdf_field_name": "permit_type",
+      "field_type": "choice",
+      "decision": "map_for_preview_when_choice_matches_fixture_options",
+      "allowed_fixture_options": [
+        "Residential Alteration",
+        "Commercial Alteration"
+      ],
+      "source_evidence_ids": [
+        "evidence-apply-permits-v2",
+        "evidence-devhub-guide-v2"
+      ],
+      "required_fixture_inputs": [
+        "case.permit_type"
+      ],
+      "reviewer_owner_field": "permit_intake_reviewer"
+    },
+    {
+      "pdf_field_name": "owner_occupied",
+      "field_type": "checkbox",
+      "decision": "map_for_preview_only_after_owner_confirmation_fact",
+      "source_evidence_ids": [
+        "evidence-apply-permits-v2"
+      ],
+      "required_fixture_inputs": [
+        "case.owner_occupied_confirmation"
+      ],
+      "reviewer_owner_field": "owner_authorization_reviewer"
+    },
+    {
+      "pdf_field_name": "work_start_date",
+      "field_type": "date",
+      "decision": "withhold_until_missing_fact_resolved",
+      "withheld_reason": "The synthetic case fixture does not include a YYYY-MM-DD work start date, and the preview packet must not infer dates.",
+      "source_evidence_ids": [
+        "evidence-apply-permits-v2"
+      ],
+      "required_fixture_inputs": [
+        "case.work_start_date"
+      ],
+      "reviewer_owner_field": "permit_intake_reviewer"
+    },
+    {
+      "pdf_field_name": "applicant_signature",
+      "field_type": "text",
+      "decision": "withhold_consequential_field",
+      "withheld_reason": "Signature fields are certification-adjacent and cannot be filled, completed, or marked ready in a local preview packet.",
+      "source_evidence_ids": [
+        "evidence-devhub-guide-v2"
+      ],
+      "required_fixture_inputs": [],
+      "reviewer_owner_field": "certification_gate_reviewer"
+    }
+  ],
+  "missing_fact_blockers": [
+    {
+      "blocker_id": "missing-work-start-date",
+      "fact_key": "case.work_start_date",
+      "label": "Work start date",
+      "reason": "Required for the synthetic work_start_date field and must be provided in YYYY-MM-DD format before the field can appear as mapped.",
+      "blocks_field_names": [
+        "work_start_date"
+      ],
+      "source_evidence_ids": [
+        "evidence-apply-permits-v2"
+      ],
+      "reviewer_owner_field": "permit_intake_reviewer"
+    },
+    {
+      "blocker_id": "missing-owner-occupied-confirmation",
+      "fact_key": "case.owner_occupied_confirmation",
+      "label": "Owner-occupied confirmation",
+      "reason": "The checkbox can be previewed only when a synthetic owner confirmation fact is present; the plan must not infer owner status.",
+      "blocks_field_names": [
+        "owner_occupied"
+      ],
+      "source_evidence_ids": [
+        "evidence-apply-permits-v2"
+      ],
+      "reviewer_owner_field": "owner_authorization_reviewer"
+    }
+  ],
+  "missing_document_blockers": [
+    {
+      "blocker_id": "missing-searchable-plan-pdf-placeholder",
+      "document_label": "Searchable plan PDF placeholder metadata",
+      "reason": "The file-preparation compliance fixture contains a blocker for non-searchable PDF metadata; local preview may continue only as metadata review, not upload staging.",
+      "source_fixture_finding_ids": [
+        "metadata-pdf-not-searchable"
+      ],
+      "source_evidence_ids": [
+        "evidence-submit-plans-v2",
+        "evidence-file-standards-v2"
+      ],
+      "blocks_actions": [
+        "upload_staged_documents",
+        "submit_permit_request"
+      ],
+      "reviewer_owner_field": "file_preparation_reviewer"
+    },
+    {
+      "blocker_id": "missing-current-owner-authorization-metadata",
+      "document_label": "Current owner authorization metadata",
+      "reason": "The synthetic compliance fixture marks owner authorization stale, so certification and submission must stay blocked.",
+      "source_fixture_finding_ids": [
+        "metadata-owner-authorization-stale"
+      ],
+      "source_evidence_ids": [
+        "evidence-apply-permits-v2",
+        "evidence-devhub-guide-v2"
+      ],
+      "blocks_actions": [
+        "certify_application",
+        "submit_permit_request"
+      ],
+      "reviewer_owner_field": "owner_authorization_reviewer"
+    }
+  ],
+  "preview_only_artifact_expectations": {
+    "expected_artifact_kind": "metadata_only_local_pdf_draft_preview_plan_v2",
+    "may_render_field_mapping_table": true,
+    "may_render_missing_information_table": true,
+    "may_render_reviewer_owner_table": true,
+    "may_read_synthetic_field_fixture_json": true,
+    "may_read_pdf_binary": false,
+    "may_write_pdf_binary": false,
+    "may_create_private_document_copy": false,
+    "may_upload_to_devhub": false,
+    "may_mutate_guardrail_bundle": false,
+    "allowed_output_paths": [
+      "ppd/tests/fixtures/local_pdf_draft_preview_plan_v2/fixture_first_packet.json"
+    ]
+  },
+  "reviewer_owner_fields": [
+    {
+      "field": "permit_intake_reviewer",
+      "owner": "PP&D permit intake reviewer",
+      "responsibilities": [
+        "confirm cited permit facts are sufficient for preview mapping",
+        "confirm choice fields use fixture-declared options only"
+      ]
+    },
+    {
+      "field": "file_preparation_reviewer",
+      "owner": "PP&D file preparation reviewer",
+      "responsibilities": [
+        "review synthetic file naming and searchable PDF blockers",
+        "keep upload staging blocked until compliance findings are resolved"
+      ]
+    },
+    {
+      "field": "owner_authorization_reviewer",
+      "owner": "PP&D owner authorization reviewer",
+      "responsibilities": [
+        "confirm owner authorization and owner-occupied facts are current before preview mapping"
+      ]
+    },
+    {
+      "field": "certification_gate_reviewer",
+      "owner": "PP&D certification gate reviewer",
+      "responsibilities": [
+        "keep signature, acknowledgement, certification, and submission fields withheld from local preview fill actions"
+      ]
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_local_pdf_draft_preview_plan_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "attestations": {
+    "no_private_document": true,
+    "no_pdf_read": true,
+    "no_pdf_write": true,
+    "no_upload": true,
+    "no_devhub": true,
+    "no_guardrail_mutation": true,
+    "no_credentials": true,
+    "no_session_state": true,
+    "no_trace_or_har": true,
+    "no_payment_details": true
+  }
+}

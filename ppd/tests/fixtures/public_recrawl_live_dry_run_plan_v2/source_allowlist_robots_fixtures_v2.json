@@ -1,0 +1,42 @@
+{
+  "packet_id": "source-allowlist-robots-fixtures-v2",
+  "packet_version": 2,
+  "sources": [
+    {
+      "source_id": "portland-council-agendas",
+      "seed_url": "https://www.portland.gov/council/agenda",
+      "allowlisted": true,
+      "public_records_source": true,
+      "requires_authentication": false,
+      "robots": {
+        "status": "allowed",
+        "user_agent": "PPD-FixtureDryRun",
+        "crawl_delay_seconds": 60
+      }
+    },
+    {
+      "source_id": "portland-auditor-public-notices",
+      "seed_url": "https://www.portland.gov/auditor/notices",
+      "allowlisted": true,
+      "public_records_source": true,
+      "requires_authentication": false,
+      "robots": {
+        "status": "allowed",
+        "user_agent": "PPD-FixtureDryRun",
+        "crawl_delay_seconds": 15
+      }
+    },
+    {
+      "source_id": "example-disallowed-robots",
+      "seed_url": "https://example.invalid/private",
+      "allowlisted": true,
+      "public_records_source": true,
+      "requires_authentication": false,
+      "robots": {
+        "status": "disallowed",
+        "user_agent": "PPD-FixtureDryRun",
+        "crawl_delay_seconds": 30
+      }
+    }
+  ]
+}

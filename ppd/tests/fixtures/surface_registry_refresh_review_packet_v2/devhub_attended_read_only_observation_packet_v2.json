@@ -1,0 +1,66 @@
+{
+  "packet_id": "devhub-attended-read-only-observation-packet-v2-fixture",
+  "packet_version": "devhub-attended-read-only-observation-packet-v2",
+  "capture_mode": "attended_read_only_redacted_fixture",
+  "surfaces": [
+    {
+      "surface_id": "devhub-permit-detail-redacted",
+      "surface_name": "DevHub permit detail redacted fixture",
+      "auth_scope": "authenticated_user_owned_attended",
+      "source_evidence_ids": [
+        "official-devhub-faq-account-services",
+        "official-upload-corrections-guide"
+      ],
+      "actions": [
+        {
+          "action_id": "review-fee-notice",
+          "label": "Review fee notice status",
+          "classification": "safe_read_only",
+          "process_stage": "fee payment",
+          "selector_confidence": "observed_accessible_label_redacted",
+          "requires_attendance": true,
+          "requires_exact_confirmation": false,
+          "source_evidence_ids": [
+            "official-devhub-faq-paying-fees"
+          ]
+        },
+        {
+          "action_id": "stage-correction-upload",
+          "label": "Stage correction document before official attach",
+          "classification": "reversible_draft",
+          "process_stage": "corrections/checksheets",
+          "selector_confidence": "observed_accessible_label_redacted",
+          "requires_attendance": true,
+          "requires_exact_confirmation": true,
+          "source_evidence_ids": [
+            "official-upload-corrections-guide"
+          ]
+        },
+        {
+          "action_id": "submit-correction-upload",
+          "label": "Submit correction upload to official record",
+          "classification": "consequential_official",
+          "process_stage": "corrections/checksheets",
+          "selector_confidence": "observed_accessible_label_redacted",
+          "requires_attendance": true,
+          "requires_exact_confirmation": true,
+          "source_evidence_ids": [
+            "official-upload-corrections-guide",
+            "official-devhub-faq-upload-corrections"
+          ]
+        }
+      ]
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/surfaces/surface_registry_refresh_review_packet_v2.py"]
+  ],
+  "attestations": {
+    "no_live_devhub": true,
+    "no_auth_state": true,
+    "no_screenshot": true,
+    "no_trace": true,
+    "no_har": true,
+    "no_surface_registry_mutation": true
+  }
+}

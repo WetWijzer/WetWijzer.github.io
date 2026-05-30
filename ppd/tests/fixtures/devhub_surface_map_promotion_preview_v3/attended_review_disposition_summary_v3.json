@@ -1,0 +1,18 @@
+{
+  "summary_id": "attended-review-disposition-summary-v3-fixture",
+  "summary_version": 3,
+  "surface_dispositions": [
+    {
+      "surface_id": "devhub-permit-search",
+      "manual_handoff_disposition": "not_required",
+      "redaction_disposition": "redact_fixture_account_hint",
+      "citations": ["review://summary-v3/devhub-permit-search#redaction"]
+    },
+    {
+      "surface_id": "devhub-record-detail",
+      "manual_handoff_disposition": "required_selector_review",
+      "redaction_disposition": "not_required",
+      "citations": ["review://summary-v3/devhub-record-detail#manual-handoff"]
+    }
+  ]
+}

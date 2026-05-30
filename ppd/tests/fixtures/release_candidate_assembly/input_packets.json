@@ -1,0 +1,85 @@
+{
+  "packet_id": "fixture-offline-release-candidate-assembly-20260529",
+  "attestations": {
+    "no_crawl_performed": true,
+    "no_processor_executed": true,
+    "no_devhub_session_started": true,
+    "no_prompt_invoked": true,
+    "no_guardrail_compiled": true,
+    "no_release_mutation_performed": true
+  },
+  "packets": [
+    {
+      "packet_type": "public_source_refresh_execution_readiness",
+      "packet_id": "public-source-refresh-readiness-fixture",
+      "status": "ready",
+      "evidence_ids": [
+        "public-refresh-readiness:allowlist-preflight",
+        "public-refresh-readiness:robots-policy-reviewed"
+      ],
+      "residual_blockers": [],
+      "validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ],
+      "rollback_owner": {
+        "owner": "PPD public source refresh owner",
+        "escalation": "PPD release supervisor",
+        "rollback_action": "Keep existing public source snapshot and do not promote refreshed source metadata."
+      }
+    },
+    {
+      "packet_type": "requirement_regeneration_promotion_approval",
+      "packet_id": "requirement-regeneration-approval-fixture",
+      "status": "approved",
+      "evidence_ids": [
+        "requirement-regeneration:diff-reviewed",
+        "requirement-regeneration:promotion-approved"
+      ],
+      "residual_blockers": [],
+      "validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ],
+      "rollback_owner": {
+        "owner": "PPD requirements owner",
+        "escalation": "PPD release supervisor",
+        "rollback_action": "Retain prior requirement bundle and withhold regenerated requirement promotion."
+      }
+    },
+    {
+      "packet_type": "agent_readiness_final_smoke",
+      "packet_id": "agent-readiness-final-smoke-fixture",
+      "status": "passed",
+      "evidence_ids": [
+        "agent-smoke:offline-gap-analysis",
+        "agent-smoke:action-gate-checks"
+      ],
+      "residual_blockers": [],
+      "validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ],
+      "rollback_owner": {
+        "owner": "PPD agent readiness owner",
+        "escalation": "PPD release supervisor",
+        "rollback_action": "Keep agent-facing release flag disabled and retain prior smoke-approved bundle."
+      }
+    },
+    {
+      "packet_type": "devhub_attended_read_only_pilot_evidence_review",
+      "packet_id": "devhub-read-only-pilot-review-fixture",
+      "status": "reviewed",
+      "evidence_ids": [
+        "devhub-pilot:attended-read-only-review",
+        "devhub-pilot:no-private-artifacts-committed"
+      ],
+      "residual_blockers": [],
+      "validation_commands": [
+        ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+      ],
+      "rollback_owner": {
+        "owner": "PPD DevHub attended pilot owner",
+        "escalation": "PPD release supervisor",
+        "rollback_action": "Disable DevHub pilot inclusion and keep attended read-only evidence out of release promotion."
+      }
+    }
+  ]
+}

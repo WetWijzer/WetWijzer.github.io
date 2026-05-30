@@ -1,0 +1,341 @@
+{
+  "packet_id": "ppd-agent-consumer-release-handoff-v1",
+  "packet_type": "agent_consumer_release_handoff",
+  "release_candidate_id": "ppd-offline-agent-rc-20260529-fixture",
+  "source_packet_ids": {
+    "offline_release_candidate_validation_checklist_packet": "offline-release-candidate-validation-checklist-v1",
+    "agent_release_consumer_handoff_packet": "agent-release-consumer-handoff-v1",
+    "agent_readiness_final_smoke_packet": "agent-readiness-final-smoke-v1"
+  },
+  "consumer_facing_capability_limits": [
+    {
+      "id": "public-cited-guidance-only",
+      "statement": "The agent may explain cited PP&D public guidance and identify missing, stale, ambiguous, or conflicting user facts, but it must not represent its output as an official City decision.",
+      "citations": [
+        {
+          "evidence_id": "consumer.capability-limits",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consumer copy must say the agent can summarize cited PP&D requirements, compare known facts to process requirements, and draft reversible previews only."
+        },
+        {
+          "evidence_id": "checklist.safe-read-only",
+          "source_packet": "offline_release_candidate_validation_checklist_packet",
+          "claim": "Only read-only DevHub review and public-source lookup scenarios are released to consumers."
+        }
+      ]
+    },
+    {
+      "id": "offline-fixture-validated",
+      "statement": "The release is validated from committed fixtures and does not depend on live crawl results, live DevHub state, private account data, or live LLM responses.",
+      "citations": [
+        {
+          "evidence_id": "checklist.no-live-systems",
+          "source_packet": "offline_release_candidate_validation_checklist_packet",
+          "claim": "Validation used committed fixtures and did not contact live LLM services or DevHub."
+        }
+      ]
+    },
+    {
+      "id": "no-official-action-autonomy",
+      "statement": "The agent must stop before any official submission, certification, upload, scheduling, cancellation, extension, reactivation, purchase, or payment step.",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "checklist.reversible-only",
+          "source_packet": "offline_release_candidate_validation_checklist_packet",
+          "claim": "Draft-preview work must remain reversible and must stop before official attach, certification, submission, scheduling, cancellation, or payment."
+        }
+      ]
+    }
+  ],
+  "supported_safe_read_only_scenarios": [
+    {
+      "id": "public-source-requirement-review",
+      "statement": "Review public PP&D guidance, forms, permit-process notes, fee notices, and file-preparation rules using cited source evidence.",
+      "citations": [
+        {
+          "evidence_id": "consumer.safe-scenarios",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Supported safe scenarios are public-source explanation, account-scoped status review after user login, fee notice review, correction request review, attachment list review, and inspection-result review."
+        }
+      ]
+    },
+    {
+      "id": "devhub-status-review-after-user-login",
+      "statement": "After the user completes any login manually, review account-scoped permit status, correction requests, fee notices, attachment lists, and inspection results without changing the official record.",
+      "citations": [
+        {
+          "evidence_id": "consumer.safe-scenarios",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Supported safe scenarios are public-source explanation, account-scoped status review after user login, fee notice review, correction request review, attachment list review, and inspection-result review."
+        },
+        {
+          "evidence_id": "checklist.safe-read-only",
+          "source_packet": "offline_release_candidate_validation_checklist_packet",
+          "claim": "Only read-only DevHub review and public-source lookup scenarios are released to consumers."
+        }
+      ]
+    }
+  ],
+  "reversible_draft_preview_boundaries": [
+    {
+      "id": "local-preview-only",
+      "statement": "Prepare local draft field mappings, document checklists, and PDF/form preview values only when the user can inspect and discard them before use.",
+      "citations": [
+        {
+          "evidence_id": "checklist.reversible-only",
+          "source_packet": "offline_release_candidate_validation_checklist_packet",
+          "claim": "Draft-preview work must remain reversible and must stop before official attach, certification, submission, scheduling, cancellation, or payment."
+        },
+        {
+          "evidence_id": "consumer.capability-limits",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consumer copy must say the agent can summarize cited PP&D requirements, compare known facts to process requirements, and draft reversible previews only."
+        }
+      ]
+    },
+    {
+      "id": "save-before-official-commit",
+      "statement": "Draft assistance may stage reversible values or save a draft only when the workflow has not reached certification, official attachment, submission, scheduling, cancellation, purchase, or payment.",
+      "citations": [
+        {
+          "evidence_id": "checklist.reversible-only",
+          "source_packet": "offline_release_candidate_validation_checklist_packet",
+          "claim": "Draft-preview work must remain reversible and must stop before official attach, certification, submission, scheduling, cancellation, or payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    }
+  ],
+  "blocked_consequential_action_messages": [
+    {
+      "action": "submit_permit_request",
+      "message": "I cannot submit a permit request. Please review the prepared draft and complete the official submission yourself while present in DevHub.",
+      "required_handoff": "attended user submission",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    },
+    {
+      "action": "certify_acknowledgement",
+      "message": "I cannot certify or acknowledge statements for you. Please read the acknowledgement and make any certification yourself.",
+      "required_handoff": "attended user certification",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    },
+    {
+      "action": "upload_correction_to_official_record",
+      "message": "I cannot upload corrections to the official record. I can help preview the package, then you must perform the upload while present.",
+      "required_handoff": "attended user upload",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    },
+    {
+      "action": "purchase_trade_permit",
+      "message": "I cannot purchase a trade permit. I can help review eligibility and draft inputs before you complete any purchase yourself.",
+      "required_handoff": "attended user purchase",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    },
+    {
+      "action": "schedule_inspection",
+      "message": "I cannot schedule an inspection. I can help review available context, then you must choose and confirm any inspection scheduling action.",
+      "required_handoff": "attended user scheduling",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    },
+    {
+      "action": "cancel_or_withdraw",
+      "message": "I cannot cancel or withdraw a permit, request, or inspection. Please make any cancellation or withdrawal decision and action yourself.",
+      "required_handoff": "attended user cancellation or withdrawal",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    },
+    {
+      "action": "request_extension_or_reactivation",
+      "message": "I cannot request an extension or reactivation. I can help summarize the visible requirements, then you must submit any request yourself.",
+      "required_handoff": "attended user extension or reactivation request",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    },
+    {
+      "action": "enter_payment_detail",
+      "message": "I cannot enter payment details. Please enter any card, bank, or payment information yourself in the official payment flow.",
+      "required_handoff": "attended user payment-detail entry",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    },
+    {
+      "action": "submit_payment",
+      "message": "I cannot submit a payment. Please review the amount, payer details, and official payment page yourself before submitting payment.",
+      "required_handoff": "attended user payment submission",
+      "citations": [
+        {
+          "evidence_id": "consumer.blocked-actions",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "The consumer handoff must block official submission, certification, upload, purchase, inspection scheduling, cancellation, extension or reactivation request, payment-detail entry, and final payment."
+        },
+        {
+          "evidence_id": "consumer.attended-boundary",
+          "source_packet": "agent_release_consumer_handoff_packet",
+          "claim": "Consequential official actions require attended user handoff and action-specific confirmation outside the released autonomous consumer capability."
+        }
+      ]
+    }
+  ],
+  "reviewer_owner_fields": {
+    "release_owner": "ppd-release-owner",
+    "policy_reviewer": "ppd-policy-reviewer",
+    "consumer_handoff_reviewer": "ppd-consumer-reviewer",
+    "smoke_reviewer": "ppd-smoke-reviewer"
+  },
+  "attestations": {
+    "no_live_llm": {
+      "value": true,
+      "statement": "Final smoke did not invoke a live LLM.",
+      "citations": [
+        {
+          "evidence_id": "smoke.no-side-effects",
+          "source_packet": "agent_readiness_final_smoke_packet",
+          "claim": "The final smoke packet confirmed the handoff path has no live service calls and no mutation side effects."
+        }
+      ]
+    },
+    "no_devhub_access": {
+      "value": true,
+      "statement": "Final smoke did not access live DevHub.",
+      "citations": [
+        {
+          "evidence_id": "smoke.no-side-effects",
+          "source_packet": "agent_readiness_final_smoke_packet",
+          "claim": "The final smoke packet confirmed the handoff path has no live service calls and no mutation side effects."
+        }
+      ]
+    },
+    "no_prompt_mutation": {
+      "value": true,
+      "statement": "Final smoke did not mutate prompts.",
+      "citations": [
+        {
+          "evidence_id": "smoke.no-side-effects",
+          "source_packet": "agent_readiness_final_smoke_packet",
+          "claim": "The final smoke packet confirmed the handoff path has no live service calls and no mutation side effects."
+        }
+      ]
+    },
+    "no_guardrail_mutation": {
+      "value": true,
+      "statement": "Final smoke did not mutate guardrails.",
+      "citations": [
+        {
+          "evidence_id": "smoke.no-side-effects",
+          "source_packet": "agent_readiness_final_smoke_packet",
+          "claim": "The final smoke packet confirmed the handoff path has no live service calls and no mutation side effects."
+        }
+      ]
+    },
+    "no_agent_state_mutation": {
+      "value": true,
+      "statement": "Final smoke did not mutate agent state.",
+      "citations": [
+        {
+          "evidence_id": "smoke.no-side-effects",
+          "source_packet": "agent_readiness_final_smoke_packet",
+          "claim": "The final smoke packet confirmed the handoff path has no live service calls and no mutation side effects."
+        }
+      ]
+    }
+  },
+  "validation_inputs": {
+    "offline_checklist_status": "passed_offline_fixture_validation",
+    "consumer_handoff_status": "ready_for_consumer_handoff",
+    "final_smoke_status": "passed_final_smoke"
+  }
+}

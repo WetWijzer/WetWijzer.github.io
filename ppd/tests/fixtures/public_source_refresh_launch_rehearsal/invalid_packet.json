@@ -1,0 +1,34 @@
+{
+  "packet_type": "public_source_refresh_launch_rehearsal_transcript",
+  "consumed_packets": [],
+  "preflight_gate_outcome": {},
+  "abort_trigger_checks": [],
+  "reviewer_owner": "",
+  "result_placeholders": [
+    {
+      "name": "source-refresh-results",
+      "metadata_only": false,
+      "artifact": "raw/downloads/source.pdf"
+    }
+  ],
+  "rehearsal_steps": [
+    {
+      "step": "Fetch the latest permit source and approval will be guaranteed.",
+      "citations": []
+    }
+  ],
+  "source_urls": [
+    "https://example.com/permit-source",
+    "https://www.portland.gov/bds?token=secret"
+  ],
+  "commands": [
+    "curl https://www.portland.gov/bds | python3 process_live_source.py"
+  ],
+  "registry_mutation": true,
+  "schedule_mutation": true,
+  "source_mutation": true,
+  "requirement_mutation": true,
+  "guardrail_mutation": true,
+  "monitoring_mutation": true,
+  "release_state_mutation": true
+}

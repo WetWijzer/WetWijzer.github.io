@@ -1,0 +1,36 @@
+{
+  "runbook_id": "fixture-public-source-refresh-runbook-candidate-20260529",
+  "packet_timestamp": "2026-05-29T00:00:00Z",
+  "operator_attendance_prerequisites": [
+    "operator is present and can stop the run before any live fetch is attempted",
+    "reviewer has approved the exact source list and metadata-only capture fields",
+    "network, download, processor, and registry mutation switches remain disabled for readiness review"
+  ],
+  "abort_triggers": [
+    "any source resolves outside the approved public allowlist",
+    "any workflow requests credentials, MFA, CAPTCHA, payment, upload, submission, certification, scheduling, or account creation",
+    "any step would invoke a processor or mutate the source registry before reviewer approval"
+  ],
+  "sources": [
+    {
+      "source_id": "ppd-online-tools-overview",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "operator_owner": "ppd-public-refresh-operator",
+      "reviewer_owner": "ppd-public-refresh-reviewer",
+      "citations": [
+        "runbook:metadata-only-capture-record",
+        "runbook:no-processor-before-review"
+      ]
+    },
+    {
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "operator_owner": "ppd-public-refresh-operator",
+      "reviewer_owner": "ppd-public-refresh-reviewer",
+      "citations": [
+        "runbook:download-deferred-until-explicit-approval",
+        "runbook:financial-workflow-boundary"
+      ]
+    }
+  ]
+}

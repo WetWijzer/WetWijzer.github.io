@@ -1,0 +1,12 @@
+{
+  "packet_type": "requirement_extraction_rerun_work_order",
+  "packet_id": "work-order-20260529-fixture-rerun-001",
+  "reviewer_owner": "ppd-requirements-reviewer",
+  "requirement_ids": ["REQ-DEVHUB-LOGIN-001", "REQ-PERMIT-SEARCH-002", "REQ-CITATION-003"],
+  "process_ids": ["PROC-FIXTURE-RERUN", "PROC-RESULT-INTAKE"],
+  "guardrail_ids": ["GRD-NO-LIVE-EXTRACTION", "GRD-NO-PROCESSOR", "GRD-NO-ACTIVE-MUTATION"],
+  "validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/requirement_extraction_rerun_result_intake.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_requirement_extraction_rerun_result_intake.py"]
+  ]
+}

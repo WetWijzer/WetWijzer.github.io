@@ -1,0 +1,41 @@
+{
+  "packet_id": "acceptance-review-20260529-rc-001",
+  "release_candidate_id": "rc-20260529-offline-001",
+  "acceptance_decision": "accepted",
+  "acceptance_reviewer": "ppd-acceptance-reviewer",
+  "validation_reviewer": "ppd-validation-reviewer",
+  "evidence_refs": [
+    "acceptance-review:deterministic-fixtures-present",
+    "acceptance-review:offline-boundary-attested"
+  ],
+  "residual_blocker_dispositions": [
+    {
+      "blocker_id": "blocker-live-crawl-required",
+      "severity": "critical",
+      "disposition": "not-applicable",
+      "owner": "ppd-release-owner",
+      "reviewer": "ppd-acceptance-reviewer"
+    },
+    {
+      "blocker_id": "blocker-devhub-auth-required",
+      "severity": "critical",
+      "disposition": "not-applicable",
+      "owner": "ppd-release-owner",
+      "reviewer": "ppd-acceptance-reviewer"
+    },
+    {
+      "blocker_id": "blocker-open-reviewer-action",
+      "severity": "major",
+      "disposition": "resolved",
+      "owner": "ppd-release-owner",
+      "reviewer": "ppd-validation-reviewer"
+    }
+  ],
+  "attestations": {
+    "no_live_crawl": true,
+    "no_devhub": true,
+    "no_prompt": true,
+    "no_guardrail_mutation": true,
+    "no_release_mutation": true
+  }
+}

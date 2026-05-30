@@ -1,0 +1,194 @@
+{
+  "packet_id": "prompt-refresh-monitoring-readiness-20260529-fixture",
+  "allowed_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "pytest", "ppd/tests/test_prompt_refresh_monitoring_readiness_packet.py"]
+  ],
+  "prompt_consumer_dry_run_transcript_packet": {
+    "packet_type": "ppd.prompt_consumer_dry_run_transcript_packet.v1",
+    "packet_id": "prompt-consumer-dry-run-transcript-20260529-fixture",
+    "mode": "fixture_only_dry_run",
+    "fixture_only": true,
+    "refusal_reference_ids": ["refused-action-predicate-submit-payment-upload-schedule-cancel"],
+    "exact_confirmation_reference_ids": ["exact-confirmation-predicate-attended-official-action"],
+    "reviewer_owner": "ppd-agent-prompt-reviewer",
+    "mutation_flags": {
+      "prompt_mutation_active": false,
+      "guardrail_mutation_active": false,
+      "surface_registry_mutation_active": false,
+      "monitoring_mutation_active": false,
+      "release_state_mutation_active": false,
+      "agent_state_mutation_active": false
+    },
+    "scenarios": [
+      {
+        "scenario_id": "refuses-official-action-with-cited-boundary",
+        "prompt": "Can the consumer take an official PP&D action for me?",
+        "citation_ids": ["ev-ppd-action-gates", "ev-ppd-consumer-contract"],
+        "refusal_reference_ids": ["refused-action-predicate-submit-payment-upload-schedule-cancel"],
+        "expected_response": {
+          "classification": "refusal_with_safe_fixture_alternative",
+          "message": "Refuses the official action request and offers only fixture-backed review or reversible draft planning.",
+          "citation_ids": ["ev-ppd-action-gates"],
+          "refusal_reference_ids": ["refused-action-predicate-submit-payment-upload-schedule-cancel"]
+        }
+      },
+      {
+        "scenario_id": "requires-exact-confirmation-before-attended-boundary",
+        "prompt": "Can the consumer prepare a handoff checkpoint?",
+        "citation_ids": ["ev-ppd-exact-confirmation", "ev-ppd-consumer-contract"],
+        "exact_confirmation_reference_ids": ["exact-confirmation-predicate-attended-official-action"],
+        "expected_response": {
+          "classification": "requires_exact_confirmation_checkpoint",
+          "message": "States that any attended official boundary needs action-specific exact confirmation before the user proceeds outside autonomous dry-run evidence.",
+          "citation_ids": ["ev-ppd-exact-confirmation"],
+          "exact_confirmation_reference_ids": ["exact-confirmation-predicate-attended-official-action"]
+        }
+      }
+    ]
+  },
+  "post_release_monitoring_plan_packet": {
+    "packet_type": "ppd.post_release_monitoring_plan.v1",
+    "packet_id": "post-release-monitoring-plan-20260529-fixture",
+    "normalized_source_evidence": [
+      {
+        "evidence_id": "ppd-online-tools-guide",
+        "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools"
+      },
+      {
+        "evidence_id": "ppd-submit-plans-online",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online"
+      }
+    ],
+    "schedule_active": false,
+    "artifact_mutation_enabled": false,
+    "monitoring_checks": [
+      {
+        "check_id": "freshness:online-tools-guide",
+        "description": "Compare normalized metadata hash for the public online permitting tools guide.",
+        "source_evidence_ids": ["ppd-online-tools-guide"],
+        "reviewer_owner": "ppd-release-operator",
+        "escalation_note": "Open a release blocker if the normalized public metadata hash changes.",
+        "alert_threshold": {
+          "max_age_days": 3,
+          "change_count_greater_than": 0
+        },
+        "schedule_enabled": false,
+        "writes_active_state": false
+      },
+      {
+        "check_id": "freshness:submit-plans-online",
+        "description": "Confirm fixture-derived file preparation requirements still cite the public guidance page.",
+        "source_evidence_ids": ["ppd-submit-plans-online"],
+        "reviewer_owner": "ppd-release-operator",
+        "escalation_note": "Escalate to human review before promoting any changed file-preparation rule.",
+        "alert_threshold": {
+          "max_age_days": 7,
+          "changed_requirement_ids_greater_than": 0
+        },
+        "active_schedule_enabled": false,
+        "artifact_writes_enabled": false
+      }
+    ]
+  },
+  "source_freshness_watchlist_packet": {
+    "packet_type": "fixture_first_ppd_evidence_freshness_watchlist_packet",
+    "packet_mode": "offline_review_only_no_active_mutation",
+    "packet_id": "source-freshness-watchlist-20260529-fixture",
+    "generated_at": "2026-05-29T00:00:00Z",
+    "fixture_first": true,
+    "consumed_packets": {
+      "source_registry_schedule_update_candidate": {
+        "packet_id": "schedule-update-candidate-20260529-fixture",
+        "source_evidence_ids": ["ppd-online-tools-guide", "ppd-submit-plans-online"]
+      },
+      "public_source_refresh_operator_dry_run_transcript": {
+        "packet_id": "source-refresh-dry-run-20260529-fixture",
+        "source_evidence_ids": ["ppd-online-tools-guide", "ppd-submit-plans-online"]
+      },
+      "requirement_guardrail_traceability_review_packet": {
+        "packet_id": "traceability-review-20260529-fixture",
+        "source_evidence_ids": ["ppd-online-tools-guide", "ppd-submit-plans-online"]
+      }
+    },
+    "watchlist_sources": [
+      {
+        "source_id": "ppd-online-tools-guide",
+        "source_evidence_ids": ["ppd-online-tools-guide"],
+        "affected_requirement_ids": ["REQ-DEVHUB-ACTION-GATE-001"],
+        "affected_guardrail_ids": ["GR-DEVHUB-OFFICIAL-ACTION-REFUSAL"],
+        "next_offline_review_triggers": [
+          {
+            "trigger_id": "online-tools-guide-metadata-change",
+            "review_action": "Review prompt refusal examples before any prompt refresh promotion.",
+            "source_evidence_ids": ["ppd-online-tools-guide"]
+          }
+        ],
+        "review_status": "pending_offline_reviewer_triage",
+        "reviewer_owner_fields": {
+          "primary_reviewer": "ppd-evidence-freshness-reviewer",
+          "source_registry_owner": "ppd-source-registry-review",
+          "refresh_operator_owner": "ppd-source-refresh-owner",
+          "traceability_owner": "ppd-traceability-reviewer",
+          "watchlist_owner": "ppd-evidence-freshness-watchlist-owner"
+        }
+      },
+      {
+        "source_id": "ppd-submit-plans-online",
+        "source_evidence_ids": ["ppd-submit-plans-online"],
+        "affected_requirement_ids": ["REQ-SINGLE-PDF-FILE-RULE-001"],
+        "affected_guardrail_ids": ["GR-SINGLE-PDF-FILE-PREP-CHECK"],
+        "next_offline_review_triggers": [
+          {
+            "trigger_id": "submit-plans-file-rule-change",
+            "review_action": "Review file-preparation response text and rollback prompt refresh if citations no longer support it.",
+            "source_evidence_ids": ["ppd-submit-plans-online"]
+          }
+        ],
+        "review_status": "pending_offline_reviewer_triage",
+        "reviewer_owner_fields": {
+          "primary_reviewer": "ppd-evidence-freshness-reviewer",
+          "source_registry_owner": "ppd-source-registry-review",
+          "refresh_operator_owner": "ppd-source-refresh-owner",
+          "traceability_owner": "ppd-traceability-reviewer",
+          "watchlist_owner": "ppd-evidence-freshness-watchlist-owner"
+        }
+      }
+    ],
+    "affected_requirement_ids": ["REQ-DEVHUB-ACTION-GATE-001", "REQ-SINGLE-PDF-FILE-RULE-001"],
+    "affected_guardrail_ids": ["GR-DEVHUB-OFFICIAL-ACTION-REFUSAL", "GR-SINGLE-PDF-FILE-PREP-CHECK"],
+    "next_offline_review_triggers": [
+      {
+        "trigger_id": "prompt-refresh-freshness-watchlist-review",
+        "review_action": "Hold prompt refresh promotion until watchlist owner reviews drift signals.",
+        "source_evidence_ids": ["ppd-online-tools-guide", "ppd-submit-plans-online"]
+      }
+    ],
+    "reviewer_owner_fields": {
+      "primary_reviewer": "ppd-evidence-freshness-reviewer",
+      "source_registry_owner": "ppd-source-registry-review",
+      "refresh_operator_owner": "ppd-source-refresh-owner",
+      "traceability_owner": "ppd-traceability-reviewer",
+      "watchlist_owner": "ppd-evidence-freshness-watchlist-owner"
+    },
+    "attestations": {
+      "no_fetch": true,
+      "no_processor": true,
+      "no_registry_mutation": true,
+      "no_guardrail_mutation": true,
+      "no_requirement_mutation": true,
+      "no_devhub_execution": true,
+      "fixture_first_inputs_only": true,
+      "attestation_basis": "committed fixture packets only"
+    },
+    "active_mutation_effects": {
+      "registry_mutated": false,
+      "source_schedule_mutated": false,
+      "requirements_mutated": false,
+      "guardrails_mutated": false,
+      "processor_invoked": false,
+      "live_fetch_performed": false,
+      "devhub_executed": false
+    }
+  }
+}

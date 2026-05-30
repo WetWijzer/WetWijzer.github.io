@@ -1,0 +1,4 @@
+{
+  "source_observation_patch_application_preview_v2_fixture": "../source_observation_patch_application_preview_v2/source_packets.json",
+  "offline_patch_migration_approval_matrix_v2_fixture": "deferred_only_matrix.json"
+}

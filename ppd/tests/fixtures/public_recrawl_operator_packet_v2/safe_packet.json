@@ -1,0 +1,57 @@
+{
+  "packetType": "ppd_public_recrawl_operator_packet",
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-29T00:00:00Z",
+  "mode": "fixture_first_public_metadata_recrawl_review",
+  "seed_batches": [
+    {
+      "batch_id": "ppd-public-anchors-20260529",
+      "source_evidence_ids": [
+        "ppd-plan-official-source-anchors-20260508"
+      ],
+      "seeds": [
+        {
+          "url": "https://www.portland.gov/ppd",
+          "source_evidence_ids": [
+            "ppd-plan-official-source-anchors-20260508"
+          ],
+          "robots_decision": {
+            "decision": "manual_preflight_required_before_any_separate_live_run",
+            "metadata_only": true
+          }
+        },
+        {
+          "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+          "source_evidence_ids": [
+            "ppd-plan-official-source-anchors-20260508"
+          ],
+          "robots_decision": {
+            "decision": "manual_preflight_required_before_any_separate_live_run",
+            "metadata_only": true
+          }
+        }
+      ]
+    }
+  ],
+  "operator_controls": {
+    "network_allowed": false,
+    "processor_invoked": false,
+    "persist_raw_body": false,
+    "apply_source_updates": false,
+    "apply_schedule_updates": false,
+    "apply_requirement_updates": false,
+    "apply_process_updates": false,
+    "apply_guardrail_updates": false,
+    "apply_prompt_updates": false,
+    "apply_monitoring_updates": false,
+    "apply_release_state_updates": false
+  },
+  "abort_conditions": [
+    "Stop if any seed lacks a current robots or skip decision.",
+    "Stop if any URL points outside the public PP&D allowlist.",
+    "Stop if any packet content references authenticated paths, raw bodies, downloads, archives, live crawls, processor execution, outcome guarantees, or state mutation."
+  ],
+  "post_run_review_prompts": [
+    "Review metadata-only results in a separate promotion packet before registry or release-state changes."
+  ]
+}

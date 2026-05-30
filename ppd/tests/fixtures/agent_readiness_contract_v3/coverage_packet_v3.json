@@ -1,0 +1,143 @@
+{
+  "packet_type": "ppd.agent_readiness_contract_coverage_packet.v3",
+  "packet_version": 3,
+  "mode": "fixture_first_offline_validation_only",
+  "generated_at": "2026-05-30T00:00:00Z",
+  "consumed_fixture_packets": [
+    {
+      "family": "combined_promotion_rehearsal_v3",
+      "fixture_path": "ppd/tests/fixtures/combined_promotion_rehearsal_v3/rehearsal_inputs.json",
+      "offline_only": true,
+      "citation_evidence_ids": ["evidence-combined-rehearsal"]
+    },
+    {
+      "family": "process_model_fixtures",
+      "fixture_path": "ppd/tests/fixtures/requirement_process_coverage_matrix/synthetic_permit_workflow_matrix.json",
+      "offline_only": true,
+      "citation_evidence_ids": ["evidence-process-model"]
+    },
+    {
+      "family": "user_gap_analysis_fixtures",
+      "fixture_path": "ppd/tests/fixtures/agent_gap_analysis_rerun_packet/synthetic_case_packet.json",
+      "offline_only": true,
+      "citation_evidence_ids": ["evidence-user-gap-analysis"]
+    },
+    {
+      "family": "guardrail_bundle_fixtures",
+      "fixture_path": "ppd/tests/fixtures/guardrails/promotion_preview_v3_valid.json",
+      "offline_only": true,
+      "citation_evidence_ids": ["evidence-guardrail-bundle"]
+    }
+  ],
+  "source_evidence": [
+    {
+      "evidence_id": "evidence-combined-rehearsal",
+      "source_family": "combined_promotion_rehearsal_v3",
+      "summary": "Dependency ordered rehearsal fixture confirms agent-facing packet promotion remains offline and citation backed."
+    },
+    {
+      "evidence_id": "evidence-process-model",
+      "source_family": "process_model_fixtures",
+      "summary": "Process model fixture identifies required permit workflow facts and document checkpoints."
+    },
+    {
+      "evidence_id": "evidence-user-gap-analysis",
+      "source_family": "user_gap_analysis_fixtures",
+      "summary": "Gap analysis fixture marks unresolved public facts and stale or conflicting evidence as blockers."
+    },
+    {
+      "evidence_id": "evidence-guardrail-bundle",
+      "source_family": "guardrail_bundle_fixtures",
+      "summary": "Guardrail bundle fixture blocks official record changes, payment work, and irreversible actions."
+    }
+  ],
+  "expected_api_outputs": [
+    {
+      "kind": "missing_information_prompt",
+      "scenario_id": "missing-project-scope-and-document-placeholders",
+      "next_action_classification": "ask_for_missing_public_fact",
+      "process_refs": ["process.required_user_facts.project_scope"],
+      "gap_analysis_refs": ["gap.missing_required_public_facts"],
+      "guardrail_refs": ["guardrail.require_cited_gap_prompt"],
+      "citations": ["evidence-process-model", "evidence-user-gap-analysis"],
+      "expected_api_output": {
+        "message": "I need the missing project scope and required document placeholders before I can prepare a draft preview.",
+        "missing_information_fields": ["project_scope", "required_document_placeholders"],
+        "allowed_response_mode": "ask_user_for_non_sensitive_case_facts",
+        "blocked_until_resolved": true
+      }
+    },
+    {
+      "kind": "stale_conflicting_evidence_notice",
+      "scenario_id": "stale-source-and-conflicting-process-fact",
+      "next_action_classification": "surface_stale_or_conflicting_evidence_notice",
+      "process_refs": ["process.source_freshness.current_requirements"],
+      "gap_analysis_refs": ["gap.stale_or_conflicting_evidence"],
+      "guardrail_refs": ["guardrail.surface_conflict_before_answer"],
+      "citations": ["evidence-combined-rehearsal", "evidence-user-gap-analysis"],
+      "expected_api_output": {
+        "message": "The available fixture evidence is stale or conflicting, so I cannot choose a requirement or treat it as current.",
+        "notice_type": "stale_or_conflicting_evidence",
+        "requires_human_review": true,
+        "may_select_winning_evidence": false
+      }
+    },
+    {
+      "kind": "reversible_draft_preview",
+      "scenario_id": "draft-only-local-preview",
+      "next_action_classification": "render_reversible_draft_preview",
+      "process_refs": ["process.document_preparation.local_preview"],
+      "gap_analysis_refs": ["gap.draft_preview_requires_reversibility_label"],
+      "guardrail_refs": ["guardrail.only_reversible_draft_preview"],
+      "citations": ["evidence-process-model", "evidence-guardrail-bundle"],
+      "expected_api_output": {
+        "message": "I can show a reversible draft preview using redacted fixture facts only.",
+        "mode": "reversible_draft_preview_only",
+        "rollback_available": true,
+        "writes_to_devhub": false,
+        "changes_official_record": false
+      }
+    },
+    {
+      "kind": "blocked_action_explanation",
+      "scenario_id": "official-record-change-request",
+      "next_action_classification": "refuse_consequential_action",
+      "process_refs": ["process.official_action.attended_review_required"],
+      "gap_analysis_refs": ["gap.consequential_action_requires_user_attendance"],
+      "guardrail_refs": ["guardrail.refuse_official_final_actions"],
+      "citations": ["evidence-guardrail-bundle"],
+      "expected_api_output": {
+        "message": "I cannot perform an official record change; that requires attended review and explicit user confirmation outside this offline fixture contract.",
+        "blocked": true,
+        "blocked_action": "official_record_change",
+        "reason_code": "official_action_blocked"
+      }
+    },
+    {
+      "kind": "next_safe_read_only_action",
+      "scenario_id": "safe-follow-up-after-block",
+      "next_action_classification": "prepare_safe_read_only_review_notes",
+      "process_refs": ["process.pre_application_research.read_only_review"],
+      "gap_analysis_refs": ["gap.review_notes_needed"],
+      "guardrail_refs": ["guardrail.read_only_next_step_only"],
+      "citations": ["evidence-combined-rehearsal", "evidence-process-model", "evidence-guardrail-bundle"],
+      "expected_api_output": {
+        "message": "The next safe step is to summarize the cited fixture gaps and prepare read-only reviewer notes.",
+        "action_class": "read_only",
+        "requires_devhub_login": false,
+        "changes_official_record": false,
+        "next_action_id": "summarize_fixture_gaps_for_review"
+      }
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "unittest", "discover", "-s", "ppd/tests", "-p", "test_*.py"],
+    ["python3", "-m", "unittest", "ppd.tests.test_agent_readiness_contract_v3"]
+  ],
+  "attestations": {
+    "no_live_llm": true,
+    "no_devhub_access": true,
+    "no_user_data": true,
+    "no_official_action": true
+  }
+}

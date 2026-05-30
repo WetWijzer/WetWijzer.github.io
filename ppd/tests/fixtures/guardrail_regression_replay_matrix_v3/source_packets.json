@@ -1,0 +1,40 @@
+{
+  "packets": [
+    {
+      "id": "inactive-migration-bundle-acceptance-packet-v2",
+      "status": "inactive",
+      "reviewer_owner": "migration-reviewer",
+      "sections": {
+        "acceptance_criteria": "acceptance.criteria.fixture_first_guardrails",
+        "conflict_fixtures": "acceptance.criteria.stale_conflict_notice",
+        "blocked_action_fixtures": "acceptance.criteria.block_consequential_actions",
+        "draft_preview_fixtures": "acceptance.criteria.reversible_draft_preview",
+        "template_fixtures": "acceptance.criteria.explanation_template"
+      }
+    },
+    {
+      "id": "inactive-guardrail-fixture-migration-packet-v2",
+      "status": "inactive",
+      "reviewer_owner": "fixture-reviewer",
+      "sections": {
+        "fixture_inventory": "fixtures.missing_fact_prompts",
+        "conflict_fixtures": "fixtures.stale_conflicting_evidence_notices",
+        "blocked_action_fixtures": "fixtures.blocked_consequential_actions",
+        "draft_preview_fixtures": "fixtures.reversible_draft_previews",
+        "template_fixtures": "fixtures.explanation_templates"
+      }
+    },
+    {
+      "id": "agent-readiness-replay-packet-v2",
+      "status": "inactive",
+      "reviewer_owner": "readiness-reviewer",
+      "sections": {
+        "readiness_replay": "replay.expected_outcomes.fixture_first",
+        "conflict_replay": "replay.expected_outcomes.stale_conflict_notice",
+        "blocked_action_replay": "replay.expected_outcomes.blocked_consequential_actions",
+        "draft_preview_replay": "replay.expected_outcomes.reversible_draft_previews",
+        "template_replay": "replay.expected_outcomes.explanation_templates"
+      }
+    }
+  ]
+}

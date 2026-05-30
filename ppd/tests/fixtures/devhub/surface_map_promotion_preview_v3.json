@@ -1,0 +1,522 @@
+{
+  "fixtureKind": "devhub_surface_map_promotion_preview_v3",
+  "schemaVersion": 1,
+  "packets": [
+    {
+      "name": "valid_fixture_only_preview",
+      "preview_type": "ppd.devhub_surface_map_promotion_preview.v3",
+      "preview_version": 3,
+      "mode": "inactive_fixture_promotion_preview_only",
+      "surface_action_patch_candidates": [
+        {
+          "candidate_id": "candidate-residential-draft-action-labels",
+          "surface_id": "devhub-residential-draft-synthetic",
+          "patch_kind": "inactive_surface_action_rows",
+          "citations": [
+            {
+              "source_id": "devhub-public-guide-submit-permit-application",
+              "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+            }
+          ],
+          "before_surface_rows": [
+            {
+              "row_id": "before-surface-residential-draft",
+              "surface_id": "devhub-residential-draft-synthetic",
+              "summary": "Existing inactive fixture row retained for review.",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "after_surface_rows": [
+            {
+              "row_id": "after-surface-residential-draft",
+              "surface_id": "devhub-residential-draft-synthetic",
+              "summary": "Synthetic labels are staged for inactive review only.",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "before_action_rows": [
+            {
+              "row_id": "before-action-save-for-later",
+              "surface_id": "devhub-residential-draft-synthetic",
+              "action_id": "save-for-later",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "after_action_rows": [
+            {
+              "row_id": "after-action-save-for-later",
+              "surface_id": "devhub-residential-draft-synthetic",
+              "action_id": "save-for-later",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "selector_confidence_deltas": [
+            {
+              "surface_id": "devhub-residential-draft-synthetic",
+              "selector": "button[name='save-for-later']",
+              "before_confidence": 0.86,
+              "after_confidence": 0.91,
+              "delta_disposition": "review_required_before_active_change",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "manual_handoff_disposition": {
+            "required": true,
+            "reason": "User attendance remains required for account-scoped DevHub workflows.",
+            "citations": [
+              {
+                "source_id": "devhub-sign-in-guide",
+                "url": "https://www.portland.gov/ppd/devhub-sign-guide"
+              }
+            ]
+          },
+          "redaction_disposition": {
+            "disposition": "synthetic_only",
+            "reason": "Fixture uses synthetic labels and contains no account-scoped values.",
+            "citations": [
+              {
+                "source_id": "devhub-sign-in-guide",
+                "url": "https://www.portland.gov/ppd/devhub-sign-guide"
+              }
+            ]
+          }
+        }
+      ],
+      "attestations": {
+        "fixture_first": true,
+        "no_live_devhub": true,
+        "no_browser_automation": true,
+        "no_auth_state": true,
+        "no_credentials": true,
+        "no_private_values": true,
+        "no_screenshots": true,
+        "no_traces": true,
+        "no_har": true,
+        "no_active_surface_registry_mutation": true,
+        "no_active_guardrail_mutation": true,
+        "no_active_prompt_mutation": true,
+        "no_active_monitoring_mutation": true,
+        "no_active_release_state_mutation": true,
+        "no_active_agent_state_mutation": true
+      }
+    },
+    {
+      "name": "missing_required_review_evidence",
+      "preview_type": "ppd.devhub_surface_map_promotion_preview.v3",
+      "preview_version": 3,
+      "mode": "inactive_fixture_promotion_preview_only",
+      "surface_action_patch_candidates": [
+        {
+          "candidate_id": "candidate-missing-review-evidence",
+          "surface_id": "devhub-missing-review-evidence",
+          "patch_kind": "inactive_surface_action_rows",
+          "before_surface_rows": [],
+          "after_surface_rows": [],
+          "before_action_rows": [],
+          "after_action_rows": [],
+          "selector_confidence_deltas": []
+        }
+      ],
+      "attestations": {
+        "fixture_first": true,
+        "no_live_devhub": true,
+        "no_browser_automation": true,
+        "no_auth_state": true,
+        "no_credentials": true,
+        "no_private_values": true,
+        "no_screenshots": true,
+        "no_traces": true,
+        "no_har": true,
+        "no_active_surface_registry_mutation": true,
+        "no_active_guardrail_mutation": true,
+        "no_active_prompt_mutation": true,
+        "no_active_monitoring_mutation": true,
+        "no_active_release_state_mutation": true,
+        "no_active_agent_state_mutation": true
+      }
+    },
+    {
+      "name": "unsafe_private_and_live_claims",
+      "preview_type": "ppd.devhub_surface_map_promotion_preview.v3",
+      "preview_version": 3,
+      "mode": "inactive_fixture_promotion_preview_only",
+      "surface_action_patch_candidates": [
+        {
+          "candidate_id": "candidate-private-live",
+          "surface_id": "devhub-private-live",
+          "patch_kind": "inactive_surface_action_rows",
+          "citations": [
+            {
+              "source_id": "devhub-public-guide-submit-permit-application",
+              "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+            }
+          ],
+          "private_value": "private DevHub value copied from authenticated value",
+          "auth_state_note": "auth state file was inspected",
+          "trace_reference": "playwright trace trace.zip",
+          "live_completion_note": "Playwright clicked in DevHub and DevHub completed",
+          "before_surface_rows": [
+            {
+              "row_id": "before-private-live",
+              "surface_id": "devhub-private-live",
+              "summary": "Contains credential and password language for rejection.",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "after_surface_rows": [
+            {
+              "row_id": "after-private-live",
+              "surface_id": "devhub-private-live",
+              "summary": "References screenshot path and HAR file for rejection.",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "before_action_rows": [
+            {
+              "row_id": "before-action-private-live",
+              "surface_id": "devhub-private-live",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "after_action_rows": [
+            {
+              "row_id": "after-action-private-live",
+              "surface_id": "devhub-private-live",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "selector_confidence_deltas": [
+            {
+              "surface_id": "devhub-private-live",
+              "selector": "#synthetic",
+              "before_confidence": 0.8,
+              "after_confidence": 0.9,
+              "delta_disposition": "review_required_before_active_change",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "manual_handoff_disposition": {
+            "required": true,
+            "reason": "Manual handoff remains required.",
+            "citations": [
+              {
+                "source_id": "devhub-sign-in-guide",
+                "url": "https://www.portland.gov/ppd/devhub-sign-guide"
+              }
+            ]
+          },
+          "redaction_disposition": {
+            "disposition": "synthetic_only",
+            "reason": "Reject because screenshot file and HAR path references are present elsewhere in this candidate.",
+            "citations": [
+              {
+                "source_id": "devhub-sign-in-guide",
+                "url": "https://www.portland.gov/ppd/devhub-sign-guide"
+              }
+            ]
+          }
+        }
+      ],
+      "attestations": {
+        "fixture_first": true,
+        "no_live_devhub": true,
+        "no_browser_automation": true,
+        "no_auth_state": true,
+        "no_credentials": true,
+        "no_private_values": true,
+        "no_screenshots": true,
+        "no_traces": true,
+        "no_har": true,
+        "no_active_surface_registry_mutation": true,
+        "no_active_guardrail_mutation": true,
+        "no_active_prompt_mutation": true,
+        "no_active_monitoring_mutation": true,
+        "no_active_release_state_mutation": true,
+        "no_active_agent_state_mutation": true
+      }
+    },
+    {
+      "name": "unsafe_outcomes_actions_and_mutations",
+      "preview_type": "ppd.devhub_surface_map_promotion_preview.v3",
+      "preview_version": 3,
+      "mode": "inactive_fixture_promotion_preview_only",
+      "active_surface_registry_mutation": true,
+      "active_guardrail_mutation": "enabled",
+      "active_prompt_mutation": true,
+      "active_monitoring_mutation": true,
+      "active_release_state_mutation": true,
+      "active_agent_state_mutation": true,
+      "surface_action_patch_candidates": [
+        {
+          "candidate_id": "candidate-outcomes-actions-mutations",
+          "surface_id": "devhub-outcomes-actions-mutations",
+          "patch_kind": "inactive_surface_action_rows",
+          "citations": [
+            {
+              "source_id": "devhub-public-guide-submit-permit-application",
+              "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+            }
+          ],
+          "summary": "Permit will be approved after this preview and final submit is enabled.",
+          "before_surface_rows": [
+            {
+              "row_id": "before-outcomes-actions",
+              "surface_id": "devhub-outcomes-actions-mutations",
+              "summary": "Existing inactive fixture row.",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "after_surface_rows": [
+            {
+              "row_id": "after-outcomes-actions",
+              "surface_id": "devhub-outcomes-actions-mutations",
+              "summary": "Synthetic row says submit application to trigger rejection.",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "before_action_rows": [
+            {
+              "row_id": "before-action-outcomes-actions",
+              "surface_id": "devhub-outcomes-actions-mutations",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "after_action_rows": [
+            {
+              "row_id": "after-action-outcomes-actions",
+              "surface_id": "devhub-outcomes-actions-mutations",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "selector_confidence_deltas": [
+            {
+              "surface_id": "devhub-outcomes-actions-mutations",
+              "selector": "#synthetic",
+              "before_confidence": 0.8,
+              "after_confidence": 0.9,
+              "delta_disposition": "review_required_before_active_change",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "manual_handoff_disposition": {
+            "required": true,
+            "reason": "Manual handoff remains required.",
+            "citations": [
+              {
+                "source_id": "devhub-sign-in-guide",
+                "url": "https://www.portland.gov/ppd/devhub-sign-guide"
+              }
+            ]
+          },
+          "redaction_disposition": {
+            "disposition": "synthetic_only",
+            "reason": "Fixture uses synthetic labels.",
+            "citations": [
+              {
+                "source_id": "devhub-sign-in-guide",
+                "url": "https://www.portland.gov/ppd/devhub-sign-guide"
+              }
+            ]
+          }
+        }
+      ],
+      "attestations": {
+        "fixture_first": true,
+        "no_live_devhub": true,
+        "no_browser_automation": true,
+        "no_auth_state": true,
+        "no_credentials": true,
+        "no_private_values": true,
+        "no_screenshots": true,
+        "no_traces": true,
+        "no_har": true,
+        "no_active_surface_registry_mutation": true,
+        "no_active_guardrail_mutation": true,
+        "no_active_prompt_mutation": true,
+        "no_active_monitoring_mutation": true,
+        "no_active_release_state_mutation": true,
+        "no_active_agent_state_mutation": true
+      }
+    },
+    {
+      "name": "missing_attestations",
+      "preview_type": "ppd.devhub_surface_map_promotion_preview.v3",
+      "preview_version": 3,
+      "mode": "inactive_fixture_promotion_preview_only",
+      "surface_action_patch_candidates": [
+        {
+          "candidate_id": "candidate-missing-attestations",
+          "surface_id": "devhub-missing-attestations",
+          "patch_kind": "inactive_surface_action_rows",
+          "citations": [
+            {
+              "source_id": "devhub-public-guide-submit-permit-application",
+              "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+            }
+          ],
+          "before_surface_rows": [
+            {
+              "row_id": "before-missing-attestations",
+              "surface_id": "devhub-missing-attestations",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "after_surface_rows": [
+            {
+              "row_id": "after-missing-attestations",
+              "surface_id": "devhub-missing-attestations",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "before_action_rows": [
+            {
+              "row_id": "before-action-missing-attestations",
+              "surface_id": "devhub-missing-attestations",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "after_action_rows": [
+            {
+              "row_id": "after-action-missing-attestations",
+              "surface_id": "devhub-missing-attestations",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "selector_confidence_deltas": [
+            {
+              "surface_id": "devhub-missing-attestations",
+              "selector": "#synthetic",
+              "before_confidence": 0.8,
+              "after_confidence": 0.9,
+              "delta_disposition": "review_required_before_active_change",
+              "citations": [
+                {
+                  "source_id": "devhub-public-guide-submit-permit-application",
+                  "url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application"
+                }
+              ]
+            }
+          ],
+          "manual_handoff_disposition": {
+            "required": true,
+            "reason": "Manual handoff remains required.",
+            "citations": [
+              {
+                "source_id": "devhub-sign-in-guide",
+                "url": "https://www.portland.gov/ppd/devhub-sign-guide"
+              }
+            ]
+          },
+          "redaction_disposition": {
+            "disposition": "synthetic_only",
+            "reason": "Fixture uses synthetic labels.",
+            "citations": [
+              {
+                "source_id": "devhub-sign-in-guide",
+                "url": "https://www.portland.gov/ppd/devhub-sign-guide"
+              }
+            ]
+          }
+        }
+      ],
+      "attestations": {
+        "fixture_first": true
+      }
+    }
+  ]
+}

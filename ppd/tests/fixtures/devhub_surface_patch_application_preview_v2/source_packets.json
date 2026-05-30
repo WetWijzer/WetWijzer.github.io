@@ -1,0 +1,4 @@
+{
+  "implementation_patch_staging_plan_v2_fixture": "../implementation_patch_staging_plan_v2/source_packets.json",
+  "devhub_read_only_surface_observation_refresh_candidate_v2_fixture": "../refresh_implementation_proposal_v2/devhub_read_only_surface_observation_refresh_candidate_v2.json"
+}

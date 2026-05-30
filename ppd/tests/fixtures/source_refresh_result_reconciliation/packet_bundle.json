@@ -1,0 +1,166 @@
+{
+  "source_freshness_delta_review_packet": {
+    "packet_id": "fixture-source-freshness-delta-review-20260529",
+    "source_deltas": [
+      {
+        "source_id": "portland-zoning-code-title-33",
+        "status": "current",
+        "delta_reasons": ["published effective date matches fixture baseline"],
+        "requirement_ids": ["REQ-ZONING-HEIGHT-001"],
+        "process_ids": ["PROC-ZONING-REVIEW-001"],
+        "guardrail_ids": ["GRD-NO-LIVE-CRAWL-001"]
+      },
+      {
+        "source_id": "portland-transportation-admin-rules",
+        "status": "stale",
+        "delta_reasons": ["fixture metadata shows newer public revision than extracted baseline"],
+        "requirement_ids": ["REQ-ROW-PERMIT-002"],
+        "process_ids": ["PROC-ROW-PERMIT-001"],
+        "guardrail_ids": ["GRD-HUMAN-REVIEW-001"]
+      },
+      {
+        "source_id": "portland-stormwater-manual",
+        "status": "requires_review",
+        "delta_reasons": ["rerun reported extraction conflict for cited table"],
+        "requirement_ids": ["REQ-STORMWATER-003"],
+        "process_ids": ["PROC-SITE-DEVELOPMENT-001"],
+        "guardrail_ids": ["GRD-ESCALATE-CONFLICT-001"]
+      }
+    ]
+  },
+  "public_source_refresh_metadata_intake_packet": {
+    "packet_id": "fixture-public-source-refresh-metadata-20260529",
+    "sources": [
+      {
+        "source_id": "portland-zoning-code-title-33",
+        "status": "available",
+        "source_url": "https://www.portland.gov/code/33",
+        "citations": [
+          {
+            "label": "Portland City Code Title 33",
+            "href": "https://www.portland.gov/code/33"
+          }
+        ],
+        "refresh_notes": ["public source metadata fixture only"]
+      },
+      {
+        "source_id": "portland-transportation-admin-rules",
+        "status": "available",
+        "source_url": "https://www.portland.gov/transportation/permits/rules",
+        "citations": [
+          {
+            "label": "PBOT administrative rules index",
+            "href": "https://www.portland.gov/transportation/permits/rules"
+          }
+        ],
+        "refresh_notes": ["public source metadata fixture only"]
+      },
+      {
+        "source_id": "portland-stormwater-manual",
+        "status": "available",
+        "source_url": "https://www.portland.gov/bes/stormwater/stormwater-management-manual",
+        "citations": [
+          {
+            "label": "Stormwater Management Manual",
+            "href": "https://www.portland.gov/bes/stormwater/stormwater-management-manual"
+          }
+        ],
+        "refresh_notes": ["public source metadata fixture only"]
+      }
+    ]
+  },
+  "requirement_extraction_rerun_result_intake_packet": {
+    "packet_id": "fixture-requirement-extraction-rerun-result-20260529",
+    "source_results": [
+      {
+        "source_id": "portland-zoning-code-title-33",
+        "status": "passed",
+        "result_notes": ["requirements unchanged in fixture rerun"],
+        "requirement_ids": ["REQ-ZONING-HEIGHT-001"],
+        "process_ids": ["PROC-ZONING-REVIEW-001"],
+        "guardrail_ids": ["GRD-NO-LIVE-CRAWL-001"]
+      },
+      {
+        "source_id": "portland-transportation-admin-rules",
+        "status": "passed",
+        "result_notes": ["newer revision requires reviewer acceptance before registry update"],
+        "requirement_ids": ["REQ-ROW-PERMIT-002"],
+        "process_ids": ["PROC-ROW-PERMIT-001"],
+        "guardrail_ids": ["GRD-HUMAN-REVIEW-001"]
+      },
+      {
+        "source_id": "portland-stormwater-manual",
+        "status": "failed",
+        "result_notes": ["fixture rerun conflict prevents automatic acceptance"],
+        "requirement_ids": ["REQ-STORMWATER-003"],
+        "process_ids": ["PROC-SITE-DEVELOPMENT-001"],
+        "guardrail_ids": ["GRD-ESCALATE-CONFLICT-001"]
+      }
+    ]
+  },
+  "expected_reconciliation_packet": {
+    "packet_type": "source_refresh_result_reconciliation",
+    "schema_version": 1,
+    "inputs": {
+      "source_freshness_delta_review_packet_id": "fixture-source-freshness-delta-review-20260529",
+      "public_source_refresh_metadata_intake_packet_id": "fixture-public-source-refresh-metadata-20260529",
+      "requirement_extraction_rerun_result_intake_packet_id": "fixture-requirement-extraction-rerun-result-20260529"
+    },
+    "source_decisions": [
+      {
+        "source_id": "portland-stormwater-manual",
+        "decision": "escalated",
+        "decision_basis": ["rerun reported extraction conflict for cited table"],
+        "citations": [
+          {
+            "label": "Stormwater Management Manual",
+            "href": "https://www.portland.gov/bes/stormwater/stormwater-management-manual"
+          }
+        ],
+        "affected_requirement_ids": ["REQ-STORMWATER-003"],
+        "affected_process_ids": ["PROC-SITE-DEVELOPMENT-001"],
+        "affected_guardrail_ids": ["GRD-ESCALATE-CONFLICT-001"],
+        "reviewer_owner": "ppd-reviewer:source-refresh"
+      },
+      {
+        "source_id": "portland-transportation-admin-rules",
+        "decision": "deferred",
+        "decision_basis": ["fixture metadata shows newer public revision than extracted baseline"],
+        "citations": [
+          {
+            "label": "PBOT administrative rules index",
+            "href": "https://www.portland.gov/transportation/permits/rules"
+          }
+        ],
+        "affected_requirement_ids": ["REQ-ROW-PERMIT-002"],
+        "affected_process_ids": ["PROC-ROW-PERMIT-001"],
+        "affected_guardrail_ids": ["GRD-HUMAN-REVIEW-001"],
+        "reviewer_owner": "ppd-reviewer:source-refresh"
+      },
+      {
+        "source_id": "portland-zoning-code-title-33",
+        "decision": "accepted",
+        "decision_basis": ["published effective date matches fixture baseline"],
+        "citations": [
+          {
+            "label": "Portland City Code Title 33",
+            "href": "https://www.portland.gov/code/33"
+          }
+        ],
+        "affected_requirement_ids": ["REQ-ZONING-HEIGHT-001"],
+        "affected_process_ids": ["PROC-ZONING-REVIEW-001"],
+        "affected_guardrail_ids": ["GRD-NO-LIVE-CRAWL-001"],
+        "reviewer_owner": "ppd-reviewer:source-refresh"
+      }
+    ],
+    "reviewer_owner": "ppd-reviewer:source-refresh",
+    "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+    "attestations": {
+      "no_live_crawl": true,
+      "no_processor_execution": true,
+      "no_registry_mutation": true,
+      "no_requirement_mutation": true,
+      "no_guardrail_mutation": true
+    }
+  }
+}

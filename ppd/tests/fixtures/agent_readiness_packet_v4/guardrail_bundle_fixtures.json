@@ -1,0 +1,19 @@
+{
+  "bundle_id": "guardrail-bundle-fixtures-v1",
+  "blocked_actions": [
+    "captcha",
+    "mfa",
+    "account_creation",
+    "payment",
+    "submission",
+    "certification",
+    "cancellation",
+    "upload"
+  ],
+  "required_attestations": [
+    "no_live_llm",
+    "no_devhub",
+    "no_user_data",
+    "no_official_action"
+  ]
+}

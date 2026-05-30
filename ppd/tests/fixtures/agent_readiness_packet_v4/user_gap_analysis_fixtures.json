@@ -1,0 +1,8 @@
+{
+  "fixture_id": "user-gap-analysis-fixtures-v1",
+  "missing_fields": [
+    "permit_address",
+    "applicant_role"
+  ],
+  "prompt_policy": "ask only for missing fixture fields before readiness drafting"
+}

@@ -1,0 +1,181 @@
+{
+  "packet_id": "fixture-first-live-readiness-authorization-checklist-packet-v2",
+  "packet_type": "live-readiness-authorization-checklist",
+  "version": "v2",
+  "prepared_for": "reviewer_authorization_before_any_live_ppd_operation",
+  "consumes": [
+    {
+      "packet_id": "live-readiness-gate-review-packet-v2",
+      "role": "upstream gate packet",
+      "citation_refs": ["plan:Non-Negotiable Boundaries", "plan:Public Website Archival Plan"]
+    },
+    {
+      "packet_id": "public-recrawl-operator-packet-v2",
+      "role": "upstream public recrawl operator packet",
+      "citation_refs": ["plan:Phase 1: Source Discovery", "plan:Phase 2: Processor Handoff"]
+    },
+    {
+      "packet_id": "attended-devhub-read-only-runbook-refresh-packet-v2",
+      "role": "upstream attended DevHub read-only runbook packet",
+      "citation_refs": ["plan:Authenticated DevHub Automation Plan", "plan:DevHub Surface Categories"]
+    }
+  ],
+  "authorization_prerequisites": [
+    {
+      "id": "prereq-source-citations-reviewed",
+      "title": "Reviewer confirms every proposed live-readiness claim is source cited",
+      "required_evidence_ids": ["evidence-official-source-anchors", "evidence-consumed-packet-citations"],
+      "citation_refs": ["plan:Official Source Anchors", "plan:SourceRegistry", "plan:RequirementNode"],
+      "reviewer_action": "Confirm that all gate, recrawl, and read-only DevHub prerequisites cite official public anchors or committed upstream packet evidence before authorization."
+    },
+    {
+      "id": "prereq-fixture-gap-closures-reviewed",
+      "title": "Reviewer confirms fixture gaps are closed before live work",
+      "required_evidence_ids": ["evidence-fixture-gap-closures", "evidence-offline-validation-commands"],
+      "citation_refs": ["plan:Repository Boundary", "plan:Core Data Products", "plan:Public Website Archival Plan"],
+      "reviewer_action": "Confirm that committed fixtures cover the gate review, public recrawl, and attended read-only runbook prerequisites without requiring live crawl output."
+    },
+    {
+      "id": "prereq-live-boundaries-reviewed",
+      "title": "Reviewer confirms live-boundary decisions are explicit",
+      "required_evidence_ids": ["evidence-live-boundary-decisions", "evidence-required-attestations"],
+      "citation_refs": ["plan:Non-Negotiable Boundaries", "plan:Authenticated DevHub Automation Plan", "plan:DevHub Surface Categories"],
+      "reviewer_action": "Confirm that public recrawl, DevHub read-only attendance, authentication state, browser artifacts, and official actions remain blocked unless a later packet authorizes a narrower live operation."
+    },
+    {
+      "id": "prereq-operator-signoff-fields-ready",
+      "title": "Reviewer confirms required operator signoff fields are blank and complete",
+      "required_evidence_ids": ["evidence-operator-signoff-fields"],
+      "citation_refs": ["plan:ActionJournal", "plan:Session Model", "plan:Non-Negotiable Boundaries"],
+      "reviewer_action": "Confirm that operator identity, authorization timestamp, scope confirmation, boundary confirmation, and attestation confirmation are required and intentionally blank in the fixture."
+    }
+  ],
+  "fixture_gap_closures": [
+    {
+      "id": "gap-close-gate-review-packet",
+      "gap": "Live-readiness gate packet must be consumed without relying on live state.",
+      "covers_consumed_packet": "live-readiness-gate-review-packet-v2",
+      "closure_fixture": "ppd/tests/fixtures/live_readiness_authorization_checklist_packet_v2.json",
+      "closure_summary": "Authorization prerequisites cite gate-review evidence and keep live activity blocked pending reviewer signoff.",
+      "review_status": "ready_for_reviewer_authorization"
+    },
+    {
+      "id": "gap-close-public-recrawl-packet",
+      "gap": "Public recrawl operator packet must not trigger a live crawl during readiness review.",
+      "covers_consumed_packet": "public-recrawl-operator-packet-v2",
+      "closure_fixture": "ppd/tests/fixtures/live_readiness_authorization_checklist_packet_v2.json",
+      "closure_summary": "Live-boundary decisions allow only fixture review and prohibit network recrawl until separately authorized.",
+      "review_status": "ready_for_reviewer_authorization"
+    },
+    {
+      "id": "gap-close-attended-devhub-read-only-packet",
+      "gap": "Attended DevHub read-only packet must not create auth state, browser artifacts, or account-scoped captures.",
+      "covers_consumed_packet": "attended-devhub-read-only-runbook-refresh-packet-v2",
+      "closure_fixture": "ppd/tests/fixtures/live_readiness_authorization_checklist_packet_v2.json",
+      "closure_summary": "Required attestations prohibit live DevHub access, auth-state storage, browser artifacts, and official actions in this packet.",
+      "review_status": "ready_for_reviewer_authorization"
+    }
+  ],
+  "live_boundary_decisions": [
+    {
+      "id": "boundary-public-recrawl",
+      "boundary": "public PP&D recrawl",
+      "decision": "reviewer_authorization_required",
+      "allowed_scope": ["inspect committed fixtures", "validate allowlist and citation prerequisites", "run offline tests"],
+      "prohibited_scope": ["live HTTP requests", "robots fetches", "raw public body persistence", "processor archival runs"],
+      "citation_refs": ["plan:Public Website Archival Plan", "plan:Non-Negotiable Boundaries"]
+    },
+    {
+      "id": "boundary-devhub-read-only",
+      "boundary": "attended DevHub read-only review",
+      "decision": "reviewer_authorization_required",
+      "allowed_scope": ["review runbook fixture", "verify redaction requirements", "confirm attendance checkpoints"],
+      "prohibited_scope": ["opening DevHub", "login", "MFA prompts", "authenticated page capture", "private account value extraction"],
+      "citation_refs": ["plan:Session Model", "plan:DevHub Surface Categories"]
+    },
+    {
+      "id": "boundary-auth-and-browser-artifacts",
+      "boundary": "auth state and browser artifacts",
+      "decision": "prohibited_without_new_packet",
+      "allowed_scope": ["blank signoff fields", "fixture-only attestations"],
+      "prohibited_scope": ["cookies", "storage state", "screenshots", "traces", "HAR files", "downloaded private documents"],
+      "citation_refs": ["plan:Non-Negotiable Boundaries", "plan:ActionJournal"]
+    },
+    {
+      "id": "boundary-official-actions",
+      "boundary": "official PP&D or DevHub actions",
+      "decision": "prohibited_without_new_packet",
+      "allowed_scope": ["document reviewer authorization prerequisites", "record no-official-action attestation"],
+      "prohibited_scope": ["submission", "certification", "upload", "payment", "inspection scheduling", "cancellation", "account changes"],
+      "citation_refs": ["plan:DevHub Surface Categories", "plan:Non-Negotiable Boundaries"]
+    }
+  ],
+  "operator_signoff_fields": [
+    {
+      "field_id": "operator_name",
+      "label": "Operator name",
+      "required": true,
+      "blank_value": null,
+      "confirmation_text": "I am the operator requesting reviewer authorization for the bounded readiness packet."
+    },
+    {
+      "field_id": "authorization_timestamp_utc",
+      "label": "Authorization timestamp UTC",
+      "required": true,
+      "blank_value": null,
+      "confirmation_text": "I confirm the exact UTC time at which reviewer authorization is granted."
+    },
+    {
+      "field_id": "authorized_scope",
+      "label": "Authorized scope",
+      "required": true,
+      "blank_value": null,
+      "confirmation_text": "I confirm the authorized scope remains limited to fixture review and offline validation unless a later packet narrows and authorizes live work."
+    },
+    {
+      "field_id": "boundary_acknowledgement",
+      "label": "Boundary acknowledgement",
+      "required": true,
+      "blank_value": null,
+      "confirmation_text": "I acknowledge that this packet does not authorize live crawling, live DevHub access, auth-state creation, browser artifacts, or official actions."
+    },
+    {
+      "field_id": "attestation_acknowledgement",
+      "label": "Attestation acknowledgement",
+      "required": true,
+      "blank_value": null,
+      "confirmation_text": "I confirm the no-live-crawl, no-live-DevHub, no-auth-state, no-browser-artifact, and no-official-action attestations remain true for this packet."
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/authorization/live_readiness_authorization_checklist_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_live_readiness_authorization_checklist_v2.py"]
+  ],
+  "attestations": [
+    {
+      "id": "no-live-crawl",
+      "status": "attested_in_fixture",
+      "statement": "This packet does not authorize or perform live public crawling, recrawling, robots fetching, or processor archival runs."
+    },
+    {
+      "id": "no-live-devhub",
+      "status": "attested_in_fixture",
+      "statement": "This packet does not authorize or perform live DevHub access, login, attended browser operation, or account-scoped reading."
+    },
+    {
+      "id": "no-auth-state",
+      "status": "attested_in_fixture",
+      "statement": "This packet does not create, read, persist, or commit cookies, storage state, credentials, MFA artifacts, or private session files."
+    },
+    {
+      "id": "no-browser-artifact",
+      "status": "attested_in_fixture",
+      "statement": "This packet does not create, store, or commit screenshots, traces, HAR files, browser profiles, downloads, or raw crawl output."
+    },
+    {
+      "id": "no-official-action",
+      "status": "attested_in_fixture",
+      "statement": "This packet does not submit, certify, upload, pay, schedule, cancel, create accounts, change account settings, or otherwise take official action."
+    }
+  ]
+}

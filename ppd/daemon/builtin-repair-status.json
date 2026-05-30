@@ -1,19 +1,20 @@
 {
-  "createdAt": "2026-05-24T16:21:27.874812Z",
+  "createdAt": "2026-05-29T20:33:44.456549Z",
   "decision": {
     "action": "invoke_codex",
-    "reason": "1 task(s) are blocked and no independent selectable task remains: Task checkbox-68: Task supervisor-20260515-069: Add validation for DevHubSurfaceMap candidates that blocks reversible draft actions when selector confidence is low, route or heading evidence is missing, required labels are ambiguous, or upload/submit/certify/schedule/cancel/payment controls are classified as reversible.",
+    "reason": "3 consecutive daemon rounds failed without an accepted patch",
     "severity": "warning"
   },
   "failedAgenticRepair": {
     "changedFiles": [
-      "ppd/daemon/SUPERVISOR_REPAIR_GUIDE.md"
+      "ppd/daemon/prompt_builder.py",
+      "ppd/tests/test_daemon_compact_prompt_retry.py"
     ],
     "errors": [
       "Validation failed in temporary worktree; candidate was not promoted."
     ],
     "failureKind": "validation",
-    "summary": "Add a deterministic supervisor repair guide for repeated DevHubSurfaceMap syntax-preflight failures.",
+    "summary": "Add a compact LLM-termination repair prompt path so repeated pre-validation llm_router failures steer the daemon toward supervisor repair instead of retrying broad PP&D domain work.",
     "validationResults": [
       {
         "command": [
@@ -22,8 +23,8 @@
           "--self-test"
         ],
         "returncode": 0,
-        "stderr": "",
-        "stdout": "{ \"ok\": true, \"task_count\": 69 }"
+        "stderr": "/home/barberb/portland-laws.github.io/ppd/daemon/worktrees/cycle-20260529T203339330060Z-5d2fb60f/ppd/tests/test_draft_preview_agent_handoff_acceptance_packet_v2.py:104: SyntaxWarning: invalid escape sequence '\\[' with pytest.raises(AcceptancePacketError, match=\"migration_checklist_items\\[0\\].summary required\"):",
+        "stdout": "{ \"ok\": true, \"task_count\": 82 }"
       },
       {
         "command": [
@@ -37,7 +38,7 @@
           "test_*.py"
         ],
         "returncode": 1,
-        "stderr": "......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................ss......................sss...............................................................................................................................................................................................................................................FFF....................................................................................................",
+        "stderr": ".................................................................................................................................................................................................................................F.........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................ss....................................................sss...................................",
         "stdout": ""
       },
       {

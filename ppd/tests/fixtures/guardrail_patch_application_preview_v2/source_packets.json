@@ -1,0 +1,4 @@
+{
+  "implementation_patch_staging_plan_v2_fixture": "../implementation_patch_staging_plan_v2/source_packets.json",
+  "post_dry_run_guardrail_impact_review_v2_fixture": "../refresh_implementation_proposal_v2/post_dry_run_guardrail_impact_review_v2.json"
+}

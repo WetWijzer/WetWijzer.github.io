@@ -1,0 +1,19 @@
+{
+  "packet_id": "prompt-refresh-release-handoff-v2-fixture",
+  "version": "v2",
+  "accepted_source_packets": [
+    "official-source-anchor-refresh-v2",
+    "prompt-constraint-refresh-v2"
+  ],
+  "compatible_prompt_packets": [
+    "safe-assist-system-prompt-v2",
+    "draft-preview-agent-prompt-v2"
+  ],
+  "required_constraints": [
+    "fixture-first offline validation",
+    "no live release",
+    "no live DevHub",
+    "no LLM completion dependency",
+    "cite every candidate note to a fixture handoff"
+  ]
+}

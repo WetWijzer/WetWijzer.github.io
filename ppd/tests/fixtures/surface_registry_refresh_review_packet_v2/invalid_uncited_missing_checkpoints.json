@@ -1,0 +1,17 @@
+{
+  "packet_version": "surface-registry-refresh-review-packet-v2",
+  "packet_id": "fixture-surface-registry-refresh-review-v2-invalid-uncited",
+  "checkpoints": [
+    {
+      "name": "source-review",
+      "status": "present"
+    }
+  ],
+  "review_items": [
+    {
+      "item_type": "surface",
+      "surface_id": "devhub-private-workflow",
+      "review_decision": "approve"
+    }
+  ]
+}

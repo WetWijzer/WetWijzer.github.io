@@ -1,0 +1,46 @@
+{
+  "fixture_id": "process-model-refresh-impact-v2-fixture",
+  "process_id": "process_residential_addition_devhub_v2",
+  "reviewer_owner_defaults": {
+    "reviewer_role": "ppd_guardrail_reviewer",
+    "owner_role": "applicant"
+  },
+  "missing_fact_updates": [
+    {
+      "fact_id": "property_owner_authorization",
+      "label": "Property owner authorization",
+      "reason": "The refreshed process model requires owner authorization before application submission can be treated as ready.",
+      "source_evidence_ids": ["src-devhub-application-guide-owner-auth"]
+    },
+    {
+      "fact_id": "contractor_license_status",
+      "label": "Contractor license status",
+      "reason": "Trade-related fixture options can depend on license details in the DevHub profile.",
+      "source_evidence_ids": ["src-standard-trade-profile-license"]
+    }
+  ],
+  "stale_evidence_updates": [
+    {
+      "expectation_id": "site_plan_revision_date",
+      "label": "Site plan revision date",
+      "reason": "The latest file-preparation guidance should be checked before relying on an older site plan set.",
+      "source_evidence_ids": ["src-single-pdf-file-prep"]
+    }
+  ],
+  "conflicting_evidence_updates": [
+    {
+      "expectation_id": "project_scope_description",
+      "label": "Project scope description",
+      "reason": "The current case notes describe both an interior remodel and a residential addition, which may lead to different application questions.",
+      "source_evidence_ids": ["src-apply-permits-addition", "src-devhub-application-guide-scope"]
+    }
+  ],
+  "missing_document_updates": [
+    {
+      "document_id": "structural_calculations_pdf",
+      "label": "Structural calculations PDF",
+      "reason": "The refreshed process model expects calculations to be staged as a separate PDF when required by the project scope.",
+      "source_evidence_ids": ["src-submit-plans-separate-pdfs"]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "fixture_id": "synthetic-devhub-surface-map-read-only-observation-v1",
+  "surfaces": [
+    {
+      "surface_id": "devhub-public-landing",
+      "auth_scope": "public",
+      "url_pattern": "https://devhub.portlandoregon.gov/*",
+      "page_heading": "DevHub public portal",
+      "accessible_landmarks": [
+        "main navigation",
+        "public information region"
+      ],
+      "actions": [
+        {
+          "action_id": "observe-public-guidance",
+          "label": "Observe public guidance text",
+          "classification": "read_only_observation"
+        },
+        {
+          "action_id": "sign-in-register",
+          "label": "Sign In/Register",
+          "classification": "authentication_boundary"
+        }
+      ],
+      "fields": [],
+      "validation_messages": [
+        "Public portal content may describe online permitting services."
+      ],
+      "upload_controls": [],
+      "state_transitions": [],
+      "redaction_policy": "public labels only",
+      "selector_confidence": "synthetic",
+      "requires_attendance": false,
+      "requires_exact_confirmation": false
+    },
+    {
+      "surface_id": "devhub-authenticated-application-summary",
+      "auth_scope": "authenticated-user-owned-session",
+      "url_pattern": "https://devhub.portlandoregon.gov/permit/*",
+      "page_heading": "Application summary",
+      "accessible_landmarks": [
+        "application status region",
+        "document checklist region",
+        "fees region"
+      ],
+      "actions": [
+        {
+          "action_id": "review-status-labels",
+          "label": "Review visible status labels",
+          "classification": "read_only_observation"
+        },
+        {
+          "action_id": "upload-corrections",
+          "label": "Upload corrections",
+          "classification": "consequential_upload"
+        },
+        {
+          "action_id": "pay-fees",
+          "label": "Pay fees",
+          "classification": "financial_action"
+        }
+      ],
+      "fields": [
+        {
+          "field_id": "permit-number",
+          "label": "Permit number"
+        },
+        {
+          "field_id": "owner-email",
+          "label": "Owner email"
+        },
+        {
+          "field_id": "status-label",
+          "label": "Status label"
+        }
+      ],
+      "validation_messages": [
+        "Corrections requested",
+        "Fees due"
+      ],
+      "upload_controls": [
+        "Upload documents"
+      ],
+      "state_transitions": [
+        "draft to submitted",
+        "fees due to paid"
+      ],
+      "redaction_policy": "redact private case values and account-scoped identifiers",
+      "selector_confidence": "synthetic",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true
+    }
+  ]
+}

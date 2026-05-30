@@ -1,0 +1,11 @@
+{
+  "packet_id": "public-recrawl-operator-packet-v2",
+  "packet_version": 2,
+  "mode": "fixture_first_live_dry_run",
+  "max_seed_count": 2,
+  "default_rate_limit_delay_seconds": 45,
+  "stop_conditions": [
+    "Stop if a selected source falls outside the committed allowlist fixture.",
+    "Stop if an operator attempts to persist crawl output."
+  ]
+}

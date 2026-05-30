@@ -1,0 +1,17 @@
+{
+  "sources": [
+    {
+      "id": "readiness",
+      "label": "Reversible draft preview readiness packet v2 fixture",
+      "locator": "ppd/tests/fixtures/local_draft_preview_review_packet_v2/readiness_packet.json"
+    }
+  ],
+  "unresolved_blockers": [
+    {
+      "id": "owner-confirmation",
+      "summary": "Owner authorization remains fixture-marked as unresolved.",
+      "owner": "Applicant coordinator",
+      "source_id": "readiness"
+    }
+  ]
+}

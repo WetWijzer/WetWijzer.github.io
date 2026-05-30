@@ -1,0 +1,45 @@
+{
+  "missing_required": {
+    "preview_rows": [
+      {
+        "citations": [],
+        "before_metadata": {},
+        "after_metadata": null,
+        "affected_source_ids": [],
+        "rollback_checkpoint": ""
+      }
+    ],
+    "affected_source_ids": [],
+    "rollback_checkpoints": []
+  },
+  "blocked_content": {
+    "affected_source_ids": ["src-ppd-devhub"],
+    "rollback_checkpoints": ["checkpoint-001"],
+    "preview_rows": [
+      {
+        "citations": [{"source_id": "src-ppd-devhub", "url": "https://evil.example/permit?token=secret"}],
+        "before_metadata": {"etag": "before"},
+        "after_metadata": {"etag": "after"},
+        "affected_source_ids": ["src-ppd-devhub"],
+        "rollback_checkpoint": "checkpoint-001",
+        "raw_body": "raw",
+        "notes": "The live crawler completed and the permit approval guaranteed.",
+        "active_source_mutation": true
+      }
+    ]
+  },
+  "valid_minimal": {
+    "affected_source_ids": ["src-ppd-devhub"],
+    "rollback_checkpoints": ["checkpoint-001"],
+    "preview_rows": [
+      {
+        "citations": [{"source_id": "src-ppd-devhub", "url": "https://www.portland.gov/bds"}],
+        "before_metadata": {"observed_at": "2026-05-29T00:00:00Z"},
+        "after_metadata": {"observed_at": "2026-05-29T00:00:00Z"},
+        "affected_source_ids": ["src-ppd-devhub"],
+        "rollback_checkpoint": "checkpoint-001",
+        "notes": "Preview only. No crawl, processor, legal, permitting, or state mutation claims."
+      }
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "watch_plan_id": "public-source-freshness-watch-plan-v3-fixture",
+  "watch_plan_version": 3,
+  "sources": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "source_type": "devhub_public",
+      "owning_surface": "ppd_public_guidance",
+      "allowlist_policy": "allowlisted_official_portland_gov",
+      "robots_policy": "respect_robots_preflight_required",
+      "crawl_frequency": "daily",
+      "processor_policy": "metadata_only_until_processor_handoff",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "watch",
+      "watch_priority": "high",
+      "watch_plan_id": "public-source-freshness-watch-plan-v3-fixture",
+      "citation_ids": [
+        "EVID-DEVHUB-FAQ-ACCOUNT",
+        "EVID-DEVHUB-FAQ-FEES"
+      ],
+      "existing_registry_row": {
+        "source_id": "ppd-devhub-faq",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+        "source_type": "devhub_public",
+        "owning_surface": "ppd_public_guidance",
+        "allowlist_policy": "allowlisted_official_portland_gov",
+        "robots_policy": "respect_robots_preflight_required",
+        "crawl_frequency": "weekly",
+        "processor_policy": "metadata_only_until_processor_handoff",
+        "privacy_classification": "public",
+        "last_seen_at": "2026-05-08T00:00:00Z",
+        "freshness_status": "stale"
+      }
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "source_type": "public_html",
+      "owning_surface": "ppd_public_guidance",
+      "allowlist_policy": "allowlisted_official_portland_gov",
+      "robots_policy": "respect_robots_preflight_required",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata_only_until_processor_handoff",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "watch",
+      "watch_priority": "high",
+      "watch_plan_id": "public-source-freshness-watch-plan-v3-fixture",
+      "citation_ids": [
+        "EVID-SUBMIT-PLANS-SINGLE-PDF",
+        "EVID-SUBMIT-PLANS-SEPARATE-DOCS"
+      ],
+      "depends_on": [
+        "ppd-devhub-faq"
+      ]
+    },
+    {
+      "source_id": "ppd-unresolved-form-index",
+      "canonical_url": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+      "source_type": "public_html",
+      "owning_surface": "ppd_public_guidance",
+      "allowlist_policy": "allowlisted_official_portland_gov",
+      "robots_policy": "respect_robots_preflight_required",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata_only_until_processor_handoff",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "watch",
+      "watch_priority": "medium",
+      "watch_plan_id": "public-source-freshness-watch-plan-v3-fixture",
+      "citation_ids": [
+        "EVID-FORM-INDEX-001"
+      ]
+    }
+  ]
+}

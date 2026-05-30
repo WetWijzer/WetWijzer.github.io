@@ -1,0 +1,17 @@
+{
+  "sources": [
+    {
+      "id": "gap-analysis",
+      "label": "User gap-analysis fixture",
+      "locator": "ppd/tests/fixtures/local_draft_preview_review_packet_v2/gap_analysis.json"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "fee-estimate-gap",
+      "summary": "Fee estimate evidence is absent from the local fixture set.",
+      "exact_confirmation": "Reviewer must confirm the fee estimate source before any live portal action.",
+      "owner": "Permit reviewer"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "packet_id": "fixture-readiness-001",
+  "checks": [
+    {
+      "check_id": "public-source-hash-check",
+      "description": "Compare normalized public source hashes against the previous committed manifest.",
+      "source_evidence_ids": ["ppd-public-source-registry-fixture"]
+    }
+  ],
+  "drift_signals": [
+    {
+      "signal_id": "source-hash-changed",
+      "description": "A public source hash changed and requires human review before prompt refresh."
+    }
+  ],
+  "escalation_owners": ["ppd-human-review"] ,
+  "rollback_triggers": ["prompt-refresh-validation-failure"],
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "notes": "Offline-only readiness fixture using public source evidence references."
+}

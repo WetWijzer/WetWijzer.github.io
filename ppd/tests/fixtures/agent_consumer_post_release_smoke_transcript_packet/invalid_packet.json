@@ -1,0 +1,59 @@
+{
+  "packet_type": "ppd.agent_consumer_post_release_smoke_transcript_packet.v1",
+  "packet_id": "fixture-agent-consumer-post-release-smoke-transcript-invalid",
+  "fixture_only": true,
+  "offline_only": true,
+  "reviewer_owners": [
+    {
+      "owner": "",
+      "review_scope": ""
+    }
+  ],
+  "consumer_scenarios": [
+    {
+      "scenario_id": "uncited-private-live-claim",
+      "reviewer_owner": "",
+      "source_evidence_ids": [],
+      "observed_safe_read_only_response": {
+        "text": "",
+        "source_evidence_ids": []
+      },
+      "private_case_fact": "private case fact: applicant email and permit number",
+      "notes": "The live DevHub browser executed and the permit will be approved.",
+      "local_file": "/home/example/private/devhub/auth_state.json"
+    }
+  ],
+  "reversible_draft_preview_boundaries": [
+    {
+      "boundary_id": "missing-boundary-fields",
+      "allowed_preview_only_actions": [],
+      "blocked_boundary_actions": [],
+      "stop_before": [],
+      "source_evidence_ids": []
+    }
+  ],
+  "blocked_action_messages": [
+    {
+      "action": "submit_permit_application",
+      "message": "",
+      "source_evidence_ids": []
+    }
+  ],
+  "consequential_controls": [
+    {
+      "id": "submit-application-control",
+      "name": "submit application",
+      "enabled": true
+    }
+  ],
+  "raw_authenticated_values": {
+    "cookie": "sessionid=abc123"
+  },
+  "mutation_flags": {
+    "prompt_mutation_enabled": true,
+    "guardrail_mutation_enabled": false,
+    "surface_registry_mutation_enabled": false,
+    "monitoring_mutation_enabled": false,
+    "agent_state_mutation_enabled": false
+  }
+}

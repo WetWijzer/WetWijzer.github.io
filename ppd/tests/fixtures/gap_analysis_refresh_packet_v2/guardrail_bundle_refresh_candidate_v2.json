@@ -1,0 +1,37 @@
+{
+  "fixture_id": "guardrail-bundle-refresh-candidate-v2-fixture",
+  "guardrail_bundle_id": "guardrail_residential_addition_devhub_v2_candidate",
+  "process_id": "process_residential_addition_devhub_v2",
+  "reviewer_owner_defaults": {
+    "reviewer_role": "ppd_guardrail_reviewer",
+    "owner_role": "applicant"
+  },
+  "blocked_action_updates": [
+    {
+      "action_id": "submit_permit_request",
+      "label": "Submit permit request",
+      "reason": "Submission requires user attendance, review, and exact confirmation.",
+      "source_evidence_ids": ["src-devhub-certification-submit"]
+    },
+    {
+      "action_id": "upload_plan_set_to_devhub",
+      "label": "Upload plan set to DevHub",
+      "reason": "Official upload is consequential and must wait for user attendance.",
+      "source_evidence_ids": ["src-devhub-upload-corrections"]
+    }
+  ],
+  "next_safe_action_updates": [
+    {
+      "action_id": "draft_document_checklist",
+      "label": "Draft document checklist",
+      "reason": "A local checklist is reversible and helps identify missing documents before any official action.",
+      "source_evidence_ids": ["src-submit-plans-separate-pdfs"]
+    },
+    {
+      "action_id": "prepare_reversible_field_map",
+      "label": "Prepare reversible field map",
+      "reason": "A local field map can be reviewed before opening or filling DevHub.",
+      "source_evidence_ids": ["src-devhub-application-guide-save-draft"]
+    }
+  ]
+}

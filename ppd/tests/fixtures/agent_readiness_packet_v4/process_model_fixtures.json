@@ -1,0 +1,12 @@
+{
+  "fixture_id": "process-model-fixtures-v1",
+  "workflow": "ppd-demo-permit-readiness",
+  "allowed_steps": [
+    "read_committed_fixtures",
+    "compare_fixture_evidence",
+    "draft_reversible_preview"
+  ],
+  "conflicts": [
+    "process-checkpoint-sequence"
+  ]
+}

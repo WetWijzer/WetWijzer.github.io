@@ -1,0 +1,101 @@
+{
+  "candidate_version": "devhub_read_only_surface_observation_refresh_candidate_v2",
+  "source_fixtures": {
+    "live_dry_run_acceptance_review_packet_v2": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/live_dry_run_acceptance_review_packet_v2.json",
+    "attended_devhub_read_only_evidence_envelope_v2": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/attended_devhub_read_only_evidence_envelope_v2.json",
+    "surface_registry_refresh_review_fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json"
+  },
+  "observations": [
+    {
+      "surface_id": "devhub-home-read-only",
+      "surface_name": "DevHub Home read-only summary",
+      "synthetic_observation": "Synthetic read-only landing surface lists permit summary regions without private values.",
+      "synthetic_action_candidate": "Review visible permit summary status list only.",
+      "read_only": true,
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/live_dry_run_acceptance_review_packet_v2.json",
+          "field": "accepted_actions[devhub-home-read-only]",
+          "supports": "action"
+        },
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/attended_devhub_read_only_evidence_envelope_v2.json",
+          "field": "evidence[devhub-home-read-only]",
+          "supports": "surface"
+        }
+      ]
+    }
+  ],
+  "selector_confidence_notes": [
+    {
+      "surface_id": "devhub-home-read-only",
+      "confidence": "medium",
+      "note": "Fixture observation records landmark-level selectors only.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[devhub-home-read-only].selector_confidence"
+        }
+      ]
+    }
+  ],
+  "manual_handoff_dispositions": [
+    {
+      "surface_id": "devhub-home-read-only",
+      "required": true,
+      "reason": "User attendance remains required for account-scoped review.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[devhub-home-read-only].manual_handoff_required"
+        }
+      ]
+    }
+  ],
+  "redaction_dispositions": [
+    {
+      "surface_id": "devhub-home-read-only",
+      "disposition": "synthetic-only",
+      "reason": "Fixture keeps labels and omits account-specific values.",
+      "citations": [
+        {
+          "fixture": "ppd/tests/fixtures/devhub_surface_observation_refresh_v2/surface_registry_refresh_review_fixture.json",
+          "field": "surfaces[devhub-home-read-only].redaction"
+        }
+      ]
+    }
+  ],
+  "reviewer_owner_fields": [
+    {
+      "surface_id": "devhub-home-read-only",
+      "reviewer_owner": "ppd-devhub-surface-reviewer"
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/devhub_surface_observation_refresh_candidate_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_surface_observation_refresh_candidate_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "attestations": {
+    "no_live_devhub": true,
+    "no_auth_state": true,
+    "no_screenshot": true,
+    "no_trace": true,
+    "no_har": true,
+    "no_surface_registry_mutation": true
+  }
+}

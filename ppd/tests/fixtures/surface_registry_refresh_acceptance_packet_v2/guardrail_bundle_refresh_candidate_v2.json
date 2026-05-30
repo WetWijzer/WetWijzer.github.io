@@ -1,0 +1,74 @@
+{
+  "packet_type": "guardrail_bundle_refresh_candidate_v2",
+  "packet_id": "guardrail-bundle-refresh-candidate-v2-fixture-20260529",
+  "consumes": {
+    "process_model_refresh_impact_id": "process-model-refresh-impact-v2-fixture-20260529",
+    "requirement_regeneration_work_order_id": "requirement-regeneration-work-order-v2-fixture-20260529",
+    "guardrail_compiler_fixture_id": "guardrail-compiler-fixture-v2-fixture-20260529"
+  },
+  "affected_process_ids": ["process:devhub-readonly-review"],
+  "affected_requirement_ids": ["requirement:devhub-readonly-attendance", "requirement:official-upload-refusal"],
+  "source_evidence_ids": [
+    "guardrail:evidence:readonly-status-review",
+    "guardrail:evidence:readonly-filter-reversible",
+    "guardrail:evidence:official-upload-refusal"
+  ],
+  "predicate_update_candidates": [
+    {
+      "candidate_id": "candidate:predicate:readonly-status-review-requires-attendance",
+      "predicate_id": "predicate:readonly-status-review-requires-attendance",
+      "predicate_kind": "manual_handoff",
+      "operation": "refresh_from_fixture",
+      "affected_process_ids": ["process:devhub-readonly-review"],
+      "affected_requirement_ids": ["requirement:devhub-readonly-attendance"],
+      "citation_ids": ["guardrail:evidence:readonly-status-review"],
+      "reviewer_owner": "ppd-surface-reviewer",
+      "implementation_owner": "ppd-devhub-automation-owner",
+      "requires_human_review": true
+    },
+    {
+      "candidate_id": "candidate:predicate:official-upload-refused-without-exact-confirmation",
+      "predicate_id": "predicate:official-upload-refused-without-exact-confirmation",
+      "predicate_kind": "refused_action",
+      "operation": "refresh_from_fixture",
+      "affected_process_ids": ["process:devhub-readonly-review"],
+      "affected_requirement_ids": ["requirement:official-upload-refusal"],
+      "citation_ids": ["guardrail:evidence:official-upload-refusal"],
+      "reviewer_owner": "ppd-surface-reviewer",
+      "implementation_owner": "ppd-devhub-automation-owner",
+      "requires_human_review": true
+    }
+  ],
+  "reversible_action_checkpoint_expectations": [
+    {
+      "predicate_id": "predicate:readonly-filter-remains-readonly",
+      "action_type": "filter_readonly_list",
+      "expected_checkpoint": "reversible_action_checkpoint",
+      "must_remain_draft_only": true,
+      "citation_ids": ["guardrail:evidence:readonly-filter-reversible"]
+    }
+  ],
+  "exact_confirmation_checkpoint_expectations": [
+    {
+      "predicate_id": "predicate:official-upload-refused-without-exact-confirmation",
+      "action_type": "official_upload",
+      "expected_checkpoint": "exact_confirmation_checkpoint",
+      "requires_user_visible_action_label": true,
+      "citation_ids": ["guardrail:evidence:official-upload-refusal"]
+    }
+  ],
+  "reviewer_owner": "ppd-surface-reviewer",
+  "implementation_owner": "ppd-devhub-automation-owner",
+  "offline_validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_guardrail_bundle_refresh_candidate_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "attestations": {
+    "no_live_llm": true,
+    "no_devhub": true,
+    "no_guardrail_state_mutation": true,
+    "no_prompt_state_mutation": true,
+    "no_release_state_mutation": true
+  },
+  "validation_status": "fixture_candidate_pending_review"
+}

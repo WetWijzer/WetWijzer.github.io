@@ -1,0 +1,28 @@
+{
+  "packet_version": 2,
+  "acceptance_decisions": [
+    {
+      "surface": "permit-search",
+      "disposition": "accepted"
+    },
+    {
+      "surface": "legacy-map",
+      "disposition": "deferred",
+      "citations": ["fixture:legacy-map"]
+    },
+    {
+      "surface": "account-dashboard",
+      "disposition": "rejected",
+      "citations": ["fixture:account-dashboard"]
+    }
+  ],
+  "notes": "Bearer abc.def token, session_id=123, screenshot.png, trace.zip, run live DevHub browser execution, permit will be approved, submit and pay the application.",
+  "mutation_flags": {
+    "active_surface_registry_mutation": true,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_monitoring_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  }
+}

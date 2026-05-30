@@ -1,0 +1,41 @@
+{
+  "packet_type": "requirement_extraction_rerun_result_intake",
+  "packet_version": 1,
+  "rerun_id": "rerun-20260529-001",
+  "affected": {
+    "requirement_ids": [
+      "REQ-001"
+    ],
+    "process_ids": [
+      "PROC-001"
+    ],
+    "guardrail_ids": [
+      "GRD-001"
+    ]
+  },
+  "reviewer_owners": [
+    "ppd-review-owner"
+  ],
+  "offline_validation": {
+    "commands": [
+      "python3 -m unittest discover -s ppd/tests -p test_*.py"
+    ]
+  },
+  "result_decisions": [
+    {
+      "decision": "accept_rerun_packet_for_review",
+      "citations": [
+        "SRC-PORTLAND-CODE-001"
+      ],
+      "notes": "Decision is based on cited public source metadata and offline validation only."
+    }
+  ],
+  "mutation_flags": {
+    "requirements_mutated": false,
+    "processes_mutated": false,
+    "guardrails_mutated": false,
+    "prompts_mutated": false,
+    "monitoring_mutated": false,
+    "release_state_mutated": false
+  }
+}

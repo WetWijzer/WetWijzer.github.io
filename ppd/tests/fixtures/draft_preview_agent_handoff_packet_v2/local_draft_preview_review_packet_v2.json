@@ -1,0 +1,60 @@
+{
+  "fixture_kind": "local_draft_preview_review_packet_v2",
+  "fixture_id": "local-review-packet-draft-preview-v2-20260529",
+  "citations": [
+    {
+      "citation_id": "ppd-devhub-faq",
+      "title": "PP&D DevHub FAQs",
+      "source": "https://www.portland.gov/ppd/devhub-faqs",
+      "quote_or_fact": "DevHub supports account-scoped permitting services including permit requests, correction uploads, inspection scheduling, and fee payment."
+    },
+    {
+      "citation_id": "devhub-account-guide",
+      "title": "PP&D DevHub account and sign-in guide",
+      "source": "https://www.portland.gov/ppd/devhub-sign-guide",
+      "quote_or_fact": "Online permitting services require a DevHub user account with PortlandOregon.gov credentials."
+    },
+    {
+      "citation_id": "ppd-devhub-guide",
+      "title": "PP&D DevHub permit application guide",
+      "source": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "quote_or_fact": "Permit application workflows can include dynamic questions, save-for-later behavior, required uploads, acknowledgement, certification, and post-submission status tracking."
+    },
+    {
+      "citation_id": "single-pdf-guidance",
+      "title": "PP&D Submit Plans Online / Single PDF Process",
+      "source": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "quote_or_fact": "Drawing plans are prepared together in one PDF while applications, calculations, and supporting documents are uploaded as separate PDFs."
+    }
+  ],
+  "consumer_facing_notes": [
+    {
+      "note_id": "preview-is-not-submission",
+      "body": "This handoff supports draft preview only. It can explain fixture-backed draft values and gaps, but it does not submit, certify, upload, schedule, cancel, or pay anything.",
+      "citation_ids": ["ppd-devhub-guide", "ppd-devhub-faq"]
+    },
+    {
+      "note_id": "devhub-attendance-required",
+      "body": "Any DevHub action that changes an official application or account state requires an attended user session and exact action confirmation.",
+      "citation_ids": ["devhub-account-guide", "ppd-devhub-guide"]
+    },
+    {
+      "note_id": "documents-stay-local",
+      "body": "The packet may reference document preparation rules, but it does not include private documents, local private paths, PDF bytes, screenshots, traces, HAR files, or authenticated page values.",
+      "citation_ids": ["single-pdf-guidance"]
+    }
+  ],
+  "rollback_owner": {
+    "owner": "PP&D draft preview fixture maintainer",
+    "contact_route": "repository issue or daemon task note",
+    "rollback_scope": "Remove or replace the generated draft preview handoff packet fixtures and rerun offline validation; no DevHub or release state rollback is required because the packet has no live side effects."
+  },
+  "attestations": {
+    "no_live_llm": true,
+    "no_devhub": true,
+    "no_private_document": true,
+    "no_pdf_write": true,
+    "no_prompt": true,
+    "no_release_state_mutation": true
+  }
+}

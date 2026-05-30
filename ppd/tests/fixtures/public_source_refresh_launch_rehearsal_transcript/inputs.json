@@ -1,0 +1,170 @@
+{
+  "packet_id": "public-source-refresh-launch-rehearsal-transcript-20260529-fixture-first",
+  "public_source_refresh_launch_packet": {
+    "packet_id": "public-source-refresh-launch-20260529-fixture-first",
+    "packet_type": "public_source_refresh_launch_packet",
+    "mode": "fixture-first",
+    "consumes": [
+      {
+        "packet_id": "public-source-refresh-execution-readiness-20260529",
+        "title": "Public source refresh execution readiness packet",
+        "fixture_path": "ppd/tests/fixtures/public_source_refresh_launch/inputs.json"
+      }
+    ],
+    "operator_launch_gates": [
+      {
+        "gate_id": "execution-readiness-approved",
+        "required_state": "ready",
+        "observed_state": "ready",
+        "citation_ref": "public-source-refresh-execution-readiness-20260529"
+      },
+      {
+        "gate_id": "metadata-only-attestations-present",
+        "required_state": "attested",
+        "observed_state": "attested",
+        "citation_ref": "public-source-refresh-launch-20260529-fixture-first"
+      }
+    ],
+    "allowlisted_source_batches": [
+      {
+        "batch_id": "portland-auditor-code-library",
+        "source_name": "City of Portland Auditor Code Library",
+        "source_url": "https://www.portland.gov/code",
+        "allowed_scope": ["metadata-refresh", "freshness-check"],
+        "reviewer_owner": {
+          "owner_name": "PPD source freshness reviewer",
+          "owner_role": "reviewer",
+          "owner_contact": "ppd-reviewer@example.invalid"
+        },
+        "citation_refs": ["public-source-refresh-execution-readiness-20260529"]
+      }
+    ],
+    "abort_triggers": [
+      {
+        "trigger_id": "gate-state-not-approved",
+        "condition": "Any launch gate observed_state differs from required_state.",
+        "citation_refs": ["public-source-refresh-launch-20260529-fixture-first"]
+      },
+      {
+        "trigger_id": "download-or-processor-requested",
+        "condition": "Any run path requests document download or processor invocation.",
+        "citation_refs": ["public-source-refresh-launch-20260529-fixture-first"]
+      },
+      {
+        "trigger_id": "registry-or-schedule-mutation-requested",
+        "condition": "Any run path requests registry or schedule mutation.",
+        "citation_refs": ["public-source-refresh-launch-20260529-fixture-first"]
+      }
+    ],
+    "expected_metadata_only_result_records": [
+      {
+        "source_batch_id": "portland-auditor-code-library",
+        "result_type": "metadata-only-refresh-record",
+        "document_downloaded": false,
+        "processor_invoked": false,
+        "registry_mutated": false,
+        "schedule_mutated": false,
+        "required_fields": ["source_batch_id", "source_name", "source_url", "checked_at", "freshness_status", "reviewer_owner", "citation_refs"]
+      }
+    ],
+    "reviewer_owner_fields": {
+      "owner_name": "PPD source freshness reviewer",
+      "owner_role": "reviewer",
+      "owner_contact": "ppd-reviewer@example.invalid"
+    },
+    "attestations": {
+      "no_download": true,
+      "no_processor": true,
+      "no_registry_mutation": true,
+      "no_schedule_mutation": true
+    }
+  },
+  "public_source_refresh_execution_readiness_packet": {
+    "packet_id": "public-source-refresh-execution-readiness-20260529",
+    "packet_type": "ppd_public_source_refresh_execution_readiness",
+    "mode": "metadata_only_execution_readiness_review",
+    "status": "ready",
+    "preflight_gate_outcomes": [
+      {
+        "gate_id": "allowlist-policy-reviewed",
+        "required_state": "passed",
+        "observed_state": "passed",
+        "citation_refs": ["source-registry-allowlist-evidence"]
+      },
+      {
+        "gate_id": "robots-policy-reviewed",
+        "required_state": "passed",
+        "observed_state": "passed",
+        "citation_refs": ["robots-policy-evidence"]
+      }
+    ],
+    "abort_triggers": [
+      {
+        "trigger_id": "readiness-packet-expired",
+        "condition": "Abort if the readiness packet is superseded or older than the approved launch window.",
+        "citation_refs": ["public-source-refresh-execution-readiness-20260529"]
+      },
+      {
+        "trigger_id": "live-fetch-requested",
+        "condition": "Abort if any rehearsal step requests a live fetch.",
+        "citation_refs": ["public-source-refresh-execution-readiness-20260529"]
+      }
+    ],
+    "expected_metadata_only_outputs": [
+      {
+        "source_batch_id": "portland-auditor-code-library",
+        "required_fields": ["source_batch_id", "checked_at", "freshness_status", "reviewer_owner", "citation_refs"],
+        "citation_refs": ["public-source-refresh-execution-readiness-20260529"]
+      }
+    ],
+    "reviewer_owner_fields": {
+      "validation_reviewer": "ppd-public-source-refresh-readiness-reviewer",
+      "rehearsal_reviewer": "ppd-public-source-refresh-rehearsal-reviewer"
+    }
+  },
+  "post_release_monitoring_readiness_packet": {
+    "packet_type": "ppd.post_release_monitoring_readiness_packet.v1",
+    "packet_id": "post-release-monitoring-readiness-fixture",
+    "fixture_first": true,
+    "monitoring_checks": [
+      {
+        "check_id": "freshness:online-tools-guide",
+        "description": "Compare normalized metadata hash for the public online permitting tools guide.",
+        "source_evidence_ids": ["ppd-online-tools-guide"],
+        "reviewer_owner": "ppd-release-operator",
+        "escalation_note": "Open a release blocker if the normalized public metadata hash changes.",
+        "escalation_threshold": {
+          "max_age_days": 3,
+          "change_count_greater_than": 0
+        }
+      }
+    ],
+    "rollback_owner_contacts": [
+      {
+        "role": "rollback_owner",
+        "owner_id": "ppd-rollback-owner",
+        "contact_policy": "committed reviewer-owner id only"
+      }
+    ],
+    "reviewer_owner_fields": {
+      "release_owner": "ppd-release-owner",
+      "rollback_owner": "ppd-rollback-owner",
+      "validation_reviewer": "ppd-validation-reviewer",
+      "monitoring_owner": "ppd-post-release-monitoring-owner"
+    },
+    "attestations": {
+      "no-live-crawl": true,
+      "no-DevHub": true,
+      "no-prompt": true,
+      "no-guardrail-mutation": true,
+      "no-release-mutation": true
+    },
+    "execution_boundaries": {
+      "live_crawl": false,
+      "devhub": false,
+      "prompt": false,
+      "guardrail_mutation": false,
+      "release_mutation": false
+    }
+  }
+}

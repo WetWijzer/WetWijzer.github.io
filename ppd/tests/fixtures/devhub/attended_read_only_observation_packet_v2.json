@@ -1,0 +1,182 @@
+{
+  "packet_id": "devhub-attended-read-only-observation-packet-v2-synthetic",
+  "packet_type": "ppd.devhub.attended_read_only_observation_packet.v2",
+  "mode": "fixture_first_devhub_attended_read_only_observation_v2",
+  "fixture_first": true,
+  "offline_only": true,
+  "synthetic_only": true,
+  "read_only_only": true,
+  "launches_browser": false,
+  "launches_playwright": false,
+  "launches_devhub": false,
+  "network_requests_made": false,
+  "mutates_surface_registry": false,
+  "source_packets": {
+    "devhub_attended_read_only_pilot_runbook": {
+      "packet_id": "devhub-attended-read-only-pilot-runbook-v1",
+      "consumed": true
+    },
+    "devhub_attended_read_only_launch_readiness_packet": {
+      "packet_id": "devhub-attended-read-only-pilot-launch-readiness-v1",
+      "consumed": true
+    },
+    "devhub_read_only_observation_redaction_review_packet": {
+      "packet_id": "devhub-read-only-observation-redaction-review-synthetic-v1",
+      "consumed": true
+    }
+  },
+  "observed_surfaces": [
+    {
+      "surface_id": "devhub-home-read-only-summary.synthetic",
+      "surface_kind": "authenticated_home_summary",
+      "synthetic_only": true,
+      "no_raw_values": true,
+      "redacted_state_summary": "Synthetic attended home summary records only headings, landmarks, and disabled consequential controls.",
+      "observed_elements": [
+        "page_heading",
+        "main_navigation_landmarks",
+        "permit_summary_status_labels",
+        "disabled_submit_upload_payment_schedule_cancel_controls"
+      ],
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-attended-read-only-pilot-launch-readiness-v1"
+      ]
+    },
+    {
+      "surface_id": "devhub-permit-detail-read-only-status.synthetic",
+      "surface_kind": "permit_detail_status_view",
+      "synthetic_only": true,
+      "no_raw_values": true,
+      "redacted_state_summary": "Synthetic permit detail status view records normalized labels and handoff gates without private permit values.",
+      "observed_elements": [
+        "status_label_shape",
+        "review_group_label_shape",
+        "read_only_detail_tabs",
+        "disabled_upload_and_payment_controls"
+      ],
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    }
+  ],
+  "allowed_read_only_actions": [
+    {
+      "action_id": "observe_page_heading_and_landmarks",
+      "label": "Observe heading and landmarks",
+      "action_class": "read_only_metadata_observation",
+      "allowed": true,
+      "no_state_change": true,
+      "records_private_values": false,
+      "description": "Record synthetic heading, route pattern, and accessibility landmark metadata only.",
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1"
+      ]
+    },
+    {
+      "action_id": "record_disabled_consequential_control_presence",
+      "label": "Record disabled consequential control presence",
+      "action_class": "read_only_metadata_observation",
+      "allowed": true,
+      "no_state_change": true,
+      "records_private_values": false,
+      "description": "Record that consequential controls are disabled or require manual handoff, without invoking them.",
+      "citations": [
+        "devhub-attended-read-only-pilot-launch-readiness-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    }
+  ],
+  "manual_handoff_checkpoints": [
+    {
+      "checkpoint_id": "credential_or_security_prompt",
+      "trigger": "Any sign-in, credential, MFA, CAPTCHA, account creation, or security prompt appears.",
+      "agent_action": "stop_and_handoff_to_operator",
+      "agent_may_continue": false,
+      "official_action_allowed": false,
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-attended-read-only-pilot-launch-readiness-v1"
+      ]
+    },
+    {
+      "checkpoint_id": "consequential_or_mutating_control",
+      "trigger": "Any upload, payment, submission, certification, scheduling, cancellation, or registry-promotion control appears.",
+      "agent_action": "stop_and_handoff_to_operator",
+      "agent_may_continue": false,
+      "official_action_allowed": false,
+      "citations": [
+        "devhub-attended-read-only-pilot-launch-readiness-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    }
+  ],
+  "redaction_attestations": [
+    {
+      "attestation_id": "no_credentials_or_secrets",
+      "attested": true,
+      "review_note": "Packet contains no credentials, secrets, tokens, or operator-entered sign-in material.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_private_field_values",
+      "attested": true,
+      "review_note": "Synthetic surfaces use labels and shapes only; no private permit, invoice, property, or account values are present.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_raw_authenticated_text",
+      "attested": true,
+      "review_note": "No raw authenticated page text or DOM content is committed.",
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_local_private_paths",
+      "attested": true,
+      "review_note": "Packet contains no workstation paths or private browser artifact locations.",
+      "citations": [
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "attestation_id": "no_payment_details",
+      "attested": true,
+      "review_note": "Payment details and final payment actions remain out of scope.",
+      "citations": [
+        "devhub-attended-read-only-pilot-launch-readiness-v1"
+      ]
+    }
+  ],
+  "safety_attestations": {
+    "no_live_devhub": true,
+    "no_auth_state": true,
+    "no_screenshot": true,
+    "no_trace": true,
+    "no_har": true,
+    "no_surface_registry_mutation": true,
+    "no_private_session_files": true
+  },
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/devhub/attended_read_only_observation_packet_v2.py",
+      "ppd/tests/test_devhub_attended_read_only_observation_packet_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_attended_read_only_observation_packet_v2.py"
+    ]
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "packet_version": "live-dry-run-operator-briefing-packet-v2",
+  "mode": "public-source dry run",
+  "go_no_go_notes": [
+    {
+      "decision": "go",
+      "note": "Use only the cited public PP&D pages for dry-run operator orientation.",
+      "citations": [
+        {
+          "source_id": "ppd-online-permitting-tools",
+          "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools"
+        }
+      ]
+    },
+    {
+      "decision": "no-go",
+      "note": "Stop before any official account action or user-attended checkpoint.",
+      "source_evidence_ids": ["ppd-devhub-sign-in-guide"]
+    }
+  ],
+  "attendance_checkpoints": [
+    {
+      "checkpoint_id": "manual-login-handoff",
+      "required_operator_presence": true,
+      "description": "A human operator must remain present for any account-scoped handoff."
+    }
+  ],
+  "stop_conditions": [
+    {
+      "condition_id": "public-source-only",
+      "description": "Stop when the next step would require non-public account data or an official action."
+    }
+  ],
+  "dry_run_scope": {
+    "allowed": ["public citation review", "operator readiness checklist"],
+    "disallowed": ["official account changes", "financial workflows"]
+  }
+}

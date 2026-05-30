@@ -1,0 +1,63 @@
+{
+  "public_source_refresh_execution_readiness_packet": {
+    "packet_id": "public-source-refresh-execution-readiness-20260529",
+    "title": "Public source refresh execution readiness packet",
+    "fixture_path": "ppd/tests/fixtures/public_source_refresh_launch/inputs.json",
+    "status": "ready",
+    "allowlisted_source_batches": [
+      {
+        "batch_id": "portland-auditor-code-library",
+        "source_name": "City of Portland Auditor Code Library",
+        "source_url": "https://www.portland.gov/code",
+        "allowed_scope": [
+          "metadata-refresh",
+          "freshness-check"
+        ]
+      },
+      {
+        "batch_id": "portland-council-agenda-index",
+        "source_name": "City Council agenda index",
+        "source_url": "https://www.portland.gov/council/agenda",
+        "allowed_scope": [
+          "metadata-refresh",
+          "freshness-check"
+        ]
+      }
+    ],
+    "abort_triggers": [
+      {
+        "trigger_id": "readiness-packet-expired",
+        "condition": "The readiness packet is superseded or older than the approved launch window."
+      }
+    ]
+  },
+  "offline_release_candidate_validation_checklist_packet": {
+    "packet_id": "offline-release-candidate-validation-checklist-20260529",
+    "title": "Offline release candidate validation checklist packet",
+    "fixture_path": "ppd/tests/fixtures/public_source_refresh_launch/inputs.json",
+    "status": "passed",
+    "abort_triggers": [
+      {
+        "trigger_id": "offline-fixture-validation-failed",
+        "condition": "Fixture validation or metadata-only schema validation fails."
+      }
+    ]
+  },
+  "source_freshness_watchlist_reviewer_disposition_packet": {
+    "packet_id": "source-freshness-watchlist-reviewer-disposition-20260529",
+    "title": "Source freshness watchlist reviewer disposition packet",
+    "fixture_path": "ppd/tests/fixtures/public_source_refresh_launch/inputs.json",
+    "disposition": "approved",
+    "reviewer_owner": {
+      "owner_name": "PPD source freshness reviewer",
+      "owner_role": "reviewer",
+      "owner_contact": "ppd-reviewer@example.invalid"
+    },
+    "abort_triggers": [
+      {
+        "trigger_id": "reviewer-disposition-revoked",
+        "condition": "The reviewer disposition is changed from approved before launch."
+      }
+    ]
+  }
+}

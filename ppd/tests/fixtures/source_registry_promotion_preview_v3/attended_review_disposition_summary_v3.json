@@ -1,0 +1,46 @@
+{
+  "summary_id": "attended-review-disposition-summary-v3-fixture",
+  "summary_version": 3,
+  "reviewed_sources": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "review_summary_id": "review-devhub-faq-2026-05-30",
+      "disposition": "update",
+      "rationale": "Attended review accepted DevHub FAQ account and fee guidance for fixture registry promotion.",
+      "requirement_ids": [
+        "REQ-DEVHUB-ACCOUNT-001",
+        "REQ-DEVHUB-FEE-001"
+      ],
+      "evidence_ids": [
+        "EVID-DEVHUB-FAQ-ACCOUNT",
+        "EVID-DEVHUB-FAQ-FEES"
+      ]
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "review_summary_id": "review-submit-plans-online-2026-05-30",
+      "disposition": "promote",
+      "rationale": "Attended review accepted Single PDF plan guidance as a new fixture-backed source registry row.",
+      "requirement_ids": [
+        "REQ-PLAN-PDF-001",
+        "REQ-UPLOAD-SEPARATE-DOCS-001"
+      ],
+      "evidence_ids": [
+        "EVID-SUBMIT-PLANS-SINGLE-PDF",
+        "EVID-SUBMIT-PLANS-SEPARATE-DOCS"
+      ]
+    },
+    {
+      "source_id": "ppd-unresolved-form-index",
+      "review_summary_id": "review-form-index-2026-05-30",
+      "disposition": "defer",
+      "rationale": "Fixture remains under review and must not produce a promotion candidate.",
+      "requirement_ids": [
+        "REQ-FORM-INDEX-001"
+      ],
+      "evidence_ids": [
+        "EVID-FORM-INDEX-001"
+      ]
+    }
+  ]
+}

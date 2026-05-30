@@ -1,0 +1,39 @@
+{
+  "packet_type": "devhub_surface_fixture_migration_packet",
+  "packet_version": 2,
+  "status": "inactive",
+  "description": "Fixture-only packet for offline selector review.",
+  "surface_rows": [
+    {
+      "id": "surface-001",
+      "surface": "permit-search-form",
+      "selector": "#permit-search",
+      "citation": "PPD fixture note 2026-05-29 section 1",
+      "selector_confidence": {
+        "before_check": "static fixture contains the search form selector",
+        "after_check": "offline parser resolves exactly one fixture node"
+      },
+      "disposition": "manual_handoff"
+    }
+  ],
+  "action_rows": [
+    {
+      "id": "action-001",
+      "action": "review-only-search-button",
+      "selector": "#search-button",
+      "source_refs": ["PPD fixture note 2026-05-29 section 2"],
+      "selector_confidence_before": "static fixture contains the button selector",
+      "selector_confidence_after": "offline parser resolves exactly one fixture node",
+      "disposition": "redacted"
+    }
+  ],
+  "mutation_flags": {
+    "surface_registry_mutation_enabled": false,
+    "guardrail_mutation_enabled": false,
+    "prompt_mutation_enabled": false,
+    "monitoring_mutation_enabled": false,
+    "release_state_mutation_enabled": false,
+    "agent_state_mutation_enabled": false
+  },
+  "consequential_actions_enabled": false
+}

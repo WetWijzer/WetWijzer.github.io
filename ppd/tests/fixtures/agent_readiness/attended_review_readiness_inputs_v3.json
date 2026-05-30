@@ -1,0 +1,135 @@
+{
+  "packet_id": "fixture-attended-review-readiness-inputs-v3",
+  "attestations": {
+    "no_live_crawl": true,
+    "no_authentication": true,
+    "no_release": true,
+    "no_official_action": true
+  },
+  "inactive_migration_bundle_acceptance_packet_v2": {
+    "artifact_id": "inactive-migration-bundle-acceptance-packet-v2",
+    "acceptance_items": [
+      {
+        "item_id": "bundle-inactive-status",
+        "review_question": "Confirm the migration bundle remains inactive until an attended reviewer approves any promotion path.",
+        "status": "ready_for_human_review",
+        "required_attended_action": "Reviewer checks fixture evidence and either approves continued deferral or opens a separate attended promotion task.",
+        "citations": [
+          "inactive-migration-bundle-acceptance-packet-v2#bundle-state",
+          "inactive-migration-bundle-acceptance-packet-v2#promotion-gate"
+        ]
+      },
+      {
+        "item_id": "bundle-acceptance-scope",
+        "review_question": "Confirm acceptance is limited to fixture metadata and does not activate migration behavior.",
+        "status": "accepted_as_fixture_only",
+        "required_attended_action": "Reviewer verifies that activation, release, and production routing are outside this checklist.",
+        "citations": [
+          "inactive-migration-bundle-acceptance-packet-v2#fixture-only-acceptance"
+        ]
+      }
+    ],
+    "unresolved_deferrals": [
+      {
+        "deferral_id": "migration-live-promotion-deferred",
+        "source_artifact": "inactive-migration-bundle-acceptance-packet-v2",
+        "reason": "Promotion to active migration behavior requires future attended review and is not part of fixture readiness.",
+        "reviewer_resolution_needed": "Decide whether to keep the migration bundle inactive or create a separately gated promotion task.",
+        "citations": [
+          "inactive-migration-bundle-acceptance-packet-v2#promotion-gate"
+        ]
+      }
+    ]
+  },
+  "guardrail_regression_replay_matrix_v3": {
+    "artifact_id": "guardrail-regression-replay-matrix-v3",
+    "scenarios": [
+      {
+        "scenario_id": "payment-submit-block",
+        "review_question": "Confirm replay evidence blocks final payment execution without explicit attended confirmation.",
+        "expected_outcome": "blocked_pending_attended_confirmation",
+        "required_attended_action": "Reviewer confirms payment detail entry and final payment execution remain outside unattended automation.",
+        "citations": [
+          "guardrail-regression-replay-matrix-v3#payment-final-submit",
+          "ppd-plan#non-negotiable-boundaries"
+        ]
+      },
+      {
+        "scenario_id": "upload-submit-block",
+        "review_question": "Confirm replay evidence blocks plan upload or correction submission without user attendance.",
+        "expected_outcome": "blocked_pending_attended_confirmation",
+        "required_attended_action": "Reviewer confirms uploads and official submissions require an attended checkpoint.",
+        "citations": [
+          "guardrail-regression-replay-matrix-v3#upload-submit",
+          "ppd-plan#devhub-attended-session"
+        ]
+      },
+      {
+        "scenario_id": "draft-fill-allowed",
+        "review_question": "Confirm reversible draft-fill replay stays allowed only when it has no official side effect.",
+        "expected_outcome": "allowed_as_reversible_draft_only",
+        "required_attended_action": "Reviewer verifies draft values remain reviewable and are not submitted, certified, uploaded, paid, scheduled, or cancelled.",
+        "citations": [
+          "guardrail-regression-replay-matrix-v3#reversible-draft-fill"
+        ]
+      }
+    ],
+    "unresolved_deferrals": [
+      {
+        "deferral_id": "devhub-ui-drift-replay-deferred",
+        "source_artifact": "guardrail-regression-replay-matrix-v3",
+        "reason": "Replay fixtures cannot prove current authenticated DevHub UI state without a future attended session.",
+        "reviewer_resolution_needed": "Run a future attended UI drift review without storing auth state, screenshots, traces, HAR files, or private values.",
+        "citations": [
+          "guardrail-regression-replay-matrix-v3#ui-drift-note"
+        ]
+      }
+    ]
+  },
+  "public_source_freshness_watch_plan_v3": {
+    "artifact_id": "public-source-freshness-watch-plan-v3",
+    "watch_sources": [
+      {
+        "source_id": "ppd-online-tools",
+        "review_question": "Confirm the public online permitting tools source remains on the watch list for freshness review.",
+        "freshness_status": "watch_pending_offline_review",
+        "required_attended_action": "Reviewer decides whether a future compliant public crawl is needed before relying on the cited process model.",
+        "citations": [
+          "public-source-freshness-watch-plan-v3#online-permitting-tools",
+          "official-source-anchor#online-permitting-tools"
+        ]
+      },
+      {
+        "source_id": "devhub-public-portal",
+        "review_question": "Confirm the DevHub public portal remains freshness-monitored without authenticated scraping.",
+        "freshness_status": "watch_pending_offline_review",
+        "required_attended_action": "Reviewer checks whether public portal guidance has changed before approving any attended workflow runbook.",
+        "citations": [
+          "public-source-freshness-watch-plan-v3#devhub-public-portal",
+          "official-source-anchor#devhub-public-portal"
+        ]
+      },
+      {
+        "source_id": "single-pdf-process",
+        "review_question": "Confirm single PDF preparation guidance remains freshness-monitored before document-staging advice is reused.",
+        "freshness_status": "watch_pending_offline_review",
+        "required_attended_action": "Reviewer verifies whether file preparation instructions need a future public-source refresh.",
+        "citations": [
+          "public-source-freshness-watch-plan-v3#single-pdf-process",
+          "official-source-anchor#submit-plans-online"
+        ]
+      }
+    ],
+    "unresolved_deferrals": [
+      {
+        "deferral_id": "public-source-live-refresh-deferred",
+        "source_artifact": "public-source-freshness-watch-plan-v3",
+        "reason": "This checklist is fixture-first and does not perform a live public-source freshness crawl.",
+        "reviewer_resolution_needed": "Decide whether to schedule a future robots-aware, allowlisted public crawl before attended review signoff.",
+        "citations": [
+          "public-source-freshness-watch-plan-v3#refresh-boundary"
+        ]
+      }
+    ]
+  }
+}

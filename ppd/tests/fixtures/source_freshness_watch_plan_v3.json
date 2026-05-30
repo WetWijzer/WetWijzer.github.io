@@ -1,0 +1,26 @@
+{
+  "valid": {
+    "version": "public_source_freshness_watch_plan_v3",
+    "watch_rows": [
+      {
+        "watch_id": "ppd-devhub-faq-public-freshness",
+        "source_id": "source-devhub-faq",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+        "decision": "watch",
+        "priority": "high",
+        "citations": [
+          "source-evidence-devhub-faq-2026-05-08"
+        ],
+        "affected_requirements": [
+          "requirement-devhub-account-scoped-services"
+        ],
+        "affected_guardrails": [
+          "guardrail-bundle-devhub-consequential-actions"
+        ],
+        "allowed_observation": "metadata and normalized public text only",
+        "prohibited_observation": "no raw bodies, downloads, archives, browser traces, credentials, or authenticated state",
+        "mutation_policy": "report-only"
+      }
+    ]
+  }
+}

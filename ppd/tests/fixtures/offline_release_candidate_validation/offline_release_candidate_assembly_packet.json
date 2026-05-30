@@ -1,0 +1,27 @@
+{
+  "packet_id": "assembly-packet-20260529-rc-001",
+  "release_candidate_id": "rc-20260529-offline-001",
+  "assembly_status": "assembled",
+  "release_owner": "ppd-release-owner",
+  "assembly_reviewer": "ppd-assembly-reviewer",
+  "fixture_refs": [
+    "ppd/tests/fixtures/offline_release_candidate_validation/offline_release_candidate_assembly_packet.json",
+    "ppd/tests/fixtures/offline_release_candidate_validation/release_acceptance_review_packet.json",
+    "ppd/tests/fixtures/offline_release_candidate_validation/release_rollback_drill_outcome_review_packet.json"
+  ],
+  "evidence_refs": [
+    "offline-assembly-manifest:rc-20260529-offline-001",
+    "offline-guardrail-bundle-check:fixture-only"
+  ],
+  "notes": [
+    "Release candidate assembly consumed committed fixtures only.",
+    "No authenticated or live public collection was required for this validation packet."
+  ],
+  "attestations": {
+    "no_live_crawl": true,
+    "no_devhub": true,
+    "no_prompt": true,
+    "no_guardrail_mutation": true,
+    "no_release_mutation": true
+  }
+}

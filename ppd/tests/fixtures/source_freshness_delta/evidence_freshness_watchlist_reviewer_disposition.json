@@ -1,0 +1,42 @@
+{
+  "packet_id": "watchlist-disposition-20260529-fixture",
+  "packet_type": "evidence_freshness_watchlist_reviewer_disposition",
+  "created_at": "2026-05-29T00:05:00Z",
+  "dispositions": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "disposition": "changed",
+      "reviewer_owner": "ppd-source-reviewer",
+      "reviewer_status": "needs_delta_review",
+      "reviewed_at": "2026-05-29T00:06:00Z",
+      "rationale": "Reviewer marked FAQ evidence for delta review after the refresh hash changed.",
+      "follow_up_queue": "devhub-guidance-delta-review",
+      "evidence_ids": [
+        "watchlist:ppd-devhub-faq:reviewer-disposition"
+      ]
+    },
+    {
+      "source_id": "ppd-file-naming-standards",
+      "disposition": "unchanged",
+      "reviewer_owner": "ppd-source-reviewer",
+      "reviewer_status": "accepted_current",
+      "reviewed_at": "2026-05-29T00:07:00Z",
+      "rationale": "Reviewer accepted stable file naming evidence as current.",
+      "evidence_ids": [
+        "watchlist:ppd-file-naming-standards:reviewer-disposition"
+      ]
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "disposition": "stale",
+      "reviewer_owner": "ppd-intake-owner",
+      "reviewer_status": "offline_owner_review_required",
+      "reviewed_at": "2026-05-29T00:08:00Z",
+      "rationale": "Reviewer marked Single PDF process evidence stale because the watchlist age exceeded the weekly review threshold.",
+      "follow_up_queue": "single-pdf-offline-owner-review",
+      "evidence_ids": [
+        "watchlist:ppd-submit-plans-online:reviewer-disposition"
+      ]
+    }
+  ]
+}

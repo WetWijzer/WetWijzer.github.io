@@ -1,0 +1,17 @@
+{
+  "work_order_id": "requirement-regeneration-work-order-v2-fixture-001",
+  "reviewer_owner": "ppd-requirements-reviewer",
+  "implementation_owner": "ppd-guardrail-compiler-maintainer",
+  "requirement_ids_to_regenerate": [
+    "requirement:single-pdf-upload-staging",
+    "requirement:certification-exact-confirmation",
+    "requirement:submit-action-block"
+  ],
+  "source_evidence_ids": [
+    "evidence:ppd-submit-plans-online:single-pdf-process",
+    "evidence:ppd-devhub-guide-submit-permit-application:certification-step",
+    "evidence:ppd-devhub-faqs:account-scoped-services"
+  ],
+  "regeneration_scope": "fixture_only_guardrail_predicate_refresh_candidate",
+  "offline_only": true
+}

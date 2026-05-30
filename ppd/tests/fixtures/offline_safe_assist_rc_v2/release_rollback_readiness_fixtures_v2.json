@@ -1,0 +1,18 @@
+{
+  "packet_id": "release-rollback-readiness-v2-fixture",
+  "version": "v2",
+  "rollback_prerequisites": [
+    "candidate packet has cited source, process, guardrail, surface, and prompt compatibility notes",
+    "blocked consequential-action gates are present",
+    "offline validation commands are recorded",
+    "no-live-release attestation is true",
+    "release state mutation remains disabled"
+  ],
+  "rollback_blocks": [
+    "missing fixture citation",
+    "missing blocked consequential-action gate",
+    "live DevHub dependency",
+    "LLM completion dependency",
+    "release state mutation"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "fixture_kind": "prompt_refresh_release_handoff_fixtures",
+  "fixture_id": "prompt-refresh-release-handoff-fixtures-20260529",
+  "exact_confirmation_reminders": [
+    {
+      "trigger": "submit_application",
+      "reminder": "Before submission, require the user to state the exact permit application action, target application, and that they are ready to submit in the attended DevHub session."
+    },
+    {
+      "trigger": "upload_document",
+      "reminder": "Before upload, require the user to identify the exact file, target application or permit number, and upload control in the attended DevHub session."
+    },
+    {
+      "trigger": "pay_fee",
+      "reminder": "Before payment, require the user to confirm the exact fee, payment method handling, and final payment action in the attended DevHub session."
+    },
+    {
+      "trigger": "schedule_or_cancel_inspection",
+      "reminder": "Before scheduling or cancellation, require the user to confirm the exact permit, inspection type, date or cancellation target, and official action."
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/draft_preview_agent_handoff_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_draft_preview_agent_handoff_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "attestations": {
+    "no_live_llm": true,
+    "no_devhub": true,
+    "no_private_document": true,
+    "no_pdf_write": true,
+    "no_prompt": true,
+    "no_release_state_mutation": true
+  }
+}

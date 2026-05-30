@@ -1,0 +1,18 @@
+{
+  "fixture_version": "inactive_source_fixture_migration_packet_v2",
+  "generated_from": "metadata-only inactive source fixture migration packet",
+  "inactive_sources": [
+    {
+      "source_id": "ppd-legacy-fee-handout",
+      "replacement_source_id": "ppd-fee-payment-guide",
+      "migration_reason": "inactive legacy handout replaced by current fee payment guide",
+      "affected_requirement_ids": [
+        "REQ-FEE-PAYMENT-GATE"
+      ],
+      "affected_guardrail_ids": [
+        "GR-PAYMENT-EXACT-CONFIRMATION"
+      ],
+      "reviewer_owner": "fee-guardrail-reviewer"
+    }
+  ]
+}

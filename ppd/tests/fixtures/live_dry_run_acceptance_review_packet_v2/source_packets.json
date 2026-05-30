@@ -1,0 +1,157 @@
+{
+  "public_recrawl_dry_run_evidence_envelope_v2": {
+    "packet_type": "public-recrawl-dry-run-evidence-envelope",
+    "version": "v2",
+    "envelope_id": "fixture-public-recrawl-evidence-envelope-v2",
+    "fixture_first": true,
+    "metadata_only": true,
+    "citations": [
+      "public_recrawl_dry_run_evidence_envelope_v2.fixture"
+    ],
+    "observation_slots": [
+      {
+        "slot_id": "slot-seed-url",
+        "slot_kind": "seed_url",
+        "source_id": "ppd-home",
+        "metadata_only": true,
+        "observed_value": {
+          "seed_url": "https://www.portland.gov/ppd"
+        },
+        "citations": [
+          "public_recrawl_dry_run_evidence_envelope_v2.observation_slots.seed_url"
+        ]
+      },
+      {
+        "slot_id": "slot-stop-condition",
+        "slot_kind": "operator_stop_condition",
+        "source_id": "public-recrawl-dry-run",
+        "metadata_only": true,
+        "observed_value": {
+          "ledger_abort_condition_ids": [
+            "abort-if-live-execution-requested"
+          ]
+        },
+        "citations": [
+          "public_recrawl_dry_run_evidence_envelope_v2.observation_slots.operator_stop_condition"
+        ]
+      }
+    ],
+    "attestations": {
+      "no_live_crawl": true,
+      "no_processor": true,
+      "no_raw_body": true,
+      "no_download": true,
+      "no_source_registry_mutation": true
+    },
+    "side_effects": {
+      "live_crawl_performed": false,
+      "processor_invoked": false,
+      "raw_body_persisted": false,
+      "document_downloaded": false,
+      "source_registry_mutated": false
+    }
+  },
+  "attended_devhub_read_only_evidence_envelope_v2": {
+    "version": "devhub-readonly-evidence-envelope-v2",
+    "envelope_id": "fixture-attended-devhub-read-only-evidence-envelope-v2",
+    "mode": "fixture-first-attended-read-only",
+    "citations": [
+      "attended_devhub_read_only_evidence_envelope_v2.fixture"
+    ],
+    "observation_slots": {
+      "visible_surface_labels": {
+        "kind": "synthetic_read_only_observation_slot",
+        "value": [
+          "DevHub Home",
+          "My Permits and Requests"
+        ],
+        "citations": [
+          {
+            "source": "fixture",
+            "field": "visible_surface_labels"
+          }
+        ]
+      },
+      "redaction_checklist_outcomes": {
+        "kind": "synthetic_read_only_observation_slot",
+        "value": [
+          "No auth state, screenshots, traces, HAR files, private values, or raw authenticated page text are retained."
+        ],
+        "citations": [
+          {
+            "source": "fixture",
+            "field": "redaction_checklist_outcomes"
+          }
+        ]
+      },
+      "attestations": {
+        "kind": "synthetic_read_only_observation_slot",
+        "value": {
+          "no_live_devhub": true,
+          "no_auth_state": true,
+          "no_screenshot": true,
+          "no_trace": true,
+          "no_har": true,
+          "no_surface_registry_mutation": true
+        },
+        "citations": [
+          {
+            "source": "fixture",
+            "field": "attestations"
+          }
+        ]
+      }
+    }
+  },
+  "live_dry_run_operator_briefing_packet_v2": {
+    "packet_type": "live-dry-run-operator-briefing-packet",
+    "packet_id": "fixture-first-live-dry-run-operator-briefing-packet-v2",
+    "packet_version": 2,
+    "mode": "fixture_first_live_dry_run_briefing_only",
+    "citations": [
+      "live_dry_run_operator_briefing_packet_v2.fixture"
+    ],
+    "go_no_go_briefing_notes": [
+      {
+        "decision": "no_go_for_live_execution",
+        "note": "Do not begin live crawling or authenticated browser automation from this packet.",
+        "citations": [
+          "live_dry_run_operator_briefing_packet_v2.go_no_go_briefing_notes"
+        ]
+      }
+    ],
+    "required_human_attendance_checkpoints": [
+      {
+        "checkpoint": "post_run_artifact_review",
+        "required_attendee": "task supervisor or delegated PP&D reviewer",
+        "purpose": "Confirm redacted artifacts and no private session state before any downstream decision.",
+        "citations": [
+          "live_dry_run_operator_briefing_packet_v2.required_human_attendance_checkpoints"
+        ]
+      }
+    ],
+    "independent_stop_conditions": [
+      "Any prompt for CAPTCHA, MFA, payment, account creation, submission, certification, cancellation, or upload.",
+      "Any request to store cookies, tokens, auth state, session files, traces, screenshots, downloads, or raw crawl output.",
+      "Any command or operator instruction that would mutate release state or perform an official action."
+    ],
+    "artifact_redaction_expectations": [
+      "Briefing artifacts must contain citations and derived notes only, not raw DevHub pages or downloaded documents.",
+      "Private identifiers, cookies, tokens, credentials, browser profiles, screenshots, traces, and session storage must be absent."
+    ],
+    "allowed_offline_validation_commands": [
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ]
+    ],
+    "attestations": {
+      "no_live_execution": true,
+      "no_auth_state": true,
+      "no_browser_artifact": true,
+      "no_official_action": true,
+      "no_release_state_mutation": true
+    }
+  }
+}

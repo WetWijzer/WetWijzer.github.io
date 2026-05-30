@@ -1,0 +1,34 @@
+{
+  "packet_id": "guarded-actions-devhub-fixture",
+  "schema_version": "ppd.guarded_actions.v1",
+  "guarded_actions": [
+    {
+      "citation_id": "guard-upload-corrections",
+      "label": "upload corrections or permit documents in DevHub",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "refusal_reason": "uploading documents is an official authenticated workflow"
+    },
+    {
+      "citation_id": "guard-certify-submit",
+      "label": "acknowledge, certify, or submit a permit application",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "refusal_reason": "certification and submission are consequential official actions"
+    },
+    {
+      "citation_id": "guard-fee-payment",
+      "label": "enter payment details or submit a fee payment",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "refusal_reason": "fee payment is a financial workflow"
+    },
+    {
+      "citation_id": "guard-inspection-schedule",
+      "label": "schedule, cancel, or change an inspection",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "refusal_reason": "inspection scheduling changes official city records"
+    }
+  ]
+}

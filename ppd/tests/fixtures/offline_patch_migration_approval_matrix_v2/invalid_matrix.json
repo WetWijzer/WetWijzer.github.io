@@ -1,0 +1,16 @@
+{
+  "version": "2",
+  "approval_rows": [
+    {
+      "decision": "approve",
+      "blockers": [
+        {
+          "status": "unresolved",
+          "description": "Needs a follow up task reference."
+        }
+      ],
+      "notes": "Includes private authenticated fact text, raw crawl PDF browser session artifact text, live execution promotion claim text, guaranteed permit approval text, and submit upload pay certify language for rejection coverage.",
+      "source_mutation": true
+    }
+  ]
+}

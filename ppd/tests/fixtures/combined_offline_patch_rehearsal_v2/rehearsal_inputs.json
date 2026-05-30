@@ -1,0 +1,62 @@
+{
+  "packet_id": "fixture-combined-offline-patch-rehearsal-v2",
+  "source_owner": "public-source-reviewer",
+  "devhub_surface_owner": "devhub-surface-reviewer",
+  "guardrail_owner": "guardrail-reviewer",
+  "rollback_owner": "rollback-reviewer",
+  "attestations": {
+    "no_live_crawl": true,
+    "no_auth": true,
+    "no_official_action": true,
+    "no_release_state_mutation": true
+  },
+  "source_patch_previews": [
+    {
+      "artifact_id": "src-submit-plans-online",
+      "fixture_path": "ppd/tests/fixtures/combined_offline_patch_rehearsal_v2/source_submit_plans_preview.json",
+      "expected_change": "replace normalized source fixture with updated separate-PDF requirement evidence",
+      "before_hash": "sha256:source-before-fixture",
+      "after_hash": "sha256:source-after-fixture",
+      "reviewer_owner": "public-source-reviewer",
+      "citations": [
+        "official:submit-plans-online#single-pdf-process",
+        "official:spp-file-naming-standards#separate-supporting-documents"
+      ]
+    }
+  ],
+  "devhub_surface_previews": [
+    {
+      "artifact_id": "devhub-upload-staging",
+      "fixture_path": "ppd/tests/fixtures/combined_offline_patch_rehearsal_v2/devhub_upload_surface_preview.json",
+      "expected_change": "replace redacted surface fixture with upload staging action classified as consequential until confirmation",
+      "before_hash": "sha256:devhub-before-fixture",
+      "after_hash": "sha256:devhub-after-fixture",
+      "reviewer_owner": "devhub-surface-reviewer",
+      "depends_on": [
+        "src-submit-plans-online"
+      ],
+      "citations": [
+        "official:devhub-guide-submit-permit-application#required-uploads",
+        "official:submit-plans-online#single-pdf-process"
+      ]
+    }
+  ],
+  "guardrail_patch_previews": [
+    {
+      "artifact_id": "guardrail-upload-confirmation-gate",
+      "fixture_path": "ppd/tests/fixtures/combined_offline_patch_rehearsal_v2/guardrail_upload_gate_preview.json",
+      "expected_change": "replace guardrail fixture with exact-confirmation gate for official upload and certification actions",
+      "before_hash": "sha256:guardrail-before-fixture",
+      "after_hash": "sha256:guardrail-after-fixture",
+      "reviewer_owner": "guardrail-reviewer",
+      "depends_on": [
+        "src-submit-plans-online",
+        "devhub-upload-staging"
+      ],
+      "citations": [
+        "official:devhub-guide-submit-permit-application#acknowledgement-certification",
+        "official:non-negotiable-boundaries#no-upload-submit-certify"
+      ]
+    }
+  ]
+}

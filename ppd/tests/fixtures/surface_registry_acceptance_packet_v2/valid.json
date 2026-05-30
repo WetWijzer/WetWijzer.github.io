@@ -1,0 +1,37 @@
+{
+  "packet_version": 2,
+  "acceptance_decisions": [
+    {
+      "surface": "permit-search",
+      "disposition": "accepted",
+      "rationale": "Selector is stable in the committed deterministic fixture.",
+      "citations": ["fixture:permit-search-form"]
+    },
+    {
+      "surface": "legacy-map",
+      "disposition": "deferred",
+      "rationale": "Needs a non-authenticated fixture before registry inclusion.",
+      "citations": ["fixture:legacy-map-placeholder"]
+    },
+    {
+      "surface": "account-dashboard",
+      "disposition": "rejected",
+      "rationale": "Requires authenticated access and is outside the allowed crawl scope.",
+      "citations": ["fixture:account-dashboard-scope-note"]
+    }
+  ],
+  "dispositions": {
+    "selector_confidence": "accepted with fixture-backed selectors only",
+    "manual_handoff": "deferred for authenticated or ambiguous flows"
+  },
+  "redaction_gates": ["no private values", "no auth artifacts", "no browser traces"],
+  "rollback_notes": "Discard this refresh packet and keep the previous committed registry snapshot.",
+  "mutation_flags": {
+    "active_surface_registry_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_monitoring_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  }
+}

@@ -1,0 +1,302 @@
+{
+  "packet_type": "devhub_attended_readonly_runbook_refresh_packet_v2",
+  "packet_version": 2,
+  "packet_id": "devhub-attended-readonly-runbook-refresh-packet-v2-fixture-20260529",
+  "mode": "fixture_first_offline_runbook_refresh",
+  "consumes": {
+    "surface_registry_refresh_acceptance_packet_v2": "surface-registry-refresh-acceptance-packet-v2-fixture-20260529",
+    "devhub_attended_readonly_observation_packet_v2": "devhub-attended-readonly-observation-packet-v2-fixture-20260529",
+    "devhub_attended_readonly_launch_readiness_packet": "devhub-attended-read-only-pilot-launch-readiness-v1"
+  },
+  "operator_checklist_deltas": [
+    {
+      "delta_id": "runbook-delta:update:devhub-home-readonly-status-card",
+      "decision": "accepted",
+      "delta_type": "add_read_only_operator_checklist_item",
+      "surface_id": "surface:devhub-home",
+      "action_id": "action:read-status-card",
+      "operator_checklist_text": "Add read-only verification for surface:devhub-home / action:read-status-card; record only cited redacted metadata.",
+      "reviewer_owner": "ppd-surface-reviewer",
+      "implementation_owner": "ppd-devhub-automation-owner",
+      "citations": [
+        "review:evidence:devhub-home-readonly-status-card",
+        "observation:evidence:attended-readonly-home-summary",
+        "guardrail:evidence:readonly-status-review"
+      ]
+    },
+    {
+      "delta_id": "runbook-delta:update:my-permits-filter-selector",
+      "decision": "deferred",
+      "delta_type": "add_attended_selector_confirmation_checkpoint",
+      "surface_id": "surface:devhub-my-permits",
+      "action_id": "action:filter-my-permits",
+      "operator_checklist_text": "Add a reviewer checkpoint for surface:devhub-my-permits / action:filter-my-permits; do not apply selector changes until attended confirmation is accepted.",
+      "reviewer_owner": "ppd-surface-reviewer",
+      "implementation_owner": "ppd-devhub-automation-owner",
+      "citations": [
+        "review:evidence:my-permits-filter-readonly",
+        "observation:evidence:attended-readonly-my-permits-summary",
+        "guardrail:evidence:readonly-filter-reversible"
+      ]
+    },
+    {
+      "delta_id": "runbook-delta:update:correction-upload-submit-control",
+      "decision": "rejected",
+      "delta_type": "add_refusal_boundary_for_consequential_control",
+      "surface_id": "surface:devhub-corrections",
+      "action_id": "action:submit-correction-upload",
+      "operator_checklist_text": "Add a refusal boundary for surface:devhub-corrections / action:submit-correction-upload; keep consequential controls outside runbook automation.",
+      "reviewer_owner": "ppd-surface-reviewer",
+      "implementation_owner": "ppd-devhub-automation-owner",
+      "citations": [
+        "review:evidence:correction-upload-is-consequential",
+        "observation:evidence:no-private-upload-data-observed",
+        "guardrail:evidence:official-upload-refusal"
+      ]
+    }
+  ],
+  "allowed_read_only_verification_steps": [
+    {
+      "step_id": "verify:update:devhub-home-readonly-status-card",
+      "surface_id": "surface:devhub-home",
+      "action_id": "action:read-status-card",
+      "read_only": true,
+      "official_action_allowed": false,
+      "allowed_operator_actions": [
+        "observe page heading or landmark label",
+        "compare redacted label against cited fixture expectation",
+        "record reviewer decision without private values"
+      ],
+      "requires_attended_reviewer": true,
+      "citations": [
+        "review:evidence:devhub-home-readonly-status-card",
+        "observation:evidence:attended-readonly-home-summary",
+        "guardrail:evidence:readonly-status-review"
+      ]
+    },
+    {
+      "step_id": "verify:update:my-permits-filter-selector",
+      "surface_id": "surface:devhub-my-permits",
+      "action_id": "action:filter-my-permits",
+      "read_only": true,
+      "official_action_allowed": false,
+      "allowed_operator_actions": [
+        "observe page heading or landmark label",
+        "compare redacted label against cited fixture expectation",
+        "record reviewer decision without private values"
+      ],
+      "requires_attended_reviewer": true,
+      "citations": [
+        "review:evidence:my-permits-filter-readonly",
+        "observation:evidence:attended-readonly-my-permits-summary",
+        "guardrail:evidence:readonly-filter-reversible"
+      ]
+    }
+  ],
+  "manual_login_mfa_captcha_handoff_boundaries": [
+    {
+      "boundary_id": "manual-login-mfa-captcha-boundary",
+      "trigger": "DevHub login, credentials, MFA, CAPTCHA, password recovery, account creation, or security prompts appear.",
+      "human_operator_required": true,
+      "agent_may_request_credentials": false,
+      "agent_may_store_credentials": false,
+      "agent_may_automate_mfa_or_captcha": false,
+      "account_creation_allowed": false,
+      "official_action_allowed_after_handoff": false,
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "boundary_id": "handoff:action:read-status-card",
+      "trigger": "manual-attendance-required-before-any-live-devhub-use",
+      "surface_id": "surface:devhub-home",
+      "action_id": "action:read-status-card",
+      "human_operator_required": true,
+      "agent_may_request_credentials": false,
+      "agent_may_store_credentials": false,
+      "agent_may_automate_mfa_or_captcha": false,
+      "account_creation_allowed": false,
+      "official_action_allowed_after_handoff": false,
+      "citations": [
+        "review:evidence:devhub-home-readonly-status-card",
+        "observation:evidence:attended-readonly-home-summary",
+        "guardrail:evidence:readonly-status-review"
+      ]
+    },
+    {
+      "boundary_id": "handoff:action:filter-my-permits",
+      "trigger": "manual-attendance-required-for-selector-confirmation",
+      "surface_id": "surface:devhub-my-permits",
+      "action_id": "action:filter-my-permits",
+      "human_operator_required": true,
+      "agent_may_request_credentials": false,
+      "agent_may_store_credentials": false,
+      "agent_may_automate_mfa_or_captcha": false,
+      "account_creation_allowed": false,
+      "official_action_allowed_after_handoff": false,
+      "citations": [
+        "review:evidence:my-permits-filter-readonly",
+        "observation:evidence:attended-readonly-my-permits-summary",
+        "guardrail:evidence:readonly-filter-reversible"
+      ]
+    },
+    {
+      "boundary_id": "handoff:action:submit-correction-upload",
+      "trigger": "manual-handoff-only-no-automation",
+      "surface_id": "surface:devhub-corrections",
+      "action_id": "action:submit-correction-upload",
+      "human_operator_required": true,
+      "agent_may_request_credentials": false,
+      "agent_may_store_credentials": false,
+      "agent_may_automate_mfa_or_captcha": false,
+      "account_creation_allowed": false,
+      "official_action_allowed_after_handoff": false,
+      "citations": [
+        "review:evidence:correction-upload-is-consequential",
+        "observation:evidence:no-private-upload-data-observed",
+        "guardrail:evidence:official-upload-refusal"
+      ]
+    }
+  ],
+  "redaction_requirements": [
+    {
+      "requirement_id": "redaction:no_auth_state",
+      "required": true,
+      "private_values_allowed": false,
+      "browser_artifacts_allowed": false,
+      "raw_authenticated_values_allowed": false,
+      "passes_when": "No stored auth state, storage state, cookie, or session artifact is present in the launch packet.",
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "requirement_id": "redaction:no_screenshots",
+      "required": true,
+      "private_values_allowed": false,
+      "browser_artifacts_allowed": false,
+      "raw_authenticated_values_allowed": false,
+      "passes_when": "No screenshot or image capture artifact is referenced or retained.",
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "requirement_id": "redaction:no_traces_or_har_files",
+      "required": true,
+      "private_values_allowed": false,
+      "browser_artifacts_allowed": false,
+      "raw_authenticated_values_allowed": false,
+      "passes_when": "No trace, HAR, video, or browser recording artifact is referenced or retained.",
+      "citations": [
+        "devhub-attended-read-only-pilot-runbook-v1",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "requirement_id": "redaction:no_raw_authenticated_values",
+      "required": true,
+      "private_values_allowed": false,
+      "browser_artifacts_allowed": false,
+      "raw_authenticated_values_allowed": false,
+      "passes_when": "Only redacted synthetic metadata fields may be used for launch readiness review.",
+      "citations": [
+        "devhub-read-only-pilot-review-valid",
+        "devhub-read-only-observation-redaction-review-synthetic-v1"
+      ]
+    },
+    {
+      "requirement_id": "redaction-gate:action:read-status-card",
+      "required": true,
+      "surface_id": "surface:devhub-home",
+      "action_id": "action:read-status-card",
+      "private_values_allowed": false,
+      "browser_artifacts_allowed": false,
+      "raw_authenticated_values_allowed": false,
+      "decision": "accept-redacted-public-shape-only",
+      "citations": [
+        "review:evidence:devhub-home-readonly-status-card",
+        "observation:evidence:attended-readonly-home-summary",
+        "guardrail:evidence:readonly-status-review"
+      ]
+    },
+    {
+      "requirement_id": "redaction-gate:action:filter-my-permits",
+      "required": true,
+      "surface_id": "surface:devhub-my-permits",
+      "action_id": "action:filter-my-permits",
+      "private_values_allowed": false,
+      "browser_artifacts_allowed": false,
+      "raw_authenticated_values_allowed": false,
+      "decision": "defer-until-redacted-live-label-confirmed",
+      "citations": [
+        "review:evidence:my-permits-filter-readonly",
+        "observation:evidence:attended-readonly-my-permits-summary",
+        "guardrail:evidence:readonly-filter-reversible"
+      ]
+    },
+    {
+      "requirement_id": "redaction-gate:action:submit-correction-upload",
+      "required": true,
+      "surface_id": "surface:devhub-corrections",
+      "action_id": "action:submit-correction-upload",
+      "private_values_allowed": false,
+      "browser_artifacts_allowed": false,
+      "raw_authenticated_values_allowed": false,
+      "decision": "reject-private-upload-control-from-registry-refresh",
+      "citations": [
+        "review:evidence:correction-upload-is-consequential",
+        "observation:evidence:no-private-upload-data-observed",
+        "guardrail:evidence:official-upload-refusal"
+      ]
+    }
+  ],
+  "reviewer_owner_fields": {
+    "reviewer_owner": "ppd-surface-reviewer",
+    "implementation_owner": "ppd-devhub-automation-owner",
+    "safety_owner": "ppd-guardrail-owner"
+  },
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_attended_readonly_runbook_refresh_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "attestations": {
+    "no_live_devhub_access": true,
+    "no_auth_state_created_read_or_stored": true,
+    "no_browser_artifact_created_or_stored": true,
+    "no_runbook_mutation": true
+  },
+  "source_packet_snapshots_redacted": {
+    "surface_registry_refresh_acceptance_packet": {
+      "packet_id": "surface-registry-refresh-acceptance-packet-v2-fixture-20260529",
+      "surface_action_update_counts": {
+        "accepted": 1,
+        "deferred": 1,
+        "rejected": 1
+      }
+    },
+    "devhub_attended_readonly_observation_packet": {
+      "packet_id": "devhub-attended-readonly-observation-packet-v2-fixture-20260529",
+      "observation_count": 3
+    },
+    "launch_readiness_packet": {
+      "packet_id": "devhub-attended-read-only-pilot-launch-readiness-v1",
+      "manual_stop_point_count": 3,
+      "redaction_check_count": 4
+    }
+  },
+  "validation_status": "fixture_runbook_refresh_packet_pending_reviewer_application"
+}

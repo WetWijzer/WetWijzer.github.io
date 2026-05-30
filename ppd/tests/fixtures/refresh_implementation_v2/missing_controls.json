@@ -1,0 +1,17 @@
+{
+  "proposal_version": "refresh-implementation-v2",
+  "summary": "Missing row metadata fixture.",
+  "impact": "Exercises required control validation.",
+  "patch_rows": [
+    {
+      "patch_id": "missing-controls",
+      "source_target_id": "",
+      "surface_target_id": null,
+      "guardrail_target_id": "",
+      "depends_on": [],
+      "rollback_notes": "",
+      "reviewer_owner": "",
+      "citations": []
+    }
+  ]
+}

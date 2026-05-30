@@ -1,0 +1,53 @@
+{
+  "fixture_id": "existing-user-gap-analysis-v2-fixture",
+  "case_id": "case_fixture_residential_addition_001",
+  "process_id": "process_residential_addition_devhub_v2",
+  "missing_facts": [
+    {
+      "fact_id": "project_address_unit",
+      "label": "Project address unit or suite",
+      "reason": "The existing gap analysis does not identify whether the property has a unit or suite value.",
+      "source_evidence_ids": ["src-devhub-property-search"]
+    }
+  ],
+  "missing_documents": [
+    {
+      "document_id": "single_pdf_plan_set",
+      "label": "Single PDF plan set",
+      "reason": "The existing gap analysis has no matched plan-set document.",
+      "source_evidence_ids": ["src-single-pdf-file-prep"]
+    }
+  ],
+  "stale_evidence": [
+    {
+      "expectation_id": "permit_fee_estimate",
+      "label": "Permit fee estimate",
+      "reason": "The existing fee estimate predates the latest fixture refresh window.",
+      "source_evidence_ids": ["src-how-pay-fees"]
+    }
+  ],
+  "conflicting_evidence": [
+    {
+      "expectation_id": "occupancy_status",
+      "label": "Occupancy status",
+      "reason": "The case notes conflict on whether the dwelling is occupied during construction.",
+      "source_evidence_ids": ["src-apply-permits-addition"]
+    }
+  ],
+  "blocked_actions": [
+    {
+      "action_id": "pay_permit_fees",
+      "label": "Pay permit fees",
+      "reason": "Payment is a financial workflow requiring separate user confirmation.",
+      "source_evidence_ids": ["src-how-pay-fees"]
+    }
+  ],
+  "next_safe_actions": [
+    {
+      "action_id": "summarize_missing_items_for_user",
+      "label": "Summarize missing items for user",
+      "reason": "A local summary does not mutate DevHub or any official record.",
+      "source_evidence_ids": ["src-devhub-faq-account-services"]
+    }
+  ]
+}

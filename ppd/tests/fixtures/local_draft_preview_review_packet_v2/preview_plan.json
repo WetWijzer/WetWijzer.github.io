@@ -1,0 +1,29 @@
+{
+  "sources": [
+    {
+      "id": "preview-plan",
+      "label": "Local PDF draft preview plan v2 fixture",
+      "locator": "ppd/tests/fixtures/local_draft_preview_review_packet_v2/preview_plan.json"
+    }
+  ],
+  "preview_rows": [
+    {
+      "row_id": "permit-address",
+      "source_id": "preview-plan",
+      "value": "123 SW Fixture Ave, Portland, OR",
+      "explanation": "Address value is copied from the local draft preview plan fixture for reviewer inspection only.",
+      "reviewer_owner": "Intake reviewer",
+      "confirmation_checkpoint": "Confirm the address exactly matches the locally reviewed draft before any submission workflow.",
+      "rollback_note": "Delete the generated row and keep the source fixture unchanged if address evidence is disputed."
+    },
+    {
+      "row_id": "work-description",
+      "source_id": "preview-plan",
+      "value": "Fixture-only seismic bracing description",
+      "explanation": "Work description is fixture-backed and is not extracted from a private document or live PDF.",
+      "reviewer_owner": "Technical reviewer",
+      "confirmation_checkpoint": "Confirm the work description against approved local notes before escalation.",
+      "rollback_note": "Revert to the prior fixture packet if the reviewer rejects the wording."
+    }
+  ]
+}

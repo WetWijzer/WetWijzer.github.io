@@ -1,0 +1,188 @@
+{
+  "packet_id": "public-source-refresh-launch-20260529-fixture-first",
+  "packet_type": "public_source_refresh_launch_packet",
+  "mode": "fixture-first",
+  "consumes": [
+    {
+      "packet_id": "public-source-refresh-execution-readiness-20260529",
+      "title": "Public source refresh execution readiness packet",
+      "fixture_path": "ppd/tests/fixtures/public_source_refresh_launch/inputs.json"
+    },
+    {
+      "packet_id": "offline-release-candidate-validation-checklist-20260529",
+      "title": "Offline release candidate validation checklist packet",
+      "fixture_path": "ppd/tests/fixtures/public_source_refresh_launch/inputs.json"
+    },
+    {
+      "packet_id": "source-freshness-watchlist-reviewer-disposition-20260529",
+      "title": "Source freshness watchlist reviewer disposition packet",
+      "fixture_path": "ppd/tests/fixtures/public_source_refresh_launch/inputs.json"
+    }
+  ],
+  "operator_launch_gates": [
+    {
+      "gate_id": "execution-readiness-approved",
+      "required_state": "ready",
+      "observed_state": "ready",
+      "citation_ref": "public-source-refresh-execution-readiness-20260529"
+    },
+    {
+      "gate_id": "offline-release-candidate-validated",
+      "required_state": "passed",
+      "observed_state": "passed",
+      "citation_ref": "offline-release-candidate-validation-checklist-20260529"
+    },
+    {
+      "gate_id": "watchlist-reviewer-disposition-approved",
+      "required_state": "approved",
+      "observed_state": "approved",
+      "citation_ref": "source-freshness-watchlist-reviewer-disposition-20260529"
+    },
+    {
+      "gate_id": "metadata-only-attestations-present",
+      "required_state": "attested",
+      "observed_state": "attested",
+      "citation_ref": "offline-release-candidate-validation-checklist-20260529"
+    }
+  ],
+  "allowlisted_source_batches": [
+    {
+      "batch_id": "portland-auditor-code-library",
+      "source_name": "City of Portland Auditor Code Library",
+      "source_url": "https://www.portland.gov/code",
+      "allowed_scope": [
+        "metadata-refresh",
+        "freshness-check"
+      ],
+      "reviewer_owner": {
+        "owner_name": "PPD source freshness reviewer",
+        "owner_role": "reviewer",
+        "owner_contact": "ppd-reviewer@example.invalid"
+      },
+      "citation_refs": [
+        "public-source-refresh-execution-readiness-20260529",
+        "offline-release-candidate-validation-checklist-20260529",
+        "source-freshness-watchlist-reviewer-disposition-20260529"
+      ]
+    },
+    {
+      "batch_id": "portland-council-agenda-index",
+      "source_name": "City Council agenda index",
+      "source_url": "https://www.portland.gov/council/agenda",
+      "allowed_scope": [
+        "metadata-refresh",
+        "freshness-check"
+      ],
+      "reviewer_owner": {
+        "owner_name": "PPD source freshness reviewer",
+        "owner_role": "reviewer",
+        "owner_contact": "ppd-reviewer@example.invalid"
+      },
+      "citation_refs": [
+        "public-source-refresh-execution-readiness-20260529",
+        "offline-release-candidate-validation-checklist-20260529",
+        "source-freshness-watchlist-reviewer-disposition-20260529"
+      ]
+    }
+  ],
+  "abort_triggers": [
+    {
+      "trigger_id": "gate-state-not-approved",
+      "condition": "Any launch gate observed_state differs from required_state.",
+      "citation_refs": [
+        "public-source-refresh-execution-readiness-20260529",
+        "offline-release-candidate-validation-checklist-20260529",
+        "source-freshness-watchlist-reviewer-disposition-20260529"
+      ]
+    },
+    {
+      "trigger_id": "download-or-processor-requested",
+      "condition": "Any run path requests document download or processor invocation.",
+      "citation_refs": [
+        "offline-release-candidate-validation-checklist-20260529"
+      ]
+    },
+    {
+      "trigger_id": "registry-or-schedule-mutation-requested",
+      "condition": "Any run path requests registry or schedule mutation.",
+      "citation_refs": [
+        "offline-release-candidate-validation-checklist-20260529"
+      ]
+    },
+    {
+      "trigger_id": "source-outside-allowlist",
+      "condition": "Any source batch is absent from the cited readiness allowlist.",
+      "citation_refs": [
+        "public-source-refresh-execution-readiness-20260529"
+      ]
+    },
+    {
+      "trigger_id": "readiness-packet-expired",
+      "condition": "The readiness packet is superseded or older than the approved launch window.",
+      "citation_refs": [
+        "public-source-refresh-execution-readiness-20260529"
+      ]
+    },
+    {
+      "trigger_id": "offline-fixture-validation-failed",
+      "condition": "Fixture validation or metadata-only schema validation fails.",
+      "citation_refs": [
+        "offline-release-candidate-validation-checklist-20260529"
+      ]
+    },
+    {
+      "trigger_id": "reviewer-disposition-revoked",
+      "condition": "The reviewer disposition is changed from approved before launch.",
+      "citation_refs": [
+        "source-freshness-watchlist-reviewer-disposition-20260529"
+      ]
+    }
+  ],
+  "expected_metadata_only_result_records": [
+    {
+      "source_batch_id": "portland-auditor-code-library",
+      "result_type": "metadata-only-refresh-record",
+      "document_downloaded": false,
+      "processor_invoked": false,
+      "registry_mutated": false,
+      "schedule_mutated": false,
+      "required_fields": [
+        "source_batch_id",
+        "source_name",
+        "source_url",
+        "checked_at",
+        "freshness_status",
+        "reviewer_owner",
+        "citation_refs"
+      ]
+    },
+    {
+      "source_batch_id": "portland-council-agenda-index",
+      "result_type": "metadata-only-refresh-record",
+      "document_downloaded": false,
+      "processor_invoked": false,
+      "registry_mutated": false,
+      "schedule_mutated": false,
+      "required_fields": [
+        "source_batch_id",
+        "source_name",
+        "source_url",
+        "checked_at",
+        "freshness_status",
+        "reviewer_owner",
+        "citation_refs"
+      ]
+    }
+  ],
+  "reviewer_owner_fields": {
+    "owner_name": "PPD source freshness reviewer",
+    "owner_role": "reviewer",
+    "owner_contact": "ppd-reviewer@example.invalid"
+  },
+  "attestations": {
+    "no_download": true,
+    "no_processor": true,
+    "no_registry_mutation": true,
+    "no_schedule_mutation": true
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "packet_type": "guardrail_bundle_refresh_candidate_v2",
+  "packet_id": "guardrail-bundle-refresh-candidate-v2-fixture-001",
+  "consumes": {
+    "process_model_refresh_impact_id": "process-model-refresh-impact-v2-fixture-001",
+    "requirement_regeneration_work_order_id": "requirement-regeneration-work-order-v2-fixture-001",
+    "guardrail_compiler_fixture_id": "guardrail-compiler-fixture-v2-001"
+  },
+  "affected_process_ids": [
+    "process:building-permit-plan-review",
+    "process:trade-permit-with-plan-review"
+  ],
+  "affected_requirement_ids": [
+    "requirement:certification-exact-confirmation",
+    "requirement:single-pdf-upload-staging",
+    "requirement:submit-action-block"
+  ],
+  "source_evidence_ids": [
+    "evidence:ppd-devhub-faqs:account-scoped-services",
+    "evidence:ppd-devhub-guide-submit-permit-application:certification-step",
+    "evidence:ppd-devhub-guide-submit-permit-application:submit-step",
+    "evidence:ppd-submit-plans-online:single-pdf-process"
+  ],
+  "predicate_update_candidates": [
+    {
+      "candidate_id": "candidate:predicate:upload-staging-remains-reversible",
+      "predicate_id": "predicate:upload-staging-remains-reversible",
+      "predicate_kind": "reversible_action",
+      "operation": "refresh_from_fixture",
+      "affected_process_ids": [
+        "process:building-permit-plan-review",
+        "process:trade-permit-with-plan-review"
+      ],
+      "affected_requirement_ids": [
+        "requirement:certification-exact-confirmation",
+        "requirement:single-pdf-upload-staging",
+        "requirement:submit-action-block"
+      ],
+      "citation_ids": [
+        "evidence:ppd-submit-plans-online:single-pdf-process"
+      ],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "implementation_owner": "ppd-guardrail-compiler-maintainer",
+      "requires_human_review": true
+    },
+    {
+      "candidate_id": "candidate:predicate:certification-requires-exact-confirmation",
+      "predicate_id": "predicate:certification-requires-exact-confirmation",
+      "predicate_kind": "exact_confirmation",
+      "operation": "refresh_from_fixture",
+      "affected_process_ids": [
+        "process:building-permit-plan-review",
+        "process:trade-permit-with-plan-review"
+      ],
+      "affected_requirement_ids": [
+        "requirement:certification-exact-confirmation",
+        "requirement:single-pdf-upload-staging",
+        "requirement:submit-action-block"
+      ],
+      "citation_ids": [
+        "evidence:ppd-devhub-guide-submit-permit-application:certification-step"
+      ],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "implementation_owner": "ppd-guardrail-compiler-maintainer",
+      "requires_human_review": true
+    },
+    {
+      "candidate_id": "candidate:predicate:submit-action-blocked-without-attendance",
+      "predicate_id": "predicate:submit-action-blocked-without-attendance",
+      "predicate_kind": "refused_action",
+      "operation": "refresh_from_fixture",
+      "affected_process_ids": [
+        "process:building-permit-plan-review",
+        "process:trade-permit-with-plan-review"
+      ],
+      "affected_requirement_ids": [
+        "requirement:certification-exact-confirmation",
+        "requirement:single-pdf-upload-staging",
+        "requirement:submit-action-block"
+      ],
+      "citation_ids": [
+        "evidence:ppd-devhub-guide-submit-permit-application:submit-step"
+      ],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "implementation_owner": "ppd-guardrail-compiler-maintainer",
+      "requires_human_review": true
+    }
+  ],
+  "reversible_action_checkpoint_expectations": [
+    {
+      "predicate_id": "predicate:upload-staging-remains-reversible",
+      "action_type": "stage_upload",
+      "expected_checkpoint": "reversible_action_checkpoint",
+      "must_remain_draft_only": true,
+      "citation_ids": [
+        "evidence:ppd-submit-plans-online:single-pdf-process"
+      ]
+    }
+  ],
+  "exact_confirmation_checkpoint_expectations": [
+    {
+      "predicate_id": "predicate:certification-requires-exact-confirmation",
+      "action_type": "certify_acknowledgement",
+      "expected_checkpoint": "exact_confirmation_checkpoint",
+      "requires_user_visible_action_label": true,
+      "citation_ids": [
+        "evidence:ppd-devhub-guide-submit-permit-application:certification-step"
+      ]
+    },
+    {
+      "predicate_id": "predicate:submit-action-blocked-without-attendance",
+      "action_type": "submit_permit_request",
+      "expected_checkpoint": "exact_confirmation_checkpoint",
+      "requires_user_visible_action_label": true,
+      "citation_ids": [
+        "evidence:ppd-devhub-guide-submit-permit-application:submit-step"
+      ]
+    }
+  ],
+  "reviewer_owner": "ppd-requirements-reviewer",
+  "implementation_owner": "ppd-guardrail-compiler-maintainer",
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_guardrail_bundle_refresh_candidate_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "attestations": {
+    "no_live_llm": true,
+    "no_devhub": true,
+    "no_guardrail_state_mutation": true,
+    "no_prompt_state_mutation": true,
+    "no_release_state_mutation": true
+  },
+  "validation_status": "fixture_candidate_pending_review"
+}

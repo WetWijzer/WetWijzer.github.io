@@ -1,0 +1,41 @@
+{
+  "packet_version": "surface-registry-refresh-review-packet-v2",
+  "packet_id": "fixture-surface-registry-refresh-review-v2-valid",
+  "mode": "offline_fixture_review",
+  "checkpoints": [
+    {
+      "name": "selector-confidence",
+      "status": "present",
+      "notes": "Selectors are reviewed from redacted static fixtures only."
+    },
+    {
+      "name": "manual-handoff",
+      "status": "present",
+      "notes": "Authenticated DevHub work remains attended and manually handed off."
+    }
+  ],
+  "review_items": [
+    {
+      "item_type": "surface",
+      "surface_id": "devhub-application-draft-fixture",
+      "selector_confidence": "medium",
+      "citations": ["source:devhub-public-guide-submit-permit-application#draft-step"],
+      "review_decision": "needs_human_review",
+      "enabled": false,
+      "notes": "Offline registry review only; no live browser execution or state mutation is requested."
+    },
+    {
+      "item_type": "action",
+      "action_id": "save-draft-before-submit-fixture",
+      "action_type": "save_draft",
+      "selector_confidence": "low",
+      "citations": ["source:devhub-public-guide-submit-permit-application#save-later"],
+      "requires_attendance": true,
+      "requires_exact_confirmation": false,
+      "enabled": false,
+      "notes": "Candidate remains review-only until a separate promotion packet approves it."
+    }
+  ],
+  "mutation_intent": "none",
+  "private_data_policy": "redacted-fixtures-only"
+}

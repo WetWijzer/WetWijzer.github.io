@@ -1,0 +1,33 @@
+{
+  "version": "2",
+  "approval_rows": [
+    {
+      "decision": "defer",
+      "source_evidence_ids": [
+        "ppd-plan-source-anchor-20260508"
+      ],
+      "rationale": "Needs deterministic fixture coverage before inclusion.",
+      "reviewer_owner": "ppd-validation-reviewer",
+      "blockers": [
+        {
+          "status": "unresolved",
+          "description": "Fixture migration packet remains under review.",
+          "follow_up_task": "task-20260529-619"
+        }
+      ],
+      "rollback_verification": {
+        "verified": true,
+        "evidence": "fixture-only validator path"
+      },
+      "mutation_flags": {
+        "source": false,
+        "surface_registry": false,
+        "guardrail": false,
+        "prompt": false,
+        "monitoring": false,
+        "release_state": false,
+        "agent_state": false
+      }
+    }
+  ]
+}

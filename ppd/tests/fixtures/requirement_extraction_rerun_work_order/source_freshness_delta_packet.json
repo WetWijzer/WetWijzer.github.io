@@ -1,0 +1,22 @@
+{
+  "packet_id": "fixture-source-freshness-delta-20260529",
+  "packet_type": "source_freshness_delta_review",
+  "source_deltas": [
+    {
+      "source_id": "SRC-DEVHUB-FAQ",
+      "affected_requirement_ids": ["REQ-DEVHUB-ACCOUNT-001"],
+      "affected_guardrail_ids": ["GR-AUTH-ATTENDED-LOGIN"],
+      "reviewer_owner": "source-freshness-reviewer",
+      "reviewer_backup": "requirements-reviewer",
+      "delta_summary": "Fixture source hash changed for account-scoped service guidance."
+    },
+    {
+      "source_id": "SRC-SUBMIT-PLANS-ONLINE",
+      "affected_requirement_ids": ["REQ-DEVHUB-UPLOAD-001"],
+      "affected_guardrail_ids": ["GR-UPLOAD-CONSEQUENTIAL-ACTION"],
+      "reviewer_owner": "source-freshness-reviewer",
+      "reviewer_backup": "guardrail-reviewer",
+      "delta_summary": "Fixture source freshness review flags upload staging guidance."
+    }
+  ]
+}

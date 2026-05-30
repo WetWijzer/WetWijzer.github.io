@@ -1,0 +1,14 @@
+{
+  "packet_version": "live_dry_run_acceptance_review_packet_v2",
+  "accepted_actions": [
+    {
+      "surface_id": "permit-search",
+      "action_candidate": "Observe read-only permit search filters and result metadata without submitting forms."
+    },
+    {
+      "surface_id": "case-status",
+      "action_candidate": "Observe read-only case status labels and navigation affordances without changing records."
+    }
+  ],
+  "review_scope": "fixture-only synthetic acceptance review"
+}

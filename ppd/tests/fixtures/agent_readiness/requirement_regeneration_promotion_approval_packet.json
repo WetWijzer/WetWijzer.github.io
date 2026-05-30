@@ -1,0 +1,69 @@
+{
+  "packet_type": "ppd.requirement_regeneration_promotion_approval_packet.v1",
+  "packet_id": "fixture-requirement-regeneration-promotion-approval-packet",
+  "fixture_only": true,
+  "promotion_policy": {
+    "fixtures_only": true,
+    "uses_live_extraction": false,
+    "invokes_live_crawlers": false,
+    "invokes_processors": false,
+    "invokes_devhub": false,
+    "mutates_active_requirements": false,
+    "mutates_active_processes": false,
+    "mutates_active_process_models": false,
+    "mutates_active_guardrails": false,
+    "mutates_active_guardrail_bundles": false,
+    "mutates_active_prompts": false,
+    "mutates_active_surfaces": false,
+    "mutates_surface_registry": false,
+    "mutates_active_surface_registry": false,
+    "mutates_release_state": false,
+    "mutates_active_release_state": false,
+    "writes_requirement_state": false,
+    "writes_process_state": false,
+    "writes_guardrail_state": false,
+    "writes_prompt_state": false,
+    "writes_surface_registry_state": false,
+    "writes_release_state": false,
+    "promotes_to_active": false,
+    "publishes_release_state": false
+  },
+  "promotion_decisions": [
+    {
+      "decision_id": "decision-approve-requirement-candidate",
+      "decision": "approve",
+      "affected_requirement_ids": ["req-single-pdf-submittal"],
+      "affected_process_ids": ["process-single-pdf-submittal"],
+      "affected_guardrail_ids": ["guardrail-single-pdf-submittal"],
+      "rationale": "Approve the candidate for later human-controlled promotion because fixture evidence matches the existing cited process model.",
+      "source_evidence_ids": ["src-submit-plans-online", "src-spp-file-naming"]
+    },
+    {
+      "decision_id": "decision-defer-guardrail-candidate",
+      "decision": "defer",
+      "affected_requirement_ids": ["req-upload-corrections-review-status"],
+      "affected_process_ids": ["process-upload-corrections"],
+      "affected_guardrail_ids": ["guardrail-upload-corrections-attended-only"],
+      "rationale": "Defer the candidate until an offline fixture update covers the correction upload review status wording.",
+      "source_evidence_ids": ["src-devhub-upload-corrections-guide"]
+    }
+  ],
+  "rollback_notes": [
+    {
+      "rollback_note_id": "rollback-retain-current-fixture-baseline",
+      "summary": "If approval is withdrawn, discard candidate deltas and retain the current committed fixture baseline without changing active requirement, process, guardrail, prompt, surface-registry, or release-state artifacts.",
+      "source_evidence_ids": ["src-submit-plans-online"]
+    }
+  ],
+  "reviewer_signoff": {
+    "reviewer_id": "fixture-reviewer",
+    "reviewer_role": "ppd-requirement-regeneration-reviewer",
+    "signed_off": true,
+    "signed_at": "2026-05-29T00:00:00Z",
+    "source_evidence_ids": ["src-submit-plans-online", "src-devhub-upload-corrections-guide"]
+  },
+  "expected_offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "unittest", "ppd.tests.test_requirement_regeneration_promotion_approval_packet"]
+  ]
+}

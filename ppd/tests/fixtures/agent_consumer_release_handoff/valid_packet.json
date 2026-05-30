@@ -1,0 +1,57 @@
+{
+  "packet_id": "agent-consumer-release-handoff-valid",
+  "capability_claims": [
+    {
+      "id": "draft-only-gap-analysis",
+      "claim": "Can compare cited public process requirements with user-provided facts and propose reversible draft next steps.",
+      "citation_ids": ["ppd-plan:guardrail-bundle", "ppd-plan:user-gap-analysis"]
+    }
+  ],
+  "supported_scenarios": [
+    {
+      "id": "public-source-gap-analysis",
+      "description": "Identify missing facts using cited public PP&D requirements.",
+      "citation_ids": ["ppd-plan:user-gap-analysis"]
+    }
+  ],
+  "blocked_scenarios": [
+    {
+      "id": "official-submission",
+      "description": "Do not submit, certify, pay, schedule, cancel, upload to an official record, or make account changes.",
+      "citation_ids": ["ppd-plan:non-negotiable-boundaries"]
+    }
+  ],
+  "reversible_draft_boundaries": {
+    "allowed_scope": ["local previews", "draft field mappings", "missing-information prompts"],
+    "prohibited_scope": ["official submission", "certification", "payment", "inspection scheduling"],
+    "stop_before": ["final submit", "payment detail entry", "official upload", "certification acknowledgement"]
+  },
+  "reviewer_owners": [
+    {
+      "owner": "ppd-policy-reviewer",
+      "review_area": "public-source citations and action gates"
+    },
+    {
+      "owner": "ppd-privacy-reviewer",
+      "review_area": "private data exclusion"
+    }
+  ],
+  "controls": [
+    {
+      "id": "draft_preview",
+      "kind": "reversible_draft",
+      "enabled": true
+    },
+    {
+      "id": "official_submission",
+      "kind": "consequential",
+      "enabled": false
+    }
+  ],
+  "mutation_flags": {
+    "prompt": false,
+    "guardrail": false,
+    "surface_registry": false,
+    "agent_state": false
+  }
+}

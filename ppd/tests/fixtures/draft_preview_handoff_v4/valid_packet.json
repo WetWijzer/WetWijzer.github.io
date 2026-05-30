@@ -1,0 +1,72 @@
+{
+  "packet_version": "reversible_draft_preview_handoff_packet_v4",
+  "packet_id": "fixture-valid-preview-v4",
+  "mode": "local_preview_only",
+  "fixture_facts": {
+    "site_address": {
+      "value": "1900 SW 4th Ave",
+      "source": "user_fixture"
+    },
+    "work_description": {
+      "value": "Replace kitchen sink fixture",
+      "source": "user_fixture"
+    }
+  },
+  "citations": [
+    {
+      "citation_id": "ppd-devhub-faq-readonly-001",
+      "source_id": "devhub_faq_fixture",
+      "excerpt": "DevHub account services include permit request review and status review."
+    },
+    {
+      "citation_id": "ppd-forms-field-label-001",
+      "source_id": "permit_form_fixture",
+      "excerpt": "Application forms ask for site address and project description."
+    }
+  ],
+  "draft_field_proposals": [
+    {
+      "field_id": "site_address",
+      "field_label": "Site address",
+      "proposed_value": "1900 SW 4th Ave",
+      "citation_ids": [
+        "ppd-forms-field-label-001"
+      ]
+    },
+    {
+      "field_id": "project_description",
+      "field_label": "Project description",
+      "proposed_value": "Replace kitchen sink fixture",
+      "citation_ids": [
+        "ppd-forms-field-label-001"
+      ]
+    }
+  ],
+  "user_review_checkpoints": [
+    {
+      "kind": "review_draft_values",
+      "required": true,
+      "prompt": "Review each preview value against your records before continuing."
+    },
+    {
+      "kind": "confirm_no_official_action",
+      "required": true,
+      "prompt": "Confirm this is only a local preview and does not change an official record."
+    }
+  ],
+  "artifacts": [
+    {
+      "kind": "field_mapping_preview",
+      "ref": "committed_fixture_preview_mapping"
+    }
+  ],
+  "mutation_flags": {
+    "devhub_write_enabled": false,
+    "source_registry_update_enabled": false,
+    "surface_registry_mutation_enabled": false,
+    "guardrail_publish_enabled": false,
+    "prompt_update_enabled": false,
+    "release_state_commit_enabled": false,
+    "agent_state_persist_enabled": false
+  }
+}

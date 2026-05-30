@@ -1,0 +1,44 @@
+{
+  "packet_id": "prompt-refresh-safe-fixture",
+  "prompt_change_candidates": [
+    {
+      "candidate_id": "clarify-upload-boundary",
+      "change_summary": "Clarify that upload staging remains reversible until a user performs the official attach or submit action.",
+      "citation_refs": [
+        "official-source-anchor:submit-plans-online",
+        "plan:authenticated-devhub-automation-boundaries"
+      ]
+    }
+  ],
+  "supported_scenario_refs": [
+    "scenario:offline-prompt-review",
+    "scenario:deterministic-fixture-validation"
+  ],
+  "blocked_scenario_refs": [
+    "scenario:devhub-live-submit",
+    "scenario:payment-execution"
+  ],
+  "rollback_notes": [
+    "Drop the candidate packet and retain the previous prompt bundle when validation fails."
+  ],
+  "reviewer_owners": [
+    "ppd-guardrail-review"
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_prompt_refresh_validation.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "consequential_controls": {
+    "submit_permit": false,
+    "pay_fee": false,
+    "schedule_inspection": false
+  },
+  "mutation_flags": {
+    "prompt_mutation_enabled": false,
+    "guardrail_mutation_enabled": false,
+    "surface_registry_mutation_enabled": false,
+    "monitoring_mutation_enabled": false,
+    "agent_state_mutation_enabled": false
+  },
+  "privacy_notes": "Uses only public citation identifiers and deterministic offline fixtures."
+}

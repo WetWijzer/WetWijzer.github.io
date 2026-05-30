@@ -1,0 +1,139 @@
+{
+  "live_dry_run_operator_briefing_packet_v2": {
+    "packet_type": "live-dry-run-operator-briefing-packet",
+    "packet_id": "live-dry-run-operator-briefing-packet-v2-fixture-20260529",
+    "version": "v2",
+    "citations": [
+      "PP&D plan non-negotiable boundaries",
+      "live dry-run operator briefing packet v2 fixture"
+    ],
+    "go_no_go_notes": [
+      {
+        "id": "briefing-no-go-live-execution",
+        "decision": "no_go_without_separate_authorization",
+        "summary": "Operator briefing supports fixture review only and does not authorize live execution.",
+        "citations": [
+          "PP&D plan non-negotiable boundaries"
+        ]
+      }
+    ],
+    "attendance_checkpoints": [
+      {
+        "id": "checkpoint-human-review",
+        "summary": "Reviewer and operator placeholders must be inspected before any later authorization packet is considered.",
+        "citations": [
+          "live dry-run operator briefing packet v2 fixture"
+        ]
+      }
+    ],
+    "stop_conditions": [
+      {
+        "id": "stop-before-official-action",
+        "summary": "Stop if any step would submit, upload, pay, schedule, cancel, certify, or file.",
+        "citations": [
+          "PP&D plan non-negotiable boundaries"
+        ]
+      }
+    ]
+  },
+  "live_readiness_authorization_checklist_packet_v2": {
+    "packet_type": "live-readiness-authorization-checklist",
+    "packet_id": "live-readiness-authorization-checklist-packet-v2",
+    "version": "v2",
+    "citations": [
+      "live readiness authorization checklist packet v2 fixture"
+    ],
+    "operator_signoff_fields": [
+      {
+        "field_id": "operator_name",
+        "required": true,
+        "blank_value": null,
+        "confirmation_text": "Operator name is intentionally blank in the committed fixture."
+      },
+      {
+        "field_id": "authorization_timestamp_utc",
+        "required": true,
+        "blank_value": null,
+        "confirmation_text": "Authorization timestamp is intentionally blank in the committed fixture."
+      },
+      {
+        "field_id": "authorized_scope",
+        "required": true,
+        "blank_value": null,
+        "confirmation_text": "Authorized scope is intentionally blank in the committed fixture."
+      },
+      {
+        "field_id": "boundary_acknowledgement",
+        "required": true,
+        "blank_value": null,
+        "confirmation_text": "Boundary acknowledgement is intentionally blank in the committed fixture."
+      },
+      {
+        "field_id": "attestation_acknowledgement",
+        "required": true,
+        "blank_value": null,
+        "confirmation_text": "Attestation acknowledgement is intentionally blank in the committed fixture."
+      }
+    ]
+  },
+  "public_live_dry_run_plan_fixture_v2": {
+    "packet_type": "public-recrawl-live-dry-run-plan-v2",
+    "plan_id": "public-recrawl-live-dry-run-plan-v2",
+    "citations": [
+      "public recrawl live dry-run plan v2 fixture",
+      "source allowlist and robots fixtures v2"
+    ],
+    "attestations": {
+      "no_live_crawl": true,
+      "no_processor": true,
+      "no_raw_body": true,
+      "no_download": true,
+      "no_source_registry_mutation": true
+    },
+    "seed_batches": [
+      {
+        "source_id": "portland-council-agendas",
+        "expected_capture": {
+          "metadata_only": true,
+          "excluded_fields": [
+            "raw_body"
+          ]
+        },
+        "citations": [
+          "public recrawl live dry-run plan v2 fixture"
+        ]
+      }
+    ]
+  },
+  "devhub_live_dry_run_plan_fixture_v2": {
+    "packet_type": "devhub-attended-readonly-live-dry-run-plan-v2",
+    "plan_id": "devhub-attended-readonly-live-dry-run-plan-v2-fixture-20260529",
+    "citations": [
+      "DevHub attended read-only live dry-run plan v2 fixture",
+      "live readiness authorization checklist packet v2 fixture"
+    ],
+    "attestations": {
+      "no_live_devhub": true,
+      "no_auth_state": true,
+      "no_browser_artifact": true,
+      "no_official_action": true,
+      "no_private_values": true
+    },
+    "operator_abort_conditions": [
+      {
+        "id": "abort-auth-state",
+        "summary": "Abort if a step would create or store auth state.",
+        "citations": [
+          "DevHub attended read-only live dry-run plan v2 fixture"
+        ]
+      },
+      {
+        "id": "abort-browser-artifact",
+        "summary": "Abort if a step would create screenshots, traces, HAR, video, or other browser artifacts.",
+        "citations": [
+          "DevHub attended read-only live dry-run plan v2 fixture"
+        ]
+      }
+    ]
+  }
+}

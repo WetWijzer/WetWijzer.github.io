@@ -1,0 +1,280 @@
+{
+  "uncited_proposal": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "1900 SW 4th Ave",
+        "citation_ids": []
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      },
+      {
+        "kind": "confirm_no_official_action",
+        "required": true
+      }
+    ]
+  },
+  "ungrounded_value": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "999 SW Unknown Ave",
+        "citation_ids": [
+          "c1"
+        ]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      },
+      {
+        "kind": "confirm_no_official_action",
+        "required": true
+      }
+    ]
+  },
+  "missing_review_checkpoint": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "1900 SW 4th Ave",
+        "citation_ids": [
+          "c1"
+        ]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      }
+    ]
+  },
+  "private_local_path": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "1900 SW 4th Ave",
+        "citation_ids": [
+          "c1"
+        ]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      },
+      {
+        "kind": "confirm_no_official_action",
+        "required": true
+      }
+    ],
+    "local_preview_path": "/home/alex/private/permit-preview.json"
+  },
+  "raw_pdf": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "1900 SW 4th Ave",
+        "citation_ids": [
+          "c1"
+        ]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      },
+      {
+        "kind": "confirm_no_official_action",
+        "required": true
+      }
+    ],
+    "raw_pdf_bytes": "%PDF- fixture bytes"
+  },
+  "upload_staging": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "1900 SW 4th Ave",
+        "citation_ids": [
+          "c1"
+        ]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      },
+      {
+        "kind": "confirm_no_official_action",
+        "required": true
+      }
+    ],
+    "next_step": "Stage file upload for corrections"
+  },
+  "consequential_language": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "1900 SW 4th Ave",
+        "citation_ids": [
+          "c1"
+        ]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      },
+      {
+        "kind": "confirm_no_official_action",
+        "required": true
+      }
+    ],
+    "handoff_note": "Ready to submit and pay fee after certification."
+  },
+  "outcome_guarantee": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "1900 SW 4th Ave",
+        "citation_ids": [
+          "c1"
+        ]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      },
+      {
+        "kind": "confirm_no_official_action",
+        "required": true
+      }
+    ],
+    "handoff_note": "Permit approval is guaranteed."
+  },
+  "active_mutation_flags": {
+    "packet_version": "reversible_draft_preview_handoff_packet_v4",
+    "fixture_facts": {
+      "address": "1900 SW 4th Ave"
+    },
+    "citations": [
+      {
+        "citation_id": "c1"
+      }
+    ],
+    "draft_field_proposals": [
+      {
+        "field_id": "site_address",
+        "proposed_value": "1900 SW 4th Ave",
+        "citation_ids": [
+          "c1"
+        ]
+      }
+    ],
+    "user_review_checkpoints": [
+      {
+        "kind": "review_draft_values",
+        "required": true
+      },
+      {
+        "kind": "confirm_no_official_action",
+        "required": true
+      }
+    ],
+    "mutation_flags": {
+      "devhub_write_enabled": true,
+      "source_registry_update_enabled": true,
+      "surface_registry_mutation_enabled": true,
+      "guardrail_publish_enabled": true,
+      "prompt_update_enabled": true,
+      "release_state_commit_enabled": true,
+      "agent_state_persist_enabled": true
+    }
+  }
+}

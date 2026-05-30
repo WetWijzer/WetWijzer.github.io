@@ -1,0 +1,71 @@
+{
+  "packet_type": "requirement_extraction_rerun_result_intake",
+  "packet_version": 1,
+  "packet_id": "result-intake-for-work-order-20260529-fixture-rerun-001",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "source_work_order_packet_id": "work-order-20260529-fixture-rerun-001",
+  "source_rerun_fixture_id": "synthetic-rerun-output-20260529-001",
+  "reviewer_owner": "ppd-requirements-reviewer",
+  "affected_requirement_ids": ["REQ-CITATION-003", "REQ-DEVHUB-LOGIN-001", "REQ-PERMIT-SEARCH-002"],
+  "affected_process_ids": ["PROC-FIXTURE-RERUN", "PROC-RESULT-INTAKE"],
+  "affected_guardrail_ids": ["GRD-NO-ACTIVE-MUTATION", "GRD-NO-LIVE-EXTRACTION", "GRD-NO-PROCESSOR"],
+  "result_decisions": [
+    {
+      "decision": "accepted",
+      "requirement_id": "REQ-DEVHUB-LOGIN-001",
+      "process_id": "PROC-FIXTURE-RERUN",
+      "guardrail_ids": ["GRD-NO-LIVE-EXTRACTION"],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "rationale": "Fixture evidence contains the expected login precondition and no conflicting extraction output.",
+      "citations": [
+        {
+          "fixture_id": "synthetic-rerun-output-20260529-001",
+          "source_fixture": "devhub-login-rerun.fixture.json",
+          "selector": "$.requirements[0].preconditions[0]",
+          "quote": "Reviewer must use the committed fixture login state only."
+        }
+      ]
+    },
+    {
+      "decision": "deferred",
+      "requirement_id": "REQ-PERMIT-SEARCH-002",
+      "process_id": "PROC-RESULT-INTAKE",
+      "guardrail_ids": ["GRD-NO-PROCESSOR"],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "rationale": "Fixture evidence identifies the permit search field but does not include enough cited output to accept the normalization rule.",
+      "citations": [
+        {
+          "fixture_id": "synthetic-rerun-output-20260529-001",
+          "source_fixture": "permit-search-rerun.fixture.json",
+          "selector": "$.results[1].fields.search_term",
+          "quote": "permit number or address accepted as search input"
+        }
+      ]
+    },
+    {
+      "decision": "rejected",
+      "requirement_id": "REQ-CITATION-003",
+      "process_id": "PROC-RESULT-INTAKE",
+      "guardrail_ids": ["GRD-NO-ACTIVE-MUTATION"],
+      "reviewer_owner": "ppd-requirements-reviewer",
+      "rationale": "Fixture output lacks a stable citation target, so the result must not be admitted into active requirement artifacts.",
+      "citations": [
+        {
+          "fixture_id": "synthetic-rerun-output-20260529-001",
+          "source_fixture": "citation-rerun.fixture.json",
+          "selector": "$.results[2].citations",
+          "quote": "citation target unavailable in synthetic output"
+        }
+      ]
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/requirement_extraction_rerun_result_intake.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_requirement_extraction_rerun_result_intake.py"]
+  ],
+  "attestations": {
+    "no_live_extraction": true,
+    "no_processor_execution": true,
+    "no_active_artifact_mutation": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "packet_id": "fixture-first-offline-release-gate-readiness-v2",
+  "implementation_patch_staging_plan_v2": {
+    "version": "implementation_patch_staging_plan_v2",
+    "patch_candidates": [
+      {
+        "target_id": "offline-release-gate-readiness-v2-module",
+        "citations": [
+          "PPD plan: Prefer deterministic fixtures and validation before any live crawl or authenticated automation.",
+          "PPD plan: Do not store credentials, session state, screenshots, traces, HAR files, payment details, private uploads, local private file paths, or raw authenticated page values in committed artifacts."
+        ],
+        "depends_on": [],
+        "fixture_migration_notes": "Consumes committed PP&D fixtures only; no fixture format migration is required for active artifacts.",
+        "rollback_checkpoints": [
+          "Remove the offline release gate readiness v2 module and focused tests, then rerun the daemon self-test.",
+          "Keep active source, surface, guardrail, prompt, monitoring, and release-state artifacts unchanged."
+        ],
+        "summary": "Add a deterministic offline release gate readiness packet compiler.",
+        "reviewer_owner": "ppd-release-gate-reviewer",
+        "mutation_flags": {
+          "registry": false,
+          "source": false,
+          "surface": false,
+          "guardrail": false,
+          "prompt": false,
+          "monitoring": false,
+          "release_state": false,
+          "agent_state": false
+        }
+      },
+      {
+        "target_id": "offline-release-gate-readiness-v2-fixtures",
+        "citations": [
+          "PPD plan: Put committed PP&D fixtures under ppd/tests/fixtures/...",
+          "PPD plan: Tests in ppd/tests/ should derive fixture paths from their own file location."
+        ],
+        "depends_on": [
+          "offline-release-gate-readiness-v2-module"
+        ],
+        "fixture_migration_notes": "Adds only committed fixture metadata for offline release gate validation.",
+        "rollback_checkpoints": [
+          "Remove the offline release gate readiness v2 fixture packet before any active-state release proposal."
+        ],
+        "summary": "Add cited validation fixture metadata for the offline release gate packet.",
+        "reviewer_owner": "ppd-fixture-reviewer",
+        "mutation_flags": {}
+      }
+    ]
+  },
+  "validation_fixtures": [
+    {
+      "fixture_id": "implementation-patch-staging-plan-v2-source-packet",
+      "path": "ppd/tests/fixtures/offline_release_gate_readiness_v2/source_packet.json",
+      "purpose": "Consumes an inactive implementation patch staging plan v2 fixture as the release gate source."
+    },
+    {
+      "fixture_id": "offline-release-readiness-existing-fixture",
+      "path": "ppd/tests/fixtures/offline_release_readiness/source_candidate_packet.json",
+      "purpose": "References the existing offline release readiness fixture family as cited validation context."
+    },
+    {
+      "fixture_id": "offline-release-decision-existing-fixture",
+      "path": "ppd/tests/fixtures/offline_release_decision/input_packets.json",
+      "purpose": "References the existing offline release decision fixture family as cited validation context."
+    }
+  ],
+  "required_test_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/agent_readiness/offline_release_gate_readiness_packet_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_offline_release_gate_readiness_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

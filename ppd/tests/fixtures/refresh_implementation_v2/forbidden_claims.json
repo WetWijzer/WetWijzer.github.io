@@ -1,0 +1,18 @@
+{
+  "proposal_version": "refresh-implementation-v2",
+  "summary": "Proposal mentions raw crawl output and downloaded PDF artifacts.",
+  "impact": "This logged-in account-specific fact was executed live and promoted to production.",
+  "patch_rows": [
+    {
+      "patch_id": "forbidden-claims",
+      "source_target_id": "source:public",
+      "surface_target_id": "surface:validator",
+      "guardrail_target_id": "guardrail:no-actions",
+      "depends_on": ["source:public"],
+      "rollback_notes": "Revert this row.",
+      "reviewer_owner": "ppd-review",
+      "citations": ["docs/PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md"],
+      "notes": "Approval guaranteed. File the permit after reading the browser trace."
+    }
+  ]
+}

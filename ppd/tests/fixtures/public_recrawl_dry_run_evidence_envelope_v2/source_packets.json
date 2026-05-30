@@ -1,0 +1,127 @@
+{
+  "public_recrawl_live_dry_run_plan_v2": {
+    "packet_type": "public-recrawl-live-dry-run-plan-v2",
+    "plan_id": "public-recrawl-live-dry-run-plan-v2",
+    "mode": "fixture_first_public_recrawl_live_dry_run",
+    "citations": [
+      "public recrawl live dry-run plan v2 fixture",
+      "source allowlist and robots fixtures v2"
+    ],
+    "seed_batches": [
+      {
+        "batch_id": "fixture-seed-batch-v2-001",
+        "source_id": "portland-council-agendas",
+        "seed_url": "https://www.portland.gov/council/agenda",
+        "selection_basis": "allowlisted public source with approved readiness and allowed robots fixture",
+        "rate_limit_decision": {
+          "delay_seconds": 60,
+          "basis": "max(operator default delay, robots crawl-delay fixture)",
+          "citations": [
+            "public_recrawl_operator_packet_v2.default_rate_limit_delay_seconds",
+            "source_allowlist_robots_fixtures_v2.sources.portland-council-agendas.robots.crawl_delay_seconds"
+          ]
+        },
+        "robots_decision": {
+          "policy": "allowed",
+          "user_agent": "PPD-FixtureDryRun",
+          "fixture_status": "allowed",
+          "citations": [
+            "source_allowlist_robots_fixtures_v2.sources.portland-council-agendas.robots"
+          ]
+        },
+        "expected_capture": {
+          "metadata_only": true,
+          "content_type_hint": "text/html",
+          "excluded_fields": [
+            "raw_body",
+            "response_text",
+            "document_bytes",
+            "download_path"
+          ]
+        },
+        "citations": [
+          "live_readiness_authorization_checklist_packet_v2.approved_for_fixture_dry_run",
+          "public_recrawl_operator_packet_v2.mode",
+          "source_allowlist_robots_fixtures_v2.sources.portland-council-agendas"
+        ]
+      }
+    ],
+    "operator_stop_conditions": [
+      "Stop before any network request is issued.",
+      "Stop if robots fixture status is not allowed.",
+      "Stop if capture would include raw response bodies or downloaded documents."
+    ],
+    "offline_validation_commands": [
+      [
+        "python3",
+        "-m",
+        "py_compile",
+        "ppd/public_recrawl_live_dry_run_plan_v2.py"
+      ],
+      [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_public_recrawl_live_dry_run_plan_v2.py"
+      ]
+    ],
+    "attestations": {
+      "no_live_crawl": true,
+      "no_processor": true,
+      "no_raw_body": true,
+      "no_download": true,
+      "no_source_registry_mutation": true
+    }
+  },
+  "post_briefing_dry_run_authorization_ledger_v2": {
+    "packet_type": "post-briefing-dry-run-authorization-ledger",
+    "version": "v2",
+    "ledger_id": "post-briefing-dry-run-authorization-ledger-v2-fixture-20260529",
+    "mode": "fixture_first_post_briefing_authorization_review",
+    "citations": [
+      "post-briefing dry-run authorization ledger v2 fixture",
+      "PP&D non-negotiable boundaries fixture policy"
+    ],
+    "authorization_rows": [
+      {
+        "row_id": "row-public-plan-window-reviewed",
+        "decision": "no_go_live_public_crawl_not_authorized",
+        "authorization_effect": "offline_fixture_validation_only",
+        "citations": [
+          "public live dry-run plan fixture v2"
+        ]
+      }
+    ],
+    "independent_abort_conditions": [
+      {
+        "condition_id": "abort-if-live-execution-requested",
+        "trigger": "Any instruction asks the operator or agent to perform a live crawl or official action.",
+        "required_response": "Stop and require a new explicit authorization packet.",
+        "citations": [
+          "PP&D non-negotiable boundaries fixture policy"
+        ]
+      },
+      {
+        "condition_id": "abort-if-citation-or-fixture-gap-found",
+        "trigger": "Any dry-run boundary lacks a citation or fixture source.",
+        "required_response": "Stop and repair fixtures before review continues.",
+        "citations": [
+          "post-briefing dry-run authorization ledger v2 fixture"
+        ]
+      }
+    ],
+    "allowed_offline_validation_commands": [
+      [
+        "python3",
+        "-m",
+        "pytest",
+        "ppd/tests/test_post_briefing_dry_run_authorization_ledger_v2.py"
+      ],
+      [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ]
+    ]
+  }
+}

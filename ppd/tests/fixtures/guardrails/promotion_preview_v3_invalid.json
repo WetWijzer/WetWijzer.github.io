@@ -1,0 +1,34 @@
+{
+  "preview_version": 3,
+  "guardrail_bundle_id": "ppd-invalid-preview",
+  "process_id": "demo-public-process",
+  "predicate_patch_candidates": [
+    {
+      "predicate_id": "uncited-change",
+      "operation": "replace",
+      "summary": "This uncited predicate came from an authenticated DevHub fact and will be approved."
+    }
+  ],
+  "before_predicate_rows": [],
+  "after_predicate_rows": [],
+  "explanation_template_deltas": [],
+  "blocked_action_regression_checks": [],
+  "dependency_order": [],
+  "rollback_checkpoints": [],
+  "notes": [
+    "raw crawl body stored at /tmp/crawl/raw.warc",
+    "downloaded PDF artifact /tmp/private/submittal.pdf",
+    "live LLM executed the check",
+    "DevHub executed submit payment",
+    "schedule inspection after final submission"
+  ],
+  "mutation_flags": {
+    "guardrail_mutation": true,
+    "prompt_mutation": true,
+    "source_mutation": "active",
+    "surface_registry_mutation": true,
+    "monitoring_mutation": true,
+    "release_state_mutation": true,
+    "agent_state_mutation": true
+  }
+}

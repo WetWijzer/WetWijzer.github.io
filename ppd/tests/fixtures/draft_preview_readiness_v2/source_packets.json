@@ -1,0 +1,51 @@
+{
+  "guardrail_refresh_regression_matrix_v2": {
+    "packet_id": "guardrail-refresh-regression-matrix-v2-fixture",
+    "reference": "ppd/tests/fixtures/guardrail_refresh_regression_matrix_v2.json",
+    "local_draft_preview_allowed": true,
+    "private_document_inputs_blocked": true,
+    "live_devhub_actions_blocked": true,
+    "pdf_write_blocked": true,
+    "upload_blocked": true,
+    "guardrail_mutation_blocked": true
+  },
+  "process_to_gap_analysis_refresh_packet_v2": {
+    "packet_id": "process-to-gap-analysis-refresh-packet-v2-fixture",
+    "reference": "ppd/tests/fixtures/process_to_gap_analysis_refresh_packet_v2.json",
+    "required_user_facts": [
+      {
+        "field": "applicant_legal_name",
+        "reason": "Needed before any local draft-fill preview can be reviewer meaningful."
+      }
+    ],
+    "missing_document_checks": [
+      {
+        "document": "site_plan",
+        "check": "Confirm the user provided a local fixture placeholder or an explicit not-applicable fact."
+      }
+    ],
+    "reversible_action_predicates": [
+      {
+        "predicate": "preview_writes_only_ephemeral_fixture_output",
+        "required": true
+      }
+    ],
+    "exact_confirmation_checkpoints": [
+      {
+        "checkpoint": "before_any_non_fixture_document_use",
+        "confirmation_text": "I confirm this document is approved for local PP&D draft preview testing."
+      }
+    ],
+    "reviewer_owner_fields": [
+      {
+        "field": "readiness_reviewer",
+        "owner": "PP&D automation reviewer"
+      }
+    ]
+  },
+  "surface_registry_refresh_acceptance_packet_v2": {
+    "packet_id": "surface-registry-refresh-acceptance-packet-v2-fixture",
+    "reference": "ppd/tests/fixtures/surface_registry_refresh_acceptance_packet_v2.json",
+    "accepted_for_local_preview": true
+  }
+}

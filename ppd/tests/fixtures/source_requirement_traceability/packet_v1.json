@@ -1,0 +1,50 @@
+{
+  "packet_version": "source_to_requirement_traceability_packet_v1",
+  "packet_id": "fixture-first-source-to-requirement-traceability-v1",
+  "input_fixture_paths": [
+    "ppd/tests/fixtures/change_impact/current_sources.json",
+    "ppd/tests/fixtures/citation_integrity/document_records.json",
+    "ppd/tests/fixtures/html_extraction/synthetic_ppd_guidance_normalized.json",
+    "ppd/tests/fixtures/process_model/fixture_first_assembly_packet.json"
+  ],
+  "process_id": "synthetic-residential-plan-review-intake",
+  "guardrail_bundle_id": "guardrail-synthetic-residential-plan-review-intake",
+  "row_count": 8,
+  "rows": [
+    {
+      "trace_row_id": "trace-req-action-submit-confirmation-src-devhub-guide-apply",
+      "source_id": "devhub-submit-permit-application-guide",
+      "source_evidence_id": "src-devhub-guide-apply",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "document_id": "fixture-doc-devhub-submit-permit-application-guide",
+      "document_section_id": "submission",
+      "document_section_label": "official permit application",
+      "requirement_id": "req-action-submit-confirmation",
+      "requirement_type": "action_gate",
+      "process_id": "synthetic-residential-plan-review-intake",
+      "process_stage": "submission",
+      "affected_guardrail_bundle_ids": ["guardrail-synthetic-residential-plan-review-intake"],
+      "freshness_status": "fixture_current",
+      "reviewer_owner_fields": {
+        "reviewer_owner_role": "PP&D fixture traceability reviewer",
+        "implementation_owner_role": "PP&D guardrail compiler maintainer",
+        "freshness_owner_role": "PP&D public source registry maintainer",
+        "human_review_status": "reviewed"
+      },
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"], ["python3", "-m", "unittest", "ppd.tests.test_source_requirement_traceability_packet_v1"]],
+      "attestations": {
+        "no_live_crawl": true,
+        "no_download": true,
+        "no_raw_body": true,
+        "no_active_registry_mutation": true
+      }
+    }
+  ],
+  "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"], ["python3", "-m", "unittest", "ppd.tests.test_source_requirement_traceability_packet_v1"]],
+  "attestations": {
+    "no_live_crawl": true,
+    "no_download": true,
+    "no_raw_body": true,
+    "no_active_registry_mutation": true
+  }
+}

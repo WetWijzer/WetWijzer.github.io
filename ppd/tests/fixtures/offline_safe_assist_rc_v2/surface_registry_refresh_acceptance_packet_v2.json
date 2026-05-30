@@ -1,0 +1,25 @@
+{
+  "packet_id": "surface-registry-refresh-acceptance-v2-fixture",
+  "version": "v2",
+  "accepted_surfaces": [
+    "public PP&D guidance snapshot",
+    "DevHub read-only account home metadata",
+    "local draft preview surface",
+    "local PDF field map preview"
+  ],
+  "actions": [
+    "review permit status",
+    "prepare reversible draft",
+    "stage local upload preview",
+    "submit permit request",
+    "purchase trade permit",
+    "schedule inspection",
+    "cancel permit request"
+  ],
+  "requires_exact_confirmation": [
+    "submit permit request",
+    "purchase trade permit",
+    "schedule inspection",
+    "cancel permit request"
+  ]
+}

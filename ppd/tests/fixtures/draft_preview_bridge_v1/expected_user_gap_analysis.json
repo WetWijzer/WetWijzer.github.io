@@ -1,0 +1,105 @@
+{
+  "analysis_id": "user-gap-analysis::handoff-v4::adu-demo-fixture",
+  "bridge_version": "draft_preview_bridge_v1",
+  "case_id": "case::adu-demo-fixture",
+  "process_id": "process::detached-adu-devhub-preview",
+  "handoff_id": "handoff-v4::adu-demo-fixture",
+  "cited_missing_fact_prompts": [
+    {
+      "prompt_id": "prompt::fact::property-owner",
+      "fact_id": "fact::property-owner",
+      "prompt": "Who is the property owner that should be reviewed before any owner-dependent acknowledgement is shown?",
+      "reason": "missing+conflicting",
+      "citations": ["src::devhub-submit-guide::dynamic-questions"],
+      "blocks_draft_fields": ["draft-field::property-owner"]
+    },
+    {
+      "prompt_id": "prompt::fact::site-plan-prepared",
+      "fact_id": "fact::site-plan-prepared",
+      "prompt": "Do you have a current site plan prepared as a separate PDF from applications, calculations, and other supporting documents?",
+      "reason": "missing+stale",
+      "citations": ["src::single-pdf-process::separate-documents"],
+      "blocks_draft_fields": ["draft-field::site-plan-file"]
+    }
+  ],
+  "stale_conflict_notices": [
+    {
+      "notice_id": "stale_evidence::fact::site-plan-prepared",
+      "notice_type": "stale_evidence",
+      "fact_id": "fact::site-plan-prepared",
+      "message": "The matched site plan draft predates the cited Single PDF Process fixture and must be rechecked before draft preview values depend on it.",
+      "citations": ["src::single-pdf-process::separate-documents"],
+      "blocks_draft_fields": ["draft-field::site-plan-file"]
+    },
+    {
+      "notice_id": "conflicting_evidence::fact::property-owner",
+      "notice_type": "conflicting_evidence",
+      "fact_id": "fact::property-owner",
+      "message": "The owner field is blank while the draft handoff packet contains an owner-dependent acknowledgement checkpoint.",
+      "citations": ["src::devhub-submit-guide::dynamic-questions"],
+      "blocks_draft_fields": ["draft-field::property-owner"]
+    }
+  ],
+  "field_level_draft_blockers": [
+    {
+      "field_id": "draft-field::property-owner",
+      "label": "Property owner name",
+      "blocked": true,
+      "blocking_fact_ids": ["fact::property-owner"],
+      "reasons": ["fact::property-owner:missing", "fact::property-owner:conflicting"],
+      "citations": ["src::devhub-submit-guide::dynamic-questions"]
+    },
+    {
+      "field_id": "draft-field::site-plan-file",
+      "label": "Site plan PDF readiness",
+      "blocked": true,
+      "blocking_fact_ids": ["fact::site-plan-prepared"],
+      "reasons": ["fact::site-plan-prepared:missing", "fact::site-plan-prepared:stale"],
+      "citations": ["src::single-pdf-process::separate-documents"]
+    }
+  ],
+  "user_review_checkpoints": [
+    {
+      "checkpoint_id": "checkpoint::no-certification",
+      "label": "Stop before any acknowledgement, certification, upload, submission, scheduling, cancellation, or payment action.",
+      "required_before": "consequential_official_action",
+      "citations": ["src::devhub-submit-guide::acknowledgement"]
+    },
+    {
+      "checkpoint_id": "checkpoint::preview-only",
+      "label": "User must review the preview as reversible local draft content only.",
+      "required_before": "draft_preview_review",
+      "citations": ["src::devhub-submit-guide::save-for-later"]
+    },
+    {
+      "checkpoint_id": "checkpoint::resolve-field-blockers",
+      "label": "User must resolve blocked draft fields before preview can be treated as review-ready.",
+      "required_before": "draft_preview_review",
+      "citations": ["src::devhub-submit-guide::dynamic-questions", "src::single-pdf-process::separate-documents"]
+    }
+  ],
+  "next_safe_read_only_actions": [
+    {
+      "action_id": "read::review-single-pdf-guidance",
+      "label": "Review cited Single PDF Process guidance before asking the user for document readiness facts.",
+      "classification": "read_only",
+      "citations": ["src::single-pdf-process::separate-documents"]
+    },
+    {
+      "action_id": "read::review-devhub-submit-guide",
+      "label": "Review cited DevHub permit application guidance for dynamic questions and save-for-later limits.",
+      "classification": "read_only",
+      "citations": ["src::devhub-submit-guide::dynamic-questions"]
+    }
+  ],
+  "attestations": {
+    "no_private_file_attestation": true,
+    "no_devhub_attestation": true,
+    "no_official_action_attestation": true,
+    "attestation_basis": [
+      "fixture inputs only",
+      "offline draft preview handoff v4 packet",
+      "safe actions filtered to unauthenticated read-only classifications"
+    ]
+  }
+}

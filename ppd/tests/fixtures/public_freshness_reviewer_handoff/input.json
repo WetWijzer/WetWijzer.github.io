@@ -1,0 +1,66 @@
+{
+  "scheduler_rehearsal_v4_packet": {
+    "schema": "ppd.public_freshness_scheduler_rehearsal.v4",
+    "generated_at": "2026-05-30T00:00:00Z",
+    "cited_metadata_only_recrawl_schedule_candidates": [
+      {
+        "schedule_id": "scheduler-rehearsal-devhub-faq-daily",
+        "source_id": "ppd-devhub-faq",
+        "affected_source_ids": ["ppd-devhub-faq"],
+        "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+        "affected_requirement_ids": ["REQ-DEVHUB-UPLOAD-GATE-002"],
+        "affected_process_ids": ["PROC-DEVHUB-CORRECTIONS"],
+        "reviewer_owner": "ppd-devhub-guidance-reviewer",
+        "reason": "DevHub FAQ affects upload and payment guidance and must stay daily-reviewable.",
+        "proposed_offline_checks": [
+          "Verify cited DevHub FAQ metadata against the committed source registry fixture.",
+          "Confirm REQ-DEVHUB-UPLOAD-GATE-002 remains linked to ppd-devhub-faq before approving recrawl."
+        ],
+        "citations": [
+          {
+            "citation_id": "cite-devhub-faq-guidance-20260530",
+            "source_id": "ppd-devhub-faq",
+            "cited_field": "canonical_url",
+            "quote": "DevHub FAQ public guidance fixture"
+          }
+        ]
+      },
+      {
+        "schedule_id": "scheduler-rehearsal-submit-plans-weekly",
+        "source_id": "ppd-submit-plans-online",
+        "affected_source_ids": ["ppd-submit-plans-online"],
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "affected_requirement_ids": ["REQ-SINGLE-PDF-SEPARATION-001"],
+        "affected_process_ids": ["PROC-SUBMIT-PLANS-ONLINE"],
+        "reviewer_owner": "ppd-file-standards-reviewer",
+        "reason": "Single PDF and file separation guidance can alter document-preparation guardrails.",
+        "citations": [
+          {
+            "citation_id": "cite-submit-plans-online-20260530",
+            "source_id": "ppd-submit-plans-online",
+            "cited_field": "affected_requirement_ids"
+          }
+        ]
+      }
+    ],
+    "skip_defer_reasons": [
+      {
+        "schedule_id": "scheduler-rehearsal-fee-guide-defer",
+        "source_id": "ppd-fee-payment-guide",
+        "affected_source_ids": ["ppd-fee-payment-guide"],
+        "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "affected_requirement_ids": ["REQ-FEE-PAYMENT-GATE-001"],
+        "affected_process_ids": ["PROC-FEE-PAYMENT"],
+        "reviewer_owner": "ppd-financial-action-reviewer",
+        "defer_rationale": "Fee payment guidance is financial and requires reviewer approval before any recrawl scheduling change.",
+        "citations": [
+          {
+            "citation_id": "cite-fee-guide-defer-20260530",
+            "source_id": "ppd-fee-payment-guide",
+            "cited_field": "defer_rationale"
+          }
+        ]
+      }
+    ]
+  }
+}

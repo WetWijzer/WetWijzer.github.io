@@ -1,0 +1,184 @@
+{
+  "valid_packet": {
+    "packet_id": "requirement-extraction-rerun-work-order-fixture-packet",
+    "packet_type": "requirement_extraction_rerun_work_order",
+    "mode": "fixture_first_metadata_only",
+    "consumed_packet_ids": [
+      "impact-precheck-fixture",
+      "source-freshness-delta-fixture",
+      "traceability-review-fixture"
+    ],
+    "source_packet_types": [
+      "requirement_extraction_impact_precheck",
+      "source_freshness_delta_review",
+      "requirement_to_guardrail_traceability_review"
+    ],
+    "work_items": [
+      {
+        "work_item_id": "synthetic-requirement-rerun-001",
+        "rerun_reason": "traceability_gap",
+        "source_ids": ["src-devhub-application-guide"],
+        "requirement_ids": ["req-devhub-certification-review"],
+        "guardrail_ids": ["guardrail-certification-attendance"],
+        "expected_outputs": [
+          {
+            "output_id": "requirement_extraction_rerun_metadata_manifest",
+            "metadata_only": true,
+            "allowed_fields": [
+              "work_item_id",
+              "source_ids",
+              "requirement_ids",
+              "guardrail_ids",
+              "rerun_reason",
+              "reviewer_owner",
+              "expected_validation_status"
+            ],
+            "prohibited_outputs": [
+              "raw_source_body",
+              "downloaded_document",
+              "processor_artifact",
+              "new_requirement_node",
+              "mutated_requirement_node",
+              "mutated_process_model",
+              "mutated_guardrail_bundle",
+              "mutated_prompt",
+              "mutated_monitoring_plan",
+              "mutated_release_state"
+            ]
+          }
+        ],
+        "reviewer_owner": {
+          "primary": "guardrail-traceability-reviewer",
+          "backup": "requirements-reviewer"
+        },
+        "notes": ["Synthetic fixture-only rerun work item."],
+        "attestations": {
+          "no_live_extraction": true,
+          "no_processor_invocation": true,
+          "no_requirement_mutation": true,
+          "no_process_mutation": true,
+          "no_guardrail_mutation": true,
+          "no_prompt_mutation": true,
+          "no_monitoring_mutation": true,
+          "no_release_state_mutation": true,
+          "no_legal_or_permitting_outcome_guarantee": true
+        }
+      }
+    ],
+    "expected_packet_outputs": [
+      {
+        "output_id": "requirement_extraction_rerun_metadata_manifest",
+        "metadata_only": true,
+        "allowed_fields": [
+          "work_item_id",
+          "source_ids",
+          "requirement_ids",
+          "guardrail_ids",
+          "rerun_reason",
+          "reviewer_owner",
+          "expected_validation_status"
+        ],
+        "prohibited_outputs": [
+          "raw_source_body",
+          "downloaded_document",
+          "processor_artifact",
+          "new_requirement_node",
+          "mutated_requirement_node",
+          "mutated_process_model",
+          "mutated_guardrail_bundle",
+          "mutated_prompt",
+          "mutated_monitoring_plan",
+          "mutated_release_state"
+        ]
+      }
+    ],
+    "attestations": {
+      "no_live_extraction": true,
+      "no_processor_invocation": true,
+      "no_requirement_mutation": true,
+      "no_process_mutation": true,
+      "no_guardrail_mutation": true,
+      "no_prompt_mutation": true,
+      "no_monitoring_mutation": true,
+      "no_release_state_mutation": true,
+      "no_legal_or_permitting_outcome_guarantee": true
+    }
+  },
+  "invalid_cases": [
+    {
+      "name": "uncited_work_item",
+      "patch": {"work_items": [{"source_ids": [], "requirement_ids": ["req-one"]}]},
+      "expected_error": "source_ids must cite at least one public source id"
+    },
+    {
+      "name": "missing_requirement_id",
+      "patch": {"work_items": [{"source_ids": ["src-one"], "requirement_ids": []}]},
+      "expected_error": "requirement_ids must cite at least one requirement id"
+    },
+    {
+      "name": "missing_expected_outputs",
+      "patch": {"expected_packet_outputs": [], "work_items": [{"expected_outputs": []}]},
+      "expected_error": "must include the metadata-only output contract"
+    },
+    {
+      "name": "missing_reviewer_owner",
+      "patch": {"work_items": [{"reviewer_owner": {"primary": "", "backup": "requirements-reviewer"}}]},
+      "expected_error": "reviewer_owner.primary is required"
+    },
+    {
+      "name": "raw_download_archive_reference",
+      "patch": {"work_items": [{"raw_body_ref": "raw-body-cache"}]},
+      "expected_error": "raw_body_ref is not allowed"
+    },
+    {
+      "name": "private_case_facts",
+      "patch": {"work_items": [{"private_case_facts": {"owner_name": "fixture-private"}}]},
+      "expected_error": "must not include private case facts"
+    },
+    {
+      "name": "live_extraction_claim",
+      "patch": {"work_items": [{"live_extraction": true}]},
+      "expected_error": "live_extraction must be false"
+    },
+    {
+      "name": "processor_execution_claim",
+      "patch": {"work_items": [{"processor_invoked": true}]},
+      "expected_error": "processor_invoked must be false"
+    },
+    {
+      "name": "outcome_guarantee",
+      "patch": {"work_items": [{"permit_approval_guarantee": true}]},
+      "expected_error": "must not guarantee legal or permitting outcomes"
+    },
+    {
+      "name": "active_requirement_mutation_flag",
+      "patch": {"work_items": [{"active_requirement_mutation_flag": true}]},
+      "expected_error": "active_requirement_mutation_flag must be false"
+    },
+    {
+      "name": "active_process_mutation_flag",
+      "patch": {"work_items": [{"active_process_mutation_flag": true}]},
+      "expected_error": "active_process_mutation_flag must be false"
+    },
+    {
+      "name": "active_guardrail_mutation_flag",
+      "patch": {"work_items": [{"active_guardrail_mutation_flag": true}]},
+      "expected_error": "active_guardrail_mutation_flag must be false"
+    },
+    {
+      "name": "active_prompt_mutation_flag",
+      "patch": {"work_items": [{"active_prompt_mutation_flag": true}]},
+      "expected_error": "active_prompt_mutation_flag must be false"
+    },
+    {
+      "name": "active_monitoring_mutation_flag",
+      "patch": {"work_items": [{"active_monitoring_mutation_flag": true}]},
+      "expected_error": "active_monitoring_mutation_flag must be false"
+    },
+    {
+      "name": "active_release_state_mutation_flag",
+      "patch": {"work_items": [{"active_release_state_mutation_flag": true}]},
+      "expected_error": "active_release_state_mutation_flag must be false"
+    }
+  ]
+}

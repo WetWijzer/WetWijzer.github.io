@@ -1,0 +1,193 @@
+{
+  "packet_id": "prompt-refresh-monitoring-smoke-transcript-20260529",
+  "packet_type": "fixture_first_prompt_refresh_monitoring_smoke_transcript_packet",
+  "generated_at": "2026-05-29T00:00:00Z",
+  "mode": "offline_fixture_only",
+  "purpose": "Exercise prompt refresh monitoring readiness with deterministic fixture transcripts and cited expected monitor outcomes before any live monitoring or authenticated automation is attempted.",
+  "consumes": [
+    {
+      "packet_id": "prompt-refresh-monitoring-readiness-packet",
+      "required": true,
+      "use": "Provides readiness gates, offline monitor scope, escalation vocabulary, rollback trigger categories, and forbidden side-effect boundaries."
+    },
+    {
+      "packet_id": "prompt-consumer-dry-run-transcript-packet",
+      "required": true,
+      "use": "Provides representative dry-run prompt consumer transcript events without invoking an LLM or mutating prompts."
+    },
+    {
+      "packet_id": "source-freshness-watchlist-packet",
+      "required": true,
+      "use": "Provides watched public PP&D sources and freshness-sensitive categories for offline observation expectations."
+    }
+  ],
+  "citation_catalog": [
+    {
+      "citation_id": "plan.non_negotiable_boundaries.no_auth_artifacts",
+      "source": "PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md",
+      "section": "Non-Negotiable Boundaries",
+      "supports": "Do not store credentials, session state, screenshots, traces, HAR files, payment details, private uploads, local private file paths, or raw authenticated page values in committed artifacts."
+    },
+    {
+      "citation_id": "plan.phase5.change_monitoring.report_fields",
+      "source": "PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md",
+      "section": "Public Website Archival Plan / Phase 5: Change Monitoring",
+      "supports": "Change reports should include changed source hash, permit type, document, upload or file naming rule, fee/payment instruction, deadline, DevHub action guidance, and affected requirement or guardrail IDs."
+    },
+    {
+      "citation_id": "plan.devhub.safe_boundaries",
+      "source": "PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md",
+      "section": "Authenticated DevHub Automation Plan / DevHub Surface Categories",
+      "supports": "Safe read-only review is distinct from reversible draft work and consequential official or financial actions."
+    },
+    {
+      "citation_id": "official.devhub_faq.account_services",
+      "source": "https://www.portland.gov/ppd/devhub-faqs",
+      "section": "Official Source Anchors / Verification notes",
+      "supports": "DevHub account-scoped services include purchasing permits, submitting permit requests, scheduling inspections, uploading corrections, and paying fees."
+    },
+    {
+      "citation_id": "official.submit_plans.single_pdf",
+      "source": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "section": "Official Source Anchors / Source facts verified on 2026-05-08",
+      "supports": "Single PDF guidance requires drawing plans together in one PDF, with applications, calculations, and other supporting documents uploaded as separate PDFs."
+    },
+    {
+      "citation_id": "official.file_naming_standards",
+      "source": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "section": "Official Source Anchors",
+      "supports": "File naming standards and PDF preparation guidance are freshness-sensitive public PP&D sources."
+    }
+  ],
+  "fixture_transcript": [
+    {
+      "event_id": "evt-001",
+      "input_packet": "prompt-refresh-monitoring-readiness-packet",
+      "kind": "readiness_gate_loaded",
+      "observed_value": "offline_fixture_only",
+      "expected_monitor_observation_ids": ["obs-offline-mode"]
+    },
+    {
+      "event_id": "evt-002",
+      "input_packet": "prompt-consumer-dry-run-transcript-packet",
+      "kind": "dry_run_prompt_consumer_event",
+      "observed_value": "consumer_requested_refresh_check_without_llm_invocation",
+      "expected_monitor_observation_ids": ["obs-no-llm", "obs-no-prompt-mutation"]
+    },
+    {
+      "event_id": "evt-003",
+      "input_packet": "source-freshness-watchlist-packet",
+      "kind": "watchlist_delta_candidate",
+      "observed_value": "submit-plans-online hash differs from fixture baseline",
+      "expected_monitor_observation_ids": ["obs-source-hash-change", "obs-escalate-review"]
+    },
+    {
+      "event_id": "evt-004",
+      "input_packet": "source-freshness-watchlist-packet",
+      "kind": "watchlist_delta_candidate",
+      "observed_value": "devhub-faq last_seen unchanged and fixture hash unchanged",
+      "expected_monitor_observation_ids": ["obs-non-escalate-unchanged"]
+    },
+    {
+      "event_id": "evt-005",
+      "input_packet": "prompt-refresh-monitoring-readiness-packet",
+      "kind": "rollback_probe",
+      "observed_value": "candidate refresh would alter upload guidance prompt bundle while source freshness is unresolved",
+      "expected_monitor_observation_ids": ["obs-rollback-block-refresh"]
+    }
+  ],
+  "expected_offline_monitor_observations": [
+    {
+      "observation_id": "obs-offline-mode",
+      "category": "readiness",
+      "expected": "Monitor remains in fixture-only mode and records no network, crawler, DevHub, LLM, prompt, guardrail, or release-state side effects.",
+      "citation_ids": ["plan.non_negotiable_boundaries.no_auth_artifacts", "plan.phase5.change_monitoring.report_fields"]
+    },
+    {
+      "observation_id": "obs-no-llm",
+      "category": "prompt_consumer_dry_run",
+      "expected": "Dry-run transcript is consumed as inert fixture data; no LLM call is made and no model output is accepted as evidence.",
+      "citation_ids": ["plan.devhub.safe_boundaries"]
+    },
+    {
+      "observation_id": "obs-no-prompt-mutation",
+      "category": "prompt_consumer_dry_run",
+      "expected": "Prompt refresh candidate is evaluated only as an offline transcript; prompt files, prompt registry state, guardrail bundles, and release ledgers remain unchanged.",
+      "citation_ids": ["plan.phase5.change_monitoring.report_fields"]
+    },
+    {
+      "observation_id": "obs-source-hash-change",
+      "category": "freshness_watchlist",
+      "expected": "A changed fixture source hash is reported with affected source URL, freshness-sensitive category, and unresolved review status.",
+      "citation_ids": ["plan.phase5.change_monitoring.report_fields", "official.submit_plans.single_pdf"]
+    },
+    {
+      "observation_id": "obs-escalate-review",
+      "category": "escalation",
+      "expected": "Escalate when a watched source change could affect upload guidance, document separation, file naming, fee/payment, deadline, DevHub action guidance, requirement IDs, or guardrail bundle IDs.",
+      "citation_ids": ["plan.phase5.change_monitoring.report_fields", "official.file_naming_standards", "official.devhub_faq.account_services"]
+    },
+    {
+      "observation_id": "obs-non-escalate-unchanged",
+      "category": "non_escalation",
+      "expected": "Do not escalate unchanged fixture hashes when the readiness gate, transcript schema, and watchlist category match the prior reviewed fixture state.",
+      "citation_ids": ["plan.phase5.change_monitoring.report_fields"]
+    },
+    {
+      "observation_id": "obs-rollback-block-refresh",
+      "category": "rollback_trigger",
+      "expected": "Rollback or block a prompt refresh candidate when unresolved source freshness could change upload, document, file naming, fee/payment, deadline, DevHub action, requirement, or guardrail expectations.",
+      "citation_ids": ["plan.phase5.change_monitoring.report_fields", "plan.devhub.safe_boundaries"]
+    }
+  ],
+  "escalation_decisions": [
+    {
+      "decision_id": "dec-escalate-submit-plans-hash-change",
+      "observation_ids": ["obs-source-hash-change", "obs-escalate-review"],
+      "escalate": true,
+      "reason": "Submit Plans Online guidance is freshness-sensitive because it can affect required document grouping and upload preparation.",
+      "citation_ids": ["official.submit_plans.single_pdf", "plan.phase5.change_monitoring.report_fields"]
+    },
+    {
+      "decision_id": "dec-non-escalate-devhub-faq-unchanged",
+      "observation_ids": ["obs-non-escalate-unchanged"],
+      "escalate": false,
+      "reason": "The fixture hash and readiness classification are unchanged, so the smoke monitor should record a non-escalation observation only.",
+      "citation_ids": ["plan.phase5.change_monitoring.report_fields"]
+    }
+  ],
+  "rollback_trigger_checks": [
+    {
+      "check_id": "rollback-unresolved-source-freshness",
+      "triggered": true,
+      "reason": "A prompt refresh candidate depends on an unresolved changed source hash for upload guidance.",
+      "required_action": "Block refresh promotion and require human review of the changed cited source before prompt or guardrail update.",
+      "citation_ids": ["plan.phase5.change_monitoring.report_fields"]
+    },
+    {
+      "check_id": "rollback-live-side-effect-detected",
+      "triggered": false,
+      "reason": "The fixture transcript contains no live monitoring, crawler, DevHub, LLM, prompt mutation, guardrail mutation, or release-state mutation events.",
+      "required_action": "Record pass observation only.",
+      "citation_ids": ["plan.non_negotiable_boundaries.no_auth_artifacts"]
+    }
+  ],
+  "allowed_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+    ["python3", "-m", "pytest", "ppd/tests/test_prompt_refresh_monitoring_smoke_transcript_packet.py"]
+  ],
+  "attestations": {
+    "no_live_monitoring": true,
+    "no_crawler": true,
+    "no_devhub": true,
+    "no_llm": true,
+    "no_prompt_mutation": true,
+    "no_guardrail_mutation": true,
+    "no_release_state_mutation": true,
+    "no_private_devhub_session_files": true,
+    "no_auth_state": true,
+    "no_traces": true,
+    "no_raw_crawl_output": true,
+    "no_downloaded_documents": true
+  }
+}

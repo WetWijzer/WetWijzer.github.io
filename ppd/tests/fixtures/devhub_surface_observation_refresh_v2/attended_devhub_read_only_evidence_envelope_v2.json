@@ -1,0 +1,14 @@
+{
+  "envelope_version": "attended_devhub_read_only_evidence_envelope_v2",
+  "evidence": [
+    {
+      "surface_id": "permit-search",
+      "observation": "Permit search exposes query fields, filter labels, and result-count copy suitable for selector review."
+    },
+    {
+      "surface_id": "case-status",
+      "observation": "Case status view exposes read-only status text, tab labels, and detail links for reviewer confirmation."
+    }
+  ],
+  "capture_mode": "attended-read-only-fixture"
+}

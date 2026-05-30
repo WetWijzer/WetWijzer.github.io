@@ -1,0 +1,55 @@
+{
+  "packet_type": "source_refresh_result_reconciliation",
+  "schema_version": 1,
+  "inputs": {
+    "source_freshness_delta_review_packet_id": "fixture-source-freshness-delta-review-20260529",
+    "public_source_refresh_metadata_intake_packet_id": "fixture-public-source-refresh-metadata-20260529",
+    "requirement_extraction_rerun_result_intake_packet_id": "fixture-requirement-extraction-rerun-result-20260529"
+  },
+  "source_decisions": [
+    {
+      "source_id": "portland-stormwater-manual",
+      "decision": "escalated",
+      "decision_basis": ["rerun reported extraction conflict for cited table"],
+      "citations": [
+        {
+          "label": "Stormwater Management Manual",
+          "href": "https://www.portland.gov/bes/stormwater/stormwater-management-manual"
+        }
+      ],
+      "affected_requirement_ids": ["REQ-STORMWATER-003"],
+      "affected_process_ids": ["PROC-SITE-DEVELOPMENT-001"],
+      "affected_guardrail_ids": ["GRD-ESCALATE-CONFLICT-001"],
+      "reviewer_owner": "ppd-reviewer:source-refresh"
+    },
+    {
+      "source_id": "portland-transportation-admin-rules",
+      "decision": "deferred",
+      "decision_basis": ["fixture metadata shows newer public revision than extracted baseline"],
+      "citations": [
+        {
+          "label": "PBOT administrative rules index",
+          "href": "https://www.portland.gov/transportation/permits/rules"
+        }
+      ],
+      "affected_requirement_ids": ["REQ-ROW-PERMIT-002"],
+      "affected_process_ids": ["PROC-ROW-PERMIT-001"],
+      "affected_guardrail_ids": ["GRD-HUMAN-REVIEW-001"],
+      "reviewer_owner": "ppd-reviewer:source-refresh"
+    }
+  ],
+  "reviewer_owner": "ppd-reviewer:source-refresh",
+  "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+  "attestations": {
+    "no_live_crawl": true,
+    "no_processor_execution": true,
+    "no_source_mutation": true,
+    "no_schedule_mutation": true,
+    "no_requirement_mutation": true,
+    "no_process_mutation": true,
+    "no_guardrail_mutation": true,
+    "no_prompt_mutation": true,
+    "no_monitoring_mutation": true,
+    "no_release_state_mutation": true
+  }
+}

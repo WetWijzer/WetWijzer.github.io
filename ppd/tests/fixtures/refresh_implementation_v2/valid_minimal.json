@@ -1,0 +1,17 @@
+{
+  "proposal_version": "refresh-implementation-v2",
+  "summary": "Validate deterministic refresh proposal rows before implementation.",
+  "impact": "Keeps PP&D proposal review tied to cited public sources and reversible changes.",
+  "patch_rows": [
+    {
+      "patch_id": "refresh-v2-validator",
+      "source_target_id": "source:portland-devhub-public",
+      "surface_target_id": "surface:proposal-validator",
+      "guardrail_target_id": "guardrail:no-live-actions",
+      "depends_on": ["source:portland-devhub-public"],
+      "rollback_notes": "Remove the validator module and fixture tests.",
+      "reviewer_owner": "ppd-review",
+      "citations": ["docs/PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md"]
+    }
+  ]
+}

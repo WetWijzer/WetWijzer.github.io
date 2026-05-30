@@ -1,0 +1,79 @@
+{
+  "acceptance_packet": {
+    "packet_type": "ppd.agent_prompt_refresh_acceptance_packet.v1",
+    "packet_id": "prompt-refresh-acceptance-20260529-fixture",
+    "fixture_first": true,
+    "acceptance_decisions": [
+      {
+        "decision_id": "accept-safe-refusal-copy",
+        "decision": "accepted",
+        "accepted_rationale": "Consumer refusal wording remains citation-bound and reversible-action scoped.",
+        "scenario_refs": ["scenario-refuse-final-submission"],
+        "source_evidence_ids": ["ev-prompt-refresh-acceptance", "ev-refusal-gate"]
+      }
+    ],
+    "rollback_notes": [
+      {
+        "note_id": "rollback-to-prior-prompt-version",
+        "instruction": "Restore the prior prompt version when fixture validation or compatibility review blocks the candidate.",
+        "source_evidence_ids": ["ev-prompt-refresh-acceptance", "ev-rollback-owner"]
+      }
+    ],
+    "reviewer_owners": [
+      {
+        "owner": "ppd-release-reviewer",
+        "source_evidence_ids": ["ev-rollback-owner"]
+      }
+    ],
+    "offline_validation_commands": [
+      ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+      ["python3", "-m", "unittest", "discover", "-s", "ppd/tests", "-p", "test_*.py"]
+    ]
+  },
+  "consumer_handoff_packet": {
+    "packet_type": "ppd.release_consumer_handoff_packet.v1",
+    "packet_id": "release-consumer-handoff-20260529-fixture",
+    "normalized_source_evidence": [
+      {
+        "evidence_id": "ev-prompt-refresh-acceptance",
+        "title": "Prompt refresh acceptance fixture"
+      },
+      {
+        "evidence_id": "ev-refusal-gate",
+        "title": "Refused action gate fixture"
+      },
+      {
+        "evidence_id": "ev-rollback-owner",
+        "title": "Rollback owner fixture"
+      },
+      {
+        "evidence_id": "ev-consumer-contract",
+        "title": "Release consumer contract fixture"
+      }
+    ],
+    "candidate_consumers": [
+      {
+        "consumer_id": "agent-release-consumer",
+        "guardrail_bundle_id": "guardrail-bundle-single-pdf-process-v1",
+        "source_evidence_ids": ["ev-consumer-contract"]
+      }
+    ],
+    "expected_agent_response": {
+      "summary": "Response must cite fixture evidence before describing the next reversible action.",
+      "source_evidence_ids": ["ev-consumer-contract", "ev-refusal-gate"]
+    },
+    "refusal_examples": [
+      {
+        "response": "I cannot perform the official action. I can prepare a cited draft checklist for review.",
+        "source_evidence_ids": ["ev-refusal-gate"]
+      }
+    ],
+    "reviewer_owners": [
+      {
+        "owner_id": "release-consumer-owner",
+        "role": "consumer contract reviewer",
+        "source_evidence_ids": ["ev-consumer-contract", "ev-rollback-owner"]
+      }
+    ]
+  }
+}

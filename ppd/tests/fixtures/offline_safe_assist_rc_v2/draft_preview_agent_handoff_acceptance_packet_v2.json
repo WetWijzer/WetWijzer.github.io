@@ -1,0 +1,20 @@
+{
+  "packet_id": "draft-preview-agent-handoff-acceptance-v2-fixture",
+  "version": "v2",
+  "accepted_source_packets": [
+    "local-pdf-preview-fixture-v2",
+    "user-gap-analysis-fixture-v2"
+  ],
+  "accepted_processes": [
+    "local PDF preview",
+    "reversible draft field mapping",
+    "missing information explanation"
+  ],
+  "blocked_consequential_actions": [
+    "submit permit request",
+    "certify acknowledgement",
+    "upload correction to official record",
+    "schedule inspection",
+    "pay fees"
+  ]
+}

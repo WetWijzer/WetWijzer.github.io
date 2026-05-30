@@ -1,0 +1,53 @@
+{
+  "packet_id": "process-model-refresh-impact-v2-fixture",
+  "packet_version": "process-model-refresh-impact-v2",
+  "process_id": "ppd-corrections-and-fee-review-redacted-fixture",
+  "action_impacts": [
+    {
+      "action_id": "review-fee-notice",
+      "classification": "safe_read_only",
+      "process_stage": "fee payment",
+      "impact": "Adds read-only status review surface reference without enabling payment detail entry.",
+      "requires_attendance": true,
+      "requires_exact_confirmation": false,
+      "source_evidence_ids": [
+        "official-devhub-faq-paying-fees",
+        "official-fee-payment-guide-financial-workflow"
+      ]
+    },
+    {
+      "action_id": "stage-correction-upload",
+      "classification": "reversible_draft",
+      "process_stage": "corrections/checksheets",
+      "impact": "Allows local draft staging review while blocking official attachment until handoff.",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "source_evidence_ids": [
+        "official-upload-corrections-guide"
+      ]
+    },
+    {
+      "action_id": "submit-correction-upload",
+      "classification": "consequential_official",
+      "process_stage": "corrections/checksheets",
+      "impact": "Must remain blocked for automation because it changes the official permit record.",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "source_evidence_ids": [
+        "official-upload-corrections-guide",
+        "official-devhub-faq-upload-corrections"
+      ]
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_surface_registry_refresh_review_packet_v2.py"]
+  ],
+  "attestations": {
+    "no_live_devhub": true,
+    "no_auth_state": true,
+    "no_screenshot": true,
+    "no_trace": true,
+    "no_har": true,
+    "no_surface_registry_mutation": true
+  }
+}

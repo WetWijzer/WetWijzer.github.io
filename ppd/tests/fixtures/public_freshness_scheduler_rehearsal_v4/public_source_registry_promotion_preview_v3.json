@@ -1,0 +1,37 @@
+{
+  "schema": "ppd.public_source_registry_promotion_preview.v3",
+  "promotion_preview": [
+    {
+      "source_id": "portland-zoning-code",
+      "promotion_action": "metadata-recrawl-candidate",
+      "reviewer_owner": {
+        "team": "ppd-source-registry-review",
+        "review_required": true
+      },
+      "rollback_checkpoint": {
+        "checkpoint_id": "registry-preview-before-portland-zoning-code",
+        "fixture": "source_registry_fixtures.json"
+      },
+      "citations": [
+        {
+          "label": "promotion-preview-v3:portland-zoning-code",
+          "field": "promotion_action"
+        }
+      ]
+    },
+    {
+      "source_id": "portland-building-code",
+      "promotion_action": "defer-until-owner-review",
+      "rollback_checkpoint": {
+        "checkpoint_id": "registry-preview-before-portland-building-code",
+        "fixture": "source_registry_fixtures.json"
+      },
+      "citations": [
+        {
+          "label": "promotion-preview-v3:portland-building-code",
+          "field": "promotion_action"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "source_packets": {
+    "post_release_monitoring_readiness_packet": {
+      "packet_id": "post-release-monitoring-readiness-fixture-v1",
+      "readiness_checks": [
+        {
+          "check_id": "metrics-dashboard",
+          "status": "ready"
+        },
+        {
+          "check_id": "alert-routing",
+          "status": "ready"
+        }
+      ],
+      "owner_acknowledgements": [
+        {
+          "owner": "monitoring-owner-fixture",
+          "status": "acknowledged"
+        }
+      ]
+    },
+    "release_rollback_drill_outcome_review_packet": {
+      "packet_id": "release-rollback-drill-review-fixture-v1",
+      "rollback_drill_status": "passed",
+      "owner_acknowledgements": [
+        {
+          "owner": "rollback-owner-fixture",
+          "status": "acknowledged"
+        }
+      ]
+    },
+    "release_blocker_closure_review_packet": {
+      "packet_id": "release-blocker-closure-review-fixture-v1",
+      "closure_status": "closed",
+      "open_blockers": [],
+      "owner_acknowledgements": [
+        {
+          "owner": "release-owner-fixture",
+          "status": "acknowledged"
+        }
+      ]
+    }
+  }
+}

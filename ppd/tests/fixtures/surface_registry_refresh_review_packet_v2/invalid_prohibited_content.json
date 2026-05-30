@@ -1,0 +1,47 @@
+{
+  "packet_version": "surface-registry-refresh-review-packet-v2",
+  "packet_id": "fixture-surface-registry-refresh-review-v2-invalid-prohibited-content",
+  "checkpoints": [
+    {
+      "name": "selector-confidence",
+      "status": "present"
+    },
+    {
+      "name": "manual-handoff",
+      "status": "present"
+    }
+  ],
+  "review_items": [
+    {
+      "item_type": "action",
+      "action_id": "submit-permit-request",
+      "action_type": "submit",
+      "selector_confidence": "high",
+      "citations": ["source:devhub-public-guide-submit-permit-application#submit"],
+      "enabled": true,
+      "risk": "consequential_official"
+    }
+  ],
+  "private_values": {
+    "password": "redacted-but-still-not-allowed",
+    "authorization": "Bearer redacted"
+  },
+  "session_artifacts": {
+    "storage_state": "tmp/devhub-auth-state.json",
+    "cookies": [
+      {
+        "name": "devhub-session",
+        "value": "redacted"
+      }
+    ]
+  },
+  "evidence": [
+    "screenshots/devhub-submit-review.png",
+    "traces/devhub-submit.trace.zip",
+    "network/devhub-submit.har"
+  ],
+  "execution_notes": "Opened DevHub in a Playwright browser and clicked submit during review.",
+  "guarantee_notes": "This guarantees the permit will be approved and is legally sufficient.",
+  "mutate_surface_registry": true,
+  "release_notes": "Apply guardrail update and activate release-state mutation after packet acceptance."
+}

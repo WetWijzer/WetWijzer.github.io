@@ -1,0 +1,73 @@
+{
+  "fixture_version": "guardrail_regression_replay_matrix_v3",
+  "generated_from": "offline guardrail replay matrix fixture",
+  "replay_rows": [
+    {
+      "scenario_id": "replay-devhub-upload-staging-does-not-submit",
+      "source_ids": [
+        "ppd-devhub-submit-guide"
+      ],
+      "requirement_ids": [
+        "REQ-DEVHUB-UPLOAD-STAGING"
+      ],
+      "guardrail_ids": [
+        "GR-UPLOAD-ATTENDED-CONFIRMATION",
+        "GR-ACTION-SUBMISSION-GATE"
+      ],
+      "regression_risk": "high",
+      "owner": "devhub-guardrail-reviewer",
+      "offline_validation_commands": [
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_public_source_freshness_watch_plan_v3.py"
+        ]
+      ]
+    },
+    {
+      "scenario_id": "replay-single-pdf-file-naming-check",
+      "source_ids": [
+        "ppd-file-naming-standards"
+      ],
+      "requirement_ids": [
+        "REQ-SINGLE-PDF-FILE-NAMING"
+      ],
+      "guardrail_ids": [
+        "GR-DOCUMENT-PREP-CHECK"
+      ],
+      "regression_risk": "medium",
+      "owner": "document-requirements-reviewer",
+      "offline_validation_commands": [
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_public_source_freshness_watch_plan_v3.py"
+        ]
+      ]
+    },
+    {
+      "scenario_id": "replay-fee-payment-remains-exact-confirmation-gated",
+      "source_ids": [
+        "ppd-legacy-fee-handout"
+      ],
+      "requirement_ids": [
+        "REQ-FEE-PAYMENT-GATE"
+      ],
+      "guardrail_ids": [
+        "GR-PAYMENT-EXACT-CONFIRMATION"
+      ],
+      "regression_risk": "high",
+      "owner": "fee-guardrail-reviewer",
+      "offline_validation_commands": [
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_public_source_freshness_watch_plan_v3.py"
+        ]
+      ]
+    }
+  ]
+}

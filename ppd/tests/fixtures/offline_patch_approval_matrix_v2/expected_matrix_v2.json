@@ -1,0 +1,214 @@
+{
+  "matrix_id": "fixture_offline_patch_migration_approval_matrix_v2",
+  "schema_version": "2",
+  "source_packets": [
+    "offline_patch_rehearsal_packet_v2_fixture",
+    "offline_release_gate_readiness_packet_v2_fixture"
+  ],
+  "required_attestations": [
+    "no_live_access",
+    "no_auth_access",
+    "no_official_action",
+    "no_active_registry_mutation",
+    "no_active_guardrail_mutation"
+  ],
+  "required_offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/offline_patch_approval_matrix_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_offline_patch_approval_matrix_v2.py"]
+  ],
+  "rows": [
+    {
+      "row_id": "offline_patch_rehearsal_packet_v2_fixture:source:ppd-online-tools-overview",
+      "row_kind": "source",
+      "source_packet": "offline_patch_rehearsal_packet_v2_fixture",
+      "item_id": "ppd-online-tools-overview",
+      "title": "Online permitting tools overview fixture",
+      "citation_ids": ["cite-online-tools-devhub"],
+      "decision": "approve",
+      "decision_reason": "Source fixture cites DevHub as the online permitting system and is ready for offline matrix approval.",
+      "reviewer_owner": "public-source-reviewer",
+      "dependency_order": 10,
+      "depends_on": [],
+      "rollback_verification_notes": [
+        "Delete generated matrix artifact and rerun fixture comparison.",
+        "Confirm no active registry or guardrail bundle changed."
+      ],
+      "required_offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/offline_patch_approval_matrix_v2.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_offline_patch_approval_matrix_v2.py"]
+      ],
+      "attestations": {
+        "no_live_access": true,
+        "no_auth_access": true,
+        "no_official_action": true,
+        "no_active_registry_mutation": true,
+        "no_active_guardrail_mutation": true
+      }
+    },
+    {
+      "row_id": "offline_release_gate_readiness_packet_v2_fixture:source:submit-plans-online",
+      "row_kind": "source",
+      "source_packet": "offline_release_gate_readiness_packet_v2_fixture",
+      "item_id": "submit-plans-online",
+      "title": "Submit plans online fixture",
+      "citation_ids": ["cite-single-pdf-separate-documents"],
+      "decision": "approve",
+      "decision_reason": "Release gate source evidence is cited and does not require live crawling.",
+      "reviewer_owner": "release-source-reviewer",
+      "dependency_order": 15,
+      "depends_on": [],
+      "rollback_verification_notes": [
+        "Revert only the offline matrix artifact and fixture expectation.",
+        "Re-run syntax and fixture tests before retrying release gate."
+      ],
+      "required_offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/offline_patch_approval_matrix_v2.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_offline_patch_approval_matrix_v2.py"]
+      ],
+      "attestations": {
+        "no_live_access": true,
+        "no_auth_access": true,
+        "no_official_action": true,
+        "no_active_registry_mutation": true,
+        "no_active_guardrail_mutation": true
+      }
+    },
+    {
+      "row_id": "offline_patch_rehearsal_packet_v2_fixture:source:fee-payment-guide",
+      "row_kind": "source",
+      "source_packet": "offline_patch_rehearsal_packet_v2_fixture",
+      "item_id": "fee-payment-guide",
+      "title": "Fee payment guide fixture",
+      "citation_ids": ["cite-fee-payment-final-submit"],
+      "decision": "defer",
+      "decision_reason": "Payment workflow evidence is present but the reviewer must resolve the stale citation before approval.",
+      "reviewer_owner": "public-source-reviewer",
+      "dependency_order": 20,
+      "depends_on": [],
+      "rollback_verification_notes": [
+        "Delete generated matrix artifact and rerun fixture comparison.",
+        "Confirm no active registry or guardrail bundle changed."
+      ],
+      "required_offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/offline_patch_approval_matrix_v2.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_offline_patch_approval_matrix_v2.py"]
+      ],
+      "attestations": {
+        "no_live_access": true,
+        "no_auth_access": true,
+        "no_official_action": true,
+        "no_active_registry_mutation": true,
+        "no_active_guardrail_mutation": true
+      }
+    },
+    {
+      "row_id": "offline_patch_rehearsal_packet_v2_fixture:devhub_surface:devhub-home-readonly",
+      "row_kind": "devhub_surface",
+      "source_packet": "offline_patch_rehearsal_packet_v2_fixture",
+      "item_id": "devhub-home-readonly",
+      "title": "DevHub home read-only surface fixture",
+      "citation_ids": ["cite-devhub-faq-account-services"],
+      "decision": "approve",
+      "decision_reason": "Cited fixture evidence is present and no offline blocking findings remain.",
+      "reviewer_owner": "devhub-surface-reviewer",
+      "dependency_order": 30,
+      "depends_on": ["ppd-online-tools-overview"],
+      "rollback_verification_notes": ["Remove read-only surface preview from offline output and verify no session files exist."],
+      "required_offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/offline_patch_approval_matrix_v2.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_offline_patch_approval_matrix_v2.py"]
+      ],
+      "attestations": {
+        "no_live_access": true,
+        "no_auth_access": true,
+        "no_official_action": true,
+        "no_active_registry_mutation": true,
+        "no_active_guardrail_mutation": true
+      }
+    },
+    {
+      "row_id": "offline_release_gate_readiness_packet_v2_fixture:devhub_surface:upload-staging-preview",
+      "row_kind": "devhub_surface",
+      "source_packet": "offline_release_gate_readiness_packet_v2_fixture",
+      "item_id": "upload-staging-preview",
+      "title": "Upload staging preview surface fixture",
+      "citation_ids": ["cite-upload-staging-before-submit"],
+      "decision": "defer",
+      "decision_reason": "Defer until the reviewer confirms the surface remains preview-only and offline.",
+      "reviewer_owner": "release-devhub-reviewer",
+      "dependency_order": 35,
+      "depends_on": ["submit-plans-online"],
+      "rollback_verification_notes": [
+        "Revert only the offline matrix artifact and fixture expectation.",
+        "Re-run syntax and fixture tests before retrying release gate."
+      ],
+      "required_offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/offline_patch_approval_matrix_v2.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_offline_patch_approval_matrix_v2.py"]
+      ],
+      "attestations": {
+        "no_live_access": true,
+        "no_auth_access": true,
+        "no_official_action": true,
+        "no_active_registry_mutation": true,
+        "no_active_guardrail_mutation": true
+      }
+    },
+    {
+      "row_id": "offline_patch_rehearsal_packet_v2_fixture:guardrail_preview:payment-final-submit-block",
+      "row_kind": "guardrail_preview",
+      "source_packet": "offline_patch_rehearsal_packet_v2_fixture",
+      "item_id": "payment-final-submit-block",
+      "title": "Payment final submit guardrail preview fixture",
+      "citation_ids": ["cite-fee-payment-final-submit"],
+      "decision": "reject",
+      "decision_reason": "Reject migration until the guardrail preview proves final payment execution is blocked.",
+      "reviewer_owner": "guardrail-reviewer",
+      "dependency_order": 40,
+      "depends_on": ["fee-payment-guide"],
+      "rollback_verification_notes": [
+        "Delete generated matrix artifact and rerun fixture comparison.",
+        "Confirm no active registry or guardrail bundle changed."
+      ],
+      "required_offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/offline_patch_approval_matrix_v2.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_offline_patch_approval_matrix_v2.py"]
+      ],
+      "attestations": {
+        "no_live_access": true,
+        "no_auth_access": true,
+        "no_official_action": true,
+        "no_active_registry_mutation": true,
+        "no_active_guardrail_mutation": true
+      }
+    },
+    {
+      "row_id": "offline_release_gate_readiness_packet_v2_fixture:guardrail_preview:official-upload-block",
+      "row_kind": "guardrail_preview",
+      "source_packet": "offline_release_gate_readiness_packet_v2_fixture",
+      "item_id": "official-upload-block",
+      "title": "Official upload mutation guardrail preview fixture",
+      "citation_ids": ["cite-upload-corrections-official-record"],
+      "decision": "approve",
+      "decision_reason": "Guardrail preview cites official upload risk and is ready for offline approval.",
+      "reviewer_owner": "release-guardrail-reviewer",
+      "dependency_order": 45,
+      "depends_on": ["upload-staging-preview"],
+      "rollback_verification_notes": [
+        "Revert only the offline matrix artifact and fixture expectation.",
+        "Re-run syntax and fixture tests before retrying release gate."
+      ],
+      "required_offline_validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/offline_patch_approval_matrix_v2.py"],
+        ["python3", "-m", "pytest", "ppd/tests/test_offline_patch_approval_matrix_v2.py"]
+      ],
+      "attestations": {
+        "no_live_access": true,
+        "no_auth_access": true,
+        "no_official_action": true,
+        "no_active_registry_mutation": true,
+        "no_active_guardrail_mutation": true
+      }
+    }
+  ]
+}

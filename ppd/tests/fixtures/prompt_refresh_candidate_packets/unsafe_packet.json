@@ -1,0 +1,29 @@
+{
+  "packet_id": "prompt-refresh-unsafe-fixture",
+  "prompt_change_candidates": [
+    {
+      "candidate_id": "uncited-direct-action",
+      "change_summary": "The permit will be approved after the agent ran live DevHub and submitted to DevHub."
+    }
+  ],
+  "supported_scenario_refs": [],
+  "blocked_scenario_refs": [],
+  "rollback_notes": "",
+  "reviewer_owners": [],
+  "offline_validation_commands": [],
+  "private_case_facts": {
+    "project_address": "123 Example Private Way"
+  },
+  "session": "fixture-auth-session-value",
+  "artifact_note": "A local private path such as /home/example/private/case.pdf must not be committed.",
+  "consequential_controls": {
+    "submit_permit": true
+  },
+  "mutation_flags": {
+    "prompt_mutation_enabled": true,
+    "guardrail_mutation_enabled": true,
+    "surface_registry_mutation_enabled": true,
+    "monitoring_mutation_enabled": true,
+    "agent_state_mutation_enabled": true
+  }
+}

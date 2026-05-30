@@ -1,0 +1,5 @@
+{
+  "inactive_source_fixture_migration_packet_v2_fixture": "../inactive_source_fixture_migration_packet_v2/source_packets.json",
+  "inactive_devhub_surface_fixture_migration_packet_v2_fixture": "../inactive_devhub_surface_fixture_migration_packet_v2/source_packets.json",
+  "inactive_guardrail_fixture_migration_packet_v2_fixture": "../inactive_guardrail_fixture_migration_packet_v2/source_packets.json"
+}

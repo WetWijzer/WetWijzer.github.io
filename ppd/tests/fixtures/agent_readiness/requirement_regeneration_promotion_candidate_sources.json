@@ -1,0 +1,93 @@
+{
+  "requirement_regeneration_rehearsal_tranche_packet": {
+    "packet_id": "fixture-requirement-regeneration-rehearsal-tranche-001",
+    "source_evidence_ids": [
+      "rehearsal-tranche-evidence-001",
+      "normalized-document-citation-042"
+    ],
+    "candidate_requirement_deltas": [
+      {
+        "delta_id": "requirement-delta-single-pdf-upload-separation",
+        "requirement_id": "req-single-pdf-upload-separation",
+        "delta_type": "clarify_document_requirement",
+        "summary": "Clarify that drawing plans remain one PDF while applications, calculations, and supporting documents remain separate PDFs.",
+        "source_evidence_ids": [
+          "rehearsal-tranche-evidence-001",
+          "single-pdf-guidance-citation-003"
+        ]
+      },
+      {
+        "delta_id": "requirement-delta-devhub-action-gates",
+        "requirement_id": "req-devhub-consequential-action-gates",
+        "delta_type": "strengthen_action_gate",
+        "summary": "Strengthen requirement language for certification, upload, payment, scheduling, and submission as attended confirmation gates.",
+        "source_evidence_ids": [
+          "rehearsal-tranche-evidence-002",
+          "devhub-guide-citation-017"
+        ]
+      }
+    ]
+  },
+  "requirement_rerun_disposition_packet": {
+    "packet_id": "fixture-requirement-rerun-disposition-001",
+    "source_evidence_ids": [
+      "rerun-disposition-evidence-001"
+    ],
+    "overall_disposition": "accepted_for_candidate_review",
+    "rerun_dispositions": [
+      {
+        "delta_id": "requirement-delta-single-pdf-upload-separation",
+        "disposition": "accepted_for_candidate_review",
+        "source_evidence_ids": [
+          "rerun-disposition-evidence-001"
+        ]
+      },
+      {
+        "delta_id": "requirement-delta-devhub-action-gates",
+        "disposition": "accepted_for_candidate_review",
+        "source_evidence_ids": [
+          "rerun-disposition-evidence-002"
+        ]
+      }
+    ],
+    "rollback_notes": [
+      {
+        "rollback_note_id": "rollback-regenerated-requirements-to-current-fixtures",
+        "summary": "If reviewers reject the candidate packet, retain the current committed requirement fixtures and discard these candidate deltas.",
+        "source_evidence_ids": [
+          "rerun-disposition-evidence-rollback"
+        ]
+      }
+    ]
+  },
+  "process_model_impact_review_packet": {
+    "packet_id": "fixture-process-model-impact-review-001",
+    "source_evidence_ids": [
+      "process-impact-evidence-001"
+    ],
+    "process_model_impacts": [
+      {
+        "impact_id": "process-impact-document-preparation-stage",
+        "process_id": "process-single-pdf-permit-application",
+        "delta_type": "stage_requirement_alignment",
+        "summary": "Align document preparation and upload staging with regenerated single-PDF and separate-supporting-document requirements.",
+        "source_evidence_ids": [
+          "process-impact-evidence-001",
+          "single-pdf-guidance-citation-003"
+        ]
+      }
+    ],
+    "guardrail_delta_candidates": [
+      {
+        "guardrail_delta_id": "guardrail-delta-consequential-devhub-actions",
+        "guardrail_bundle_id": "guardrail-devhub-consequential-actions",
+        "delta_type": "exact_confirmation_predicate_update",
+        "summary": "Require exact confirmation before any DevHub certification, upload, payment, scheduling, cancellation, or submission action.",
+        "source_evidence_ids": [
+          "process-impact-evidence-002",
+          "devhub-guide-citation-017"
+        ]
+      }
+    ]
+  }
+}

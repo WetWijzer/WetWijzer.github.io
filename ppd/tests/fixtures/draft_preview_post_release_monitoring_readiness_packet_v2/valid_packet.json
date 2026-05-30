@@ -1,0 +1,110 @@
+{
+  "packet_type": "draft_preview_post_release_monitoring_readiness_packet_v2",
+  "packet_version": 2,
+  "mode": "fixture_first_draft_preview_post_release_monitoring_readiness",
+  "packet_id": "draft-preview-post-release-monitoring-readiness-v2-fixture",
+  "source_evidence_ids": [
+    "ppd-plan:non-negotiable-boundaries",
+    "ppd-plan:change-monitoring",
+    "ppd-plan:core-data-products"
+  ],
+  "source_evidence": [
+    {
+      "source_evidence_id": "ppd-plan:non-negotiable-boundaries",
+      "title": "PP&D non-negotiable boundaries",
+      "quote_or_fact": "Do not store credentials, session state, screenshots, traces, HAR files, payment details, private uploads, local private file paths, or raw authenticated page values in committed artifacts."
+    },
+    {
+      "source_evidence_id": "ppd-plan:change-monitoring",
+      "title": "PP&D change monitoring",
+      "quote_or_fact": "Change reports should identify changed source hashes, requirements, DevHub guidance, and affected guardrail bundle IDs."
+    },
+    {
+      "source_evidence_id": "ppd-plan:core-data-products",
+      "title": "PP&D core data products",
+      "quote_or_fact": "Guardrail bundles, source freshness, and action journal records remain cited and validation oriented."
+    }
+  ],
+  "monitoring_checks": [
+    {
+      "check_id": "monitor-source-freshness-drift",
+      "summary": "Confirm committed freshness metadata still cites expected PP&D source evidence before consumer-facing draft preview handoff.",
+      "source_evidence_ids": ["ppd-plan:change-monitoring"],
+      "drift_signals": [
+        "source hash changed without affected requirement mapping",
+        "freshness status missing for monitored official guidance"
+      ],
+      "escalation_owner": "ppd-release-reviewer",
+      "escalation_path": "Open offline release review blocker and keep packet out of consumer migration.",
+      "rollback_trigger_ref": "rollback-uncited-or-drifted-monitoring-check"
+    },
+    {
+      "check_id": "monitor-guardrail-boundary-drift",
+      "summary": "Confirm release handoff continues to block live DevHub, browser, LLM, crawler, processor, PDF, and mutation claims.",
+      "source_evidence_ids": ["ppd-plan:non-negotiable-boundaries", "ppd-plan:core-data-products"],
+      "drift_signals": [
+        "consumer packet claims live execution",
+        "consumer packet enables active mutation flags"
+      ],
+      "escalation_owner": "ppd-guardrail-reviewer",
+      "escalation_path": "Reject packet and rerun offline readiness validation from committed fixtures only.",
+      "rollback_trigger_ref": "rollback-boundary-regression"
+    }
+  ],
+  "rollback_triggers": [
+    {
+      "trigger_id": "rollback-uncited-or-drifted-monitoring-check",
+      "condition": "Any monitoring check lacks citations, drift signals, escalation owner, or cited rollback trigger.",
+      "rollback_owner": "ppd-release-reviewer",
+      "source_evidence_ids": ["ppd-plan:change-monitoring"]
+    },
+    {
+      "trigger_id": "rollback-boundary-regression",
+      "condition": "Any packet field claims live execution, private facts, raw artifacts, outcome guarantees, or active state mutation.",
+      "rollback_owner": "ppd-guardrail-reviewer",
+      "source_evidence_ids": ["ppd-plan:non-negotiable-boundaries"]
+    }
+  ],
+  "allowed_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/agent_readiness/draft_preview_post_release_monitoring_readiness_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_draft_preview_post_release_monitoring_readiness_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/agent_readiness/draft_preview_post_release_monitoring_readiness_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_draft_preview_post_release_monitoring_readiness_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "attestations": {
+    "fixture_first": true,
+    "no_live_monitoring": true,
+    "no_devhub": true,
+    "no_browser": true,
+    "no_live_llm": true,
+    "no_crawler": true,
+    "no_processor": true,
+    "no_private_or_authenticated_facts": true,
+    "no_raw_crawl_pdf_session_artifacts": true,
+    "no_legal_or_permitting_outcome_guarantees": true,
+    "no_active_prompt_mutation": true,
+    "no_active_guardrail_mutation": true,
+    "no_active_pdf_mutation": true,
+    "no_active_surface_registry_mutation": true,
+    "no_active_monitoring_mutation": true,
+    "no_release_state_mutation": true,
+    "no_active_agent_state_mutation": true,
+    "active_prompt_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_pdf_mutation": false,
+    "active_surface_registry_mutation": false,
+    "active_monitoring_mutation": false,
+    "release_state_mutation": false,
+    "active_agent_state_mutation": false,
+    "live_monitoring_executed": false,
+    "devhub_executed": false,
+    "browser_executed": false,
+    "llm_executed": false,
+    "crawler_executed": false,
+    "processor_executed": false
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "packet_type": "ppd.guardrail_bundle_refresh_candidate_packet.v2",
+  "packet_id": "guardrail-bundle-refresh-candidate-v2-valid-001",
+  "fixture_only": true,
+  "candidate_status": "candidate_packet_only_not_applied",
+  "active_guardrail_bundle_id": "guardrail-bundle-single-pdf-active",
+  "affected_process_ids": ["process-building-permit-intake"],
+  "affected_requirement_ids": ["REQ-SINGLE-PDF-STAGING-001", "REQ-EXACT-CONFIRMATION-001"],
+  "source_evidence_ids": ["src-submit-plans-online-20260508", "src-devhub-guide-submit-permit-application-20260508"],
+  "predicate_candidates": [
+    {
+      "predicate_id": "predicate-candidate.single-pdf-upload-staging-v2",
+      "operation": "add_candidate_predicate",
+      "affected_process_ids": ["process-building-permit-intake"],
+      "affected_requirement_ids": ["REQ-SINGLE-PDF-STAGING-001"],
+      "source_evidence_ids": ["src-submit-plans-online-20260508"],
+      "reviewer_owner": "ppd-guardrail-reviewer",
+      "summary": "Review a candidate predicate for reversible upload staging checks before any official attach or submit action.",
+      "checkpoint_expectations": {
+        "reversible_action_predicates": ["draft_fill_only", "upload_staging_only"],
+        "exact_confirmation_predicates": ["official_upload_blocked_until_exact_confirmation"]
+      },
+      "consequential_controls": [
+        {
+          "control_id": "submit-permit-request-block",
+          "action_class": "submission",
+          "enabled": false,
+          "activation_allowed": false
+        }
+      ],
+      "activation_allowed": false
+    },
+    {
+      "predicate_id": "predicate-candidate.certification-checkpoint-v2",
+      "operation": "add_candidate_predicate",
+      "affected_process_ids": ["process-building-permit-intake"],
+      "affected_requirement_ids": ["REQ-EXACT-CONFIRMATION-001"],
+      "source_evidence_ids": ["src-devhub-guide-submit-permit-application-20260508"],
+      "reviewer_owner": "ppd-process-reviewer",
+      "summary": "Review a candidate exact-confirmation checkpoint for acknowledgement and certification screens.",
+      "checkpoint_expectations": {
+        "reversible_action_predicates": ["review_screen_only"],
+        "exact_confirmation_predicates": ["certification_requires_attended_exact_confirmation"]
+      },
+      "consequential_controls": [
+        {
+          "control_id": "certification-action-block",
+          "action_class": "certification",
+          "enabled": false,
+          "activation_allowed": false
+        }
+      ],
+      "activation_allowed": false
+    }
+  ],
+  "reviewer_owners": [
+    {
+      "reviewer_owner_id": "ppd-guardrail-reviewer",
+      "role": "guardrail_refresh_candidate_reviewer",
+      "approval_status": "pending_human_review",
+      "source_evidence_ids": ["src-submit-plans-online-20260508"]
+    },
+    {
+      "reviewer_owner_id": "ppd-process-reviewer",
+      "role": "process_checkpoint_reviewer",
+      "approval_status": "pending_human_review",
+      "source_evidence_ids": ["src-devhub-guide-submit-permit-application-20260508"]
+    }
+  ],
+  "attestations": {
+    "fixture_first": true,
+    "candidate_packet_only": true,
+    "no_active_guardrail_mutation": true,
+    "no_active_prompt_mutation": true,
+    "no_active_surface_registry_mutation": true,
+    "no_active_monitoring_mutation": true,
+    "no_release_state_mutation": true,
+    "no_active_agent_state_mutation": true,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_surface_registry_mutation": false,
+    "active_monitoring_mutation": false,
+    "release_state_mutation": false,
+    "active_agent_state_mutation": false,
+    "guardrail_delta_applied": false,
+    "prompt_updated": false,
+    "surface_registry_updated": false,
+    "monitoring_state_updated": false,
+    "release_state_updated": false,
+    "agent_state_updated": false,
+    "source_evidence_ids": ["src-submit-plans-online-20260508", "src-devhub-guide-submit-permit-application-20260508"]
+  }
+}

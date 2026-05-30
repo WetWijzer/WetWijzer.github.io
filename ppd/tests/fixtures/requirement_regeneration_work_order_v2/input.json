@@ -1,0 +1,162 @@
+{
+  "packet_id": "fixture-requirement-regeneration-work-order-v2-input",
+  "source_freshness_drift_triage_v2": {
+    "packet_id": "source-freshness-drift-triage-v2-fixture",
+    "packet_version": "source_freshness_drift_triage_v2",
+    "classifications": [
+      {
+        "classification_id": "triage-devhub-upload-corrections-changed",
+        "source_id": "ppd-devhub-faq",
+        "classification": "source_guidance_changed",
+        "citations": [
+          {
+            "source_id": "ppd-devhub-faq",
+            "url": "https://www.portland.gov/ppd/devhub-faqs",
+            "retrieved_at": "2026-05-08T00:00:00Z"
+          }
+        ],
+        "affected_artifact_ids": [
+          "requirement:req-devhub-upload-corrections-attended",
+          "process:devhub-corrections",
+          "guardrail:devhub-consequential-actions"
+        ],
+        "affected_requirement_ids": [
+          "req-devhub-upload-corrections-attended"
+        ],
+        "affected_process_ids": [
+          "process-devhub-corrections"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail-devhub-consequential-actions"
+        ],
+        "escalation_owner": "ppd-human-review",
+        "recommended_disposition": "queue_regeneration"
+      },
+      {
+        "classification_id": "triage-single-pdf-stale",
+        "source_id": "ppd-single-pdf-guidance",
+        "classification": "source_guidance_stale",
+        "citations": [
+          {
+            "source_id": "ppd-single-pdf-guidance",
+            "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+            "retrieved_at": "2026-05-08T00:00:00Z"
+          }
+        ],
+        "affected_artifact_ids": [
+          "requirement:req-plan-set-single-pdf",
+          "process:document-preparation",
+          "guardrail:document-preparation"
+        ],
+        "affected_requirement_ids": [
+          "req-plan-set-single-pdf"
+        ],
+        "affected_process_ids": [
+          "process-document-preparation"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail-document-preparation"
+        ],
+        "escalation_owner": "ppd-document-reviewer",
+        "recommended_disposition": "queue_human_review"
+      },
+      {
+        "classification_id": "triage-standard-trade-unchanged",
+        "source_id": "ppd-standard-trade-guide",
+        "classification": "source_guidance_unchanged",
+        "citations": [
+          {
+            "source_id": "ppd-standard-trade-guide",
+            "url": "https://www.portland.gov/ppd/standard-trade-permits",
+            "retrieved_at": "2026-05-08T00:00:00Z"
+          }
+        ],
+        "affected_artifact_ids": [
+          "requirement:req-standard-trade-license-profile",
+          "process:standard-trade-permit",
+          "guardrail:license-profile-check"
+        ],
+        "affected_requirement_ids": [
+          "req-standard-trade-license-profile"
+        ],
+        "affected_process_ids": [
+          "process-standard-trade-permit"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail-license-profile-check"
+        ],
+        "escalation_owner": "ppd-trade-permit-reviewer",
+        "recommended_disposition": "queue_unchanged"
+      }
+    ],
+    "mutation_flags": []
+  },
+  "prior_requirement_rerun_work_queues": [
+    {
+      "packet_id": "fixture-requirement-rerun-work-queue-20260529",
+      "packet_type": "fixture_first_requirement_rerun_work_queue",
+      "cited_requirement_ids": [
+        "req-plan-set-single-pdf"
+      ],
+      "reviewer_owner_fields": {
+        "reviewer_owner": "ppd-document-reviewer",
+        "escalation_owner": "ppd-source-freshness-reviewer",
+        "guardrail_owner": "ppd-guardrail-reviewer"
+      },
+      "ordered_rerun_steps": [
+        {
+          "step": 1,
+          "name": "fixture_packet_intake",
+          "live_extraction_allowed": false,
+          "processor_invocation_allowed": false,
+          "requirement_mutation_allowed": false
+        }
+      ],
+      "attestations": {
+        "no_live_extraction": true,
+        "no_source_fetching": true,
+        "no_processor_invocation": true,
+        "no_requirement_record_mutation": true,
+        "metadata_only_outputs": true
+      }
+    }
+  ],
+  "requirement_extraction_fixtures": [
+    {
+      "fixture_id": "fixture-req-devhub-upload-corrections-attended",
+      "requirement_id": "req-devhub-upload-corrections-attended",
+      "source_id": "ppd-devhub-faq",
+      "source_evidence_ids": [
+        "ev-devhub-faq-upload-corrections"
+      ],
+      "source_evidence_expectations": [
+        "confirm DevHub correction upload remains attended and consequential"
+      ],
+      "reviewer_owner": "ppd-human-review"
+    },
+    {
+      "fixture_id": "fixture-req-plan-set-single-pdf",
+      "requirement_id": "req-plan-set-single-pdf",
+      "source_id": "ppd-single-pdf-guidance",
+      "source_evidence_ids": [
+        "ev-single-pdf-plan-set"
+      ],
+      "source_evidence_expectations": [
+        "confirm Single PDF guidance still supports one plan-set PDF plus separate supporting documents"
+      ],
+      "reviewer_owner": "ppd-document-reviewer"
+    },
+    {
+      "fixture_id": "fixture-req-standard-trade-unchanged",
+      "requirement_id": "req-standard-trade-license-profile",
+      "source_id": "ppd-standard-trade-guide",
+      "source_evidence_ids": [
+        "ev-standard-trade-license-profile"
+      ],
+      "source_evidence_expectations": [
+        "confirm contractor license profile guidance remains unchanged"
+      ],
+      "reviewer_owner": "ppd-trade-permit-reviewer"
+    }
+  ]
+}

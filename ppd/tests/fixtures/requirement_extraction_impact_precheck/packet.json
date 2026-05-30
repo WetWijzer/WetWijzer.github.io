@@ -1,0 +1,286 @@
+{
+  "packet_id": "requirement-extraction-impact-precheck-2026-05-fixture-001",
+  "source_freshness_delta_review_packet": {
+    "packet_id": "source-freshness-delta-review-2026-05-29-fixture",
+    "reviewed_source_deltas": [
+      {
+        "delta_id": "delta-devhub-faqs-account-services",
+        "source_id": "ppd-devhub-faqs",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+        "delta_summary": "DevHub FAQ account-scoped service language changed in metadata review.",
+        "source_evidence_ids": [
+          "source:devhub-faqs:account-scoped-services",
+          "citation:source-freshness-delta:devhub-faqs"
+        ],
+        "affected_requirement_ids": [
+          "REQ-devhub-upload-corrections-attended"
+        ],
+        "affected_process_ids": [
+          "process:corrections-checksheets"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail:official-upload-exact-confirmation"
+        ],
+        "reviewer_owner_fields": {
+          "source_delta_owner": "ppd-source-freshness-reviewer",
+          "requirement_owner": "ppd-devhub-requirement-reviewer",
+          "process_owner": "ppd-corrections-process-reviewer",
+          "guardrail_owner": "ppd-devhub-guardrail-reviewer",
+          "precheck_owner": "ppd-requirement-extraction-precheck-owner"
+        }
+      },
+      {
+        "delta_id": "delta-spp-file-naming-supporting-documents",
+        "source_id": "ppd-spp-file-naming-standards",
+        "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+        "delta_summary": "Single PDF preparation metadata changed for supporting documents.",
+        "source_evidence_ids": [
+          "source:spp-file-naming:pdf-preparation",
+          "citation:source-freshness-delta:spp-file-naming"
+        ],
+        "affected_requirement_ids": [
+          "REQ-single-pdf-separate-supporting-documents"
+        ],
+        "affected_process_ids": [
+          "process:document-preparation"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail:single-pdf-document-preparation"
+        ],
+        "reviewer_owner_fields": {
+          "source_delta_owner": "ppd-source-freshness-reviewer",
+          "requirement_owner": "ppd-document-requirement-reviewer",
+          "process_owner": "ppd-document-process-reviewer",
+          "guardrail_owner": "ppd-document-guardrail-reviewer",
+          "precheck_owner": "ppd-requirement-extraction-precheck-owner"
+        }
+      }
+    ]
+  },
+  "requirement_regeneration_rehearsal_tranche_packet": {
+    "packet_id": "requirement-regeneration-rehearsal-tranche-2026-05-fixture-001",
+    "ordered_synthetic_rerun_cases": [
+      {
+        "case_id": "requirement-regeneration-case-req-devhub-upload-corrections-attended",
+        "order": 1,
+        "requirement_id": "REQ-devhub-upload-corrections-attended",
+        "source_id": "ppd-devhub-faqs",
+        "rerun_step_ref": "review_existing_citations",
+        "affected_requirement_ids": [
+          "REQ-devhub-upload-corrections-attended"
+        ],
+        "affected_process_ids": [
+          "process:corrections-checksheets"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail:official-upload-exact-confirmation"
+        ],
+        "source_evidence_ids": [
+          "source:devhub-faqs:account-scoped-services",
+          "source:upload-corrections-guide:review-group-status",
+          "trace:devhub-upload-corrections"
+        ],
+        "reviewer_owner": "ppd-devhub-guardrail-reviewer"
+      },
+      {
+        "case_id": "requirement-regeneration-case-req-single-pdf-separate-supporting-documents",
+        "order": 2,
+        "requirement_id": "REQ-single-pdf-separate-supporting-documents",
+        "source_id": "ppd-spp-file-naming-standards",
+        "rerun_step_ref": "rerun_deterministic_formalization",
+        "affected_requirement_ids": [
+          "REQ-single-pdf-separate-supporting-documents"
+        ],
+        "affected_process_ids": [
+          "process:document-preparation"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail:single-pdf-document-preparation"
+        ],
+        "source_evidence_ids": [
+          "source:spp-file-naming:pdf-preparation",
+          "source:submit-plans-online:single-pdf-guidance",
+          "trace:single-pdf-document-rule"
+        ],
+        "reviewer_owner": "ppd-document-guardrail-reviewer"
+      }
+    ]
+  },
+  "requirement_guardrail_traceability_review_packet": {
+    "packet_id": "requirement-guardrail-traceability-review-2026-05-29-fixture",
+    "requirement_to_process_to_guardrail_links": [
+      {
+        "requirement_id": "REQ-devhub-upload-corrections-attended",
+        "process_ids": [
+          "process:corrections-checksheets"
+        ],
+        "guardrail_ids": [
+          "guardrail:official-upload-exact-confirmation"
+        ],
+        "source_evidence_ids": [
+          "source:devhub-faqs:account-scoped-services",
+          "trace:devhub-upload-corrections"
+        ],
+        "reviewer_owner_fields": {
+          "traceability_owner": "ppd-devhub-guardrail-reviewer",
+          "process_owner": "ppd-corrections-process-reviewer",
+          "guardrail_owner": "ppd-devhub-guardrail-reviewer"
+        }
+      },
+      {
+        "requirement_id": "REQ-single-pdf-separate-supporting-documents",
+        "process_ids": [
+          "process:document-preparation"
+        ],
+        "guardrail_ids": [
+          "guardrail:single-pdf-document-preparation"
+        ],
+        "source_evidence_ids": [
+          "source:spp-file-naming:pdf-preparation",
+          "trace:single-pdf-document-rule"
+        ],
+        "reviewer_owner_fields": {
+          "traceability_owner": "ppd-document-guardrail-reviewer",
+          "process_owner": "ppd-document-process-reviewer",
+          "guardrail_owner": "ppd-document-guardrail-reviewer"
+        }
+      }
+    ]
+  },
+  "expected_packet": {
+    "packet_type": "ppd_requirement_extraction_impact_precheck_packet",
+    "packet_version": "1.0",
+    "packet_id": "requirement-extraction-impact-precheck-2026-05-fixture-001",
+    "precheck_status": "fixture_first_metadata_only_precheck_ready",
+    "consumes_packet_ids": [
+      "source-freshness-delta-review-2026-05-29-fixture",
+      "requirement-regeneration-rehearsal-tranche-2026-05-fixture-001",
+      "requirement-guardrail-traceability-review-2026-05-29-fixture"
+    ],
+    "candidate_extraction_rerun_scopes": [
+      {
+        "scope_id": "candidate-extraction-rerun-scope-ppd-devhub-faqs-1",
+        "source_id": "ppd-devhub-faqs",
+        "delta_id": "delta-devhub-faqs-account-services",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+        "candidate_rerun_reason": "DevHub FAQ account-scoped service language changed in metadata review.",
+        "source_evidence_ids": [
+          "source:devhub-faqs:account-scoped-services",
+          "citation:source-freshness-delta:devhub-faqs",
+          "source:upload-corrections-guide:review-group-status",
+          "trace:devhub-upload-corrections"
+        ],
+        "affected_requirement_ids": [
+          "REQ-devhub-upload-corrections-attended"
+        ],
+        "affected_process_ids": [
+          "process:corrections-checksheets"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail:official-upload-exact-confirmation"
+        ],
+        "candidate_requirement_cases": [
+          {
+            "case_id": "requirement-regeneration-case-req-devhub-upload-corrections-attended",
+            "requirement_id": "REQ-devhub-upload-corrections-attended",
+            "rerun_step_ref": "review_existing_citations"
+          }
+        ],
+        "expected_metadata_only_output_refs": [
+          "metadata://requirement-extraction-impact-precheck/candidate-extraction-rerun-scope-ppd-devhub-faqs-1/req-devhub-upload-corrections-attended"
+        ],
+        "reviewer_owner_fields": {
+          "source_delta_owner": "ppd-source-freshness-reviewer",
+          "requirement_owner": "ppd-devhub-requirement-reviewer",
+          "process_owner": "ppd-corrections-process-reviewer",
+          "guardrail_owner": "ppd-devhub-guardrail-reviewer",
+          "precheck_owner": "ppd-requirement-extraction-precheck-owner"
+        }
+      },
+      {
+        "scope_id": "candidate-extraction-rerun-scope-ppd-spp-file-naming-standards-2",
+        "source_id": "ppd-spp-file-naming-standards",
+        "delta_id": "delta-spp-file-naming-supporting-documents",
+        "canonical_url": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+        "candidate_rerun_reason": "Single PDF preparation metadata changed for supporting documents.",
+        "source_evidence_ids": [
+          "source:spp-file-naming:pdf-preparation",
+          "citation:source-freshness-delta:spp-file-naming",
+          "source:submit-plans-online:single-pdf-guidance",
+          "trace:single-pdf-document-rule"
+        ],
+        "affected_requirement_ids": [
+          "REQ-single-pdf-separate-supporting-documents"
+        ],
+        "affected_process_ids": [
+          "process:document-preparation"
+        ],
+        "affected_guardrail_ids": [
+          "guardrail:single-pdf-document-preparation"
+        ],
+        "candidate_requirement_cases": [
+          {
+            "case_id": "requirement-regeneration-case-req-single-pdf-separate-supporting-documents",
+            "requirement_id": "REQ-single-pdf-separate-supporting-documents",
+            "rerun_step_ref": "rerun_deterministic_formalization"
+          }
+        ],
+        "expected_metadata_only_output_refs": [
+          "metadata://requirement-extraction-impact-precheck/candidate-extraction-rerun-scope-ppd-spp-file-naming-standards-2/req-single-pdf-separate-supporting-documents"
+        ],
+        "reviewer_owner_fields": {
+          "source_delta_owner": "ppd-source-freshness-reviewer",
+          "requirement_owner": "ppd-document-requirement-reviewer",
+          "process_owner": "ppd-document-process-reviewer",
+          "guardrail_owner": "ppd-document-guardrail-reviewer",
+          "precheck_owner": "ppd-requirement-extraction-precheck-owner"
+        }
+      }
+    ],
+    "affected_requirement_ids": [
+      "REQ-devhub-upload-corrections-attended",
+      "REQ-single-pdf-separate-supporting-documents"
+    ],
+    "affected_process_ids": [
+      "process:corrections-checksheets",
+      "process:document-preparation"
+    ],
+    "affected_guardrail_ids": [
+      "guardrail:official-upload-exact-confirmation",
+      "guardrail:single-pdf-document-preparation"
+    ],
+    "expected_metadata_only_outputs": [
+      {
+        "scope_id": "candidate-extraction-rerun-scope-ppd-devhub-faqs-1",
+        "output_ref": "metadata://requirement-extraction-impact-precheck/candidate-extraction-rerun-scope-ppd-devhub-faqs-1/req-devhub-upload-corrections-attended",
+        "output_kind": "candidate_requirement_extraction_rerun_scope_metadata",
+        "metadata_only": true,
+        "no_requirement_record_written": true,
+        "no_process_model_written": true,
+        "no_guardrail_bundle_written": true,
+        "no_active_artifact_written": true
+      },
+      {
+        "scope_id": "candidate-extraction-rerun-scope-ppd-spp-file-naming-standards-2",
+        "output_ref": "metadata://requirement-extraction-impact-precheck/candidate-extraction-rerun-scope-ppd-spp-file-naming-standards-2/req-single-pdf-separate-supporting-documents",
+        "output_kind": "candidate_requirement_extraction_rerun_scope_metadata",
+        "metadata_only": true,
+        "no_requirement_record_written": true,
+        "no_process_model_written": true,
+        "no_guardrail_bundle_written": true,
+        "no_active_artifact_written": true
+      }
+    ],
+    "reviewer_owner_fields_required": true,
+    "attestations": {
+      "fixture_first_inputs_only": true,
+      "metadata_only_outputs": true,
+      "no_live_extraction_performed": true,
+      "no_processor_invoked": true,
+      "no_active_artifact_mutation_performed": true,
+      "no_requirement_mutation_performed": true,
+      "no_process_mutation_performed": true,
+      "no_guardrail_mutation_performed": true
+    }
+  }
+}

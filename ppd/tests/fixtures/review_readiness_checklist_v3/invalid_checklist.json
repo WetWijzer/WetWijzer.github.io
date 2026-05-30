@@ -1,0 +1,71 @@
+{
+  "version": 3,
+  "checklist_id": "attended-review-readiness-v3-invalid-fixture",
+  "rows": [
+    {
+      "id": "arr-v3-invalid-001",
+      "item": "This row has no citation, no acceptance criteria, no unresolved deferral disposition, no rollback verification, and no reviewer owner."
+    },
+    {
+      "id": "arr-v3-invalid-002",
+      "item": "Authenticated account fact: permit number: 24-000000 was reviewed from a private DevHub page.",
+      "citation_ids": ["fixture-citation"],
+      "acceptance_criteria": ["Reject private facts."],
+      "unresolved_deferral_disposition": "rejected",
+      "rollback_verification": "No portal effect claimed.",
+      "reviewer_owner": "privacy-reviewer"
+    },
+    {
+      "id": "arr-v3-invalid-003",
+      "item": "Raw PDF artifact /tmp/devhub-upload.pdf and Playwright trace are attached for review.",
+      "citation_ids": ["fixture-citation"],
+      "acceptance_criteria": ["Reject raw artifacts."],
+      "unresolved_deferral_disposition": "rejected",
+      "rollback_verification": "No portal effect claimed.",
+      "reviewer_owner": "artifact-reviewer"
+    },
+    {
+      "id": "arr-v3-invalid-004",
+      "item": "The worker clicked in live DevHub and verified by submitting the application.",
+      "citation_ids": ["fixture-citation"],
+      "acceptance_criteria": ["Reject live execution claims."],
+      "unresolved_deferral_disposition": "rejected",
+      "rollback_verification": "No rollback is available for the claimed action.",
+      "reviewer_owner": "execution-reviewer"
+    },
+    {
+      "id": "arr-v3-invalid-005",
+      "item": "This guarantees permit approval and ensures legal compliance.",
+      "citation_ids": ["fixture-citation"],
+      "acceptance_criteria": ["Reject outcome guarantees."],
+      "unresolved_deferral_disposition": "rejected",
+      "rollback_verification": "No portal effect claimed.",
+      "reviewer_owner": "legal-reviewer"
+    },
+    {
+      "id": "arr-v3-invalid-006",
+      "item": "Proceed with final payment, upload the plans, schedule the inspection, and cancel the old request.",
+      "citation_ids": ["fixture-citation"],
+      "acceptance_criteria": ["Reject consequential action language."],
+      "unresolved_deferral_disposition": "rejected",
+      "rollback_verification": "No portal effect claimed.",
+      "reviewer_owner": "action-reviewer"
+    },
+    {
+      "id": "arr-v3-invalid-007",
+      "item": "Mutation flags must be rejected.",
+      "citation_ids": ["fixture-citation"],
+      "acceptance_criteria": ["Reject mutation flags."],
+      "unresolved_deferral_disposition": "rejected",
+      "rollback_verification": "No portal effect claimed.",
+      "reviewer_owner": "state-reviewer",
+      "source_mutation": true,
+      "surface_registry_update": "enabled",
+      "guardrail_mutation": "active",
+      "prompt_write": "true",
+      "monitoring_update": "deploy",
+      "release_state_patch": "enabled",
+      "agent_state_mutation": "active"
+    }
+  ]
+}

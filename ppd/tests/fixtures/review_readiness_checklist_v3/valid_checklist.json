@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "checklist_id": "attended-review-readiness-v3-fixture",
+  "rows": [
+    {
+      "id": "arr-v3-001",
+      "item": "Confirm the attended review packet is limited to public-source citations and reversible draft review.",
+      "citation_ids": ["ppd-plan-non-negotiable-boundaries", "ppd-plan-authenticated-devhub-session-model"],
+      "acceptance_criteria": [
+        "Every row cites public plan evidence or source evidence.",
+        "The row describes review readiness only and does not claim a live DevHub result."
+      ],
+      "unresolved_deferral_disposition": "requires_human_review",
+      "rollback_verification": [
+        "Reviewer confirms no official record change is represented by this row.",
+        "Reviewer confirms any draft-only work can be discarded without affecting DevHub."
+      ],
+      "reviewer_owner": "ppd-attended-review-owner"
+    },
+    {
+      "id": "arr-v3-002",
+      "item": "Confirm consequential actions remain blocked until user attendance and exact action confirmation.",
+      "source_evidence_ids": ["ppd-plan-devhub-surface-categories", "ppd-plan-non-negotiable-boundaries"],
+      "acceptance_criteria": "Checklist language only permits preflight review, manual handoff, and reversible draft planning.",
+      "unresolved_deferral_disposition": "none",
+      "rollback_verification": "No-side-effect review only; no portal operation is represented as complete.",
+      "reviewer_owner": "ppd-guardrail-reviewer"
+    }
+  ]
+}

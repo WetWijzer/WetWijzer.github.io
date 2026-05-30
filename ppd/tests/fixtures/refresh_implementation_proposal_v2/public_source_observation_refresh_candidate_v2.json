@@ -1,0 +1,81 @@
+{
+  "schema_version": "public_source_observation_refresh_candidate_v2",
+  "generated_by": "ppd.source_observation_refresh_candidate_v2",
+  "metadata_only": true,
+  "attestations": {
+    "no_live_crawl": true,
+    "no_processor": true,
+    "no_raw_body": true,
+    "no_download": true,
+    "no_source_registry_mutation": true
+  },
+  "affected_source_ids": [
+    "permit-center-fees"
+  ],
+  "candidates": [
+    {
+      "source_id": "permit-center-fees",
+      "affected_source_ids": [
+        "permit-center-fees"
+      ],
+      "reviewer_owner": "ppd-fees-reviewer",
+      "observation_type": "public_source_observation_refresh_candidate_v2",
+      "metadata_only": true,
+      "candidate_metadata": {
+        "freshness_state": "stale_metadata",
+        "drift_signal": "public_page_updated_date_changed",
+        "evidence_count": 1
+      },
+      "citations": [
+        {
+          "packet": "public_recrawl_dry_run_evidence_envelope_v2",
+          "source_id": "permit-center-fees",
+          "evidence_id": "evidence-permit-center-fees-001",
+          "observed_at": "2026-05-29T00:00:00Z",
+          "url": "https://www.portland.gov/ppd/permit-center"
+        },
+        {
+          "packet": "source_freshness_drift_triage_v2",
+          "source_id": "permit-center-fees",
+          "triage_id": "triage-permit-center-fees-001"
+        }
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "source_id": "legacy-zoning-cache",
+      "reason": "superseded_by_current_public_source",
+      "citation": {
+        "packet": "source_freshness_drift_triage_v2",
+        "source_id": "legacy-zoning-cache",
+        "triage_id": "triage-legacy-zoning-cache-001"
+      }
+    }
+  ],
+  "deferred": [
+    {
+      "source_id": "building-code-summary",
+      "reason": "needs_manual_publication_date_check",
+      "citation": {
+        "packet": "source_freshness_drift_triage_v2",
+        "source_id": "building-code-summary",
+        "triage_id": "triage-building-code-summary-001"
+      }
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/source_observation_refresh_candidate_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_source_observation_refresh_candidate_v2"
+    ]
+  ]
+}

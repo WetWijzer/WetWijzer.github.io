@@ -1,0 +1,50 @@
+{
+  "packet_id": "live-readiness-authorization-checklist-packet-v2",
+  "packet_type": "live-readiness-authorization-checklist",
+  "version": "v2",
+  "approved_for_fixture_dry_run": true,
+  "authorization_scope": "offline fixture planning only for attended DevHub read-only live-dry-run plan",
+  "authorization_prerequisites": [
+    {
+      "id": "prereq-live-boundaries-reviewed",
+      "citation_refs": ["plan:Non-Negotiable Boundaries", "plan:Authenticated DevHub Automation Plan"],
+      "reviewer_action": "Confirm that attended DevHub read-only review remains blocked from live access, authentication state, browser artifacts, private values, and official actions."
+    }
+  ],
+  "live_boundary_decisions": [
+    {
+      "id": "boundary-devhub-read-only",
+      "boundary": "attended DevHub read-only review",
+      "decision": "fixture_dry_run_plan_only",
+      "allowed_scope": ["review committed runbook fixture", "verify manual-login boundaries", "confirm redaction checklist", "run offline validation commands"],
+      "prohibited_scope": ["opening DevHub", "login", "MFA prompts", "CAPTCHA prompts", "authenticated page capture", "private account value extraction", "official DevHub action"],
+      "citation_refs": ["plan:Session Model", "plan:DevHub Surface Categories"]
+    }
+  ],
+  "attestations": [
+    {
+      "id": "no-live-devhub",
+      "status": "attested_in_fixture",
+      "statement": "This fixture authorizes only offline plan construction and does not open or access live DevHub."
+    },
+    {
+      "id": "no-auth-state",
+      "status": "attested_in_fixture",
+      "statement": "This fixture does not create, read, persist, or commit credentials, cookies, storage state, MFA artifacts, or private session files."
+    },
+    {
+      "id": "no-browser-artifact",
+      "status": "attested_in_fixture",
+      "statement": "This fixture does not create, store, or commit screenshots, traces, HAR files, browser profiles, downloads, or raw authenticated output."
+    },
+    {
+      "id": "no-official-action",
+      "status": "attested_in_fixture",
+      "statement": "This fixture does not submit, certify, upload, pay, schedule, cancel, change account settings, or otherwise take official action."
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub/attended_readonly_live_dry_run_plan_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_devhub_attended_readonly_live_dry_run_plan_v2.py"]
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "manifest_id": "promotion-acceptance-packet-v4-inputs-20260530",
+  "public_source_freshness_watch_plan_v3": "../public_freshness_scheduler_rehearsal_v4/public_source_freshness_watch_plan_v3.json",
+  "public_source_registry_promotion_preview_v3": "../public_freshness_scheduler_rehearsal_v4/public_source_registry_promotion_preview_v3.json",
+  "source_registry_fixtures": "../public_freshness_scheduler_rehearsal_v4/source_registry_fixtures.json",
+  "pdf_field_mapping_fixtures": "../draft_preview_agent_handoff_packet_v4/pdf_field_mapping_fixtures.json",
+  "guardrail_bundle_fixtures": "../agent_readiness_packet_v4/guardrail_bundle_fixtures.json",
+  "process_model_fixtures": "../agent_readiness_packet_v4/process_model_fixtures.json",
+  "readiness_fixture_root": "../agent_readiness_packet_v4"
+}

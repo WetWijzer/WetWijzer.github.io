@@ -1,0 +1,25 @@
+{
+  "proposal_version": "refresh-implementation-v2",
+  "summary": "Active mutation fixture.",
+  "impact": "Exercises mutation flag validation.",
+  "active_source_mutation": true,
+  "mutation_flags": {
+    "surface-registry": true
+  },
+  "patch_rows": [
+    {
+      "patch_id": "active-mutations",
+      "source_target_id": "source:public",
+      "surface_target_id": "surface:validator",
+      "guardrail_target_id": "guardrail:no-actions",
+      "depends_on": ["source:public"],
+      "rollback_notes": "Revert this row.",
+      "reviewer_owner": "ppd-review",
+      "citations": ["docs/PORTLAND_PPD_SCRAPING_AUTOMATION_LOGIC_PLAN.md"],
+      "mutation": {
+        "target": "prompt",
+        "active": true
+      }
+    }
+  ]
+}

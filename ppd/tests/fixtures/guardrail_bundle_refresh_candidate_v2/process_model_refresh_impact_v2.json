@@ -1,0 +1,14 @@
+{
+  "impact_id": "process-model-refresh-impact-v2-fixture-001",
+  "source_change_id": "source-change-fixture-devhub-submit-plans-001",
+  "affected_process_ids": [
+    "process:building-permit-plan-review",
+    "process:trade-permit-with-plan-review"
+  ],
+  "impact_summary": "Fixture impact indicates upload staging, certification review, and submission guardrails must be refreshed from cited public guidance.",
+  "changed_requirement_refs": [
+    "requirement:single-pdf-upload-staging",
+    "requirement:certification-exact-confirmation",
+    "requirement:submit-action-block"
+  ]
+}

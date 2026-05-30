@@ -1,0 +1,33 @@
+{
+  "packet_id": "prompt-refresh-release-handoff-20260529-fixture",
+  "schema_version": "ppd.prompt_refresh_release_handoff.v1",
+  "release_evidence": [
+    {
+      "citation_id": "release-boundary",
+      "label": "prompt refresh release handoff requires fixture-first dry-run validation before any live prompt consumer execution"
+    },
+    {
+      "citation_id": "offline-validation",
+      "label": "offline validation uses local py_compile, unittest, and daemon self-test commands only"
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/prompt_consumer_dry_run_transcript_packet.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_prompt_consumer_dry_run_transcript_packet"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

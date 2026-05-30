@@ -1,0 +1,112 @@
+{
+  "packet_id": "fixture-source-freshness-drift-triage-v2-001",
+  "public_recrawl_post_run_metadata_intake_v2": {
+    "run_id": "public-recrawl-post-run-metadata-intake-v2-fixture-001",
+    "captured_at": "2026-05-29T00:00:00Z",
+    "sources": [
+      {
+        "source_id": "ppd-devhub-faq",
+        "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+        "http_status": 200,
+        "content_hash_before": "sha256:old-devhub-faq",
+        "content_hash_after": "sha256:new-devhub-faq",
+        "affected_requirement_ids": ["REQ-DEVHUB-UPLOAD-CORRECTIONS"],
+        "affected_process_ids": ["PROC-DEVHUB-CORRECTIONS"],
+        "affected_guardrail_ids": ["GRD-DEVHUB-UPLOAD-OFFICIAL-RECORD"],
+        "citation": {
+          "label": "DevHub FAQ recrawl metadata",
+          "url": "https://www.portland.gov/ppd/devhub-faqs",
+          "captured_at": "2026-05-29T00:00:00Z"
+        }
+      },
+      {
+        "source_id": "ppd-single-pdf-process",
+        "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "http_status": 200,
+        "content_hash_before": "sha256:single-pdf-process",
+        "content_hash_after": "sha256:single-pdf-process",
+        "affected_requirement_ids": ["REQ-SINGLE-PDF-DRAWINGS"],
+        "affected_process_ids": ["PROC-DOCUMENT-PREPARATION"],
+        "affected_guardrail_ids": ["GRD-UPLOAD-STAGING-ONLY"],
+        "citation": {
+          "label": "Submit plans online recrawl metadata",
+          "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+          "captured_at": "2026-05-29T00:00:00Z"
+        }
+      },
+      {
+        "source_id": "ppd-fee-payment-guide",
+        "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "http_status": 200,
+        "content_hash_before": "sha256:fee-payment-guide",
+        "content_hash_after": "sha256:fee-payment-guide",
+        "affected_requirement_ids": ["REQ-FEE-PAYMENT-FINAL-SUBMIT"],
+        "affected_process_ids": ["PROC-FEE-PAYMENT"],
+        "affected_guardrail_ids": ["GRD-PAYMENT-DETAILS-ATTENDED"],
+        "citation": {
+          "label": "Fee payment guide recrawl metadata",
+          "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+          "captured_at": "2026-05-29T00:00:00Z"
+        }
+      }
+    ]
+  },
+  "source_freshness_badge_packets": [
+    {
+      "packet_id": "badge-devhub-faq-20260529",
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "freshness_status": "fresh",
+      "badge": "recrawled",
+      "owner": "ppd-public-source-maintainer",
+      "citation": {
+        "label": "DevHub FAQ freshness badge",
+        "url": "https://www.portland.gov/ppd/devhub-faqs",
+        "captured_at": "2026-05-29T00:00:00Z"
+      }
+    },
+    {
+      "packet_id": "badge-single-pdf-20260529",
+      "source_id": "ppd-single-pdf-process",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "freshness_status": "fresh",
+      "badge": "unchanged",
+      "owner": "ppd-document-requirements-owner",
+      "citation": {
+        "label": "Submit plans online freshness badge",
+        "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+        "captured_at": "2026-05-29T00:00:00Z"
+      }
+    },
+    {
+      "packet_id": "badge-fee-guide-20260529",
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "freshness_status": "stale",
+      "badge": "manual-review-required",
+      "owner": "ppd-financial-guardrails-owner",
+      "citation": {
+        "label": "Fee payment guide stale badge",
+        "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "captured_at": "2026-05-29T00:00:00Z"
+      }
+    }
+  ],
+  "evidence_freshness_watchlist_packets": [
+    {
+      "packet_id": "watchlist-fee-guide-20260529",
+      "source_id": "ppd-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "watch_status": "stale",
+      "escalation_owner": "ppd-financial-guardrails-owner",
+      "affected_requirement_ids": ["REQ-FEE-PAYMENT-FINAL-SUBMIT"],
+      "affected_process_ids": ["PROC-FEE-PAYMENT"],
+      "affected_guardrail_ids": ["GRD-PAYMENT-DETAILS-ATTENDED", "GRD-FINAL-PAYMENT-EXACT-CONFIRMATION"],
+      "citation": {
+        "label": "Fee payment guide evidence watchlist",
+        "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+        "captured_at": "2026-05-29T00:00:00Z"
+      }
+    }
+  ]
+}

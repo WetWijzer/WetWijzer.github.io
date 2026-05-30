@@ -1,0 +1,27 @@
+{
+  "version": "2",
+  "approval_rows": [
+    {
+      "decision": "approve",
+      "source_evidence_ids": [
+        "ppd-plan-source-anchor-20260508"
+      ],
+      "rationale": "The change is limited to deterministic validation fixtures and has cited public plan evidence.",
+      "reviewer_owner": "ppd-validation-reviewer",
+      "blockers": [],
+      "rollback_verification": {
+        "verified": true,
+        "evidence": "complete file replacement can be omitted from the offline patch set"
+      },
+      "mutation_flags": {
+        "source": false,
+        "surface_registry": false,
+        "guardrail": false,
+        "prompt": false,
+        "monitoring": false,
+        "release_state": false,
+        "agent_state": false
+      }
+    }
+  ]
+}

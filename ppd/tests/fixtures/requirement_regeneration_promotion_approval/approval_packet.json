@@ -1,0 +1,84 @@
+{
+  "packet_id": "requirement-regeneration-promotion-approval-packet",
+  "packet_type": "fixture-first-requirement-regeneration-promotion-approval",
+  "source_packet_ids": [
+    "requirement-regeneration-promotion-candidate-packet",
+    "release-blocker-closure-review-packet",
+    "agent-freshness-regression-acceptance-packet"
+  ],
+  "decisions": [
+    {
+      "delta_id": "delta-approved-fixture-first-promotion",
+      "decision": "approve",
+      "rationale": "Candidate delta is covered by release blocker closure and accepted freshness regression evidence.",
+      "citations": [
+        "agent-freshness-regression-acceptance-packet",
+        "candidate-packet#delta-approved-fixture-first-promotion",
+        "candidate-packet#fixture",
+        "freshness-acceptance#accepted",
+        "release-blocker-closure-review-packet",
+        "release-blocker-review#closed",
+        "requirement-regeneration-promotion-candidate-packet"
+      ],
+      "impacted_artifact_ids": ["artifact.requirement-regeneration.packet"],
+      "rollback": {
+        "required": true,
+        "plan": "Revert the approval packet fixture to the last accepted version and rerun offline validation."
+      },
+      "reviewer_signoff": {
+        "required": true,
+        "reviewer": null,
+        "signed_at": null,
+        "status": "pending"
+      }
+    },
+    {
+      "delta_id": "delta-deferred-missing-freshness",
+      "decision": "defer",
+      "rationale": "Candidate delta is deferred until blocker closure, freshness acceptance, and blocked-delta checks all pass.",
+      "citations": [
+        "agent-freshness-regression-acceptance-packet",
+        "candidate-packet#delta-deferred-missing-freshness",
+        "candidate-packet#fixture",
+        "freshness-acceptance#accepted",
+        "release-blocker-closure-review-packet",
+        "release-blocker-review#closed",
+        "requirement-regeneration-promotion-candidate-packet"
+      ],
+      "impacted_artifact_ids": ["artifact.requirement-regeneration.delta"],
+      "rollback": {
+        "required": false,
+        "plan": "Restore the prior fixture packet and rerun offline validation before any promotion retry."
+      },
+      "reviewer_signoff": {
+        "required": true,
+        "reviewer": null,
+        "signed_at": null,
+        "status": "pending"
+      }
+    }
+  ],
+  "expected_offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+  "impacted_artifact_ids": [
+    "artifact.agent-freshness.acceptance",
+    "artifact.release-blocker.review",
+    "blocker.fixture-regeneration-reviewed",
+    "delta-approved-fixture-first-promotion",
+    "delta-deferred-missing-freshness"
+  ],
+  "attestations": {
+    "no_active_requirement_mutation": true,
+    "no_active_process_mutation": true,
+    "no_active_guardrail_mutation": true,
+    "no_active_prompt_mutation": true,
+    "no_active_release_mutation": true
+  },
+  "citations": [
+    "agent-freshness-regression-acceptance-packet",
+    "candidate-packet#fixture",
+    "freshness-acceptance#accepted",
+    "release-blocker-closure-review-packet",
+    "release-blocker-review#closed",
+    "requirement-regeneration-promotion-candidate-packet"
+  ]
+}

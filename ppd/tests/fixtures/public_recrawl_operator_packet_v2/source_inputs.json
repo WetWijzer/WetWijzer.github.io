@@ -1,0 +1,91 @@
+{
+  "source_freshness_drift_escalation": {
+    "generated_from": "source freshness drift escalation fixture",
+    "escalated_sources": [
+      {
+        "source_id": "portland_auditor_code",
+        "freshness_status": "stale",
+        "priority": "high",
+        "seed_urls": [
+          "https://www.portland.gov/code/33"
+        ],
+        "citation": {
+          "fixture": "source_freshness_drift_escalation.json",
+          "anchor": "escalated_sources.portland_auditor_code"
+        }
+      },
+      {
+        "source_id": "portland_permits_public_notices",
+        "freshness_status": "drifted",
+        "priority": "normal",
+        "seed_urls": [
+          "https://www.portland.gov/bds/public-notices"
+        ],
+        "citation": {
+          "fixture": "source_freshness_drift_escalation.json",
+          "anchor": "escalated_sources.portland_permits_public_notices"
+        }
+      }
+    ]
+  },
+  "source_refresh_runbook": {
+    "generated_from": "source refresh runbook fixture",
+    "default_rate_limit": {
+      "requests_per_minute": 6,
+      "burst": 1,
+      "concurrency": 1,
+      "backoff_seconds": 30
+    },
+    "sources": [
+      {
+        "source_id": "portland_auditor_code",
+        "allowlisted": true,
+        "rate_limit": {
+          "requests_per_minute": 4,
+          "burst": 1,
+          "concurrency": 1,
+          "backoff_seconds": 45
+        },
+        "citation": {
+          "fixture": "source_refresh_runbook.json",
+          "anchor": "sources.portland_auditor_code.rate_limit"
+        }
+      },
+      {
+        "source_id": "portland_permits_public_notices",
+        "allowlisted": true,
+        "citation": {
+          "fixture": "source_refresh_runbook.json",
+          "anchor": "sources.portland_permits_public_notices"
+        }
+      }
+    ]
+  },
+  "public_source_refresh_operator_dry_run_transcript": {
+    "generated_from": "public source refresh operator dry-run transcript fixture",
+    "source_decisions": [
+      {
+        "source_id": "portland_auditor_code",
+        "robots": "allowed",
+        "skip_reasons": [
+          "dry_run_only"
+        ],
+        "citation": {
+          "fixture": "public_source_refresh_operator_dry_run_transcript.json",
+          "anchor": "source_decisions.portland_auditor_code"
+        }
+      },
+      {
+        "source_id": "portland_permits_public_notices",
+        "robots": "disallowed",
+        "skip_reasons": [
+          "robots_disallow_in_dry_run"
+        ],
+        "citation": {
+          "fixture": "public_source_refresh_operator_dry_run_transcript.json",
+          "anchor": "source_decisions.portland_permits_public_notices"
+        }
+      }
+    ]
+  }
+}

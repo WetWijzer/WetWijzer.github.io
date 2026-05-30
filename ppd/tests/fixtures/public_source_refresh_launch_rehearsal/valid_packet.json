@@ -1,0 +1,47 @@
+{
+  "packet_type": "public_source_refresh_launch_rehearsal_transcript",
+  "consumed_packets": [
+    "packet-20260529-public-source-refresh-plan"
+  ],
+  "preflight_gate_outcome": {
+    "gate": "launch-rehearsal-only",
+    "outcome": "blocked-live-refresh"
+  },
+  "abort_trigger_checks": [
+    {
+      "trigger": "live-source-fetch-command",
+      "checked": true,
+      "outcome": "absent"
+    }
+  ],
+  "reviewer_owner": "ppd-reviewer",
+  "result_placeholders": [
+    {
+      "name": "source-refresh-results",
+      "metadata_only": true,
+      "artifact": "placeholder:metadata-only"
+    }
+  ],
+  "rehearsal_steps": [
+    {
+      "step": "Confirm allowlisted public source inventory without fetching live content.",
+      "citations": [
+        "https://www.portland.gov/bds"
+      ]
+    }
+  ],
+  "source_urls": [
+    "https://www.portland.gov/bds",
+    "https://efiles.portlandoregon.gov/Record/123"
+  ],
+  "commands": [
+    "python3 ppd/rehearsal/check_packet.py --offline-fixture ppd/tests/fixtures/public_source_refresh_launch_rehearsal/valid_packet.json"
+  ],
+  "registry_mutation": false,
+  "schedule_mutation": false,
+  "source_mutation": false,
+  "requirement_mutation": false,
+  "guardrail_mutation": false,
+  "monitoring_mutation": false,
+  "release_state_mutation": false
+}

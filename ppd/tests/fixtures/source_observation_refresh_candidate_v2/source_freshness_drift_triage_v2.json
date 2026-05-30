@@ -1,0 +1,22 @@
+{
+  "schema_version": "source_freshness_drift_triage_v2",
+  "triage_items": [
+    {
+      "source_id": "permit-center-fees",
+      "triage_id": "triage-001",
+      "decision": "candidate",
+      "freshness_state": "stale_metadata",
+      "drift_signal": "dry_run_last_modified_changed",
+      "reviewer_owner": "ppd-fees-reviewer"
+    },
+    {
+      "source_id": "building-code-summary",
+      "triage_id": "triage-002",
+      "decision": "deferred",
+      "reason": "publication_date_conflict",
+      "freshness_state": "unknown",
+      "drift_signal": "manual_review_required",
+      "reviewer_owner": "ppd-code-reviewer"
+    }
+  ]
+}

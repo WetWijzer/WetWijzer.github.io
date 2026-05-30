@@ -1,0 +1,90 @@
+{
+  "packet_id": "guardrail-bundle-refresh-candidate-v2-fixture",
+  "packet_version": "guardrail-bundle-refresh-candidate-v2",
+  "guardrail_bundle_id": "guardrail-corrections-and-fee-review-redacted-fixture",
+  "action_policies": [
+    {
+      "action_id": "review-fee-notice",
+      "classification": "safe_read_only",
+      "decision": "allow_attended_read_only_review",
+      "minimum_selector_confidence": "human_verified",
+      "selector_review_expectation": "Reviewer confirms redacted accessible label and read-only state before any registry refresh.",
+      "requires_attendance": true,
+      "requires_exact_confirmation": false,
+      "manual_handoff_checkpoint_ids": [],
+      "redaction_requirement_ids": ["redact-account-identifiers"],
+      "source_evidence_ids": ["official-devhub-faq-paying-fees"]
+    },
+    {
+      "action_id": "stage-correction-upload",
+      "classification": "reversible_draft",
+      "decision": "allow_local_staging_only_with_handoff_before_official_attach",
+      "minimum_selector_confidence": "human_verified",
+      "selector_review_expectation": "Reviewer confirms staging control is reversible and does not attach to official record.",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "manual_handoff_checkpoint_ids": ["handoff-before-official-upload"],
+      "redaction_requirement_ids": ["redact-account-identifiers", "redact-private-permit-values"],
+      "source_evidence_ids": ["official-upload-corrections-guide"]
+    },
+    {
+      "action_id": "submit-correction-upload",
+      "classification": "consequential_official",
+      "decision": "block_automation_require_manual_handoff_and_exact_confirmation",
+      "minimum_selector_confidence": "human_verified",
+      "selector_review_expectation": "Reviewer confirms this remains excluded from autonomous registry actions.",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "manual_handoff_checkpoint_ids": ["handoff-before-certification-or-submit"],
+      "redaction_requirement_ids": ["redact-account-identifiers", "redact-private-permit-values"],
+      "source_evidence_ids": ["official-upload-corrections-guide", "official-devhub-faq-upload-corrections"]
+    }
+  ],
+  "manual_handoff_checkpoints": [
+    {
+      "checkpoint_id": "handoff-before-official-upload",
+      "surface_id": "devhub-permit-detail-redacted",
+      "action_id": "stage-correction-upload",
+      "reason": "Uploading corrections is account-scoped and can affect an official permit record.",
+      "required_before": "official_attach_or_upload",
+      "owner_field": "reviewer",
+      "requires_exact_confirmation": true
+    },
+    {
+      "checkpoint_id": "handoff-before-certification-or-submit",
+      "surface_id": "devhub-permit-detail-redacted",
+      "action_id": "submit-correction-upload",
+      "reason": "Certification or submit actions are consequential official actions.",
+      "required_before": "certify_submit_schedule_cancel_pay_or_upload",
+      "owner_field": "reviewer",
+      "requires_exact_confirmation": true
+    }
+  ],
+  "redaction_requirements": [
+    {
+      "redaction_requirement_id": "redact-account-identifiers",
+      "applies_to": ["account_name", "email", "phone", "portal_user_id"],
+      "must_redact": true,
+      "allowed_replacement": "stable synthetic account label",
+      "review_owner_field": "guardrail_owner"
+    },
+    {
+      "redaction_requirement_id": "redact-private-permit-values",
+      "applies_to": ["permit_number", "application_number", "address", "uploaded_file_name", "private_status_message"],
+      "must_redact": true,
+      "allowed_replacement": "stable synthetic permit label",
+      "review_owner_field": "guardrail_owner"
+    }
+  ],
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "attestations": {
+    "no_live_devhub": true,
+    "no_auth_state": true,
+    "no_screenshot": true,
+    "no_trace": true,
+    "no_har": true,
+    "no_surface_registry_mutation": true
+  }
+}

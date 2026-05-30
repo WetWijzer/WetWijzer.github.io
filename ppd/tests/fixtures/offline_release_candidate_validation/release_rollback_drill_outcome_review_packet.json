@@ -1,0 +1,23 @@
+{
+  "packet_id": "rollback-drill-review-20260529-rc-001",
+  "release_candidate_id": "rc-20260529-offline-001",
+  "drill_outcome": "passed",
+  "rollback_owner": "ppd-rollback-owner",
+  "rollback_reviewer": "ppd-rollback-reviewer",
+  "rollback_drill_refs": [
+    "rollback-drill:restore-prior-offline-fixture-packet",
+    "rollback-drill:verify-no-release-state-mutation",
+    "rollback-drill:review-owner-signoff-recorded"
+  ],
+  "evidence_refs": [
+    "rollback-review:fixture-rollback-path-exercised",
+    "rollback-review:no-live-or-authenticated-state-created"
+  ],
+  "attestations": {
+    "no_live_crawl": true,
+    "no_devhub": true,
+    "no_prompt": true,
+    "no_guardrail_mutation": true,
+    "no_release_mutation": true
+  }
+}

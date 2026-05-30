@@ -1,0 +1,60 @@
+{
+  "packet_version": "live-readiness-authorization-checklist-v2",
+  "packet_id": "ppd-live-readiness-fixture-v2-invalid",
+  "prerequisites": [
+    {
+      "id": "uncited-precondition",
+      "description": "A prerequisite stated without a public citation."
+    }
+  ],
+  "reviewer_signoff": {
+    "name": "Fixture Reviewer",
+    "role": "reviewer"
+  },
+  "fixture_gaps": [
+    {
+      "id": "missing-negative-case",
+      "status": "open",
+      "description": "An unresolved validation fixture gap remains."
+    }
+  ],
+  "facts": [
+    {
+      "id": "account-only-status",
+      "privacy_classification": "authenticated private",
+      "text": "Account-scoped DevHub status was consulted."
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "stored-login-state",
+      "kind": "storage_state",
+      "path": "local/auth_state.json"
+    },
+    {
+      "id": "browser-capture",
+      "kind": "trace",
+      "path": "local/browser-trace.zip"
+    },
+    {
+      "id": "network-capture",
+      "kind": "har_path",
+      "path": "local/network.har"
+    }
+  ],
+  "notes": [
+    "The worker executed live and clicked live in DevHub.",
+    "The workflow can automate MFA and solve CAPTCHA prompts.",
+    "Approval guaranteed: the permit will be issued.",
+    "Enable submit, enable payment, ready to schedule, and ready to upload are claimed."
+  ],
+  "mutation_flags": {
+    "active_source_mutation": true,
+    "active_schedule_mutation": true,
+    "active_surface_registry_mutation": true,
+    "active_prompt_mutation": true,
+    "active_monitoring_mutation": true,
+    "active_release_state_mutation": true,
+    "active_agent_state_mutation": true
+  }
+}

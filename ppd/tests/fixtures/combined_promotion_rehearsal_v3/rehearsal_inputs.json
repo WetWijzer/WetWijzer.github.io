@@ -1,0 +1,208 @@
+{
+  "packet_id": "combined-promotion-rehearsal-v3-fixture",
+  "source_registry_owner": "public-source-reviewer",
+  "devhub_surface_map_owner": "devhub-surface-reviewer",
+  "guardrail_bundle_owner": "guardrail-reviewer",
+  "rollback_owner": "rollback-reviewer",
+  "public_source_registry_promotion_preview_v3": {
+    "preview_version": "v3",
+    "patch_candidates": [
+      {
+        "patch_id": "src-preview-submit-plans-online",
+        "citations": [
+          "source:submit-plans-online#public-fixture"
+        ],
+        "before_metadata": {
+          "freshness_status": "stale"
+        },
+        "after_metadata": {
+          "freshness_status": "current"
+        },
+        "affected_source_ids": [
+          "source:submit-plans-online"
+        ],
+        "affected_requirement_ids": [
+          "requirement:upload-plans-confirmation"
+        ],
+        "fixture_path": "ppd/tests/fixtures/source_registry_promotion_preview_v3/public_source_freshness_watch_plan_v3.json",
+        "before_hash": "source-before-submit-plans-online",
+        "after_hash": "source-after-submit-plans-online"
+      }
+    ],
+    "dependency_order": [
+      "src-preview-submit-plans-online"
+    ],
+    "rollback_checkpoints": [
+      {
+        "patch_id": "src-preview-submit-plans-online",
+        "checkpoint_id": "rollback-source-submit-plans-online"
+      }
+    ]
+  },
+  "devhub_surface_map_promotion_preview_v3": {
+    "preview_type": "ppd.devhub_surface_map_promotion_preview.v3",
+    "preview_version": 3,
+    "mode": "inactive_fixture_promotion_preview_only",
+    "surface_action_patch_candidates": [
+      {
+        "candidate_id": "devhub-preview-upload-surface",
+        "surface_id": "surface:devhub-upload-plans",
+        "patch_kind": "inactive_fixture_surface_action_patch_candidate",
+        "citations": [
+          {
+            "source_id": "source:submit-plans-online",
+            "citation": "surface-map:upload-plans#synthetic-fixture"
+          }
+        ],
+        "before_surface_rows": [
+          {
+            "row_id": "surface-before-upload",
+            "surface_id": "surface:devhub-upload-plans",
+            "citations": [
+              {
+                "source_id": "source:submit-plans-online",
+                "citation": "before surface fixture row"
+              }
+            ]
+          }
+        ],
+        "after_surface_rows": [
+          {
+            "row_id": "surface-after-upload",
+            "surface_id": "surface:devhub-upload-plans",
+            "citations": [
+              {
+                "source_id": "source:submit-plans-online",
+                "citation": "after surface fixture row"
+              }
+            ]
+          }
+        ],
+        "before_action_rows": [
+          {
+            "row_id": "action-before-upload",
+            "surface_id": "surface:devhub-upload-plans",
+            "citations": [
+              {
+                "source_id": "source:submit-plans-online",
+                "citation": "before action fixture row"
+              }
+            ]
+          }
+        ],
+        "after_action_rows": [
+          {
+            "row_id": "action-after-upload",
+            "surface_id": "surface:devhub-upload-plans",
+            "citations": [
+              {
+                "source_id": "source:submit-plans-online",
+                "citation": "after action fixture row"
+              }
+            ]
+          }
+        ],
+        "selector_confidence_deltas": [
+          {
+            "surface_id": "surface:devhub-upload-plans",
+            "selector": "data-testid-upload-documents",
+            "before_confidence": "low",
+            "after_confidence": "review_only",
+            "delta_disposition": "manual_handoff_required",
+            "citations": [
+              {
+                "source_id": "source:submit-plans-online",
+                "citation": "selector delta fixture row"
+              }
+            ]
+          }
+        ],
+        "manual_handoff_disposition": {
+          "required": true,
+          "reason": "Reviewer compares inactive fixture rows before any later surface-map promotion review.",
+          "citations": [
+            {
+              "source_id": "source:submit-plans-online",
+              "citation": "manual handoff fixture row"
+            }
+          ]
+        },
+        "redaction_disposition": {
+          "disposition": "synthetic_only",
+          "reason": "Fixture uses synthetic public metadata only.",
+          "citations": [
+            {
+              "source_id": "source:submit-plans-online",
+              "citation": "redaction fixture row"
+            }
+          ]
+        },
+        "fixture_path": "ppd/tests/fixtures/devhub/surface_map_promotion_preview_v3.json",
+        "before_hash": "devhub-before-upload-surface",
+        "after_hash": "devhub-after-upload-surface"
+      }
+    ]
+  },
+  "guardrail_bundle_promotion_preview_v3": {
+    "preview_type": "ppd.guardrail_bundle_promotion_preview.v3",
+    "preview_version": 3,
+    "mode": "fixture_first_guardrail_bundle_promotion_preview_only",
+    "guardrail_fixture_patch_candidates": [
+      {
+        "candidate_id": "guardrail-preview-upload-confirmation",
+        "guardrail_bundle_id": "guardrail-bundle:upload-plans",
+        "scenario_ref": "scenario:upload-plans-confirmation",
+        "reviewer_owner": "guardrail-reviewer",
+        "patch_kind": "inactive_fixture_guardrail_patch_candidate",
+        "citations": [
+          {
+            "artifact": "guardrail_regression_replay_matrix_v3",
+            "section": "upload-plans-confirmation"
+          }
+        ],
+        "before_after_predicate_rows": [
+          {
+            "predicate_id": "predicate:upload-plans-confirmation",
+            "before": "confirmation predicate lacks preview provenance",
+            "after": "confirmation predicate cites source and surface-map preview provenance",
+            "expected_regression_result": "blocked_until_reviewed_confirmation",
+            "citations": [
+              {
+                "artifact": "guardrail_regression_replay_matrix_v3",
+                "section": "predicate row"
+              }
+            ]
+          }
+        ],
+        "explanation_template_deltas": [
+          {
+            "template_id": "template:upload-plans-confirmation",
+            "before_template": "Fixture explanation before provenance review.",
+            "after_template": "Fixture explanation cites preview provenance before review.",
+            "citations": [
+              {
+                "artifact": "guardrail_regression_replay_matrix_v3",
+                "section": "template delta"
+              }
+            ]
+          }
+        ],
+        "dependency_refs": [
+          "requirement:upload-plans-confirmation",
+          "surface:devhub-upload-plans"
+        ],
+        "fixture_path": "ppd/tests/fixtures/guardrail_bundle_promotion_preview_v3/input_manifest.json",
+        "before_hash": "guardrail-before-upload-confirmation",
+        "after_hash": "guardrail-after-upload-confirmation"
+      }
+    ]
+  },
+  "attestations": {
+    "fixture_first": true,
+    "no_live": true,
+    "no_auth": true,
+    "no_official_action": true,
+    "no_active_registry_mutation": true,
+    "no_active_guardrail_mutation": true
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "manifest_id": "attended-review-disposition-summary-v3-fixture-manifest",
+  "readiness_checklist_fixture": "../review_readiness_checklist_v3/valid_checklist.json",
+  "rejection_checklist_fixture": "../review_readiness_checklist_v3/invalid_checklist.json"
+}

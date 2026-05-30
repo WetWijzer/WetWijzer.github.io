@@ -1,0 +1,47 @@
+{
+  "packet_version": "reversible_draft_preview_readiness_packet_v2",
+  "readiness_decisions": [
+    {
+      "decision": "preview_ready",
+      "reason": "All preview checks are deterministic and reversible.",
+      "citations": ["ppd-fixture:preview-readiness:1"]
+    }
+  ],
+  "required_fact_checks": [
+    {
+      "fact": "project address is represented by a synthetic fixture value",
+      "status": "present",
+      "citations": ["ppd-fixture:required-facts:1"]
+    }
+  ],
+  "missing_document_checks": [
+    {
+      "document": "site plan fixture",
+      "status": "not_missing",
+      "citations": ["ppd-fixture:documents:1"]
+    }
+  ],
+  "reversible_action_predicates": [
+    {
+      "predicate": "preview does not submit, upload, pay, schedule, cancel, or mutate records",
+      "satisfied": true,
+      "citations": ["ppd-fixture:reversible-actions:1"]
+    }
+  ],
+  "exact_confirmation_checkpoints": [
+    {
+      "checkpoint": "operator must confirm before any non-preview transition",
+      "exact_confirmation": true,
+      "citations": ["ppd-fixture:confirmations:1"]
+    }
+  ],
+  "mutation_flags": {
+    "active_pdf_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_process_mutation": false,
+    "active_gap_analysis_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false
+  }
+}

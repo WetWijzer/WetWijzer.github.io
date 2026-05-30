@@ -1,0 +1,117 @@
+{
+  "packet_id": "agent-prompt-refresh-acceptance-20260529-519",
+  "task_id": "checkbox-29",
+  "supervisor_task_id": "supervisor-20260529-519",
+  "mode": "fixture_first_offline_acceptance",
+  "consumes_packets": [
+    {
+      "packet_id": "validated-agent-prompt-refresh-candidate-packet",
+      "role": "candidate_prompt_changes",
+      "citation": "ppd/tests/fixtures/agent_prompt_refresh/validated_candidate_packet.json"
+    },
+    {
+      "packet_id": "guardrail-refresh-regression-review-packet",
+      "role": "guardrail_regression_findings",
+      "citation": "ppd/tests/fixtures/guardrails/refresh_regression_review_packet.json"
+    },
+    {
+      "packet_id": "agent-regression-refresh-packet",
+      "role": "agent_regression_results",
+      "citation": "ppd/tests/fixtures/agent_prompt_refresh/agent_regression_refresh_packet.json"
+    }
+  ],
+  "reviewer_owner": {
+    "reviewer": "ppd-fixture-reviewer",
+    "owner": "ppd-agent-prompt-maintainer",
+    "handoff_required_before_live_use": true
+  },
+  "supported_safe_read_only_scenario_ids": [
+    "safe-read-only-devhub-login-page-detection",
+    "safe-read-only-permit-search-result-inspection",
+    "safe-read-only-document-metadata-extraction",
+    "safe-read-only-network-idle-observation"
+  ],
+  "prompt_change_decisions": [
+    {
+      "change_id": "apr-001-read-only-scope-statement",
+      "decision": "accepted",
+      "reason": "Clarifies that the agent may inspect public PP&D and DevHub pages only through safe read-only flows.",
+      "citations": [
+        "validated-agent-prompt-refresh-candidate-packet:changes.apr-001",
+        "guardrail-refresh-regression-review-packet:findings.no_consequential_actions",
+        "agent-regression-refresh-packet:scenarios.safe_read_only_pass"
+      ]
+    },
+    {
+      "change_id": "apr-002-offline-fixture-priority",
+      "decision": "accepted",
+      "reason": "Requires deterministic fixtures and offline validation before any live crawl or authenticated automation path is considered.",
+      "citations": [
+        "validated-agent-prompt-refresh-candidate-packet:changes.apr-002",
+        "agent-regression-refresh-packet:offline_validation.commands"
+      ]
+    },
+    {
+      "change_id": "apr-003-devhub-authenticated-navigation",
+      "decision": "deferred",
+      "reason": "Authenticated DevHub navigation remains out of scope until reviewer approval and a separate non-mutating session policy are supplied.",
+      "citations": [
+        "guardrail-refresh-regression-review-packet:findings.devhub_auth_state_blocked",
+        "agent-regression-refresh-packet:blocked_paths.authenticated_devhub"
+      ]
+    },
+    {
+      "change_id": "apr-004-submit-or-upload-language",
+      "decision": "rejected",
+      "reason": "Any language that could permit submission, upload, certification, payment, account creation, cancellation, CAPTCHA handling, or MFA handling is consequential and blocked.",
+      "citations": [
+        "guardrail-refresh-regression-review-packet:findings.consequential_action_language",
+        "validated-agent-prompt-refresh-candidate-packet:rejected_terms"
+      ]
+    }
+  ],
+  "blocked_consequential_action_language_checks": [
+    "submit",
+    "upload",
+    "certify",
+    "pay",
+    "payment",
+    "create account",
+    "cancel",
+    "captcha",
+    "mfa",
+    "two-factor",
+    "sign and file",
+    "finalize application"
+  ],
+  "rollback_notes": {
+    "trigger": "Any prompt regression that expands beyond fixture-first safe-read-only inspection or weakens consequential-action blocking.",
+    "rollback_action": "Restore the previous accepted prompt fixture packet and rerun offline validation before reuse.",
+    "state_cleanup_required": false
+  },
+  "offline_validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_agent_prompt_refresh_acceptance_packet.py"
+    ]
+  ],
+  "attestations": {
+    "no_live_llm": true,
+    "no_devhub": true,
+    "no_prompt_mutation": true,
+    "no_guardrail_mutation": true,
+    "no_agent_state_mutation": true,
+    "no_private_session_files": true,
+    "no_auth_state": true,
+    "no_traces": true,
+    "no_raw_crawl_output": true,
+    "no_downloaded_documents": true
+  }
+}

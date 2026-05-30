@@ -1,0 +1,112 @@
+{
+  "requirement_rerun_result_intake_packet": {
+    "packet_type": "requirement_extraction_rerun_result_intake",
+    "packet_version": 1,
+    "packet_id": "result-intake-for-work-order-20260529-fixture-rerun-001",
+    "reviewer_owner": "ppd-requirements-reviewer",
+    "affected_requirement_ids": ["REQ-DEVHUB-LOGIN-001", "REQ-PERMIT-SEARCH-002"],
+    "affected_process_ids": ["PROC-FIXTURE-RERUN", "PROC-RESULT-INTAKE"],
+    "affected_guardrail_ids": ["GRD-NO-LIVE-EXTRACTION", "GRD-NO-PROCESSOR"],
+    "result_decisions": [
+      {
+        "decision": "accepted",
+        "requirement_id": "REQ-DEVHUB-LOGIN-001",
+        "process_id": "PROC-FIXTURE-RERUN",
+        "guardrail_ids": ["GRD-NO-LIVE-EXTRACTION"],
+        "reviewer_owner": "ppd-requirements-reviewer",
+        "rationale": "Fixture evidence contains the expected login precondition.",
+        "citations": [
+          {
+            "fixture_id": "synthetic-rerun-output-20260529-001",
+            "source_fixture": "devhub-login-rerun.fixture.json",
+            "selector": "$.requirements[0].preconditions[0]",
+            "quote": "Reviewer must use the committed fixture login state only."
+          }
+        ]
+      },
+      {
+        "decision": "deferred",
+        "requirement_id": "REQ-PERMIT-SEARCH-002",
+        "process_id": "PROC-RESULT-INTAKE",
+        "guardrail_ids": ["GRD-NO-PROCESSOR"],
+        "reviewer_owner": "ppd-requirements-reviewer",
+        "rationale": "Fixture evidence identifies the permit search field but needs reviewer confirmation.",
+        "citations": [
+          {
+            "fixture_id": "synthetic-rerun-output-20260529-001",
+            "source_fixture": "permit-search-rerun.fixture.json",
+            "selector": "$.results[1].fields.search_term",
+            "quote": "permit number or address accepted as search input"
+          }
+        ]
+      }
+    ]
+  },
+  "process_model_impact_review_packet": {
+    "packet_id": "impact-review-valid-001",
+    "affected_process_ids": ["process-building-permit-intake"],
+    "affected_guardrail_ids": ["guardrail-submit-block", "guardrail-payment-block"],
+    "blocked_action_carryovers": [
+      {
+        "action_id": "submit-permit-request",
+        "reason": "official submission requires user attendance and exact confirmation"
+      }
+    ],
+    "reviewer_owners": ["ppd-process-reviewer"],
+    "process_stage_impact_claims": [
+      {
+        "claim_id": "claim-upload-staging-impact",
+        "process_stage": "upload staging",
+        "impact": "Source guidance affects reversible draft upload staging only.",
+        "source_evidence_ids": ["src-submit-plans-online-20260508"]
+      }
+    ],
+    "mutation_flags": {
+      "process": false,
+      "guardrail": false,
+      "prompt": false,
+      "release_state": false
+    }
+  },
+  "guardrail_bundle_update_candidate_packet": {
+    "packet_type": "fixture_first_guardrail_bundle_update_candidate_packet",
+    "packet_id": "guardrail-bundle-update-candidate-fixture-001",
+    "candidate_status": "draft_requires_human_review",
+    "active_guardrail_bundle_id": "guardrail-bundle-single-pdf-active",
+    "affected_process_ids": ["process-building-permit-intake"],
+    "cited_predicate_additions": [
+      {
+        "predicate_id": "predicate-addition.upload-staging.single-pdf",
+        "operation": "add",
+        "source_evidence_ids": ["src-submit-plans-online-20260508"],
+        "activation_allowed": false
+      }
+    ],
+    "cited_predicate_removals": [
+      {
+        "predicate_id": "predicate-removal.superseded-upload-rule",
+        "operation": "remove_candidate_predicate",
+        "source_evidence_ids": ["src-file-standards-20260508"],
+        "reviewer_owner": "ppd-guardrail-reviewer",
+        "activation_allowed": false
+      }
+    ],
+    "rollback_notes": [
+      {
+        "rollback_note_id": "rollback-guardrail-candidate-001",
+        "summary": "Discard candidate predicates and keep the active guardrail bundle unchanged.",
+        "source_evidence_ids": ["src-submit-plans-online-20260508"]
+      }
+    ],
+    "no_active_guardrail_mutation_attestations": {
+      "fixture_first": true,
+      "review_packet_only": true,
+      "compiled_guardrail_bundle": false,
+      "promoted_guardrail_bundle": false,
+      "mutated_active_guardrail_bundle": false,
+      "active_guardrail_bundle_replaced": false,
+      "live_guardrail_compiler_invoked": false,
+      "no_active_guardrail_mutation": true
+    }
+  }
+}

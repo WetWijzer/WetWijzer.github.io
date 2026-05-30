@@ -1,0 +1,85 @@
+{
+  "packet_type": "surface_registry_refresh_review_packet_v2",
+  "packet_version": "surface-registry-refresh-review-packet-v2",
+  "packet_id": "surface-registry-refresh-review-packet-v2-fixture-20260529",
+  "reviewer_owner_fields": {
+    "reviewer_owner": "ppd-surface-reviewer",
+    "implementation_owner": "ppd-devhub-automation-owner",
+    "safety_owner": "ppd-guardrail-owner"
+  },
+  "review_items": [
+    {
+      "update_id": "update:devhub-home-readonly-status-card",
+      "item_id": "update:devhub-home-readonly-status-card",
+      "item_type": "surface",
+      "surface_id": "surface:devhub-home",
+      "action_id": "action:read-status-card",
+      "selector_id": "selector:devhub-home-status-card-heading",
+      "selector_confidence": "high",
+      "selector_confidence_disposition": "accept-high-confidence-readonly-selector",
+      "acceptance_decision": "accepted",
+      "acceptance_rationale": "Read-only status card recognition is cited, redacted, and limited to user-visible review metadata.",
+      "manual_handoff_decision": "manual-attendance-required-before-any-live-devhub-use",
+      "redaction_gate_decision": "accept-redacted-public-shape-only",
+      "requires_attendance": true,
+      "reviewer_owner": "ppd-surface-reviewer",
+      "implementation_owner": "ppd-devhub-automation-owner",
+      "rollback_note": "Remove the accepted status-card surface update from the fixture packet before applying a registry refresh if reviewer citation coverage changes.",
+      "citations": [
+        "review:evidence:devhub-home-readonly-status-card",
+        "observation:evidence:attended-readonly-home-summary",
+        "guardrail:evidence:readonly-status-review"
+      ]
+    },
+    {
+      "update_id": "update:my-permits-filter-selector",
+      "item_id": "update:my-permits-filter-selector",
+      "item_type": "action",
+      "surface_id": "surface:devhub-my-permits",
+      "action_id": "action:filter-my-permits",
+      "selector_id": "selector:my-permits-filter-input",
+      "selector_confidence": "medium",
+      "selector_confidence_disposition": "defer-until-attended-live-confirmation",
+      "acceptance_decision": "deferred",
+      "acceptance_rationale": "The action remains read-only, but selector confidence needs a later attended confirmation before registry application.",
+      "manual_handoff_decision": "manual-attendance-required-for-selector-confirmation",
+      "redaction_gate_decision": "defer-until-redacted-live-label-confirmed",
+      "requires_attendance": true,
+      "reviewer_owner": "ppd-surface-reviewer",
+      "implementation_owner": "ppd-devhub-automation-owner",
+      "rollback_note": "Keep the existing My Permits filter selector unchanged until a reviewer accepts an attended redacted confirmation packet.",
+      "citations": [
+        "review:evidence:my-permits-filter-readonly",
+        "observation:evidence:attended-readonly-my-permits-summary",
+        "guardrail:evidence:readonly-filter-reversible"
+      ]
+    },
+    {
+      "update_id": "update:correction-upload-submit-control",
+      "item_id": "update:correction-upload-submit-control",
+      "item_type": "action",
+      "surface_id": "surface:devhub-corrections",
+      "action_id": "action:submit-correction-upload",
+      "selector_id": "selector:correction-upload-submit-button",
+      "selector_confidence": "low",
+      "selector_confidence_disposition": "reject-consequential-control-selector",
+      "acceptance_decision": "rejected",
+      "acceptance_rationale": "Correction upload submission is consequential and cannot be accepted as a surface-registry refresh update from fixture-only evidence.",
+      "manual_handoff_decision": "manual-handoff-only-no-automation",
+      "redaction_gate_decision": "reject-private-upload-control-from-registry-refresh",
+      "requires_attendance": true,
+      "reviewer_owner": "ppd-surface-reviewer",
+      "implementation_owner": "ppd-devhub-automation-owner",
+      "rollback_note": "Do not add or change correction upload submission controls in the surface registry from this packet.",
+      "citations": [
+        "review:evidence:correction-upload-is-consequential",
+        "observation:evidence:no-private-upload-data-observed",
+        "guardrail:evidence:official-upload-refusal"
+      ]
+    }
+  ],
+  "checkpoints": [
+    {"name": "selector-confidence", "status": "reviewed-from-fixture"},
+    {"name": "manual-handoff", "status": "required-before-live-use"}
+  ]
+}

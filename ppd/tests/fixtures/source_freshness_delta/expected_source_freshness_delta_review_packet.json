@@ -1,0 +1,166 @@
+{
+  "packet_type": "ppd_source_freshness_delta_review",
+  "packet_version": "1.0",
+  "input_packet_refs": {
+    "public_source_refresh_metadata_intake_packet": {
+      "packet_id": "public-refresh-intake-20260529-fixture",
+      "packet_type": "public_source_refresh_metadata_intake",
+      "created_at": "2026-05-29T00:00:00Z"
+    },
+    "evidence_freshness_watchlist_reviewer_disposition_packet": {
+      "packet_id": "watchlist-disposition-20260529-fixture",
+      "packet_type": "evidence_freshness_watchlist_reviewer_disposition",
+      "created_at": "2026-05-29T00:05:00Z"
+    },
+    "source_registry_schedule_update_candidate_packet": {
+      "packet_id": "schedule-candidate-20260529-fixture",
+      "packet_type": "source_registry_schedule_update_candidate",
+      "created_at": "2026-05-29T00:10:00Z"
+    }
+  },
+  "decisions": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "decision": "changed",
+      "citations": [
+        {
+          "packet": "refresh_metadata_intake",
+          "evidence_id": "refresh:ppd-devhub-faq:20260529"
+        },
+        {
+          "packet": "watchlist_reviewer_disposition",
+          "evidence_id": "watchlist:ppd-devhub-faq:reviewer-disposition"
+        },
+        {
+          "packet": "schedule_update_candidate",
+          "evidence_id": "schedule:ppd-devhub-faq:daily-candidate"
+        }
+      ],
+      "rationale": [
+        "refresh content hash differs from previous content hash",
+        "Reviewer marked FAQ evidence for delta review after the refresh hash changed.",
+        "DevHub FAQ is high-change operational guidance."
+      ],
+      "recommended_offline_follow_up_queues": [
+        "devhub-guidance-delta-review",
+        "source-schedule-review"
+      ],
+      "reviewer_owner_fields": {
+        "reviewer_owner": "ppd-source-reviewer",
+        "reviewer_status": "needs_delta_review",
+        "reviewed_at": "2026-05-29T00:06:00Z"
+      }
+    },
+    {
+      "source_id": "ppd-file-naming-standards",
+      "decision": "unchanged",
+      "citations": [
+        {
+          "packet": "refresh_metadata_intake",
+          "evidence_id": "refresh:ppd-file-naming-standards:20260529"
+        },
+        {
+          "packet": "watchlist_reviewer_disposition",
+          "evidence_id": "watchlist:ppd-file-naming-standards:reviewer-disposition"
+        },
+        {
+          "packet": "schedule_update_candidate",
+          "evidence_id": "schedule:ppd-file-naming-standards:weekly-candidate"
+        }
+      ],
+      "rationale": [
+        "refresh content hash matches previous content hash",
+        "Reviewer accepted stable file naming evidence as current.",
+        "File naming standards remain on weekly monitoring."
+      ],
+      "recommended_offline_follow_up_queues": [],
+      "reviewer_owner_fields": {
+        "reviewer_owner": "ppd-source-reviewer",
+        "reviewer_status": "accepted_current",
+        "reviewed_at": "2026-05-29T00:07:00Z"
+      }
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "decision": "stale",
+      "citations": [
+        {
+          "packet": "refresh_metadata_intake",
+          "evidence_id": "refresh:ppd-submit-plans-online:20260529"
+        },
+        {
+          "packet": "watchlist_reviewer_disposition",
+          "evidence_id": "watchlist:ppd-submit-plans-online:reviewer-disposition"
+        },
+        {
+          "packet": "schedule_update_candidate",
+          "evidence_id": "schedule:ppd-submit-plans-online:weekly-candidate"
+        }
+      ],
+      "rationale": [
+        "refresh content hash matches previous content hash",
+        "Reviewer marked Single PDF process evidence stale because the watchlist age exceeded the weekly review threshold.",
+        "Single PDF process requires offline owner review before any registry schedule update."
+      ],
+      "recommended_offline_follow_up_queues": [
+        "single-pdf-offline-owner-review",
+        "source-schedule-review"
+      ],
+      "reviewer_owner_fields": {
+        "reviewer_owner": "ppd-intake-owner",
+        "reviewer_status": "offline_owner_review_required",
+        "reviewed_at": "2026-05-29T00:08:00Z"
+      }
+    }
+  ],
+  "affected_source_ids": [
+    "ppd-devhub-faq",
+    "ppd-submit-plans-online"
+  ],
+  "recommended_offline_follow_up_queues": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "queue": "devhub-guidance-delta-review",
+      "reason": "changed"
+    },
+    {
+      "source_id": "ppd-devhub-faq",
+      "queue": "source-schedule-review",
+      "reason": "changed"
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "queue": "single-pdf-offline-owner-review",
+      "reason": "stale"
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "queue": "source-schedule-review",
+      "reason": "stale"
+    }
+  ],
+  "reviewer_owner_fields": {
+    "ppd-devhub-faq": {
+      "reviewer_owner": "ppd-source-reviewer",
+      "reviewer_status": "needs_delta_review",
+      "reviewed_at": "2026-05-29T00:06:00Z"
+    },
+    "ppd-file-naming-standards": {
+      "reviewer_owner": "ppd-source-reviewer",
+      "reviewer_status": "accepted_current",
+      "reviewed_at": "2026-05-29T00:07:00Z"
+    },
+    "ppd-submit-plans-online": {
+      "reviewer_owner": "ppd-intake-owner",
+      "reviewer_status": "offline_owner_review_required",
+      "reviewed_at": "2026-05-29T00:08:00Z"
+    }
+  },
+  "attestations": {
+    "no_fetch_performed": true,
+    "no_processor_invoked": true,
+    "no_registry_mutation": true,
+    "no_requirement_mutation": true,
+    "no_guardrail_mutation": true
+  }
+}

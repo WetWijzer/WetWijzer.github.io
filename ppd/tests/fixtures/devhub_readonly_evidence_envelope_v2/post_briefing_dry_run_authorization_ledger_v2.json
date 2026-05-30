@@ -1,0 +1,20 @@
+{
+  "version": "post-briefing-dry-run-authorization-ledger-v2",
+  "redaction_checklist_outcomes": [
+    "Personal identifiers are not copied into the evidence envelope",
+    "Account and browser persistence values are excluded",
+    "Browser debug artifacts and raw crawl output are not produced"
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub_readonly_evidence_envelope_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_devhub_readonly_evidence_envelope_v2.py"]
+  ],
+  "attestations": {
+    "no_live_devhub": true,
+    "no_auth_state": true,
+    "no_screenshot": true,
+    "no_trace": true,
+    "no_har": true,
+    "no_surface_registry_mutation": true
+  }
+}

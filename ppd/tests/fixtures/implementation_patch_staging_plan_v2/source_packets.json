@@ -1,0 +1,6 @@
+{
+  "human_review_disposition_summary_fixture": "../human_review_disposition_summary_v2/source_packets.json",
+  "public_source_observation_refresh_candidate_v2_fixture": "../refresh_implementation_proposal_v2/public_source_observation_refresh_candidate_v2.json",
+  "devhub_read_only_surface_observation_refresh_candidate_v2_fixture": "../refresh_implementation_proposal_v2/devhub_read_only_surface_observation_refresh_candidate_v2.json",
+  "post_dry_run_guardrail_impact_review_v2_fixture": "../refresh_implementation_proposal_v2/post_dry_run_guardrail_impact_review_v2.json"
+}
