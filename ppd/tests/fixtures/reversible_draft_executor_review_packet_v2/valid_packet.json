@@ -1,0 +1,85 @@
+{
+  "packet_version": "reversible-draft-executor-review-packet-v2",
+  "packet_id": "packet-fixture-001",
+  "reviewer_rows": [
+    {
+      "reviewer_id": "reviewer-fixture-001",
+      "role": "ppd_guardrail_reviewer",
+      "reviewed_at": "2026-05-31T00:00:00Z",
+      "decision": "approved"
+    }
+  ],
+  "dry_run_request_acceptance": {
+    "accepted": true,
+    "accepted_at": "2026-05-31T00:00:00Z",
+    "request_id": "dry-run-request-fixture-001",
+    "scope": "reversible local draft preview only",
+    "dry_run_only": true
+  },
+  "preview_only_response_review": {
+    "reviewed_by": "reviewer-fixture-001",
+    "reviewed_at": "2026-05-31T00:00:00Z",
+    "response_artifact_id": "preview-response-fixture-001",
+    "preview_only": true,
+    "private_artifacts_absent": true
+  },
+  "trace_review": {
+    "user_fact_trace_review": [
+      {
+        "trace_id": "user-fact-trace-fixture-001",
+        "reviewed_by": "reviewer-fixture-001",
+        "reviewed_at": "2026-05-31T00:00:00Z",
+        "decision": "accepted"
+      }
+    ],
+    "source_evidence_trace_review": [
+      {
+        "trace_id": "source-evidence-trace-fixture-001",
+        "reviewed_by": "reviewer-fixture-001",
+        "reviewed_at": "2026-05-31T00:00:00Z",
+        "decision": "accepted"
+      }
+    ]
+  },
+  "selector_confidence_review": {
+    "selectors": [
+      {
+        "selector": "aria/Permit type",
+        "confidence": 0.86,
+        "hold_reason": "Selector remains held for attended verification before any browser use.",
+        "verification_note": "Fixture selector reviewed without live DevHub execution."
+      }
+    ]
+  },
+  "exact_confirmation_stop_gate_review": {
+    "reviewed_by": "reviewer-fixture-001",
+    "reviewed_at": "2026-05-31T00:00:00Z",
+    "stop_gate_present": true,
+    "exact_confirmation_required": true,
+    "consequential_actions_blocked": true
+  },
+  "refused_consequential_action_review": {
+    "reviewed_by": "reviewer-fixture-001",
+    "reviewed_at": "2026-05-31T00:00:00Z",
+    "refused_actions": [
+      "submit permit request",
+      "save official DevHub draft",
+      "upload correction to official record",
+      "certify acknowledgement",
+      "pay fee"
+    ],
+    "consequential_action_policy_checked": true
+  },
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "mutation_flags": {
+    "prompt_mutation_active": false,
+    "guardrail_mutation_active": false,
+    "devhub_surface_mutation_active": false,
+    "source_mutation_active": false,
+    "contract_mutation_active": false,
+    "release_state_mutation_active": false
+  },
+  "notes": "Fixture uses deterministic public-safe review metadata and no browser automation."
+}

@@ -1,0 +1,232 @@
+{
+  "packet_id": "document_requirement_matrix_packet_v2",
+  "version": 2,
+  "fixture_first": true,
+  "synthetic_only": true,
+  "does_not_mutate_active_requirements": true,
+  "prohibited_actions": [
+    "read_private_files",
+    "download_pdfs",
+    "stage_uploads",
+    "open_devhub",
+    "mutate_active_requirements"
+  ],
+  "source_evidence_placeholders": [
+    {
+      "source_evidence_id": "placeholder_submit_plans_online_single_pdf",
+      "label": "Submit Plans Online / Single PDF Process",
+      "placeholder_kind": "official_public_source_pending_capture",
+      "expected_public_anchor": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "private_or_authenticated": false,
+      "citation_status": "placeholder_not_promoted"
+    },
+    {
+      "source_evidence_id": "placeholder_spp_file_naming_standards",
+      "label": "SPP file naming standards and PDF preparation",
+      "placeholder_kind": "official_public_source_pending_capture",
+      "expected_public_anchor": "https://www.portland.gov/ppd/spp-file-naming-standards-preparing-pdfs",
+      "private_or_authenticated": false,
+      "citation_status": "placeholder_not_promoted"
+    },
+    {
+      "source_evidence_id": "placeholder_devhub_application_guide",
+      "label": "DevHub permit application guide",
+      "placeholder_kind": "official_public_source_pending_capture",
+      "expected_public_anchor": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "private_or_authenticated": false,
+      "citation_status": "placeholder_not_promoted"
+    },
+    {
+      "source_evidence_id": "placeholder_applications_forms_index",
+      "label": "Permit applications and forms index",
+      "placeholder_kind": "official_public_source_pending_capture",
+      "expected_public_anchor": "https://www.portland.gov/ppd/brochures-forms-handouts/permits-and-inspections-applications",
+      "private_or_authenticated": false,
+      "citation_status": "placeholder_not_promoted"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "synthetic_building",
+      "permit_family": "building",
+      "required_document_labels": [
+        "Building permit application",
+        "Architectural or construction plans",
+        "Structural calculations when applicable",
+        "Energy documentation when applicable"
+      ],
+      "upload_grouping_expectation": "Drawings are grouped as one plans PDF; application forms, calculations, and supporting documents remain separate PDFs.",
+      "single_pdf_reference": "Single PDF placeholder: drawing plan sheets together in one plans PDF; non-plan materials uploaded separately.",
+      "file_naming_reference": "File naming placeholder: apply PP&D file naming standards before promotion to active requirements.",
+      "source_evidence_placeholders": [
+        "placeholder_submit_plans_online_single_pdf",
+        "placeholder_spp_file_naming_standards",
+        "placeholder_applications_forms_index"
+      ],
+      "status": "fixture_only_reviewer_hold"
+    },
+    {
+      "workflow_id": "synthetic_trade",
+      "permit_family": "trade",
+      "required_document_labels": [
+        "Trade permit application or DevHub trade permit request",
+        "Fixture or scope schedule",
+        "Contractor license facts when applicable"
+      ],
+      "upload_grouping_expectation": "Standard trade workflows may not require plan upload; trade-with-plan-review workflows keep plans separate from forms and schedules.",
+      "single_pdf_reference": "Single PDF placeholder: only trade plan-review drawings belong in a consolidated plans PDF.",
+      "file_naming_reference": "File naming placeholder: trade attachments use descriptive PP&D file naming before any active use.",
+      "source_evidence_placeholders": [
+        "placeholder_devhub_application_guide",
+        "placeholder_spp_file_naming_standards"
+      ],
+      "status": "fixture_only_reviewer_hold"
+    },
+    {
+      "workflow_id": "synthetic_solar",
+      "permit_family": "solar",
+      "required_document_labels": [
+        "Solar permit application",
+        "Solar plan set",
+        "Equipment specification sheets",
+        "Structural or electrical supporting documentation when applicable"
+      ],
+      "upload_grouping_expectation": "Solar plan sheets are grouped as one plans PDF; equipment specifications and calculations are separate supporting PDFs.",
+      "single_pdf_reference": "Single PDF placeholder: solar drawings grouped as a plan set while supporting documents remain separate.",
+      "file_naming_reference": "File naming placeholder: solar plan and support files use PP&D file naming standards.",
+      "source_evidence_placeholders": [
+        "placeholder_submit_plans_online_single_pdf",
+        "placeholder_spp_file_naming_standards",
+        "placeholder_devhub_application_guide"
+      ],
+      "status": "fixture_only_reviewer_hold"
+    },
+    {
+      "workflow_id": "synthetic_demolition",
+      "permit_family": "demolition",
+      "required_document_labels": [
+        "Demolition permit application",
+        "Site plan or demolition plan",
+        "Hazardous material or utility disconnect documentation when applicable",
+        "Neighborhood notice or delay documentation when applicable"
+      ],
+      "upload_grouping_expectation": "Demolition plans are grouped as plans; forms, notices, and utility or hazard documentation are uploaded as separate support PDFs.",
+      "single_pdf_reference": "Single PDF placeholder: demolition drawing sheets grouped into one plans PDF where plan review applies.",
+      "file_naming_reference": "File naming placeholder: demolition attachments follow PP&D file naming standards before active use.",
+      "source_evidence_placeholders": [
+        "placeholder_submit_plans_online_single_pdf",
+        "placeholder_spp_file_naming_standards",
+        "placeholder_applications_forms_index"
+      ],
+      "status": "fixture_only_reviewer_hold"
+    },
+    {
+      "workflow_id": "synthetic_sign",
+      "permit_family": "sign",
+      "required_document_labels": [
+        "Sign permit application",
+        "Sign drawings or elevations",
+        "Site plan or mounting location documentation",
+        "Structural details when applicable"
+      ],
+      "upload_grouping_expectation": "Sign drawings and elevations are grouped as the plan PDF; application and structural details are separate PDFs unless official guidance requires otherwise.",
+      "single_pdf_reference": "Single PDF placeholder: sign drawing sheets grouped together as plans.",
+      "file_naming_reference": "File naming placeholder: sign plan and support attachments follow PP&D file naming standards.",
+      "source_evidence_placeholders": [
+        "placeholder_submit_plans_online_single_pdf",
+        "placeholder_spp_file_naming_standards",
+        "placeholder_devhub_application_guide"
+      ],
+      "status": "fixture_only_reviewer_hold"
+    },
+    {
+      "workflow_id": "synthetic_urban_forestry",
+      "permit_family": "urban_forestry",
+      "required_document_labels": [
+        "Tree permit application or Urban Forestry request",
+        "Site plan or tree location plan",
+        "Arborist report when applicable",
+        "Replacement or mitigation documentation when applicable"
+      ],
+      "upload_grouping_expectation": "Tree location plans are kept distinct from arborist reports, mitigation documents, and application forms.",
+      "single_pdf_reference": "Single PDF placeholder: if plan sheets are required, group plan sheets only; keep reports and forms separate.",
+      "file_naming_reference": "File naming placeholder: Urban Forestry attachments use descriptive PP&D file naming before any active promotion.",
+      "source_evidence_placeholders": [
+        "placeholder_devhub_application_guide",
+        "placeholder_spp_file_naming_standards"
+      ],
+      "status": "fixture_only_reviewer_hold"
+    },
+    {
+      "workflow_id": "synthetic_corrections",
+      "permit_family": "corrections",
+      "required_document_labels": [
+        "Correction response letter",
+        "Revised plan set",
+        "Clouded or marked revised sheets when applicable",
+        "Reviewer-requested supporting document"
+      ],
+      "upload_grouping_expectation": "Revised drawings are grouped as the revised plans PDF; response letters and requested supporting documents are separate PDFs aligned to reviewer review groups.",
+      "single_pdf_reference": "Single PDF placeholder: revised drawing sheets grouped together while response narrative remains separate.",
+      "file_naming_reference": "File naming placeholder: correction uploads use PP&D file naming standards and revision labels before attended official upload.",
+      "source_evidence_placeholders": [
+        "placeholder_submit_plans_online_single_pdf",
+        "placeholder_spp_file_naming_standards",
+        "placeholder_devhub_application_guide"
+      ],
+      "status": "fixture_only_reviewer_hold"
+    }
+  ],
+  "reviewer_hold_rows": [
+    {
+      "workflow_id": "synthetic_building",
+      "hold_reason": "awaiting_official_source_capture_and_human_review",
+      "may_promote_to_active": false
+    },
+    {
+      "workflow_id": "synthetic_trade",
+      "hold_reason": "awaiting_official_source_capture_and_human_review",
+      "may_promote_to_active": false
+    },
+    {
+      "workflow_id": "synthetic_solar",
+      "hold_reason": "awaiting_official_source_capture_and_human_review",
+      "may_promote_to_active": false
+    },
+    {
+      "workflow_id": "synthetic_demolition",
+      "hold_reason": "awaiting_official_source_capture_and_human_review",
+      "may_promote_to_active": false
+    },
+    {
+      "workflow_id": "synthetic_sign",
+      "hold_reason": "awaiting_official_source_capture_and_human_review",
+      "may_promote_to_active": false
+    },
+    {
+      "workflow_id": "synthetic_urban_forestry",
+      "hold_reason": "awaiting_official_source_capture_and_human_review",
+      "may_promote_to_active": false
+    },
+    {
+      "workflow_id": "synthetic_corrections",
+      "hold_reason": "awaiting_official_source_capture_and_human_review",
+      "may_promote_to_active": false
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "ppd.document_requirement_matrix_packet_v2",
+      "--fixture",
+      "ppd/tests/fixtures/document_requirement_matrix_v2/packet.json"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_document_requirement_matrix_packet_v2.py"
+    ]
+  ]
+}

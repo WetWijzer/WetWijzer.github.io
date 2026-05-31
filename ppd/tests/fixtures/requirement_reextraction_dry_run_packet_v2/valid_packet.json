@@ -1,0 +1,130 @@
+{
+  "packet_type": "requirement_reextraction_dry_run_packet_v2",
+  "schema_version": 2,
+  "mode": "fixture_first_offline_dry_run",
+  "packet_id": "requirement-reextraction-dry-run-v2-valid-fixture",
+  "generated_at": "2026-05-31T00:00:00Z",
+  "source_packet_refs": {
+    "source_change_report_id": "source-change-report-fixture",
+    "requirement_review_queue_id": "requirement-review-queue-fixture"
+  },
+  "delta_placeholders": {
+    "unchanged": {
+      "placeholder_id": "delta-placeholder-unchanged",
+      "review_meaning": "requirement text and citations expected to remain unchanged"
+    },
+    "added": {
+      "placeholder_id": "delta-placeholder-added",
+      "review_meaning": "new requirement candidate expected only after human review"
+    },
+    "removed": {
+      "placeholder_id": "delta-placeholder-removed",
+      "review_meaning": "candidate withdrawal expected only after human review"
+    },
+    "changed": {
+      "placeholder_id": "delta-placeholder-changed",
+      "review_meaning": "existing requirement candidate may need cited revision"
+    }
+  },
+  "requirement_delta_rows": [
+    {
+      "delta_row_id": "delta-row-unchanged",
+      "delta_kind": "unchanged",
+      "requirement_id": "req-existing-unchanged-placeholder",
+      "citation_span_placeholder": "citation-span-placeholder-unchanged",
+      "confidence_placeholder": "confidence-placeholder-unchanged",
+      "human_review_placeholder": "human-review-placeholder-unchanged",
+      "affected_process_model_placeholder": "process-model-placeholder-unchanged",
+      "affected_guardrail_placeholder": "guardrail-placeholder-unchanged"
+    },
+    {
+      "delta_row_id": "delta-row-added",
+      "delta_kind": "added",
+      "requirement_id": "req-added-placeholder",
+      "citation_span_placeholder": "citation-span-placeholder-added",
+      "confidence_placeholder": "confidence-placeholder-added",
+      "human_review_placeholder": "human-review-placeholder-added",
+      "affected_process_model_placeholder": "process-model-placeholder-added",
+      "affected_guardrail_placeholder": "guardrail-placeholder-added"
+    },
+    {
+      "delta_row_id": "delta-row-removed",
+      "delta_kind": "removed",
+      "requirement_id": "req-removed-placeholder",
+      "citation_span_placeholder": "citation-span-placeholder-removed",
+      "confidence_placeholder": "confidence-placeholder-removed",
+      "human_review_placeholder": "human-review-placeholder-removed",
+      "affected_process_model_placeholder": "process-model-placeholder-removed",
+      "affected_guardrail_placeholder": "guardrail-placeholder-removed"
+    },
+    {
+      "delta_row_id": "delta-row-changed",
+      "delta_kind": "changed",
+      "requirement_id": "req-changed-placeholder",
+      "citation_span_placeholder": "citation-span-placeholder-changed",
+      "confidence_placeholder": "confidence-placeholder-changed",
+      "human_review_placeholder": "human-review-placeholder-changed",
+      "affected_process_model_placeholder": "process-model-placeholder-changed",
+      "affected_guardrail_placeholder": "guardrail-placeholder-changed"
+    }
+  ],
+  "citation_span_placeholders": [
+    {
+      "placeholder_id": "citation-span-placeholder-unchanged",
+      "source_id": "public-source-placeholder",
+      "document_id": "public-document-placeholder",
+      "span_status": "placeholder_pending_reviewer_confirmation"
+    }
+  ],
+  "confidence_placeholders": [
+    {
+      "placeholder_id": "confidence-placeholder-unchanged",
+      "confidence_status": "placeholder_pending_reviewer_confirmation"
+    }
+  ],
+  "human_review_placeholders": [
+    {
+      "placeholder_id": "human-review-placeholder-unchanged",
+      "reviewer_owner": "requirements-reviewer",
+      "review_status": "pending_human_review"
+    }
+  ],
+  "affected_process_model_placeholders": [
+    {
+      "placeholder_id": "process-model-placeholder-unchanged",
+      "process_model_id": "process-model-placeholder",
+      "impact_status": "placeholder_pending_reviewer_confirmation"
+    }
+  ],
+  "affected_guardrail_placeholders": [
+    {
+      "placeholder_id": "guardrail-placeholder-unchanged",
+      "guardrail_bundle_id": "guardrail-placeholder",
+      "impact_status": "placeholder_pending_reviewer_confirmation"
+    }
+  ],
+  "no_side_effect_attestations": {
+    "live_network_used": false,
+    "crawler_invoked": false,
+    "processor_invoked": false,
+    "urls_fetched": false,
+    "devhub_launched": false,
+    "active_source_mutation": false,
+    "active_requirement_mutation": false,
+    "active_process_model_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_contract_mutation": false,
+    "active_release_state_mutation": false
+  },
+  "review_notes": [
+    "Fixture-only packet for offline reviewer validation; no permitting outcome is promised."
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

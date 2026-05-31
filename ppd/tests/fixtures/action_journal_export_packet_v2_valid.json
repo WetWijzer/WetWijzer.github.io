@@ -1,0 +1,59 @@
+{
+  "packet_version": 2,
+  "events": [
+    {
+      "type": "export_started",
+      "message": "deterministic fixture export started"
+    },
+    {
+      "type": "source_evidence_recorded",
+      "source_evidence_refs": ["source-1"]
+    },
+    {
+      "type": "redaction_checked",
+      "message": "redaction checks passed"
+    },
+    {
+      "type": "validation_command_recorded",
+      "message": "validation commands recorded"
+    },
+    {
+      "type": "manual_handoff_or_refusal_recorded",
+      "source_evidence_refs": ["handoff-1"]
+    },
+    {
+      "type": "export_finalized",
+      "message": "export packet finalized without official-action claims"
+    }
+  ],
+  "source_evidence": [
+    {
+      "id": "source-1",
+      "type": "official_source",
+      "url": "https://www.portland.gov/bds",
+      "observed_at": "2026-05-31T00:00:00Z"
+    },
+    {
+      "id": "handoff-1",
+      "type": "manual_handoff",
+      "reason": "Fixture records that a human must perform any official DevHub action."
+    }
+  ],
+  "redaction_checks": [
+    {
+      "name": "sensitive-fields-absent",
+      "passed": true
+    },
+    {
+      "name": "claims-limited",
+      "passed": true
+    }
+  ],
+  "manual_handoff_or_refusal_evidence": {
+    "type": "manual_handoff",
+    "source_evidence_ref": "handoff-1"
+  },
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

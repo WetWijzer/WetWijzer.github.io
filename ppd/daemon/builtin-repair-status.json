@@ -1,78 +1,21 @@
 {
-  "createdAt": "2026-05-29T20:33:44.456549Z",
+  "createdAt": "2026-05-31T06:43:04.347201Z",
   "decision": {
-    "action": "invoke_codex",
-    "reason": "3 consecutive daemon rounds failed without an accepted patch",
+    "action": "reconcile_dead_worker_and_restart",
+    "reason": "daemon process is not running but status is still calling_llm on Task checkbox-35: Task supervisor-20260531-956: Add validation that public crawl retry and recovery packet v2 rejects missing robots/policy denial rows, missing timeout rows, missing redirect-change rows, missing content-type or too-large skips, missing processor handoff failure rows, missing no-raw-body decisions, missing retry/backoff plans, missing reviewer dispositions, missing validation commands, private/session/browser/raw/downloaded artifacts, live crawl claims, legal or permitting guarantees, and active mutation flags.; reset the in-progress task before restart",
     "severity": "warning"
   },
-  "failedAgenticRepair": {
-    "changedFiles": [
-      "ppd/daemon/prompt_builder.py",
-      "ppd/tests/test_daemon_compact_prompt_retry.py"
-    ],
-    "errors": [
-      "Validation failed in temporary worktree; candidate was not promoted."
-    ],
-    "failureKind": "validation",
-    "summary": "Add a compact LLM-termination repair prompt path so repeated pre-validation llm_router failures steer the daemon toward supervisor repair instead of retrying broad PP&D domain work.",
-    "validationResults": [
-      {
-        "command": [
-          "python3",
-          "ppd/daemon/ppd_daemon.py",
-          "--self-test"
-        ],
-        "returncode": 0,
-        "stderr": "/home/barberb/portland-laws.github.io/ppd/daemon/worktrees/cycle-20260529T203339330060Z-5d2fb60f/ppd/tests/test_draft_preview_agent_handoff_acceptance_packet_v2.py:104: SyntaxWarning: invalid escape sequence '\\[' with pytest.raises(AcceptancePacketError, match=\"migration_checklist_items\\[0\\].summary required\"):",
-        "stdout": "{ \"ok\": true, \"task_count\": 82 }"
-      },
-      {
-        "command": [
-          "python3",
-          "-m",
-          "unittest",
-          "discover",
-          "-s",
-          "ppd/tests",
-          "-p",
-          "test_*.py"
-        ],
-        "returncode": 1,
-        "stderr": ".................................................................................................................................................................................................................................F.........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................ss....................................................sss...................................",
-        "stdout": ""
-      },
-      {
-        "command": [
-          "bash",
-          "-lc",
-          "files=$(find ppd -name '*.ts' -not -path '*/node_modules/*' -print); test -z \"$files\" || npx tsc --noEmit --target ES2020 --module ESNext --moduleResolution node --strict --skipLibCheck --types node $files"
-        ],
-        "returncode": 0,
-        "stderr": "",
-        "stdout": ""
-      }
-    ]
-  },
-  "fallbackActions": [
-    "preserve failed repair diagnostics without accepting the invalid patch",
-    "run full PP&D daemon validation before restarting unattended worker attempts",
-    "restart the worker with PPD_LLM_BACKEND=llm_router after fallback validation passes",
-    "keep future retry scope narrow and fixture-first"
-  ],
-  "llmBackend": "llm_router",
-  "repairKind": "builtin_supervisor_fallback",
-  "safetyBoundaries": [
-    "no private DevHub session artifacts",
-    "no raw crawl output",
-    "no downloaded documents",
-    "no browser traces or screenshots",
-    "no consequential DevHub actions"
+  "repairKind": "dead_worker_task_reset",
+  "resetInProgressTaskLabels": [
+    "Task supervisor-20260531-956: Add validation that public crawl retry and recovery packet v2 rejects missing robots/policy denial rows, missing timeout rows, missing redirect-change rows, missing content-type or too-large skips, missing processor handoff failure rows, missing no-raw-body decisions, missing retry/backoff plans, missing reviewer dispositions, missing validation commands, private/session/browser/raw/downloaded artifacts, live crawl claims, legal or permitting guarantees, and active mutation flags."
   ],
   "schemaVersion": 1,
-  "taskBoardRepair": {
-    "parkedRepeatedSyntaxLoopTasks": [],
-    "replenishedGoalTaskLabels": [],
-    "supersededTaskBoardOnlyLabels": [],
-    "taskBoardUpdated": false
+  "statusBeforeRepair": {
+    "active_state": "calling_llm",
+    "active_state_started_at": "2026-05-31T05:53:10.332769Z",
+    "active_target_task": "Task checkbox-35: Task supervisor-20260531-956: Add validation that public crawl retry and recovery packet v2 rejects missing robots/policy denial rows, missing timeout rows, missing redirect-change rows, missing content-type or too-large skips, missing processor handoff failure rows, missing no-raw-body decisions, missing retry/backoff plans, missing reviewer dispositions, missing validation commands, private/session/browser/raw/downloaded artifacts, live crawl claims, legal or permitting guarantees, and active mutation flags.",
+    "pid": 3268655,
+    "state": "heartbeat",
+    "updated_at": "2026-05-31T05:54:25.685964Z"
   }
 }

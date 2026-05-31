@@ -1,0 +1,313 @@
+{
+  "packet_id": "stale-evidence-conflict-resolution-v2",
+  "version": 2,
+  "mode": "fixture_first_offline_only",
+  "created_for_task": "checkbox-30-supervisor-20260531-951",
+  "privacy_boundary": {
+    "contains_private_user_facts": false,
+    "contains_devhub_session_state": false,
+    "contains_raw_crawl_output": false,
+    "contains_downloaded_documents": false,
+    "contains_payment_or_submission_data": false
+  },
+  "prohibited_operations": [
+    "live_crawl",
+    "devhub_access",
+    "private_user_fact_collection",
+    "form_filling",
+    "uploads",
+    "submissions",
+    "payments",
+    "scheduling",
+    "active_prompt_change",
+    "active_guardrail_change",
+    "active_source_change",
+    "active_requirement_change",
+    "active_process_model_change",
+    "active_contract_change",
+    "active_devhub_surface_change",
+    "active_release_state_change"
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "json.tool",
+      "ppd/tests/fixtures/stale_evidence_conflict_resolution_packet_v2.json"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_stale_evidence_conflict_resolution_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "reviewer_disposition_placeholders": {
+    "allowed_values": [
+      "pending_review",
+      "accepted_for_offline_fixture_coverage",
+      "needs_source_refresh",
+      "needs_human_policy_review",
+      "rejected_do_not_use"
+    ],
+    "default": "pending_review"
+  },
+  "cases": [
+    {
+      "case_id": "synthetic-stale-source",
+      "scenario": "A known public guidance citation is older than the packet freshness policy and must not be used as current evidence.",
+      "synthetic_inputs": {
+        "process_id": "fixture_residential_building_permit",
+        "source_evidence_id": "fixture-source-devhub-guide-2024-01-15",
+        "source_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+        "source_last_verified_at": "2024-01-15",
+        "packet_evaluated_at": "2026-05-31",
+        "freshness_policy_days": 30
+      },
+      "stale_evidence": [
+        {
+          "source_evidence_id": "fixture-source-devhub-guide-2024-01-15",
+          "reason": "source_last_verified_at exceeds freshness_policy_days",
+          "requires_refresh_before_use": true
+        }
+      ],
+      "conflicting_evidence": [],
+      "missing_documents": [],
+      "user_gap_questions": [
+        {
+          "question_id": "confirm-source-recency-needed",
+          "question": "The cited PP&D guidance is stale in this offline fixture. Should I proceed only with a source refresh plan instead of relying on it as current evidence?",
+          "allowed_answer_type": "yes_no"
+        }
+      ],
+      "holds": [
+        {
+          "hold_id": "hold-current-requirement-use",
+          "reason": "Current requirement cannot be asserted from stale evidence.",
+          "blocked_actions": [
+            "draft_current_requirement",
+            "advise_submission_ready",
+            "prepare_devhub_action"
+          ]
+        }
+      ],
+      "refusals": [
+        {
+          "refusal_id": "refuse-current-guidance-claim",
+          "refused_action": "claim_current_ppd_guidance_from_stale_source",
+          "message": "I cannot treat this stale fixture source as current PP&D guidance without a fresh public-source verification step."
+        }
+      ],
+      "next_safe_action_summary": "Prepare an offline source-refresh checklist and keep all DevHub, upload, payment, scheduling, and submission actions blocked.",
+      "reviewer_disposition": "pending_review"
+    },
+    {
+      "case_id": "changed-hash",
+      "scenario": "A synthetic source hash no longer matches the hash recorded when requirements were extracted.",
+      "synthetic_inputs": {
+        "process_id": "fixture_single_pdf_upload_preparation",
+        "source_evidence_id": "fixture-source-single-pdf-guidance",
+        "recorded_content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "observed_content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "stale_evidence": [
+        {
+          "source_evidence_id": "fixture-source-single-pdf-guidance",
+          "reason": "recorded_content_hash differs from observed_content_hash",
+          "requires_reextraction_before_use": true
+        }
+      ],
+      "conflicting_evidence": [],
+      "missing_documents": [],
+      "user_gap_questions": [
+        {
+          "question_id": "confirm-hash-change-handling",
+          "question": "The fixture hash changed after extraction. Should I invalidate affected requirements until extraction is rerun offline?",
+          "allowed_answer_type": "yes_no"
+        }
+      ],
+      "holds": [
+        {
+          "hold_id": "hold-hash-dependent-requirements",
+          "reason": "Hash mismatch means extracted requirement text may no longer match the source.",
+          "blocked_actions": [
+            "reuse_extracted_file_rule",
+            "mark_document_ready",
+            "stage_upload"
+          ]
+        }
+      ],
+      "refusals": [
+        {
+          "refusal_id": "refuse-hash-mismatch-reuse",
+          "refused_action": "reuse_requirement_after_source_hash_change",
+          "message": "I cannot reuse the extracted requirement because the fixture source hash has changed."
+        }
+      ],
+      "next_safe_action_summary": "Flag affected requirements for offline re-extraction and reviewer disposition before any document-readiness or upload-staging advice.",
+      "reviewer_disposition": "pending_review"
+    },
+    {
+      "case_id": "conflicting-requirement",
+      "scenario": "Two synthetic evidence nodes disagree about whether a supporting calculation document is required.",
+      "synthetic_inputs": {
+        "process_id": "fixture_structural_alteration_review",
+        "requirement_a": {
+          "requirement_id": "fixture-req-calcs-required",
+          "source_evidence_id": "fixture-source-form-checklist",
+          "claim": "structural calculations are required"
+        },
+        "requirement_b": {
+          "requirement_id": "fixture-req-calcs-not-listed",
+          "source_evidence_id": "fixture-source-short-guide",
+          "claim": "structural calculations are not listed for this path"
+        }
+      },
+      "stale_evidence": [],
+      "conflicting_evidence": [
+        {
+          "conflict_id": "conflict-structural-calculations",
+          "requirement_ids": [
+            "fixture-req-calcs-required",
+            "fixture-req-calcs-not-listed"
+          ],
+          "resolution_required": "human_review_or_fresh_source_precedence"
+        }
+      ],
+      "missing_documents": [],
+      "user_gap_questions": [
+        {
+          "question_id": "ask-project-structural-scope",
+          "question": "Does the proposed work include structural alteration, engineering design, or load-path changes?",
+          "allowed_answer_type": "yes_no_unknown"
+        }
+      ],
+      "holds": [
+        {
+          "hold_id": "hold-conflicting-document-advice",
+          "reason": "The fixture contains unresolved document-requirement conflict.",
+          "blocked_actions": [
+            "tell_user_calculations_not_needed",
+            "mark_application_package_complete",
+            "prepare_submission_steps"
+          ]
+        }
+      ],
+      "refusals": [
+        {
+          "refusal_id": "refuse-ignore-document-conflict",
+          "refused_action": "choose_less_restrictive_requirement_without_review",
+          "message": "I cannot resolve this fixture conflict by ignoring the stricter document requirement."
+        }
+      ],
+      "next_safe_action_summary": "Ask the narrow structural-scope gap question, preserve both cited claims, and route the conflict to reviewer disposition.",
+      "reviewer_disposition": "pending_review"
+    },
+    {
+      "case_id": "missing-document",
+      "scenario": "The fixture process requires a site plan, but the synthetic case document inventory lacks one.",
+      "synthetic_inputs": {
+        "process_id": "fixture_site_plan_required_path",
+        "required_documents": [
+          "completed_application_form",
+          "site_plan_pdf",
+          "project_narrative_pdf"
+        ],
+        "matched_documents": [
+          "completed_application_form",
+          "project_narrative_pdf"
+        ]
+      },
+      "stale_evidence": [],
+      "conflicting_evidence": [],
+      "missing_documents": [
+        {
+          "document_key": "site_plan_pdf",
+          "reason": "required document absent from matched_documents",
+          "blocks_readiness": true
+        }
+      ],
+      "user_gap_questions": [
+        {
+          "question_id": "ask-site-plan-available",
+          "question": "Do you already have a site plan PDF for this project, or should I keep the package marked incomplete?",
+          "allowed_answer_type": "has_document_needs_document_unknown"
+        }
+      ],
+      "holds": [
+        {
+          "hold_id": "hold-missing-site-plan",
+          "reason": "Required document is missing in the offline fixture inventory.",
+          "blocked_actions": [
+            "mark_package_complete",
+            "stage_upload",
+            "prepare_submission_confirmation"
+          ]
+        }
+      ],
+      "refusals": [
+        {
+          "refusal_id": "refuse-complete-without-site-plan",
+          "refused_action": "represent_document_package_as_complete",
+          "message": "I cannot say the package is complete while the required site plan PDF is missing."
+        }
+      ],
+      "next_safe_action_summary": "Ask for the missing site plan status and keep official upload or submission paths blocked.",
+      "reviewer_disposition": "pending_review"
+    },
+    {
+      "case_id": "unsupported-path",
+      "scenario": "The fixture request describes a permit path that the current offline process model does not support.",
+      "synthetic_inputs": {
+        "requested_path": "fixture_public_works_right_of_way_closure",
+        "supported_process_ids": [
+          "fixture_residential_building_permit",
+          "fixture_single_pdf_upload_preparation",
+          "fixture_standard_trade_permit_precheck"
+        ]
+      },
+      "stale_evidence": [],
+      "conflicting_evidence": [],
+      "missing_documents": [],
+      "unsupported_paths": [
+        {
+          "path_id": "fixture_public_works_right_of_way_closure",
+          "reason": "No supported offline process model exists for this path in the fixture packet.",
+          "blocks_process_selection": true
+        }
+      ],
+      "user_gap_questions": [
+        {
+          "question_id": "ask-supported-path-remap",
+          "question": "Is this actually one of the supported fixture paths, or should I stop and request a new source-backed process model?",
+          "allowed_answer_type": "supported_path_new_model_needed_unknown"
+        }
+      ],
+      "holds": [
+        {
+          "hold_id": "hold-unsupported-process",
+          "reason": "Unsupported process path cannot be mapped to a known guardrail bundle.",
+          "blocked_actions": [
+            "select_process_model",
+            "draft_requirements",
+            "prepare_devhub_steps"
+          ]
+        }
+      ],
+      "refusals": [
+        {
+          "refusal_id": "refuse-invent-process-model",
+          "refused_action": "invent_unsupported_ppd_process_path",
+          "message": "I cannot invent a PP&D process model for an unsupported fixture path."
+        }
+      ],
+      "next_safe_action_summary": "Stop process selection and request source-backed modeling for the unsupported path before any requirement or DevHub advice.",
+      "reviewer_disposition": "pending_review"
+    }
+  ]
+}

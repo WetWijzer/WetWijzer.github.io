@@ -1,0 +1,308 @@
+{
+  "packet_id": "agent-api-contract-v2-fixture-packet",
+  "packet_version": 2,
+  "mode": "fixture_first",
+  "status": "inactive_validation_only",
+  "generated_from": "synthetic_offline_examples",
+  "scope": {
+    "apis": [
+      "missing_information",
+      "action_validation"
+    ],
+    "uses_private_user_data": false,
+    "opens_devhub": false,
+    "performs_live_crawl": false,
+    "changes_active_prompts": false,
+    "changes_guardrails": false,
+    "changes_devhub_surfaces": false,
+    "changes_process_models": false,
+    "changes_release_state": false
+  },
+  "citation_requirements": {
+    "request_citation_fields": [
+      "process_model_id",
+      "requirement_ids",
+      "source_evidence_ids"
+    ],
+    "response_citation_fields": [
+      "answer.citations",
+      "decision.citations",
+      "review_packet_refs"
+    ],
+    "minimum_citations_per_response": 1,
+    "allowed_citation_prefixes": [
+      "fixture:official-source:",
+      "fixture:requirement:",
+      "fixture:guardrail:",
+      "fixture:preview:"
+    ],
+    "stale_or_conflicting_evidence_rule": "Responses must hold instead of choosing an uncited value when evidence is stale or conflicting."
+  },
+  "api_contracts": [
+    {
+      "api_name": "missing_information",
+      "purpose": "Return only missing, stale, ambiguous, or conflicting user facts needed for a synthetic PP&D workflow.",
+      "request_schema": {
+        "required": [
+          "request_id",
+          "process_model_id",
+          "known_user_facts",
+          "requirement_ids",
+          "source_evidence_ids"
+        ]
+      },
+      "response_schema": {
+        "required": [
+          "response_id",
+          "status",
+          "questions",
+          "answer",
+          "review_packet_refs"
+        ],
+        "allowed_statuses": [
+          "needs_user_information",
+          "hold_stale_evidence",
+          "hold_conflicting_evidence"
+        ]
+      }
+    },
+    {
+      "api_name": "action_validation",
+      "purpose": "Classify a requested agent action as reversible draft preview, blocked hold, or refused consequential action.",
+      "request_schema": {
+        "required": [
+          "request_id",
+          "action_id",
+          "action_type",
+          "process_model_id",
+          "requirement_ids",
+          "source_evidence_ids"
+        ]
+      },
+      "response_schema": {
+        "required": [
+          "response_id",
+          "decision",
+          "review_packet_refs"
+        ],
+        "allowed_decisions": [
+          "allow_reversible_preview_only",
+          "block_pending_evidence_refresh",
+          "refuse_consequential_action"
+        ]
+      }
+    }
+  ],
+  "synthetic_examples": [
+    {
+      "example_id": "missing-info-owner-contact",
+      "api_name": "missing_information",
+      "case_type": "missing_information",
+      "request": {
+        "request_id": "req-missing-001",
+        "process_model_id": "fixture:process:residential-building-permit-draft",
+        "known_user_facts": {
+          "site_address": "1234 SE Synthetic Ave",
+          "project_type": "interior remodel"
+        },
+        "requirement_ids": [
+          "fixture:requirement:owner-contact-required"
+        ],
+        "source_evidence_ids": [
+          "fixture:official-source:residential-building-intake-current"
+        ]
+      },
+      "response": {
+        "response_id": "res-missing-001",
+        "status": "needs_user_information",
+        "questions": [
+          {
+            "field_id": "owner_contact_email",
+            "reason": "The fixture requirement needs an owner contact email before a reversible draft can be prepared.",
+            "citations": [
+              "fixture:requirement:owner-contact-required",
+              "fixture:official-source:residential-building-intake-current"
+            ]
+          }
+        ],
+        "answer": {
+          "summary": "Ask only for the missing owner contact email; do not infer it from the synthetic address.",
+          "citations": [
+            "fixture:requirement:owner-contact-required",
+            "fixture:official-source:residential-building-intake-current"
+          ]
+        },
+        "review_packet_refs": [
+          "fixture:preview:missing-info-review-packet"
+        ]
+      }
+    },
+    {
+      "example_id": "missing-info-stale-source-hold",
+      "api_name": "missing_information",
+      "case_type": "stale_evidence_response",
+      "request": {
+        "request_id": "req-stale-001",
+        "process_model_id": "fixture:process:demolition-permit-draft",
+        "known_user_facts": {
+          "structure_age_years": 92,
+          "proposed_work": "demolition"
+        },
+        "requirement_ids": [
+          "fixture:requirement:demolition-notice-review"
+        ],
+        "source_evidence_ids": [
+          "fixture:official-source:demolition-intake-stale"
+        ]
+      },
+      "response": {
+        "response_id": "res-stale-001",
+        "status": "hold_stale_evidence",
+        "questions": [],
+        "answer": {
+          "summary": "Hold the response until the stale demolition intake evidence is refreshed; do not ask the user to resolve an official-source freshness problem.",
+          "citations": [
+            "fixture:requirement:demolition-notice-review",
+            "fixture:official-source:demolition-intake-stale"
+          ]
+        },
+        "review_packet_refs": [
+          "fixture:preview:stale-evidence-refresh-hold"
+        ]
+      }
+    },
+    {
+      "example_id": "missing-info-conflicting-zoning",
+      "api_name": "missing_information",
+      "case_type": "conflicting_evidence_response",
+      "request": {
+        "request_id": "req-conflict-001",
+        "process_model_id": "fixture:process:site-plan-draft",
+        "known_user_facts": {
+          "site_address": "5678 N Synthetic St"
+        },
+        "requirement_ids": [
+          "fixture:requirement:zoning-overlay-check"
+        ],
+        "source_evidence_ids": [
+          "fixture:official-source:zoning-map-overlay-a",
+          "fixture:official-source:zoning-map-overlay-b"
+        ]
+      },
+      "response": {
+        "response_id": "res-conflict-001",
+        "status": "hold_conflicting_evidence",
+        "questions": [],
+        "answer": {
+          "summary": "Preserve both zoning overlay fixture values and route the conflict for reviewer disposition; do not choose a winner automatically.",
+          "citations": [
+            "fixture:requirement:zoning-overlay-check",
+            "fixture:official-source:zoning-map-overlay-a",
+            "fixture:official-source:zoning-map-overlay-b"
+          ]
+        },
+        "review_packet_refs": [
+          "fixture:preview:conflicting-evidence-review-packet"
+        ]
+      }
+    },
+    {
+      "example_id": "action-validation-reversible-draft-preview",
+      "api_name": "action_validation",
+      "case_type": "reversible_draft_preview_reference",
+      "request": {
+        "request_id": "req-action-001",
+        "action_id": "draft-local-pdf-field-preview",
+        "action_type": "reversible_draft_preview",
+        "process_model_id": "fixture:process:residential-building-permit-draft",
+        "requirement_ids": [
+          "fixture:requirement:project-description-required"
+        ],
+        "source_evidence_ids": [
+          "fixture:official-source:residential-building-intake-current"
+        ]
+      },
+      "response": {
+        "response_id": "res-action-001",
+        "decision": {
+          "outcome": "allow_reversible_preview_only",
+          "summary": "Prepare a local draft preview reference only; no upload, submission, certification, payment, scheduling, or release-state change is part of this action.",
+          "citations": [
+            "fixture:requirement:project-description-required",
+            "fixture:official-source:residential-building-intake-current",
+            "fixture:preview:local-pdf-draft-preview"
+          ]
+        },
+        "review_packet_refs": [
+          "fixture:preview:local-pdf-draft-preview"
+        ]
+      }
+    },
+    {
+      "example_id": "action-validation-refused-consequential-upload",
+      "api_name": "action_validation",
+      "case_type": "refused_consequential_action_response",
+      "request": {
+        "request_id": "req-action-002",
+        "action_id": "official-devhub-upload",
+        "action_type": "consequential_official_action",
+        "process_model_id": "fixture:process:residential-building-permit-draft",
+        "requirement_ids": [
+          "fixture:guardrail:exact-confirmation-required"
+        ],
+        "source_evidence_ids": [
+          "fixture:official-source:devhub-upload-boundary"
+        ]
+      },
+      "response": {
+        "response_id": "res-action-002",
+        "decision": {
+          "outcome": "refuse_consequential_action",
+          "summary": "Refuse the official DevHub upload request in this offline fixture. The only acceptable next reference is a manual handoff packet with exact user confirmation outside this fixture.",
+          "citations": [
+            "fixture:guardrail:exact-confirmation-required",
+            "fixture:official-source:devhub-upload-boundary"
+          ]
+        },
+        "review_packet_refs": [
+          "fixture:preview:manual-handoff-required"
+        ]
+      }
+    }
+  ],
+  "mutation_flags": {
+    "active_prompts_changed": false,
+    "active_guardrails_changed": false,
+    "active_devhub_surfaces_changed": false,
+    "active_process_models_changed": false,
+    "active_release_state_changed": false,
+    "active_contracts_changed": false
+  },
+  "prohibited_artifacts": {
+    "private_devhub_artifacts": [],
+    "raw_crawl_output": [],
+    "downloaded_documents": [],
+    "browser_traces": [],
+    "screenshots": [],
+    "credentials": [],
+    "payment_data": []
+  },
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_agent_api_contract_v2"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ppd/tests",
+      "-p",
+      "test_*.py"
+    ]
+  ]
+}

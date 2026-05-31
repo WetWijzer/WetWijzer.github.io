@@ -1,0 +1,244 @@
+{
+  "schema_version": "devhub_read_only_surface_map_reviewer_packet_v2",
+  "packet_id": "surface-map-reviewer-packet-v2-surface-map-candidate-v2-redaction-packet-v2-synthetic-reviewer-fixture",
+  "source_candidate": {
+    "schema_version": "devhub_read_only_surface_map_candidate_v2",
+    "candidate_id": "surface-map-candidate-v2-redaction-packet-v2-synthetic-reviewer-fixture",
+    "source_redaction_packet": {
+      "schema_version": "devhub_observation_redaction_acceptance_packet_v2",
+      "packet_id": "redaction-packet-v2-synthetic-reviewer-fixture",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "synthetic_fixture_only": true
+    }
+  },
+  "mode": "offline_fixture_reviewer_packet",
+  "generated_at": "1970-01-01T00:00:00Z",
+  "devhub_opened": false,
+  "no_private_artifacts_stored": true,
+  "no_surface_map_changes": true,
+  "accept_hold_reject_disposition_options": [
+    "accept",
+    "hold",
+    "reject"
+  ],
+  "reviewer_accept_hold_reject_rows": [
+    {
+      "review_row_id": "surface-map-review-v2-001",
+      "order": 1,
+      "candidate_row_id": "surface-row-001-field-page_heading",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "row_kind": "field",
+      "candidate_label": "Permit status",
+      "allowed_reviewer_dispositions": [
+        "accept",
+        "hold",
+        "reject"
+      ],
+      "reviewer_disposition": null,
+      "recommended_initial_disposition": "hold",
+      "observation_to_candidate_trace_placeholder_id": "trace-placeholder-surface-row-001-field-page_heading",
+      "redaction_acceptance_reference_id": "redaction-reference-surface-row-001-field-page_heading",
+      "selector_risk_note_id": "selector-risk-surface-row-001-field-page_heading",
+      "blocked_action_confirmation_note_id": null,
+      "surface_map_change_applied": false,
+      "official_action_allowed": false
+    },
+    {
+      "review_row_id": "surface-map-review-v2-002",
+      "order": 2,
+      "candidate_row_id": "surface-row-002-field-permit_number_value",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "row_kind": "field",
+      "candidate_label": "Permit number",
+      "allowed_reviewer_dispositions": [
+        "accept",
+        "hold",
+        "reject"
+      ],
+      "reviewer_disposition": null,
+      "recommended_initial_disposition": "hold",
+      "observation_to_candidate_trace_placeholder_id": "trace-placeholder-surface-row-002-field-permit_number_value",
+      "redaction_acceptance_reference_id": "redaction-reference-surface-row-002-field-permit_number_value",
+      "selector_risk_note_id": "selector-risk-surface-row-002-field-permit_number_value",
+      "blocked_action_confirmation_note_id": null,
+      "surface_map_change_applied": false,
+      "official_action_allowed": false
+    },
+    {
+      "review_row_id": "surface-map-review-v2-003",
+      "order": 3,
+      "candidate_row_id": "surface-row-003-action-observe_status_labels",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "row_kind": "action",
+      "candidate_label": "observe status labels",
+      "allowed_reviewer_dispositions": [
+        "accept",
+        "hold",
+        "reject"
+      ],
+      "reviewer_disposition": null,
+      "recommended_initial_disposition": "hold",
+      "observation_to_candidate_trace_placeholder_id": "trace-placeholder-surface-row-003-action-observe_status_labels",
+      "redaction_acceptance_reference_id": "redaction-reference-surface-row-003-action-observe_status_labels",
+      "selector_risk_note_id": "selector-risk-surface-row-003-action-observe_status_labels",
+      "blocked_action_confirmation_note_id": null,
+      "surface_map_change_applied": false,
+      "official_action_allowed": false
+    },
+    {
+      "review_row_id": "surface-map-review-v2-004",
+      "order": 4,
+      "candidate_row_id": "surface-row-004-action-submit_application",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "row_kind": "action",
+      "candidate_label": "submit application",
+      "allowed_reviewer_dispositions": [
+        "accept",
+        "hold",
+        "reject"
+      ],
+      "reviewer_disposition": null,
+      "recommended_initial_disposition": "reject",
+      "observation_to_candidate_trace_placeholder_id": "trace-placeholder-surface-row-004-action-submit_application",
+      "redaction_acceptance_reference_id": "redaction-reference-surface-row-004-action-submit_application",
+      "selector_risk_note_id": "selector-risk-surface-row-004-action-submit_application",
+      "blocked_action_confirmation_note_id": "blocked-action-confirmation-surface-row-004-action-submit_application",
+      "surface_map_change_applied": false,
+      "official_action_allowed": false
+    }
+  ],
+  "observation_to_candidate_trace_placeholders": [
+    {
+      "trace_placeholder_id": "trace-placeholder-surface-row-001-field-page_heading",
+      "candidate_row_id": "surface-row-001-field-page_heading",
+      "source_candidate_ref": "page_heading",
+      "status": "pending_reviewer_trace_confirmation",
+      "retained_evidence": "fixture_identifiers_only"
+    },
+    {
+      "trace_placeholder_id": "trace-placeholder-surface-row-002-field-permit_number_value",
+      "candidate_row_id": "surface-row-002-field-permit_number_value",
+      "source_candidate_ref": "permit_number_value",
+      "status": "pending_reviewer_trace_confirmation",
+      "retained_evidence": "fixture_identifiers_only"
+    },
+    {
+      "trace_placeholder_id": "trace-placeholder-surface-row-003-action-observe_status_labels",
+      "candidate_row_id": "surface-row-003-action-observe_status_labels",
+      "source_candidate_ref": "observe_status_labels",
+      "status": "pending_reviewer_trace_confirmation",
+      "retained_evidence": "fixture_identifiers_only"
+    },
+    {
+      "trace_placeholder_id": "trace-placeholder-surface-row-004-action-submit_application",
+      "candidate_row_id": "surface-row-004-action-submit_application",
+      "source_candidate_ref": "submit_application",
+      "status": "pending_reviewer_trace_confirmation",
+      "retained_evidence": "fixture_identifiers_only"
+    }
+  ],
+  "redaction_acceptance_references": [
+    {
+      "redaction_reference_id": "redaction-reference-surface-row-001-field-page_heading",
+      "candidate_row_id": "surface-row-001-field-page_heading",
+      "source_redaction_packet_id": "redaction-packet-v2-synthetic-reviewer-fixture",
+      "source_ref": "page_heading",
+      "redaction_decision": "keep",
+      "stored_representation": "synthetic_literal_allowed"
+    },
+    {
+      "redaction_reference_id": "redaction-reference-surface-row-002-field-permit_number_value",
+      "candidate_row_id": "surface-row-002-field-permit_number_value",
+      "source_redaction_packet_id": "redaction-packet-v2-synthetic-reviewer-fixture",
+      "source_ref": "permit_number_value",
+      "redaction_decision": "drop",
+      "stored_representation": "label_and_class_only"
+    },
+    {
+      "redaction_reference_id": "redaction-reference-surface-row-003-action-observe_status_labels",
+      "candidate_row_id": "surface-row-003-action-observe_status_labels",
+      "source_redaction_packet_id": "redaction-packet-v2-synthetic-reviewer-fixture",
+      "source_ref": "observe_status_labels",
+      "redaction_decision": "action_boundary_reference",
+      "stored_representation": "action_boundary_only"
+    },
+    {
+      "redaction_reference_id": "redaction-reference-surface-row-004-action-submit_application",
+      "candidate_row_id": "surface-row-004-action-submit_application",
+      "source_redaction_packet_id": "redaction-packet-v2-synthetic-reviewer-fixture",
+      "source_ref": "submit_application",
+      "redaction_decision": "action_boundary_reference",
+      "stored_representation": "action_boundary_only"
+    }
+  ],
+  "unresolved_selector_risk_notes": [
+    {
+      "selector_risk_note_id": "selector-risk-surface-row-001-field-page_heading",
+      "candidate_row_id": "surface-row-001-field-page_heading",
+      "selector_placeholder_id": "selector-stability-page_heading",
+      "risk_status": "unresolved_hold_for_reviewer",
+      "note": "Selector stability evidence remains unresolved; reviewer must hold promotion until a redacted selector strategy is supplied."
+    },
+    {
+      "selector_risk_note_id": "selector-risk-surface-row-002-field-permit_number_value",
+      "candidate_row_id": "surface-row-002-field-permit_number_value",
+      "selector_placeholder_id": "selector-stability-permit_number_value",
+      "risk_status": "unresolved_hold_for_reviewer",
+      "note": "Selector stability evidence remains unresolved; reviewer must hold promotion until a redacted selector strategy is supplied."
+    },
+    {
+      "selector_risk_note_id": "selector-risk-surface-row-003-action-observe_status_labels",
+      "candidate_row_id": "surface-row-003-action-observe_status_labels",
+      "selector_placeholder_id": "selector-stability-observe_status_labels",
+      "risk_status": "unresolved_hold_for_reviewer",
+      "note": "Selector stability evidence remains unresolved; reviewer must hold promotion until a redacted selector strategy is supplied."
+    },
+    {
+      "selector_risk_note_id": "selector-risk-surface-row-004-action-submit_application",
+      "candidate_row_id": "surface-row-004-action-submit_application",
+      "selector_placeholder_id": "selector-stability-submit_application",
+      "risk_status": "unresolved_hold_for_reviewer",
+      "note": "Selector stability evidence remains unresolved; reviewer must hold promotion until a redacted selector strategy is supplied."
+    }
+  ],
+  "blocked_action_confirmation_notes": [
+    {
+      "blocked_action_confirmation_note_id": "blocked-action-confirmation-surface-row-004-action-submit_application",
+      "candidate_row_id": "surface-row-004-action-submit_application",
+      "action_id": "submit_application",
+      "classification_id": "action-boundary-action-submit_application",
+      "confirmation_status": "blocked_pending_human_review",
+      "official_action_allowed": false,
+      "requires_exact_confirmation": true,
+      "note": "Official action remains blocked. This reviewer packet does not permit execution."
+    }
+  ],
+  "blocked_action_categories_confirmed": [
+    "account_change",
+    "certification",
+    "cancellation",
+    "official_record_attachment",
+    "payment",
+    "scheduling",
+    "submission"
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/devhub/surface_map_reviewer_packet_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_surface_map_reviewer_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

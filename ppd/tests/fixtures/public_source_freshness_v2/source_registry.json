@@ -1,0 +1,58 @@
+{
+  "fixture_name": "public_source_freshness_review_packet_v2_source_registry",
+  "fixture_mode": "offline_metadata_only",
+  "sources": [
+    {
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "source_type": "devhub_public",
+      "owning_surface": "public_ppd_guidance",
+      "allowlist_policy": "allowed_official_ppd_anchor",
+      "robots_policy": "fixture_assumed_preflight_required_before_live_crawl",
+      "crawl_frequency": "daily_or_every_few_days",
+      "processor_policy": "metadata_manifest_only_no_raw_body",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "fixture_last_verified"
+    },
+    {
+      "source_id": "ppd-bureau-landing",
+      "canonical_url": "https://www.portland.gov/ppd",
+      "source_type": "public_html",
+      "owning_surface": "public_ppd_guidance",
+      "allowlist_policy": "allowed_official_ppd_anchor",
+      "robots_policy": "fixture_assumed_preflight_required_before_live_crawl",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata_manifest_only_no_raw_body",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "fixture_last_verified"
+    },
+    {
+      "source_id": "ppd-online-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "source_type": "public_html",
+      "owning_surface": "public_ppd_guidance",
+      "allowlist_policy": "allowed_official_ppd_anchor",
+      "robots_policy": "fixture_assumed_preflight_required_before_live_crawl",
+      "crawl_frequency": "daily_or_every_few_days",
+      "processor_policy": "metadata_manifest_only_no_raw_body",
+      "privacy_classification": "public",
+      "last_seen_at": null,
+      "freshness_status": "fixture_last_seen_placeholder_required"
+    },
+    {
+      "source_id": "ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "source_type": "public_html",
+      "owning_surface": "public_ppd_guidance",
+      "allowlist_policy": "allowed_official_ppd_anchor",
+      "robots_policy": "fixture_assumed_preflight_required_before_live_crawl",
+      "crawl_frequency": "weekly",
+      "processor_policy": "metadata_manifest_only_no_raw_body",
+      "privacy_classification": "public",
+      "last_seen_at": "2026-05-08T00:00:00Z",
+      "freshness_status": "fixture_last_verified"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "command": [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/guardrail_recompile_dry_run_plan_v2.py",
+      "ppd/tests/test_guardrail_recompile_dry_run_plan_v2.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_guardrail_recompile_dry_run_plan_v2.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ],
+    "returncode": 0
+  }
+]

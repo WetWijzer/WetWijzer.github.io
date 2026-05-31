@@ -1,0 +1,85 @@
+{
+  "runbook_id": "attended-devhub-read-only-observation-v2-fixture",
+  "runbook_version": "v2",
+  "mode": "attended_devhub_read_only_observation",
+  "observation_steps": [
+    {
+      "id": "observe-home-accessible-structure",
+      "surface": "DevHub Home",
+      "intent": "observe_read_only",
+      "capture_scope": "metadata_only"
+    },
+    {
+      "id": "observe-my-permits-list-structure",
+      "surface": "My Permits and Requests",
+      "intent": "observe_read_only",
+      "capture_scope": "metadata_only"
+    }
+  ],
+  "metadata_only_capture_fields": [
+    "surface_id",
+    "page_heading",
+    "accessible_landmarks",
+    "field_labels",
+    "validation_message_placeholders",
+    "redaction_notes"
+  ],
+  "placeholders": {
+    "accessible_roles": [
+      "button",
+      "link",
+      "heading",
+      "navigation"
+    ],
+    "validation_messages": [
+      "",
+      ""
+    ]
+  },
+  "redacted_journal_examples": [
+    {
+      "event_type": "DevHub attended preflight",
+      "redacted": true,
+      "example": {
+        "surface_id": "devhub-home-redacted-fixture",
+        "account_scope": "user-attended",
+        "private_values": ""
+      }
+    }
+  ],
+  "stop_before_action_checkpoints": [
+    {
+      "checkpoint_id": "consequential-actions",
+      "actions": [
+        "submit",
+        "certify",
+        "upload",
+        "pay",
+        "schedule",
+        "cancel",
+        "withdraw"
+      ],
+      "required_result": "manual_handoff_before_action"
+    }
+  ],
+  "reviewer_dispositions": [
+    "approved",
+    "rejected",
+    "needs_revision"
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "mutation_flags": {
+    "mutates_prompt": false,
+    "mutates_guardrails": false,
+    "mutates_devhub_surface": false,
+    "mutates_sources": false,
+    "mutates_contracts": false,
+    "mutates_release_state": false
+  }
+}

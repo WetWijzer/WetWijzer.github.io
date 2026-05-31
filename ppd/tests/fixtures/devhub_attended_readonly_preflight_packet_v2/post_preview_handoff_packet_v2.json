@@ -1,0 +1,37 @@
+{
+  "packet_version": "devhub_post_preview_human_review_handoff_packet_v2",
+  "packet_id": "fixture-post-preview-handoff-v2-readonly-devhub",
+  "fixture_scope": "offline_only_no_live_devhub_access",
+  "post_preview_human_review_items": [
+    {
+      "review_item_id": "confirm-public-preview-to-authenticated-boundary",
+      "source_packet_section": "preview_boundary_review",
+      "manual_readiness_check": "Confirm the public preview does not imply permission to enter authenticated DevHub areas without the attending user selecting each destination.",
+      "expected_evidence": [
+        "User attendance is required before any authenticated destination is observed.",
+        "Only read-only destination categories may be used."
+      ],
+      "blocks_if_missing": true
+    },
+    {
+      "review_item_id": "confirm-redaction-before-observation",
+      "source_packet_section": "redaction_review",
+      "manual_readiness_check": "Confirm private account, applicant, property, permit, payment, and document values will be redacted or omitted before any notes are retained.",
+      "expected_evidence": [
+        "No credentials, tokens, cookies, auth state, screenshots, traces, HAR files, or private downloads are retained.",
+        "Private values are replaced with stable REDACTED placeholders when an offline example is needed."
+      ],
+      "blocks_if_missing": true
+    },
+    {
+      "review_item_id": "confirm-consequential-action-aborts",
+      "source_packet_section": "action_gate_review",
+      "manual_readiness_check": "Confirm the worker aborts before MFA automation, CAPTCHA handling, account creation, payment entry, upload, submission, certification, scheduling, cancellation, or private download paths.",
+      "expected_evidence": [
+        "The worker stops before any consequential action control is activated.",
+        "The user performs security prompts manually or the run ends."
+      ],
+      "blocks_if_missing": true
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "matrix_id": "reversible-draft-action-readiness-matrix-v2",
+  "matrix_version": 2,
+  "fixture_first": true,
+  "live_devhub_access_allowed": false,
+  "source_fixture_refs": {
+    "approved_read_only_surface_reviewer_packet": "ppd/tests/fixtures/devhub_read_only_surface_map_reviewer_packet_v2_valid.json",
+    "read_only_action_classification": "ppd/tests/fixtures/devhub/read_only_observation_action_classification_v1.json",
+    "playwright_action_classification": "ppd/tests/fixtures/devhub/action_classification_playwright.json"
+  },
+  "ordered_sections": [
+    "approved_surface_rows",
+    "synthetic_reversible_draft_scenarios",
+    "required_user_fact_placeholders",
+    "source_evidence_placeholders",
+    "preview_only_field_mapping_placeholders",
+    "exact_confirmation_stop_gates",
+    "blocked_consequential_action_examples",
+    "offline_validation_commands",
+    "artifact_policy",
+    "claim_policy",
+    "mutation_flags",
+    "prohibition_attestations"
+  ],
+  "approved_surface_rows": [
+    {
+      "candidate_row_id": "candidate-devhub-home-read-only",
+      "surface_id": "devhub-home-read-only",
+      "review_status_required": "human_reviewed",
+      "redaction_acceptance_ref": "redaction-devhub-home-read-only",
+      "observation_trace_ids": [
+        "trace-devhub-home-read-only"
+      ],
+      "blocked_action_confirmation_ids": [
+        "blocked-actions-devhub-home-read-only"
+      ]
+    }
+  ],
+  "synthetic_reversible_draft_scenarios": [
+    {
+      "order": 1,
+      "scenario_id": "scenario-read-visible-guidance-before-draft",
+      "surface_row_id": "candidate-devhub-home-read-only",
+      "action_fixture_id": "observe-public-guidance",
+      "classification": "read_only_observation",
+      "synthetic_only": true,
+      "expected_result": "observe labels and continue only with redacted fixture metadata"
+    },
+    {
+      "order": 2,
+      "scenario_id": "scenario-preview-project-description-field",
+      "surface_row_id": "candidate-devhub-home-read-only",
+      "action_fixture_id": "fill-project-description-draft",
+      "classification": "reversible_draft_edit",
+      "synthetic_only": true,
+      "expected_result": "produce a local preview mapping without writing official DevHub state"
+    },
+    {
+      "order": 3,
+      "scenario_id": "scenario-stop-before-official-submit",
+      "surface_row_id": "candidate-devhub-home-read-only",
+      "action_fixture_id": "submit-application-stop-gate",
+      "classification": "consequential",
+      "synthetic_only": true,
+      "expected_result": "stop before the official action gate"
+    },
+    {
+      "order": 4,
+      "scenario_id": "scenario-stop-before-payment",
+      "surface_row_id": "candidate-devhub-home-read-only",
+      "action_fixture_id": "pay-fees-stop-gate",
+      "classification": "financial",
+      "synthetic_only": true,
+      "expected_result": "stop before payment collection or payment submission"
+    }
+  ],
+  "required_user_fact_placeholders": [
+    {
+      "fact_id": "user-fact-project-description",
+      "placeholder": "placeholder:user-provided project description for local preview only",
+      "actual_user_value": null
+    },
+    {
+      "fact_id": "user-fact-property-address",
+      "placeholder": "placeholder:user-provided property address for local preview only",
+      "actual_user_value": null
+    },
+    {
+      "fact_id": "user-fact-work-scope",
+      "placeholder": "placeholder:user-provided work scope selection for local preview only",
+      "actual_user_value": null
+    }
+  ],
+  "source_evidence_placeholders": [
+    {
+      "evidence_id": "source-evidence-permit-type-guidance",
+      "placeholder": "placeholder:approved public-source citation for permit type guidance",
+      "live_url_fetched": false
+    },
+    {
+      "evidence_id": "source-evidence-draft-field-label",
+      "placeholder": "placeholder:redacted read-only surface reviewer row for field label evidence",
+      "live_url_fetched": false
+    }
+  ],
+  "preview_only_field_mapping_placeholders": [
+    {
+      "mapping_id": "preview-map-project-description",
+      "source_fact_id": "user-fact-project-description",
+      "target_field_placeholder": "placeholder:DevHub project description field label from redacted fixture",
+      "preview_only": true,
+      "writes_devhub_state": false,
+      "saves_official_draft": false
+    },
+    {
+      "mapping_id": "preview-map-work-scope",
+      "source_fact_id": "user-fact-work-scope",
+      "target_field_placeholder": "placeholder:DevHub work scope field label from redacted fixture",
+      "preview_only": true,
+      "writes_devhub_state": false,
+      "saves_official_draft": false
+    }
+  ],
+  "exact_confirmation_stop_gates": [
+    {
+      "gate_id": "gate-submit-application",
+      "action_fixture_id": "submit-application-stop-gate",
+      "classification": "consequential",
+      "exact_confirmation_required": true,
+      "allowed_without_exact_confirmation": false,
+      "exact_confirmation_text": "EXACT_CONFIRMATION_REQUIRED: submit application remains blocked in this offline fixture"
+    },
+    {
+      "gate_id": "gate-pay-fees",
+      "action_fixture_id": "pay-fees-stop-gate",
+      "classification": "financial",
+      "exact_confirmation_required": true,
+      "allowed_without_exact_confirmation": false,
+      "exact_confirmation_text": "EXACT_CONFIRMATION_REQUIRED: payment remains blocked in this offline fixture"
+    }
+  ],
+  "blocked_consequential_action_examples": [
+    {
+      "example_id": "blocked-upload-file",
+      "blocked": true,
+      "reason": "Uploading files would attach material to an official DevHub record."
+    },
+    {
+      "example_id": "blocked-save-official-draft",
+      "blocked": true,
+      "reason": "Saving an official draft changes DevHub account state."
+    },
+    {
+      "example_id": "blocked-submit-certify-schedule-cancel-pay",
+      "blocked": true,
+      "reason": "Submitting, certifying, scheduling, cancelling, and paying are consequential or financial actions."
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_reversible_draft_action_readiness_matrix_v2"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ppd/tests",
+      "-p",
+      "test_*.py"
+    ]
+  ],
+  "artifact_policy": {
+    "captures_auth_state": false,
+    "captures_browser_artifacts": false,
+    "captures_downloaded_artifacts": false,
+    "captures_private_values": false,
+    "captures_raw_crawl_output": false,
+    "captures_raw_devhub_output": false,
+    "captures_session_state": false,
+    "commits_local_private_paths": false
+  },
+  "claim_policy": {
+    "claims_live_devhub_execution": false,
+    "claims_official_action_completion": false,
+    "makes_legal_guarantees": false,
+    "makes_permitting_outcome_guarantees": false
+  },
+  "mutation_flags": {
+    "active_prompt_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_devhub_surface_mutation": false,
+    "active_source_mutation": false,
+    "active_contract_mutation": false,
+    "active_release_state_mutation": false
+  },
+  "prohibition_attestations": {
+    "fills_live_devhub_forms": false,
+    "uploads_files": false,
+    "saves_official_drafts": false,
+    "submits_or_certifies": false,
+    "pays_fees": false,
+    "schedules_or_cancels": false,
+    "changes_active_prompts_or_guardrails": false,
+    "stores_private_artifacts": false
+  }
+}

@@ -7,6 +7,7 @@ browser, authenticate, upload, submit, certify, schedule, cancel, or pay.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Any, Mapping, Sequence
 
 MINIMUM_REVERSIBLE_SELECTOR_CONFIDENCE = 0.85
@@ -43,6 +44,61 @@ CONTROL_COLLECTIONS = (
     "schedule_controls",
     "cancel_controls",
     "payment_controls",
+)
+V2_ROW_COLLECTIONS = ("candidate_rows", "surface_rows", "rows")
+REQUIRED_V2_ROW_FIELDS = (
+    ("selector_stability_placeholder", "missing_selector_stability_placeholder"),
+    ("accessible_role_evidence_placeholder", "missing_accessible_role_evidence_placeholder"),
+    ("redacted_validation_message_placeholder", "missing_redacted_validation_message_placeholder"),
+    ("action_boundary_classification", "missing_action_boundary_classification"),
+    ("reviewer_disposition", "missing_reviewer_disposition"),
+)
+SAFE_ACTION_BOUNDARY_CLASSIFICATIONS = frozenset(
+    {
+        "safe_read_only",
+        "read_only",
+        "reversible_draft_blocked",
+        "manual_handoff_required",
+        "consequential_blocked",
+    }
+)
+SAFE_REVIEWER_DISPOSITIONS = frozenset({"pending_review", "needs_review", "approved_read_only", "rejected", "blocked"})
+
+_PRIVATE_OR_SESSION_KEY_RE = re.compile(
+    r"(password|passwd|secret|credential|cookie|cookies|csrf|token|bearer|oauth|session|storage[_-]?state|auth[_-]?state|local[_-]?storage|session[_-]?storage|account[_-]?id|username|email|phone|permit[_-]?number|license[_-]?number|invoice)",
+    re.IGNORECASE,
+)
+_ARTIFACT_KEY_RE = re.compile(
+    r"(screenshot|screen[_-]?capture|trace|har|raw[_-]?(?:crawl|dom|html|output)|downloaded[_-]?(?:document|artifact)s?|browser[_-]?(?:artifact|state|context))",
+    re.IGNORECASE,
+)
+_MUTATION_KEY_RE = re.compile(
+    r"(?:active[_-]?)?(?:devhub[_-]?surface|surface[_-]?registry|guardrail|prompt|contract|source|release[_-]?state).*?(?:mutation|mutate|write|apply|enable|enabled|active)|(?:mutation|mutate|write|apply|enable|enabled|active).*?(?:devhub[_-]?surface|surface[_-]?registry|guardrail|prompt|contract|source|release[_-]?state)",
+    re.IGNORECASE,
+)
+_PRIVATE_VALUE_RE = re.compile(
+    r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|\b(?:\+?1[-. ]?)?\(?\d{3}\)?[-. ]\d{3}[-. ]\d{4}\b|\b(?:permit|invoice|account|license)\s*(?:number|no\.|#)?\s*[:#]\s*[A-Z0-9-]{4,}\b|\b(?:password|secret|token|authorization|set-cookie)\s*[:=]",
+    re.IGNORECASE,
+)
+_ARTIFACT_TEXT_RE = re.compile(
+    r"\b(screenshot|screen shot|trace\.zip|playwright trace|browser trace|har file|\.har\b|storage state|auth state|session state|raw crawl|raw dom|downloaded document)\b|(/home/|/users/|c:\\\\users\\\\|file://|storage[_ -]?state\.json|auth[_ -]?state\.json|screenshot\.(?:png|jpe?g|webp))",
+    re.IGNORECASE,
+)
+_AUTH_AUTOMATION_RE = re.compile(
+    r"\b(?:automate|automated|auto[- ]?complete|script|bypass|solve|handle|perform)\b.{0,60}\b(?:login|sign[- ]?in|captcha|mfa|multi[- ]?factor|one[- ]?time code|otp|account creation|password recovery)\b|\b(?:login|sign[- ]?in|captcha|mfa|multi[- ]?factor|one[- ]?time code|otp|account creation|password recovery)\b.{0,60}\b(?:automate|automated|auto[- ]?complete|script|bypass|solve|handle|perform)\b",
+    re.IGNORECASE,
+)
+_OFFICIAL_ACTION_RE = re.compile(
+    r"\b(?:certif(?:y|ies|ication)|acknowledg(?:e|ement)|submit|submission|submitted|payment|pay|paid|purchase|upload|attach|schedule|scheduling|cancel|cancellation|withdraw|reactivate|inspection)\b",
+    re.IGNORECASE,
+)
+_GUARANTEE_RE = re.compile(
+    r"\b(?:guarantee[sd]?|ensure[sd]?|will|shall)\b.{0,80}\b(?:approval|approved|code compliant|compliance|issuance|issued|legal|permit outcome|pass inspection)\b|\b(?:approval|approved|issuance|issued|legal compliance|permit outcome|pass inspection)\b.{0,80}\b(?:guarantee[sd]?|certain|assured|will|shall)\b",
+    re.IGNORECASE,
+)
+_MUTATION_TEXT_RE = re.compile(
+    r"\b(?:active|enable|apply|write|mutate|mutation)\b.{0,60}\b(?:DevHub surface|surface registry|guardrail|prompt|contract|source|release state)\b|\b(?:DevHub surface|surface registry|guardrail|prompt|contract|source|release state)\b.{0,60}\b(?:active|enable|apply|write|mutate|mutation)\b",
+    re.IGNORECASE,
 )
 
 
@@ -150,6 +206,45 @@ def validate_surface_map_candidates(
         reversible_draft_allowed=all(result.reversible_draft_allowed for result in results),
         results=results,
     )
+
+
+def validate_readonly_surface_map_candidate_v2(packet: Mapping[str, Any]) -> SurfaceMapCandidateValidationResult:
+    """Validate a fixture-first DevHub read-only surface map candidate v2 packet."""
+
+    candidate_id = _candidate_id(packet)
+    violations: list[SurfaceMapCandidateViolation] = []
+
+    if packet.get("schema_version", packet.get("schemaVersion")) not in (2, "2", "devhub_readonly_surface_map_candidate_v2"):
+        violations.append(_violation(candidate_id, "invalid_schema_version", "candidate v2 packet must declare schema version 2"))
+
+    rows = _candidate_rows(packet)
+    if not rows:
+        violations.append(_violation(candidate_id, "missing_candidate_rows", "candidate v2 packet requires candidate_rows"))
+    for index, row in enumerate(rows):
+        row_id = _item_id(row, f"candidate_rows[{index}]")
+        for field_name, code in REQUIRED_V2_ROW_FIELDS:
+            if not _present(row.get(field_name)):
+                violations.append(_violation(candidate_id, code, f"candidate row {row_id!r} requires {field_name}"))
+        classification = row.get("action_boundary_classification")
+        if _present(classification) and _normalize(str(classification)) not in SAFE_ACTION_BOUNDARY_CLASSIFICATIONS:
+            violations.append(_violation(candidate_id, "unsafe_action_boundary_classification", f"candidate row {row_id!r} has unsafe action boundary classification"))
+        disposition = row.get("reviewer_disposition")
+        if _present(disposition) and _normalize(str(disposition)) not in SAFE_REVIEWER_DISPOSITIONS:
+            violations.append(_violation(candidate_id, "unsafe_reviewer_disposition", f"candidate row {row_id!r} has unsupported reviewer disposition"))
+
+    if not _valid_validation_commands(packet.get("validation_commands")):
+        violations.append(_violation(candidate_id, "missing_validation_commands", "candidate v2 packet requires deterministic validation_commands"))
+
+    _scan_v2_value(packet, "$", candidate_id, violations)
+    return SurfaceMapCandidateValidationResult(
+        candidate_id=candidate_id,
+        reversible_draft_allowed=False,
+        violations=tuple(dict.fromkeys(violations)),
+    )
+
+
+def readonly_surface_map_candidate_v2_is_valid(packet: Mapping[str, Any]) -> bool:
+    return not validate_readonly_surface_map_candidate_v2(packet).violations
 
 
 def _candidate_id(candidate: Mapping[str, Any]) -> str:
@@ -279,6 +374,57 @@ def _looks_consequential(control: Mapping[str, Any]) -> bool:
     return bool(expanded.intersection(CONSEQUENTIAL_CONTROL_TOKENS))
 
 
+def _candidate_rows(packet: Mapping[str, Any]) -> tuple[Mapping[str, Any], ...]:
+    for key in V2_ROW_COLLECTIONS:
+        rows = _mapping_items(packet.get(key))
+        if rows:
+            return rows
+    return ()
+
+
+def _valid_validation_commands(value: Any) -> bool:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes, bytearray)) or not value:
+        return False
+    for command in value:
+        if not isinstance(command, Sequence) or isinstance(command, (str, bytes, bytearray)) or not command:
+            return False
+        if not all(isinstance(part, str) and part.strip() for part in command):
+            return False
+    return True
+
+
+def _scan_v2_value(value: Any, path: str, candidate_id: str, violations: list[SurfaceMapCandidateViolation]) -> None:
+    if isinstance(value, Mapping):
+        for raw_key, child in value.items():
+            key = str(raw_key)
+            child_path = f"{path}.{key}"
+            if _PRIVATE_OR_SESSION_KEY_RE.search(key) and _present(child) and not _redacted(child):
+                violations.append(_violation(candidate_id, "private_session_or_auth_value", f"{child_path} must not contain private, session, browser auth, or raw account values"))
+            if _ARTIFACT_KEY_RE.search(key) and _present(child):
+                violations.append(_violation(candidate_id, "prohibited_artifact_reference", f"{child_path} must not reference browser, raw, or downloaded artifacts"))
+            if _MUTATION_KEY_RE.search(key) and _present(child) and child is not False:
+                violations.append(_violation(candidate_id, "active_mutation_flag", f"{child_path} must not enable active DevHub surface, guardrail, prompt, contract, source, or release-state mutation"))
+            _scan_v2_value(child, child_path, candidate_id, violations)
+        return
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        for index, child in enumerate(value):
+            _scan_v2_value(child, f"{path}[{index}]", candidate_id, violations)
+        return
+    if isinstance(value, str):
+        if not _redacted(value) and _PRIVATE_VALUE_RE.search(value):
+            violations.append(_violation(candidate_id, "private_session_or_auth_value", f"{path} must not contain private, session, browser auth, or raw account values"))
+        if _ARTIFACT_TEXT_RE.search(value):
+            violations.append(_violation(candidate_id, "prohibited_artifact_reference", f"{path} must not reference browser, raw, or downloaded artifacts"))
+        if _AUTH_AUTOMATION_RE.search(value):
+            violations.append(_violation(candidate_id, "automated_login_or_mfa_claim", f"{path} must not claim automated login, CAPTCHA, MFA, account creation, or password recovery"))
+        if _OFFICIAL_ACTION_RE.search(value):
+            violations.append(_violation(candidate_id, "consequential_official_action_language", f"{path} must not include consequential official action language"))
+        if _GUARANTEE_RE.search(value):
+            violations.append(_violation(candidate_id, "legal_or_permitting_guarantee", f"{path} must not guarantee legal compliance or permitting outcomes"))
+        if _MUTATION_TEXT_RE.search(value):
+            violations.append(_violation(candidate_id, "active_mutation_flag", f"{path} must not reference active DevHub surface, guardrail, prompt, contract, source, or release-state mutation"))
+
+
 def _mapping_items(raw: Any) -> tuple[Mapping[str, Any], ...]:
     if isinstance(raw, Mapping):
         return (raw,)
@@ -288,7 +434,7 @@ def _mapping_items(raw: Any) -> tuple[Mapping[str, Any], ...]:
 
 
 def _item_id(item: Mapping[str, Any], fallback: str) -> str:
-    for key in ("id", "field_id", "action_id", "control_id", "name"):
+    for key in ("id", "field_id", "action_id", "control_id", "name", "row_id"):
         value = item.get(key)
         if isinstance(value, str) and value.strip():
             return value.strip()
@@ -329,6 +475,22 @@ def _flatten_strings(raw: Any) -> list[str]:
             values.extend(_flatten_strings(item))
         return values
     return []
+
+
+def _present(value: Any) -> bool:
+    if value is None or value is False:
+        return False
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, Mapping):
+        return bool(value)
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return bool(value)
+    return True
+
+
+def _redacted(value: Any) -> bool:
+    return isinstance(value, str) and value.strip().lower() in {"redacted", "[redacted]", "***redacted***"}
 
 
 def _clean(value: str) -> str:

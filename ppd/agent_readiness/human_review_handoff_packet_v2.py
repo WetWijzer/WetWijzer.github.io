@@ -49,12 +49,18 @@ _FORBIDDEN_KEYS = {
     "cookies",
     "credential",
     "credentials",
+    "downloaded_artifact",
+    "downloaded_artifacts",
     "downloaded_document",
     "downloaded_documents",
+    "downloaded_file",
+    "downloaded_files",
     "har",
     "har_file",
     "password",
     "payment_details",
+    "private_artifact",
+    "private_artifacts",
     "private_fact",
     "private_facts",
     "private_file",
@@ -64,11 +70,14 @@ _FORBIDDEN_KEYS = {
     "raw_browser_artifact",
     "raw_crawl_output",
     "raw_download",
+    "raw_downloaded_artifact",
     "raw_html",
     "raw_pdf",
     "screenshot",
     "session_artifact",
     "session_artifacts",
+    "session_file",
+    "session_files",
     "session_state",
     "storage_state",
     "token",
@@ -80,6 +89,10 @@ _FORBIDDEN_KEYS = {
 _MUTATION_FLAG_KEYS = {
     "active_agent_state_mutation",
     "active_agent_state_mutation_flag",
+    "active_contract_mutation",
+    "active_contract_mutation_flag",
+    "active_devhub_surface_mutation",
+    "active_devhub_surface_mutation_flag",
     "active_guardrail_mutation",
     "active_guardrail_mutation_flag",
     "active_monitoring_mutation",
@@ -95,6 +108,8 @@ _MUTATION_FLAG_KEYS = {
     "active_surface_registry_mutation",
     "active_surface_registry_mutation_flag",
     "agent_state_mutation_enabled",
+    "contract_mutation_enabled",
+    "devhub_surface_mutation_enabled",
     "guardrail_mutation_enabled",
     "monitoring_mutation_enabled",
     "prompt_mutation_enabled",
@@ -105,15 +120,17 @@ _MUTATION_FLAG_KEYS = {
 }
 
 _FORBIDDEN_TEXT_PATTERNS = (
-    re.compile(r"\b(?:opened|logged into|launched)\s+devhub\b", re.IGNORECASE),
-    re.compile(r"\b(?:live crawl|live browser|live network|live llm)\s+(?:ran|completed|executed)\b", re.IGNORECASE),
-    re.compile(r"\b(?:executed|completed|ran)\s+(?:a\s+)?(?:live crawl|live browser|live network|live llm)\b", re.IGNORECASE),
+    re.compile(r"\b(?:opened|logged into|launched|accessed)\s+devhub\b", re.IGNORECASE),
+    re.compile(r"\b(?:devhub|portal)\s+(?:was\s+)?(?:opened|logged into|accessed|updated)\b", re.IGNORECASE),
+    re.compile(r"\b(?:live crawl|live browser|live network|live llm|live devhub)\s+(?:ran|completed|executed|opened|accessed)\b", re.IGNORECASE),
+    re.compile(r"\b(?:executed|completed|ran|opened|accessed)\s+(?:a\s+)?(?:live crawl|live browser|live network|live llm|live devhub)\b", re.IGNORECASE),
     re.compile(r"\b(?:permit|approval|issuance|inspection|application|upload|payment)\s+(?:will|is guaranteed to|is certain to)\s+(?:be\s+)?(?:approved|issued|pass|accepted|processed|completed)\b", re.IGNORECASE),
-    re.compile(r"\bguarantee(?:d|s)?\s+(?:approval|issuance|acceptance|permit outcome|inspection passage|legal outcome|permitting outcome)\b", re.IGNORECASE),
-    re.compile(r"\b(?:finally|final|officially)\s+(?:submit|submitted|submission|pay|paid|payment|upload|uploaded|schedule|scheduled|cancel|cancelled|canceled)\b", re.IGNORECASE),
-    re.compile(r"\b(?:submitted|uploaded|paid|scheduled|cancelled|canceled)\s+(?:the\s+)?(?:application|permit|payment|inspection|record|upload)\b", re.IGNORECASE),
-    re.compile(r"\b(?:raw crawl|raw pdf|raw html|browser artifact|session artifact|session state|storage state|trace file|har file|downloaded document)\b", re.IGNORECASE),
-    re.compile(r"\b(?:private|authenticated)\s+(?:fact|facts|value|values|devhub value|case fact)\b", re.IGNORECASE),
+    re.compile(r"\bguarantee(?:d|s)?\s+(?:approval|issuance|acceptance|permit outcome|inspection passage|legal outcome|permitting outcome|compliance)\b", re.IGNORECASE),
+    re.compile(r"\b(?:legal|permitting)\s+(?:guarantee|advice|assurance|certainty)\b", re.IGNORECASE),
+    re.compile(r"\b(?:finally|final|officially)\s+(?:submit|submitted|submission|pay|paid|payment|upload|uploaded|schedule|scheduled|cancel|cancelled|canceled|certify|certified)\b", re.IGNORECASE),
+    re.compile(r"\b(?:submitted|uploaded|paid|scheduled|cancelled|canceled|certified|completed)\s+(?:the\s+)?(?:application|permit|payment|inspection|record|upload|official action)\b", re.IGNORECASE),
+    re.compile(r"\b(?:raw crawl|raw pdf|raw html|browser artifact|session artifact|session state|storage state|trace file|har file|downloaded document|downloaded artifact)\b", re.IGNORECASE),
+    re.compile(r"\b(?:private|authenticated)\s+(?:fact|facts|value|values|devhub value|case fact|artifact|session)\b", re.IGNORECASE),
 )
 
 
@@ -153,8 +170,7 @@ def build_human_review_handoff_packet_v2(
 
     checklist = _reviewer_checklist_items(refresh_implementation_proposal_v2, agent_readiness_replay_packet_v2)
     deferrals = _unresolved_deferrals(refresh_implementation_proposal_v2, agent_readiness_replay_packet_v2)
-    acceptance = _acceptance_criteria(checklist, deferrals)
-
+    evidence_summaries = _evidence_summaries(refresh_implementation_proposal_v2, agent_readiness_replay_packet_v2)
     packet = {
         "packet_type": PACKET_TYPE,
         "packet_version": PACKET_VERSION,
@@ -164,8 +180,14 @@ def build_human_review_handoff_packet_v2(
             "agent_readiness_replay_packet_v2": _text(agent_readiness_replay_packet_v2.get("packet_type")),
         },
         "reviewer_checklist_items": checklist,
+        "reviewer_prompts": _reviewer_prompts(checklist),
+        "evidence_summaries": evidence_summaries,
+        "unresolved_missing_fact_prompts": _unresolved_missing_fact_prompts(agent_readiness_replay_packet_v2),
+        "stale_conflicting_evidence_prompts": _stale_conflicting_evidence_prompts(agent_readiness_replay_packet_v2),
+        "blocked_action_reminders": _blocked_action_reminders(refresh_implementation_proposal_v2, agent_readiness_replay_packet_v2),
+        "attendance_reminders": _attendance_reminders(agent_readiness_replay_packet_v2),
         "unresolved_deferrals": deferrals,
-        "acceptance_criteria": acceptance,
+        "acceptance_criteria": _acceptance_criteria(checklist, deferrals),
         "rollback_verification": _rollback_verification(refresh_implementation_proposal_v2, agent_readiness_replay_packet_v2),
         "offline_validation_commands": list(OFFLINE_VALIDATION_COMMANDS),
         "attestations": {key: True for key in sorted(REQUIRED_ATTESTATIONS)},
@@ -191,6 +213,12 @@ def validate_human_review_handoff_packet_v2(packet: Mapping[str, Any]) -> HumanR
         errors.append("consumes.agent_readiness_replay_packet_v2 must reference agent readiness replay packet v2")
 
     _validate_cited_rows(errors, packet.get("reviewer_checklist_items"), "reviewer_checklist_items")
+    _validate_cited_rows(errors, packet.get("reviewer_prompts"), "reviewer_prompts")
+    _validate_cited_rows(errors, packet.get("evidence_summaries"), "evidence_summaries")
+    _validate_cited_rows(errors, packet.get("unresolved_missing_fact_prompts"), "unresolved_missing_fact_prompts")
+    _validate_cited_rows(errors, packet.get("stale_conflicting_evidence_prompts"), "stale_conflicting_evidence_prompts")
+    _validate_cited_rows(errors, packet.get("blocked_action_reminders"), "blocked_action_reminders")
+    _validate_cited_rows(errors, packet.get("attendance_reminders"), "attendance_reminders")
     _validate_cited_rows(errors, packet.get("unresolved_deferrals"), "unresolved_deferrals")
     _validate_cited_rows(errors, packet.get("acceptance_criteria"), "acceptance_criteria")
     _validate_cited_rows(errors, packet.get("rollback_verification"), "rollback_verification")
@@ -229,7 +257,6 @@ def _reviewer_checklist_items(proposal: Mapping[str, Any], replay: Mapping[str, 
         items.append(_checklist_item("proposal-surface", row.get("patch_id"), "Confirm read-only surface row has reviewer owner, redaction disposition, and selector confidence.", row.get("citations"), ["refresh_implementation_proposal_v2"]))
     for row in _mapping_sequence(proposal.get("proposed_guardrail_patch_rows")):
         items.append(_checklist_item("proposal-guardrail", row.get("patch_id"), "Confirm guardrail row is still proposed-only and does not enable consequential capability.", row.get("citations"), ["refresh_implementation_proposal_v2"]))
-
     for prompt in _mapping_sequence(replay.get("expected_missing_fact_prompts")):
         items.append(_checklist_item("replay-missing-fact", prompt.get("prompt_id"), "Review missing-fact prompt wording before any attended case use.", _evidence_citations(prompt), ["agent_readiness_replay_packet_v2"]))
     for action in _mapping_sequence(replay.get("next_safe_actions")):
@@ -237,8 +264,61 @@ def _reviewer_checklist_items(proposal: Mapping[str, Any], replay: Mapping[str, 
     return items
 
 
+def _reviewer_prompts(checklist: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    prompts: list[dict[str, Any]] = []
+    for item in checklist:
+        item_id = _text(item.get("checklist_item_id"))
+        prompts.append(_row("reviewer_prompt_id", f"prompt-{item_id}", "pending_human_review", f"Reviewer must resolve checklist item {item_id} before any attended handoff disposition.", item.get("citations")))
+    return prompts
+
+
+def _evidence_summaries(proposal: Mapping[str, Any], replay: Mapping[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for source_id in _string_list(replay.get("source_evidence_ids")):
+        rows.append(_row("evidence_summary_id", f"evidence-{_slug(source_id)}", "pending_human_review", f"Source evidence {source_id} is fixture evidence for reviewer handoff only.", [{"source_evidence_id": source_id}]))
+    for row in _mapping_sequence(proposal.get("proposed_source_patch_rows")):
+        rows.append(_row("evidence_summary_id", f"proposal-source-{_slug(_text(row.get('patch_id')))}", "pending_human_review", "Proposed source row evidence remains proposed-only until reviewer disposition.", row.get("citations")))
+    return rows
+
+
+def _unresolved_missing_fact_prompts(replay: Mapping[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for prompt in _mapping_sequence(replay.get("expected_missing_fact_prompts")):
+        rows.append(_row("missing_fact_prompt_id", f"missing-fact-{_slug(_text(prompt.get('prompt_id')))}", "unresolved", _text(prompt.get("prompt")) or "Missing fact prompt requires reviewer approval before use.", _evidence_citations(prompt)))
+    return rows
+
+
+def _stale_conflicting_evidence_prompts(replay: Mapping[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for notice in _mapping_sequence(replay.get("stale_evidence_notices")):
+        rows.append(_row("evidence_prompt_id", f"stale-{_slug(_text(notice.get('notice_id')))}", "unresolved", _text(notice.get("notice")) or "Stale evidence requires reviewer disposition.", _evidence_citations(notice)))
+    for notice in _mapping_sequence(replay.get("conflicting_evidence_notices")):
+        rows.append(_row("evidence_prompt_id", f"conflict-{_slug(_text(notice.get('conflict_id')))}", "unresolved", _text(notice.get("notice")) or "Conflicting evidence requires reviewer disposition.", _evidence_citations(notice)))
+    return rows
+
+
+def _blocked_action_reminders(proposal: Mapping[str, Any], replay: Mapping[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for block in _mapping_sequence(replay.get("blocked_action_explanations")):
+        rows.append(_row("blocked_action_reminder_id", f"blocked-{_slug(_text(block.get('action_id')))}", "blocked", _text(block.get("explanation")) or "Blocked action requires attended human checkpoint.", _evidence_citations(block)))
+    for row in _mapping_sequence(proposal.get("proposed_guardrail_patch_rows")):
+        if row.get("patch_kind") == "blocked_consequential_action_review_row":
+            rows.append(_row("blocked_action_reminder_id", f"proposal-blocked-{_slug(_text(row.get('patch_id')))}", "blocked", "Proposed blocked-action row cannot be treated as an enabled capability.", row.get("citations")))
+    return rows
+
+
+def _attendance_reminders(replay: Mapping[str, Any]) -> list[dict[str, Any]]:
+    citations = _derived_citations(_mapping_sequence(replay.get("reviewer_owner_fields")))
+    return [
+        _row("attendance_reminder_id", "future-attended-human-review-required", "requires_attendance", "A human reviewer must be present for the post-preview handoff disposition.", citations),
+        _row("attendance_reminder_id", "official-actions-remain-blocked", "requires_attendance", "Submissions, uploads, payments, certifications, scheduling, cancellation, and official record changes remain blocked without explicit attended confirmation.", citations),
+    ]
+
+
 def _unresolved_deferrals(proposal: Mapping[str, Any], replay: Mapping[str, Any]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
+    for prompt in _mapping_sequence(replay.get("expected_missing_fact_prompts")):
+        rows.append(_deferral("missing-fact", prompt.get("prompt_id"), "Missing fact remains unresolved until a reviewer approves the prompt or records the answer source.", _evidence_citations(prompt)))
     for notice in _mapping_sequence(replay.get("stale_evidence_notices")):
         rows.append(_deferral("stale-evidence", notice.get("notice_id"), "Stale evidence remains unresolved until a reviewer accepts or replaces the cited evidence.", _evidence_citations(notice)))
     for notice in _mapping_sequence(replay.get("conflicting_evidence_notices")):
@@ -255,73 +335,31 @@ def _acceptance_criteria(checklist: Sequence[Mapping[str, Any]], deferrals: Sequ
     checklist_refs = [_text(item.get("checklist_item_id")) for item in checklist if _text(item.get("checklist_item_id"))]
     deferral_refs = [_text(item.get("deferral_id")) for item in deferrals if _text(item.get("deferral_id"))]
     return [
-        {
-            "criterion_id": "all-reviewer-checklist-items-cited",
-            "status": "pending_human_review",
-            "summary": "Every reviewer checklist item must retain citations to fixture evidence from the consumed packets.",
-            "checklist_refs": checklist_refs,
-            "deferral_refs": [],
-            "citations": _derived_citations(checklist),
-        },
-        {
-            "criterion_id": "all-deferrals-resolved-or-carried-forward",
-            "status": "pending_human_review",
-            "summary": "Each unresolved deferral must be resolved by reviewer disposition or carried forward as blocking work.",
-            "checklist_refs": [],
-            "deferral_refs": deferral_refs,
-            "citations": _derived_citations(deferrals),
-        },
-        {
-            "criterion_id": "offline-validation-passes-before-review",
-            "status": "pending_validation",
-            "summary": "Offline validation commands must pass before the packet is used for an attended review.",
-            "checklist_refs": checklist_refs[:3],
-            "deferral_refs": deferral_refs[:3],
-            "citations": [{"packet_field": "offline_validation_commands"}],
-        },
+        {"criterion_id": "all-reviewer-checklist-items-cited", "status": "pending_human_review", "summary": "Every reviewer checklist item must retain citations to fixture evidence from the consumed packets.", "checklist_refs": checklist_refs, "deferral_refs": [], "citations": _derived_citations(checklist)},
+        {"criterion_id": "all-deferrals-resolved-or-carried-forward", "status": "pending_human_review", "summary": "Each unresolved deferral must be resolved by reviewer disposition or carried forward as blocking work.", "checklist_refs": [], "deferral_refs": deferral_refs, "citations": _derived_citations(deferrals)},
+        {"criterion_id": "offline-validation-passes-before-review", "status": "pending_validation", "summary": "Offline validation commands must pass before the packet is used for an attended review.", "checklist_refs": checklist_refs[:3], "deferral_refs": deferral_refs[:3], "citations": [{"packet_field": "offline_validation_commands"}]},
     ]
 
 
 def _rollback_verification(proposal: Mapping[str, Any], replay: Mapping[str, Any]) -> list[dict[str, Any]]:
-    rollback_rows = _mapping_sequence(proposal.get("rollback_notes"))
-    reviewer_rows = _mapping_sequence(replay.get("reviewer_owner_fields"))
     return [
-        {
-            "rollback_check_id": "discard-proposed-refresh-rows",
-            "status": "pending_human_review",
-            "summary": "Rollback is verified by discarding proposed refresh rows and leaving current registries unchanged.",
-            "citations": _derived_citations(rollback_rows),
-        },
-        {
-            "rollback_check_id": "preserve-offline-replay-only-state",
-            "status": "pending_human_review",
-            "summary": "Rollback is verified by confirming replay output remains fixture-only and does not mutate agent state.",
-            "citations": _derived_citations(reviewer_rows),
-        },
+        {"rollback_check_id": "discard-proposed-refresh-rows", "status": "pending_human_review", "summary": "Rollback is verified by discarding proposed refresh rows and leaving current registries unchanged.", "citations": _derived_citations(_mapping_sequence(proposal.get("rollback_notes")))},
+        {"rollback_check_id": "preserve-offline-replay-only-state", "status": "pending_human_review", "summary": "Rollback is verified by confirming replay output remains fixture-only and does not mutate agent state.", "citations": _derived_citations(_mapping_sequence(replay.get("reviewer_owner_fields")))},
     ]
 
 
 def _checklist_item(kind: str, raw_id: Any, summary: str, citations: Any, roles: list[str]) -> dict[str, Any]:
     item_id = _slug(_text(raw_id) or kind)
-    return {
-        "checklist_item_id": f"{kind}-{item_id}",
-        "status": "pending_human_review",
-        "summary": summary,
-        "source_packet_roles": roles,
-        "citations": _citation_list(citations),
-    }
+    return {"checklist_item_id": f"{kind}-{item_id}", "status": "pending_human_review", "summary": summary, "source_packet_roles": roles, "citations": _citation_list(citations)}
 
 
 def _deferral(kind: str, raw_id: Any, summary: str, citations: Any) -> dict[str, Any]:
     item_id = _slug(_text(raw_id) or kind)
-    return {
-        "deferral_id": f"{kind}-{item_id}",
-        "status": "unresolved",
-        "summary": summary,
-        "requires_attended_review": True,
-        "disposition": "carry_forward_pending_attended_review",
-        "citations": _citation_list(citations),
-    }
+    return {"deferral_id": f"{kind}-{item_id}", "status": "unresolved", "summary": summary, "requires_attended_review": True, "disposition": "carry_forward_pending_attended_review", "citations": _citation_list(citations)}
+
+
+def _row(id_key: str, row_id: str, status: str, summary: str, citations: Any) -> dict[str, Any]:
+    return {id_key: row_id, "status": status, "summary": summary, "citations": _citation_list(citations)}
 
 
 def _evidence_citations(row: Mapping[str, Any]) -> list[dict[str, str]]:
@@ -332,6 +370,7 @@ def _derived_citations(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]
     citations: list[dict[str, Any]] = []
     for row in rows:
         citations.extend(_citation_list(row.get("citations")))
+        citations.extend(_evidence_citations(row))
     if not citations:
         citations.append({"packet_field": "derived_from_consumed_fixture_packets"})
     return citations
@@ -352,6 +391,12 @@ def _validate_cited_rows(errors: list[str], value: Any, field: str) -> None:
         return
     id_keys = {
         "reviewer_checklist_items": "checklist_item_id",
+        "reviewer_prompts": "reviewer_prompt_id",
+        "evidence_summaries": "evidence_summary_id",
+        "unresolved_missing_fact_prompts": "missing_fact_prompt_id",
+        "stale_conflicting_evidence_prompts": "evidence_prompt_id",
+        "blocked_action_reminders": "blocked_action_reminder_id",
+        "attendance_reminders": "attendance_reminder_id",
         "unresolved_deferrals": "deferral_id",
         "acceptance_criteria": "criterion_id",
         "rollback_verification": "rollback_check_id",
@@ -384,7 +429,7 @@ def _reject_unsafe_content(value: Any, path: str, errors: list[str]) -> None:
             if normalized in _FORBIDDEN_KEYS and child not in (None, "", [], {}):
                 errors.append(f"{child_path} is not allowed in a human review handoff packet")
             if normalized in _MUTATION_FLAG_KEYS and _is_active_flag(child):
-                errors.append(f"{child_path} declares an active source, surface-registry, guardrail, prompt, monitoring, release-state, or agent-state mutation flag")
+                errors.append(f"{child_path} declares an active source, DevHub surface, contract, guardrail, prompt, monitoring, release-state, or agent-state mutation flag")
             _reject_unsafe_content(child, child_path, errors)
     elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
         for index, child in enumerate(value):
@@ -392,7 +437,7 @@ def _reject_unsafe_content(value: Any, path: str, errors: list[str]) -> None:
     elif isinstance(value, str):
         for pattern in _FORBIDDEN_TEXT_PATTERNS:
             if pattern.search(value):
-                errors.append(f"{path} contains unsafe live, private, outcome, artifact, mutation, or official-action language")
+                errors.append(f"{path} contains unsafe live, private, outcome, artifact, mutation, legal, guarantee, or official-action language")
                 break
 
 

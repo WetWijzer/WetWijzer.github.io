@@ -1,0 +1,74 @@
+{
+  "version": "stale-source-reextraction-readiness-packet-v2",
+  "packet_id": "fixture-stale-source-reextract-readiness-v2",
+  "mode": "fixture_first_no_network",
+  "candidate_rows": [
+    {
+      "order": 1,
+      "candidate_id": "candidate-single-pdf-guidance-stale",
+      "source_id": "source-submit-plans-online",
+      "stale_status": "stale",
+      "source_evidence_refresh_placeholder_ids": ["refresh-placeholder-single-pdf"],
+      "stale_hold_carry_forward_note_ids": ["carry-note-single-pdf"],
+      "requirement_review_placeholder_ids": ["requirement-review-single-pdf"],
+      "guardrail_recompile_prerequisite_ids": ["guardrail-prereq-single-pdf"],
+      "reviewer_disposition_ids": ["reviewer-disposition-single-pdf"]
+    }
+  ],
+  "source_evidence_refresh_placeholders": [
+    {
+      "placeholder_id": "refresh-placeholder-single-pdf",
+      "candidate_id": "candidate-single-pdf-guidance-stale",
+      "placeholder": "placeholder: refreshed source evidence citation pending approved offline review",
+      "live_fetch_allowed": false,
+      "raw_body_persistence_allowed": false
+    }
+  ],
+  "stale_hold_carry_forward_notes": [
+    {
+      "note_id": "carry-note-single-pdf",
+      "candidate_id": "candidate-single-pdf-guidance-stale",
+      "note": "Existing stale-source hold remains in force until refreshed evidence and reviewer disposition are supplied.",
+      "hold_carries_forward": true,
+      "release_blocked_until_review": true
+    }
+  ],
+  "requirement_review_placeholders": [
+    {
+      "placeholder_id": "requirement-review-single-pdf",
+      "candidate_id": "candidate-single-pdf-guidance-stale",
+      "placeholder": "placeholder: requirement delta review pending refreshed source evidence",
+      "human_review_required": true
+    }
+  ],
+  "guardrail_recompile_prerequisites": [
+    {
+      "prerequisite_id": "guardrail-prereq-single-pdf",
+      "candidate_id": "candidate-single-pdf-guidance-stale",
+      "prerequisite": "Reviewer must approve refreshed source evidence and requirement delta before guardrail recompilation is eligible.",
+      "satisfied": false,
+      "recompile_blocked": true
+    }
+  ],
+  "reviewer_dispositions": [
+    {
+      "disposition_id": "reviewer-disposition-single-pdf",
+      "candidate_id": "candidate-single-pdf-guidance-stale",
+      "disposition": "pending_reviewer_disposition",
+      "mutation_allowed": false
+    }
+  ],
+  "mutation_flags": {
+    "active_source_mutation": false,
+    "active_requirement_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_contract_mutation": false,
+    "active_devhub_surface_mutation": false,
+    "active_release_state_mutation": false
+  },
+  "validation_commands": [
+    ["python3", "-m", "unittest", "ppd.tests.test_stale_source_reextraction_readiness_packet_v2"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

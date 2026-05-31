@@ -1,0 +1,141 @@
+{
+  "version": "post-recompile-release-decision-packet-v2",
+  "source_replay": {
+    "version": "post-recompile-agent-readiness-replay-v2",
+    "approved_evidence": true,
+    "replay_case_count": 6
+  },
+  "fixture_first": true,
+  "offline_only": true,
+  "inactive_only": true,
+  "no_guardrail_activation": true,
+  "no_prompt_changes": true,
+  "no_devhub_opened": true,
+  "no_live_source_crawl": true,
+  "no_official_actions": true,
+  "decision_rows": [
+    {
+      "sequence": 1,
+      "row_id": "release-decision-row-001",
+      "source_replay_case_id": "case-001",
+      "source_replay_case_type": "replay_case",
+      "release_decision": "ready-for-review",
+      "decision_basis": "baseline deterministic replay",
+      "stale_source_hold_outcome": "not-applicable",
+      "inactive_to_active_eligibility_note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made.",
+      "blocked_consequential_action_reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet.",
+      "rollback_reference_id": "rollback-reference-001",
+      "reviewer_signoff_placeholder_id": "reviewer-signoff-001"
+    },
+    {
+      "sequence": 2,
+      "row_id": "release-decision-row-002",
+      "source_replay_case_id": "case-002",
+      "source_replay_case_type": "stale_source_hold_resolution_placeholder",
+      "release_decision": "hold-inactive",
+      "decision_basis": "requires placeholder instead of resolution claim",
+      "stale_source_hold_outcome": "manual-source-review-required",
+      "inactive_to_active_eligibility_note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made.",
+      "blocked_consequential_action_reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet.",
+      "rollback_reference_id": "rollback-reference-002",
+      "reviewer_signoff_placeholder_id": "reviewer-signoff-002"
+    },
+    {
+      "sequence": 3,
+      "row_id": "release-decision-row-003",
+      "source_replay_case_id": "case-003",
+      "source_replay_case_type": "caution_template_check",
+      "release_decision": "ready-for-review",
+      "decision_basis": "verifies caution language is present",
+      "stale_source_hold_outcome": "not-applicable",
+      "inactive_to_active_eligibility_note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made.",
+      "blocked_consequential_action_reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet.",
+      "rollback_reference_id": "rollback-reference-003",
+      "reviewer_signoff_placeholder_id": "reviewer-signoff-003"
+    },
+    {
+      "sequence": 4,
+      "row_id": "release-decision-row-004",
+      "source_replay_case_id": "case-004",
+      "source_replay_case_type": "next_safe_action_summary",
+      "release_decision": "ready-for-review",
+      "decision_basis": "summarizes the next non-consequential action",
+      "stale_source_hold_outcome": "not-applicable",
+      "inactive_to_active_eligibility_note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made.",
+      "blocked_consequential_action_reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet.",
+      "rollback_reference_id": "rollback-reference-004",
+      "reviewer_signoff_placeholder_id": "reviewer-signoff-004"
+    },
+    {
+      "sequence": 5,
+      "row_id": "release-decision-row-005",
+      "source_replay_case_id": "case-005",
+      "source_replay_case_type": "refused_consequential_action_example",
+      "release_decision": "hold-inactive",
+      "decision_basis": "shows refusal for submission or certification",
+      "stale_source_hold_outcome": "not-applicable",
+      "inactive_to_active_eligibility_note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made.",
+      "blocked_consequential_action_reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet.",
+      "rollback_reference_id": "rollback-reference-005",
+      "reviewer_signoff_placeholder_id": "reviewer-signoff-005"
+    },
+    {
+      "sequence": 6,
+      "row_id": "release-decision-row-006",
+      "source_replay_case_id": "case-006",
+      "source_replay_case_type": "reviewer_disposition",
+      "release_decision": "hold-inactive",
+      "decision_basis": "captures reviewer approve or reject disposition",
+      "stale_source_hold_outcome": "not-applicable",
+      "inactive_to_active_eligibility_note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made.",
+      "blocked_consequential_action_reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet.",
+      "rollback_reference_id": "rollback-reference-006",
+      "reviewer_signoff_placeholder_id": "reviewer-signoff-006"
+    }
+  ],
+  "stale_source_hold_outcomes": [
+    {
+      "source_replay_case_id": "case-002",
+      "row_id": "release-decision-row-002",
+      "outcome": "manual-source-review-required"
+    }
+  ],
+  "reviewer_signoff_placeholders": [
+    {"placeholder_id": "reviewer-signoff-001", "row_id": "release-decision-row-001", "status": "pending-human-review", "reviewer": "", "signed_at": "", "notes": ""},
+    {"placeholder_id": "reviewer-signoff-002", "row_id": "release-decision-row-002", "status": "pending-human-review", "reviewer": "", "signed_at": "", "notes": ""},
+    {"placeholder_id": "reviewer-signoff-003", "row_id": "release-decision-row-003", "status": "pending-human-review", "reviewer": "", "signed_at": "", "notes": ""},
+    {"placeholder_id": "reviewer-signoff-004", "row_id": "release-decision-row-004", "status": "pending-human-review", "reviewer": "", "signed_at": "", "notes": ""},
+    {"placeholder_id": "reviewer-signoff-005", "row_id": "release-decision-row-005", "status": "pending-human-review", "reviewer": "", "signed_at": "", "notes": ""},
+    {"placeholder_id": "reviewer-signoff-006", "row_id": "release-decision-row-006", "status": "pending-human-review", "reviewer": "", "signed_at": "", "notes": ""}
+  ],
+  "rollback_references": [
+    {"rollback_reference_id": "rollback-reference-001", "row_id": "release-decision-row-001", "reference": "Use the prior inactive fixture state and do not mutate active release state from this packet."},
+    {"rollback_reference_id": "rollback-reference-002", "row_id": "release-decision-row-002", "reference": "Use the prior inactive fixture state and do not mutate active release state from this packet."},
+    {"rollback_reference_id": "rollback-reference-003", "row_id": "release-decision-row-003", "reference": "Use the prior inactive fixture state and do not mutate active release state from this packet."},
+    {"rollback_reference_id": "rollback-reference-004", "row_id": "release-decision-row-004", "reference": "Use the prior inactive fixture state and do not mutate active release state from this packet."},
+    {"rollback_reference_id": "rollback-reference-005", "row_id": "release-decision-row-005", "reference": "Use the prior inactive fixture state and do not mutate active release state from this packet."},
+    {"rollback_reference_id": "rollback-reference-006", "row_id": "release-decision-row-006", "reference": "Use the prior inactive fixture state and do not mutate active release state from this packet."}
+  ],
+  "inactive_to_active_eligibility_notes": [
+    {"row_id": "release-decision-row-001", "note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made."},
+    {"row_id": "release-decision-row-002", "note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made."},
+    {"row_id": "release-decision-row-003", "note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made."},
+    {"row_id": "release-decision-row-004", "note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made."},
+    {"row_id": "release-decision-row-005", "note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made."},
+    {"row_id": "release-decision-row-006", "note": "Eligible only after stale-source holds are resolved, reviewer signoff is completed, rollback references are accepted, and a separate operator release decision is made."}
+  ],
+  "blocked_consequential_action_reminders": [
+    {"row_id": "release-decision-row-001", "reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet."},
+    {"row_id": "release-decision-row-002", "reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet."},
+    {"row_id": "release-decision-row-003", "reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet."},
+    {"row_id": "release-decision-row-004", "reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet."},
+    {"row_id": "release-decision-row-005", "reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet."},
+    {"row_id": "release-decision-row-006", "reminder": "Do not upload, submit, certify, pay, schedule, cancel, or make official changes from this packet."}
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/validation/post_recompile_release_decision_packet_v2.py"],
+    ["python3", "-m", "unittest", "ppd.tests.test_post_recompile_release_decision_packet_v2"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+}

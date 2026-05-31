@@ -1,0 +1,194 @@
+{
+  "schema_version": "ppd_fee_deadline_trigger_matrix_packet.v2",
+  "packet_id": "fixture-first-fee-deadline-trigger-matrix-v2",
+  "created_for_task": "checkbox-24 supervisor-20260531-945",
+  "mode": "fixture_first_offline_only",
+  "mutation_policy": {
+    "mutates_active_requirements": false,
+    "mutates_process_models": false,
+    "mutates_guardrails": false,
+    "mutates_prompts": false,
+    "mutates_contracts": false,
+    "mutates_source_registries": false,
+    "mutates_devhub_surfaces": false,
+    "mutates_release_state": false
+  },
+  "collection_boundaries": {
+    "opened_devhub": false,
+    "crawled_live_sources": false,
+    "downloaded_fee_documents": false,
+    "entered_payment_details": false,
+    "stored_auth_state": false,
+    "stored_private_session_files": false,
+    "stored_raw_crawl_output": false
+  },
+  "synthetic_notice": "All trigger rows are deterministic placeholders for offline validation. They are not legal advice, not current fee amounts, and not source-verified PP&D requirements until reviewed against official public sources.",
+  "source_evidence_placeholders": [
+    {
+      "placeholder_id": "fee-guide-public-placeholder",
+      "expected_public_source": "PP&D public fee payment guide or fee schedule page",
+      "source_url_placeholder": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "evidence_gap": "Confirm current public language for when fee balances are created, displayed, adjusted, or due.",
+      "human_review_status": "pending_official_source_review",
+      "stale_source_hold_note": "Hold any formal rule extraction if the public source has not been verified during the current validation window."
+    },
+    {
+      "placeholder_id": "devhub-faq-public-placeholder",
+      "expected_public_source": "PP&D DevHub FAQ or online permitting tools guidance",
+      "source_url_placeholder": "https://www.portland.gov/ppd/devhub-faqs",
+      "evidence_gap": "Confirm public descriptions of fee payment, upload, inspection, and status-check workflows.",
+      "human_review_status": "pending_official_source_review",
+      "stale_source_hold_note": "Do not infer authenticated DevHub behavior from stale public FAQ text."
+    },
+    {
+      "placeholder_id": "permit-application-guide-placeholder",
+      "expected_public_source": "PP&D public permit application guide",
+      "source_url_placeholder": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "evidence_gap": "Confirm current public language for application submission, plan review, corrections, and post-submission status cues.",
+      "human_review_status": "pending_official_source_review",
+      "stale_source_hold_note": "Hold deadline and expiration claims until the guide is freshly checked."
+    }
+  ],
+  "trigger_matrix": [
+    {
+      "trigger_id": "synthetic-intake-fee-created",
+      "permit_family": "building_or_plan_review_request",
+      "process_stage": "prescreen/intake",
+      "synthetic_fee_trigger": "A fee balance may be created after intake or prescreen review determines that a payable review or permit charge applies.",
+      "deadline_or_expiration_cue": "A notice may include a pay-by date, response window, or application hold cue that must be source-verified before formalization.",
+      "payment_boundary_warning": "The assistant may summarize that a fee appears to exist, but must stop before entering payment instrument details or selecting a final payment action.",
+      "blocked_financial_action_reminder": "Block card, bank, e-check, account-number, saved-payment, payment-certification, and final submit-payment steps unless a human is present and gives action-specific confirmation.",
+      "source_evidence_placeholder_ids": [
+        "fee-guide-public-placeholder",
+        "permit-application-guide-placeholder"
+      ],
+      "reviewer_disposition_placeholder": {
+        "status": "not_reviewed",
+        "reviewer": "TBD",
+        "allowed_dispositions": [
+          "accept_as_source_backed",
+          "revise_with_citation",
+          "reject_as_unsupported",
+          "hold_for_fresh_source"
+        ],
+        "notes": "Reviewer must attach exact public citation spans before this row can become an active requirement."
+      }
+    },
+    {
+      "trigger_id": "synthetic-corrections-resubmittal-fee",
+      "permit_family": "plan_review_corrections",
+      "process_stage": "corrections/checksheets",
+      "synthetic_fee_trigger": "A supplemental or re-review fee may be associated with corrections, resubmittal, or scope changes if official guidance or case notices say so.",
+      "deadline_or_expiration_cue": "Correction notices may contain response due dates, resubmittal windows, or application inactivity warnings that require citation-level review.",
+      "payment_boundary_warning": "The assistant may identify a possible fee-related checkpoint but must not upload corrections, certify responses, or pay fees without the required attended workflow.",
+      "blocked_financial_action_reminder": "Block any attempt to satisfy a correction fee by submitting payment details, confirming a payment cart, or completing a payable transaction.",
+      "source_evidence_placeholder_ids": [
+        "devhub-faq-public-placeholder",
+        "permit-application-guide-placeholder"
+      ],
+      "reviewer_disposition_placeholder": {
+        "status": "not_reviewed",
+        "reviewer": "TBD",
+        "allowed_dispositions": [
+          "accept_as_source_backed",
+          "revise_with_citation",
+          "reject_as_unsupported",
+          "hold_for_fresh_source"
+        ],
+        "notes": "Reviewer must separate fee trigger evidence from upload or certification action evidence."
+      }
+    },
+    {
+      "trigger_id": "synthetic-permit-issuance-fee-due",
+      "permit_family": "approved_permit_or_trade_permit",
+      "process_stage": "approval/issuance",
+      "synthetic_fee_trigger": "A permit issuance, purchase, or remaining balance fee may become due before permit issuance or activation.",
+      "deadline_or_expiration_cue": "The payable notice may include an issuance, purchase, expiration, or reactivation cue that must be validated against the current public source or case-specific notice.",
+      "payment_boundary_warning": "The assistant may prepare a human-readable checklist for review but must not purchase a permit, submit payment, or certify payment intent.",
+      "blocked_financial_action_reminder": "Block purchase-permit, checkout, submit-payment, payment-method save, and fee-cart confirmation actions.",
+      "source_evidence_placeholder_ids": [
+        "fee-guide-public-placeholder",
+        "devhub-faq-public-placeholder"
+      ],
+      "reviewer_disposition_placeholder": {
+        "status": "not_reviewed",
+        "reviewer": "TBD",
+        "allowed_dispositions": [
+          "accept_as_source_backed",
+          "revise_with_citation",
+          "reject_as_unsupported",
+          "hold_for_fresh_source"
+        ],
+        "notes": "Reviewer must confirm whether the fee is public-guide-backed, case-notice-specific, or unsupported."
+      }
+    },
+    {
+      "trigger_id": "synthetic-expiration-extension-reactivation",
+      "permit_family": "permit_lifecycle",
+      "process_stage": "closeout, cancellation, expiration, extension, or reactivation",
+      "synthetic_fee_trigger": "An extension, reactivation, renewal, or reinstatement request may have a fee trigger if current public guidance or case records identify one.",
+      "deadline_or_expiration_cue": "A permit, application, inspection, or approval may have expiration or extension windows that must be treated as stale until source evidence is refreshed.",
+      "payment_boundary_warning": "The assistant may flag a possible deadline risk and recommend human review, but must not request extension, reactivate, cancel, or pay fees as an automated action.",
+      "blocked_financial_action_reminder": "Block extension-fee payment, reactivation-fee payment, cancellation submission, renewal purchase, and final lifecycle action confirmation.",
+      "source_evidence_placeholder_ids": [
+        "fee-guide-public-placeholder",
+        "permit-application-guide-placeholder"
+      ],
+      "reviewer_disposition_placeholder": {
+        "status": "not_reviewed",
+        "reviewer": "TBD",
+        "allowed_dispositions": [
+          "accept_as_source_backed",
+          "revise_with_citation",
+          "reject_as_unsupported",
+          "hold_for_fresh_source"
+        ],
+        "notes": "Reviewer must verify lifecycle timing language before any temporal guardrail is generated."
+      }
+    }
+  ],
+  "packet_level_payment_boundaries": {
+    "allowed_offline_actions": [
+      "read synthetic trigger rows",
+      "validate fixture schema",
+      "prepare reviewer questions",
+      "hold stale or uncited rows from formalization"
+    ],
+    "blocked_financial_actions": [
+      "enter_payment_card_details",
+      "enter_bank_account_details",
+      "save_payment_method",
+      "select_final_payment_submit",
+      "purchase_permit",
+      "certify_payment",
+      "open_devhub_checkout",
+      "download_live_fee_document_for_this_fixture"
+    ],
+    "no_payment_detail_fields_present": true
+  },
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "json.tool",
+      "ppd/tests/fixtures/fee_deadline_trigger_matrix/packet_v2.json"
+    ],
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/tests/test_fee_deadline_trigger_matrix_packet_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_fee_deadline_trigger_matrix_packet_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

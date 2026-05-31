@@ -1,0 +1,23 @@
+{
+  "contract_version": "guarded_action_preflight_decision_table_v2",
+  "guarded_actions": [
+    {
+      "action_id": "act-001",
+      "action_type": "preview_field_mapping",
+      "decision": "allow_preview",
+      "field_key": "project_address"
+    },
+    {
+      "action_id": "act-002",
+      "action_type": "submit",
+      "decision": "deny_consequential_action",
+      "field_key": "project_address"
+    },
+    {
+      "action_id": "act-003",
+      "action_type": "upload_file",
+      "decision": "deny_consequential_action",
+      "field_key": "site_plan"
+    }
+  ]
+}

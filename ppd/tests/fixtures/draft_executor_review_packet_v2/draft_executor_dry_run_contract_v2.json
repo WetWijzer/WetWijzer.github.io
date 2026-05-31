@@ -1,0 +1,182 @@
+{
+  "contract_version": "draft_executor_dry_run_v2",
+  "mode": "fixture_first_offline_preview_only",
+  "source_contracts": [
+    "guarded_action_preflight_decision_table_v2",
+    "post_preview_human_review_handoff_packet_v2"
+  ],
+  "rows": [
+    {
+      "synthetic_row_id": "dryrun-v2-001",
+      "request_kind": "synthetic_executor_preview_request",
+      "preview_only": true,
+      "source_action_id": "act-001",
+      "field_mapping": {
+        "mapped": true,
+        "field_key": "project_address",
+        "preview_value": "1120 SW 5th Ave, Portland, OR",
+        "requirement": "preview_value is synthetic review data only and must not be written to a live form",
+        "source_evidence_available": true
+      },
+      "user_fact_trace": [
+        {
+          "trace_kind": "user_fact",
+          "key": "project_address",
+          "value_present": true
+        }
+      ],
+      "source_evidence_trace": [
+        {
+          "trace_kind": "source_evidence",
+          "key": "project_address",
+          "value_present": true
+        }
+      ],
+      "selector_confidence": {
+        "placeholder": true,
+        "value": null,
+        "reason": "offline fixture contract does not evaluate live DOM selectors"
+      },
+      "stop_gate": {
+        "requires_exact_confirmation": true,
+        "confirmation_phrase": "I confirm this is a preview-only dry run and no official PP&D action will be taken."
+      },
+      "refusal": null,
+      "response": {
+        "response_kind": "synthetic_executor_preview_response",
+        "executed_playwright_actions": [],
+        "saved_official_drafts": [],
+        "uploaded_files": [],
+        "submitted": false,
+        "paid": false,
+        "scheduled": false,
+        "cancelled": false,
+        "account_changed": false,
+        "release_state_activated": false
+      }
+    },
+    {
+      "synthetic_row_id": "dryrun-v2-002",
+      "request_kind": "synthetic_executor_preview_request",
+      "preview_only": true,
+      "source_action_id": "act-002",
+      "field_mapping": {
+        "mapped": true,
+        "field_key": "project_address",
+        "preview_value": "1120 SW 5th Ave, Portland, OR",
+        "requirement": "preview_value is synthetic review data only and must not be written to a live form",
+        "source_evidence_available": true
+      },
+      "user_fact_trace": [
+        {
+          "trace_kind": "user_fact",
+          "key": "project_address",
+          "value_present": true
+        }
+      ],
+      "source_evidence_trace": [
+        {
+          "trace_kind": "source_evidence",
+          "key": "project_address",
+          "value_present": true
+        }
+      ],
+      "selector_confidence": {
+        "placeholder": true,
+        "value": null,
+        "reason": "offline fixture contract does not evaluate live DOM selectors"
+      },
+      "stop_gate": {
+        "requires_exact_confirmation": true,
+        "confirmation_phrase": "I confirm this is a preview-only dry run and no official PP&D action will be taken."
+      },
+      "refusal": {
+        "refused": true,
+        "reason": "consequential action is outside reversible preview-only dry-run scope",
+        "example": "submit"
+      },
+      "response": {
+        "response_kind": "synthetic_executor_preview_response",
+        "executed_playwright_actions": [],
+        "saved_official_drafts": [],
+        "uploaded_files": [],
+        "submitted": false,
+        "paid": false,
+        "scheduled": false,
+        "cancelled": false,
+        "account_changed": false,
+        "release_state_activated": false
+      }
+    },
+    {
+      "synthetic_row_id": "dryrun-v2-003",
+      "request_kind": "synthetic_executor_preview_request",
+      "preview_only": true,
+      "source_action_id": "act-003",
+      "field_mapping": {
+        "mapped": true,
+        "field_key": "site_plan",
+        "preview_value": "fixture-only-site-plan.pdf",
+        "requirement": "preview_value is synthetic review data only and must not be written to a live form",
+        "source_evidence_available": true
+      },
+      "user_fact_trace": [
+        {
+          "trace_kind": "user_fact",
+          "key": "site_plan",
+          "value_present": true
+        }
+      ],
+      "source_evidence_trace": [
+        {
+          "trace_kind": "source_evidence",
+          "key": "site_plan",
+          "value_present": true
+        }
+      ],
+      "selector_confidence": {
+        "placeholder": true,
+        "value": null,
+        "reason": "offline fixture contract does not evaluate live DOM selectors"
+      },
+      "stop_gate": {
+        "requires_exact_confirmation": true,
+        "confirmation_phrase": "I confirm this is a preview-only dry run and no official PP&D action will be taken."
+      },
+      "refusal": {
+        "refused": true,
+        "reason": "consequential action is outside reversible preview-only dry-run scope",
+        "example": "upload_file"
+      },
+      "response": {
+        "response_kind": "synthetic_executor_preview_response",
+        "executed_playwright_actions": [],
+        "saved_official_drafts": [],
+        "uploaded_files": [],
+        "submitted": false,
+        "paid": false,
+        "scheduled": false,
+        "cancelled": false,
+        "account_changed": false,
+        "release_state_activated": false
+      }
+    }
+  ],
+  "refused_consequential_action_examples": [
+    "activate_release_state",
+    "cancel",
+    "certify",
+    "change_account",
+    "fill_live_form",
+    "pay",
+    "save_official_draft",
+    "schedule",
+    "submit",
+    "upload_file"
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/draft_executor_dry_run_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_draft_executor_dry_run_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

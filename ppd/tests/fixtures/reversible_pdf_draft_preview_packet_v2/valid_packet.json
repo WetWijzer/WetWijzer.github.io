@@ -1,0 +1,29 @@
+{
+  "packet_version": "reversible_pdf_draft_preview_packet_v2",
+  "synthetic_facts": [
+    {"id": "fact.synthetic.owner", "value": "Example Owner", "source": "deterministic fixture"}
+  ],
+  "pdf_field_plan_rows": [
+    {"field": "owner_name", "fact_id": "fact.synthetic.owner", "action": "preview only"}
+  ],
+  "unsupported_field_notes": [
+    {"field": "signature", "note": "left blank for user review"}
+  ],
+  "required_fact_gaps": [
+    {"fact": "contractor license", "checkpoint": "user must provide before any filing workflow"}
+  ],
+  "citation_references": [
+    {"id": "citation.fixture.1", "label": "fixture citation", "url": "https://example.invalid/fixture"}
+  ],
+  "user_visible_review_checkpoints": [
+    "review all synthetic facts before using any external system"
+  ],
+  "no_private_file_assurances": [
+    "fixture uses no local private file paths and stores no browser state"
+  ],
+  "validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_reversible_pdf_draft_preview_packet_v2_validation.py"]
+  ],
+  "active_mutation_flags": [],
+  "raw_or_generated_pdf_artifacts": []
+}

@@ -1,1 +1,1 @@
-"""Validation helpers for PP&D automation workflows."""
+"""PP&D validation helpers."""

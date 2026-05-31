@@ -1,0 +1,107 @@
+{
+  "version": "guardrail_bundle_stale_source_impact_matrix_v2",
+  "matrix_id": "fixture-stale-source-impact-matrix-v2-valid",
+  "guardrail_bundle_id": "fixture-guardrail-bundle",
+  "source_evidence_ids": [
+    "fixture-public-source-evidence"
+  ],
+  "impact_rows": [
+    {
+      "row_id": "source_freshness_status",
+      "impact_summary": "Source is treated as stale until public metadata is revalidated.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "affected_source_evidence",
+      "impact_summary": "Existing citations remain visible but cannot be promoted as current.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "affected_requirements",
+      "impact_summary": "Requirement regeneration is queued and blocked from active mutation.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "affected_guardrails",
+      "impact_summary": "Guardrail bundle refresh remains pending reviewer approval.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "affected_prompts",
+      "impact_summary": "Prompt refresh candidates remain draft-only.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "affected_contracts",
+      "impact_summary": "Contract changes are explicitly disabled for this review packet.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "affected_devhub_surfaces",
+      "impact_summary": "DevHub surface changes require separate attended observation evidence.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "blocked_agent_actions",
+      "impact_summary": "Agents must block official actions while stale-source review is unresolved.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "user_facing_cautions",
+      "impact_summary": "Responses must disclose that cited source guidance may be stale.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "re_extraction_placeholders",
+      "impact_summary": "Placeholders reserve re-extraction work without claiming new source facts.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "reviewer_dispositions",
+      "impact_summary": "Reviewer disposition slots are required before release consideration.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "validation_commands",
+      "impact_summary": "Deterministic validation commands are required for promotion review.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    }
+  ],
+  "stale_source_hold_reasons": [
+    "stale_source_detected",
+    "source_revalidation_required",
+    "human_review_required"
+  ],
+  "re_extraction_placeholders": [
+    {
+      "placeholder_id": "fixture-re-extract-public-guidance",
+      "status": "pending",
+      "notes": "Re-extract normalized public guidance after source freshness is confirmed."
+    }
+  ],
+  "user_facing_caution_templates": [
+    "The cited PP&D source may have changed since the last verified extraction; confirm current official guidance before acting."
+  ],
+  "blocked_action_reminders": [
+    "Do not upload, submit, certify, schedule, cancel, pay, or alter official records while this stale-source hold is active."
+  ],
+  "reviewer_dispositions": [
+    {
+      "reviewer_role": "source_freshness_reviewer",
+      "status": "pending",
+      "notes": "Confirm source freshness and citation impact before promotion."
+    }
+  ],
+  "validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_guardrail_stale_source_impact_matrix_v2.py"]
+  ],
+  "active_mutation_flags": {
+    "source_registry": false,
+    "requirements": false,
+    "guardrails": false,
+    "prompts": false,
+    "contracts": false,
+    "devhub_surfaces": false,
+    "release_state": false
+  }
+}

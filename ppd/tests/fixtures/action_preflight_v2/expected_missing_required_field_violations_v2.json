@@ -1,0 +1,11 @@
+{
+  "codes": [
+    "missing_decision",
+    "missing_attendance_indicators",
+    "missing_source_evidence_requirements",
+    "missing_selector_confidence_placeholders",
+    "missing_preview_required_flag",
+    "missing_refused_action_examples",
+    "missing_validation_commands"
+  ]
+}

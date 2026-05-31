@@ -1,0 +1,76 @@
+{
+  "decision_table_version": "guarded-action-preflight-decision-table-v2",
+  "case_reference": "fixture-case-redacted",
+  "actions": [
+    {
+      "action_id": "draft_preview_values",
+      "label": "Draft reversible preview values",
+      "review_order": 1,
+      "classification": "reversible_preview",
+      "allowed_decision": "allowed",
+      "evidence": [
+        {
+          "source_id": "ppd-devhub-guide-submit-permit-application",
+          "summary": "The public guide describes application data entry and save-for-later behavior before final acknowledgement.",
+          "freshness": "current"
+        }
+      ],
+      "missing_facts": [],
+      "stale_evidence": [],
+      "conflicting_evidence": [],
+      "requires_attendance": false,
+      "requires_exact_confirmation": false,
+      "prohibited_official_action": false,
+      "safe_next_step": "Reviewer may compare the local preview against cited public guidance."
+    },
+    {
+      "action_id": "confirm_contractor_license_context",
+      "label": "Confirm contractor license context",
+      "review_order": 2,
+      "classification": "fact_gap",
+      "allowed_decision": "needs_human_review",
+      "evidence": [
+        {
+          "source_id": "ppd-standard-trade-permit-guide",
+          "summary": "Public guidance notes that contractor license profile data can affect available fixture options.",
+          "freshness": "current"
+        }
+      ],
+      "missing_facts": [
+        "Whether the applicant is proceeding as owner, contractor, or authorized representative."
+      ],
+      "stale_evidence": [
+        "Previously observed profile/license options were older than the configured freshness window."
+      ],
+      "conflicting_evidence": [
+        "Fixture notes disagree about whether the permit path uses standard trade or plan review."
+      ],
+      "requires_attendance": true,
+      "requires_exact_confirmation": false,
+      "prohibited_official_action": false,
+      "safe_next_step": "Ask only for the role category needed to choose the right public process path."
+    },
+    {
+      "action_id": "submit_or_pay_devhub",
+      "label": "Submit or pay in DevHub",
+      "review_order": 3,
+      "classification": "consequential_official_action",
+      "allowed_decision": "blocked",
+      "evidence": [
+        {
+          "source_id": "ppd-fee-payment-guide",
+          "summary": "Fee payment and final submission are official account-scoped workflows.",
+          "freshness": "current"
+        }
+      ],
+      "missing_facts": [],
+      "stale_evidence": [],
+      "conflicting_evidence": [],
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "prohibited_official_action": true,
+      "blocked_reason": "Do not upload, submit, certify, pay, schedule, cancel, change an account, or activate a release from this packet.",
+      "safe_next_step": "Stop at human review and prepare an attended exact-confirmation checkpoint outside this fixture."
+    }
+  ]
+}

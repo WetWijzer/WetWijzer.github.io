@@ -1,0 +1,96 @@
+{
+  "packet_type": "ppd.inactive_release_decision_packet.v2",
+  "packet_id": "approved-inactive-release-decision-packet-v2-fixture",
+  "fixture_only": true,
+  "inactive_release_decision": true,
+  "target_inactive_bundle_ids": [
+    "inactive-fixture-guarded-agent-release-bundle-v2",
+    "inactive-fixture-offline-release-gate-bundle-v2"
+  ],
+  "source_intake_packet": {
+    "packet_type": "ppd.offline_release_reviewer_disposition_intake_packet.v2",
+    "packet_id": "offline-release-reviewer-disposition-intake-v2-fixture"
+  },
+  "decision_rows": [
+    {
+      "decision_row_id": "approved-decision-row-1",
+      "reviewer_id": "fixture-reviewer-a",
+      "intake_decision": "approved_for_offline_review",
+      "decision": "approve",
+      "target_inactive_bundle_id": "inactive-fixture-guarded-agent-release-bundle-v2",
+      "deterministic_rule": "approved_for_offline_review maps to approve for fixture-only rehearsal",
+      "rationale": "Fixture evidence is sufficient for no-op activation rehearsal planning.",
+      "citations": [
+        "fixture:approved-inactive-release-decision-row-1"
+      ]
+    },
+    {
+      "decision_row_id": "approved-decision-row-2",
+      "reviewer_id": "fixture-reviewer-b",
+      "intake_decision": "approved_for_offline_review",
+      "decision": "approve",
+      "target_inactive_bundle_id": "inactive-fixture-offline-release-gate-bundle-v2",
+      "deterministic_rule": "approved_for_offline_review maps to approve for fixture-only rehearsal",
+      "rationale": "Fixture evidence is sufficient for no-op activation rehearsal planning.",
+      "citations": [
+        "fixture:approved-inactive-release-decision-row-2"
+      ]
+    }
+  ],
+  "promotion_preconditions": [
+    {
+      "precondition_id": "precondition-offline-validation-replay",
+      "description": "Offline validation commands must be replayed from committed fixtures before any separate operator decision.",
+      "status": "pending",
+      "required_before": "any_separate_operator_release_decision",
+      "citations": [
+        "fixture:offline-validation-command-inventory"
+      ]
+    }
+  ],
+  "blocked_release_reasons": [],
+  "reviewer_signoff_placeholders": [
+    {
+      "reviewer_id": "fixture-reviewer-a",
+      "status": "placeholder-only",
+      "signoff_record": null,
+      "required_before": "any_separate_operator_release_decision"
+    }
+  ],
+  "prerequisite_validation_replay_inventory": [
+    {
+      "command_id": "offline-validation-command-1",
+      "command": [
+        "python3",
+        "ppd/daemon/ppd_daemon.py",
+        "--self-test"
+      ],
+      "status": "pending_replay"
+    }
+  ],
+  "rollback_plan_references": [
+    {
+      "reference_id": "rollback-plan-reference-1",
+      "status": "reference_only",
+      "citation": "fixture:rollback-plan-reference-1"
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "non_promotion_attestations": {
+    "promotes_fixtures": false,
+    "changes_prompts": false,
+    "mutates_guardrails": false,
+    "mutates_processes": false,
+    "mutates_agent_state": false,
+    "updates_release_state": false,
+    "uses_live_sources": false,
+    "accesses_devhub": false,
+    "performs_official_actions": false
+  }
+}

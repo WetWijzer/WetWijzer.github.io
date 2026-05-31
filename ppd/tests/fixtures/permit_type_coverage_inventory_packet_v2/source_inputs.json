@@ -1,0 +1,136 @@
+{
+  "reviewer_owner": "PP&D process-model coverage reviewer",
+  "offline_validation_commands": [
+    "python3 -m py_compile ppd/agent_readiness/permit_type_coverage_inventory_packet_v2.py",
+    "python3 -m unittest ppd.tests.test_permit_type_coverage_inventory_packet_v2",
+    "python3 ppd/daemon/ppd_daemon.py --self-test"
+  ],
+  "official_anchor_derived_permit_categories": [
+    {
+      "permit_family_id": "building",
+      "label": "Building permits",
+      "anchor_evidence_refs": ["anchor:ppd-landing:scope", "anchor:apply-permits:building"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:building:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl",
+      "unsupported_path_notes": ["Some building permit requests may require plan review and official submission gates outside safe draft work."]
+    },
+    {
+      "permit_family_id": "new_single_family_residence_and_detached_adu",
+      "label": "New single-family residence and detached ADU permits",
+      "anchor_evidence_refs": ["anchor:devhub-submit-guide:nsfr-adu"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:nsfr-adu:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "solar",
+      "label": "Solar permits",
+      "anchor_evidence_refs": ["anchor:online-tools:solar", "anchor:devhub-submit-guide:solar"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:solar:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "fcc_wireless",
+      "label": "FCC wireless permits",
+      "anchor_evidence_refs": ["anchor:devhub-submit-guide:fcc-wireless"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:fcc-wireless:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "demolition",
+      "label": "Demolition permits",
+      "anchor_evidence_refs": ["anchor:devhub-submit-guide:demolition"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:demolition:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "trade",
+      "label": "Standard trade permits",
+      "anchor_evidence_refs": ["anchor:online-tools:standard-trade", "anchor:devhub-faq:standard-permits"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:trade:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl",
+      "unsupported_path_notes": ["Purchase and payment paths remain consequential and require attendance and exact confirmation."]
+    },
+    {
+      "permit_family_id": "trade_with_plan_review",
+      "label": "Trade permits with plan review",
+      "anchor_evidence_refs": ["anchor:devhub-submit-guide:trade-with-plan-review"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:trade-with-plan-review:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "sign",
+      "label": "Sign permits",
+      "anchor_evidence_refs": ["anchor:devhub-submit-guide:sign"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:sign:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "urban_forestry",
+      "label": "Urban Forestry requests",
+      "anchor_evidence_refs": ["anchor:online-tools:tree-permits", "anchor:devhub-submit-guide:urban-forestry"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:urban-forestry:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "public_works",
+      "label": "Public works permits",
+      "anchor_evidence_refs": ["anchor:ppd-landing:scope"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:public-works:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "land_use",
+      "label": "Land use reviews",
+      "anchor_evidence_refs": ["anchor:ppd-landing:scope"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:land-use:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    },
+    {
+      "permit_family_id": "code_enforcement",
+      "label": "Code enforcement cases",
+      "anchor_evidence_refs": ["anchor:ppd-landing:scope"],
+      "source_evidence_placeholders": ["source-evidence-placeholder:code-enforcement:official-anchor-derived"],
+      "freshness_status": "fixture_seed_pending_first_crawl"
+    }
+  ],
+  "synthetic_process_models": [
+    {
+      "process_id": "synthetic-process-building-plan-review-v1",
+      "permit_family_id": "building",
+      "modeled_sections": ["eligibility_rules", "required_user_facts", "required_documents", "stages", "unsupported_paths"],
+      "synthetic_only": false,
+      "source_freshness_status": "fixture_seed_pending_first_crawl",
+      "unsupported_paths": ["Final submission, certification, payment, and official upload actions are outside unattended automation."]
+    },
+    {
+      "process_id": "synthetic-process-trade-standard-v1",
+      "permit_family_id": "trade",
+      "modeled_sections": ["eligibility_rules", "required_user_facts", "stages"],
+      "synthetic_only": true,
+      "source_freshness_status": "synthetic_unverified",
+      "unsupported_paths": ["Contractor license-dependent fixture options need official source confirmation before draft-ready use."]
+    },
+    {
+      "process_id": "synthetic-process-solar-v1",
+      "permit_family_id": "solar",
+      "modeled_sections": ["required_user_facts", "required_documents", "stages"],
+      "synthetic_only": true,
+      "source_freshness_status": "synthetic_unverified"
+    },
+    {
+      "process_id": "synthetic-process-urban-forestry-v1",
+      "permit_family_id": "urban_forestry",
+      "modeled_sections": ["eligibility_rules", "stages", "unsupported_paths"],
+      "synthetic_only": true,
+      "source_freshness_status": "synthetic_unverified",
+      "unsupported_paths": ["Tree permit request submission paths require separate guardrail review."]
+    },
+    {
+      "process_id": "synthetic-process-demolition-v1",
+      "permit_family_id": "demolition",
+      "modeled_sections": ["eligibility_rules", "required_documents", "stages"],
+      "synthetic_only": true,
+      "source_freshness_status": "synthetic_unverified"
+    }
+  ]
+}

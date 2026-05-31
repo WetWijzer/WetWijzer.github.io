@@ -1,0 +1,37 @@
+{
+  "packet_version": 2,
+  "allowlist_decisions": [
+    {"source": "portland-permitting-public-index", "decision": "allowed", "basis": "public allowlist fixture"}
+  ],
+  "robots_preflight_evidence": [
+    {"source": "portland-permitting-public-index", "status": "checked", "placeholder": true}
+  ],
+  "policy_preflight_evidence": [
+    {"policy": "public-evidence-only", "status": "checked", "placeholder": true}
+  ],
+  "archive_manifest_placeholders": [
+    {"archive_id": "placeholder-archive", "manifest_placeholder": true}
+  ],
+  "normalized_document_placeholders": [
+    {"document_id": "placeholder-document", "normalized_placeholder": true}
+  ],
+  "no_raw_body": true,
+  "skipped_items": [
+    {"item": "live-fetch", "reason": "deterministic fixture avoids live crawl"}
+  ],
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "artifacts": [
+    {"path": "ppd/tests/fixtures/public_processor_handoff_v2/valid_packet.json", "kind": "deterministic-fixture"}
+  ],
+  "live_crawl": false,
+  "active_crawler_mutation": false,
+  "active_source_mutation": false,
+  "active_archive_mutation": false,
+  "active_document_mutation": false,
+  "active_requirement_mutation": false,
+  "active_guardrail_mutation": false,
+  "active_prompt_mutation": false,
+  "active_release_state_mutation": false
+}

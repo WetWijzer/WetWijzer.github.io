@@ -1,0 +1,155 @@
+{
+  "packet_version": "devhub-attended-readonly-authorization-packet-v2",
+  "authorization_mode": "fixture_first_attended_read_only",
+  "live_devhub_access_permitted": false,
+  "creates_browser_state": false,
+  "active_devhub_surface_mutation": false,
+  "active_devhub_prompt_mutation": false,
+  "active_devhub_guardrail_mutation": false,
+  "active_devhub_source_mutation": false,
+  "active_devhub_process_model_mutation": false,
+  "active_devhub_contract_mutation": false,
+  "active_devhub_release_state_mutation": false,
+  "purpose": "Define preflight evidence and boundaries for a future user-attended, read-only DevHub observation without opening DevHub or creating private browser artifacts.",
+  "synthetic_user_attended_preflight_evidence": [
+    {
+      "evidence_id": "synthetic-attendance-ack-v2",
+      "evidence_type": "synthetic_user_attendance_acknowledgement",
+      "synthetic": true,
+      "required_before_live_observation": true,
+      "assertion": "The user will remain present for any authenticated DevHub observation and will complete all login, MFA, CAPTCHA, security, and consent prompts manually."
+    },
+    {
+      "evidence_id": "synthetic-readonly-scope-v2",
+      "evidence_type": "synthetic_read_only_scope_acknowledgement",
+      "synthetic": true,
+      "required_before_live_observation": true,
+      "assertion": "The worker may only observe user-visible read-only account surfaces and record redacted metadata."
+    },
+    {
+      "evidence_id": "synthetic-no-artifact-storage-v2",
+      "evidence_type": "synthetic_artifact_boundary_acknowledgement",
+      "synthetic": true,
+      "required_before_live_observation": true,
+      "assertion": "No credentials, cookies, browser state, screenshots, traces, HAR files, raw authenticated HTML, downloaded documents, payment details, or local private paths may be stored."
+    }
+  ],
+  "manual_login_boundaries": [
+    "The worker must not request, receive, type, paste, infer, save, replay, or transform credentials.",
+    "The user must manually select sign-in controls and complete PortlandOregon.gov authentication in the visible browser.",
+    "The user must manually complete MFA, CAPTCHA, security prompts, account recovery, consent prompts, and any identity checks.",
+    "The worker must not create accounts, change account settings, enroll MFA, recover passwords, or bypass access controls.",
+    "If the login flow requires a consequential choice outside read-only observation, the worker must stop and record a refused-action journal event without private values."
+  ],
+  "read_only_target_surfaces": [
+    {
+      "surface_id": "devhub_home_readonly_v2",
+      "display_name": "DevHub Home",
+      "target_mode": "read_only_observation",
+      "requires_user_attendance": true,
+      "allowed_actions": ["observe_visible_text", "record_redacted_metadata"],
+      "redacted_metadata_examples": ["presence_of_account_home_heading", "visible_navigation_labels", "read_only_status_category_labels"]
+    },
+    {
+      "surface_id": "my_permits_requests_readonly_v2",
+      "display_name": "My Permits & Requests",
+      "target_mode": "read_only_observation",
+      "requires_user_attendance": true,
+      "allowed_actions": ["observe_visible_text", "record_redacted_metadata"],
+      "redacted_metadata_examples": ["permit_count_bucket", "status_label_set", "presence_of_detail_links_without_urls"]
+    },
+    {
+      "surface_id": "permit_detail_status_readonly_v2",
+      "display_name": "Permit detail and status review",
+      "target_mode": "read_only_observation",
+      "requires_user_attendance": true,
+      "allowed_actions": ["observe_visible_text", "record_redacted_metadata"],
+      "redacted_metadata_examples": ["workflow_stage_label", "required_review_group_names_if_visible", "presence_of_correction_or_fee_notice"]
+    },
+    {
+      "surface_id": "attachment_list_readonly_v2",
+      "display_name": "Attachment list review",
+      "target_mode": "read_only_observation",
+      "requires_user_attendance": true,
+      "allowed_actions": ["observe_visible_text", "record_redacted_metadata"],
+      "redacted_metadata_examples": ["attachment_type_labels", "file_extension_set", "redacted_document_count"]
+    },
+    {
+      "surface_id": "inspection_results_readonly_v2",
+      "display_name": "Inspection results review",
+      "target_mode": "read_only_observation",
+      "requires_user_attendance": true,
+      "allowed_actions": ["observe_visible_text", "record_redacted_metadata"],
+      "redacted_metadata_examples": ["inspection_result_label_set", "inspection_type_labels", "redacted_recent_result_count"]
+    }
+  ],
+  "redaction_expectations": [
+    "Replace names, addresses, permit numbers, application numbers, IVR numbers, phone numbers, emails, parcel identifiers, payment details, document names, and free-text comments with stable placeholders before persistence.",
+    "Store only category labels, boolean presence flags, count buckets, workflow stage labels, and source-neutral notes needed for guardrail review.",
+    "Do not persist raw authenticated page text, screenshots, traces, HAR files, downloaded files, cookies, local storage, session storage, or browser profiles.",
+    "Do not persist private local file paths or filenames from user uploads or attachment lists.",
+    "Do not copy visible account-scoped values into test fixtures; fixtures must stay synthetic."
+  ],
+  "abort_conditions": [
+    "Any request for credentials, password recovery, MFA enrollment, CAPTCHA solving, or account creation appears.",
+    "The page asks for payment detail entry, payment submission, purchase confirmation, or receipt storage.",
+    "The next available action would submit, certify, upload, schedule, cancel, withdraw, reactivate, extend, purchase, or change an official record.",
+    "The user is no longer present or cannot confirm that observation should continue.",
+    "The worker cannot distinguish read-only observation from a consequential state transition.",
+    "A browser or tool attempts to save auth state, screenshots, traces, HAR files, raw authenticated HTML, downloads, or private page values.",
+    "Unexpected third-party, unsupported, or non-allowlisted authenticated surfaces appear."
+  ],
+  "post_observation_review_placeholders": [
+    {
+      "placeholder_id": "review-redaction-completeness-v2",
+      "review_prompt": "Confirm the observation journal contains only redacted metadata and no account-scoped raw values.",
+      "status": "pending_future_attended_run"
+    },
+    {
+      "placeholder_id": "review-surface-classification-v2",
+      "review_prompt": "Confirm each observed surface remained read-only and did not require consequential action gating.",
+      "status": "pending_future_attended_run"
+    },
+    {
+      "placeholder_id": "review-abort-handling-v2",
+      "review_prompt": "Confirm any encountered abort condition stopped the workflow before private data capture or official action.",
+      "status": "pending_future_attended_run"
+    },
+    {
+      "placeholder_id": "review-source-gap-followup-v2",
+      "review_prompt": "Identify public PP&D source pages needed to interpret observed labels without relying on private DevHub values.",
+      "status": "pending_future_attended_run"
+    }
+  ],
+  "prohibited_artifacts": [
+    {"artifact_type": "auth_state", "reason": "Would preserve private authenticated session material."},
+    {"artifact_type": "browser_context_storage", "reason": "Would preserve cookies, local storage, or session storage."},
+    {"artifact_type": "browser_profile", "reason": "Would preserve private browsing profile data."},
+    {"artifact_type": "cookie_jar", "reason": "Would preserve private session identifiers."},
+    {"artifact_type": "credential", "reason": "Credentials must remain unknown to the worker."},
+    {"artifact_type": "downloaded_document", "reason": "Authenticated downloads may contain private case data."},
+    {"artifact_type": "har", "reason": "Network archives may contain private URLs, tokens, and payloads."},
+    {"artifact_type": "local_private_file_path", "reason": "Local user paths can expose private identity and project details."},
+    {"artifact_type": "raw_authenticated_html", "reason": "Raw page content can contain private account-scoped values."},
+    {"artifact_type": "screenshot", "reason": "Screenshots can capture private account data."},
+    {"artifact_type": "session_recording", "reason": "Session recordings can capture account-scoped DevHub behavior and values."},
+    {"artifact_type": "storage_state", "reason": "Browser storage state can preserve cookies and authenticated local storage."},
+    {"artifact_type": "trace", "reason": "Traces can capture DOM, network, and input details."}
+  ],
+  "prohibited_automation_actions": [
+    "account_creation",
+    "authentication",
+    "captcha",
+    "certification",
+    "mfa",
+    "payment",
+    "schedule_inspection",
+    "submission",
+    "upload"
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub/attended_readonly_authorization_packet_v2.py", "ppd/tests/test_attended_readonly_authorization_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_attended_readonly_authorization_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

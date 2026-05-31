@@ -1,0 +1,46 @@
+{
+  "official_anchor_set_id": "portland-ppd-public-anchor-set-2026-05-31",
+  "generated_on": "2026-05-31",
+  "anchors": [
+    {
+      "id": "ppd-permits-search",
+      "label": "PP&D permits search",
+      "url": "https://www.portland.gov/ppd/permits",
+      "cadence": "daily",
+      "surface_categories": ["permits", "public-search", "records"],
+      "requires_auth": false
+    },
+    {
+      "id": "ppd-building-code-appeals",
+      "label": "Building code appeals",
+      "url": "https://www.portland.gov/ppd/building-code-appeals",
+      "cadence": "weekly",
+      "surface_categories": ["appeals", "building-code", "public-search"],
+      "requires_auth": false
+    },
+    {
+      "id": "ppd-land-use-notices",
+      "label": "Land use notices",
+      "url": "https://www.portland.gov/ppd/land-use-notices",
+      "cadence": "weekly",
+      "surface_categories": ["land-use", "notices", "records"],
+      "requires_auth": false
+    },
+    {
+      "id": "ppd-fee-schedules",
+      "label": "PP&D fee schedules",
+      "url": "https://www.portland.gov/ppd/fees",
+      "cadence": "monthly",
+      "surface_categories": ["fees", "forms", "reference"],
+      "requires_auth": false
+    },
+    {
+      "id": "devhub-private-dashboard",
+      "label": "DevHub authenticated dashboard",
+      "url": "https://devhub.portlandoregon.gov/login",
+      "cadence": "daily",
+      "surface_categories": ["devhub", "authenticated", "permits"],
+      "requires_auth": true
+    }
+  ]
+}

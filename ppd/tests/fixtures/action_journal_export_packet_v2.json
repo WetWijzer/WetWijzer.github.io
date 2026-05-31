@@ -1,0 +1,172 @@
+{
+  "packet_version": "action-journal-export-packet-v2",
+  "fixture_first": true,
+  "commit_safe": true,
+  "live_crawl_performed": false,
+  "browser_automation_performed": false,
+  "official_action_performed": false,
+  "purpose": "Deterministic export packet with redacted action journal rows for PP&D offline review.",
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "attestations": {
+    "no_credentials": true,
+    "no_cookies": true,
+    "no_auth_state": true,
+    "no_screenshots": true,
+    "no_traces": true,
+    "no_har_data": true,
+    "no_payment_details": true,
+    "no_private_values": true,
+    "no_raw_downloads": true,
+    "no_local_private_paths": true,
+    "no_official_action_completed": true,
+    "offline_fixture_only": true
+  },
+  "event_rows": [
+    {
+      "row_id": "aj-v2-001",
+      "event_type": "public_crawl_preflight",
+      "occurred_at": "2026-05-31T00:00:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["source:ppd-public-anchor-set"],
+      "guardrail_refs": ["guardrail:public-sources-only", "guardrail:no-raw-body-persistence"],
+      "redacted_summary": "Preflight row records allowlisted public anchors and skip categories using fixture labels only.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["public_labels_only", "no_runtime_artifacts", "no_private_inputs"]
+      },
+      "commit_safe_reason": "The row contains source identifiers, policy labels, and no crawl body material.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "row_id": "aj-v2-002",
+      "event_type": "public_crawl_metadata_capture",
+      "occurred_at": "2026-05-31T00:01:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["source:ppd-public-anchor-set", "manifest:synthetic-public-metadata"],
+      "guardrail_refs": ["guardrail:metadata-only", "guardrail:checksums-without-bodies"],
+      "redacted_summary": "Metadata row demonstrates status, media type, canonical URL label, and checksum category without body text.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["metadata_categories_only", "body_omitted", "operator_context_omitted"]
+      },
+      "commit_safe_reason": "The row keeps normalized capture metadata and omits page bodies and runtime files.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "row_id": "aj-v2-003",
+      "event_type": "requirement_extraction",
+      "occurred_at": "2026-05-31T00:02:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["requirement:plan-review-document-labels", "source:single-pdf-guidance"],
+      "guardrail_refs": ["guardrail:cited-requirements", "guardrail:human-review-status-required"],
+      "redacted_summary": "Extraction row shows requirement identifiers, public citation anchors, confidence category, and review state.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["citation_ids_present", "synthetic_requirement_labels", "no_document_bodies"]
+      },
+      "commit_safe_reason": "Requirement evidence is represented by stable IDs and public-source labels only.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "row_id": "aj-v2-004",
+      "event_type": "user_gap_analysis",
+      "occurred_at": "2026-05-31T00:03:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["gap:synthetic-plan-review-case", "requirement:required-documents"],
+      "guardrail_refs": ["guardrail:ask-missing-facts-first", "guardrail:block-uncertain-draft-ready-state"],
+      "redacted_summary": "Gap row records missing categories for property facts, document labels, and confirmation gates.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["placeholder_case_id", "missing_categories_only", "no_applicant_details"]
+      },
+      "commit_safe_reason": "The row uses a synthetic case marker and gap categories rather than applicant data.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "row_id": "aj-v2-005",
+      "event_type": "reversible_draft_planning",
+      "occurred_at": "2026-05-31T00:04:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["draft:synthetic-field-map", "requirement:file-preparation-rules"],
+      "guardrail_refs": ["guardrail:reversible-draft-only", "guardrail:exact-confirmation-before-official-actions"],
+      "redacted_summary": "Draft planning row demonstrates non-final field categories, local preview intent, and blocked consequential controls.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["category_values_only", "consequential_controls_blocked", "no_pdf_payload"]
+      },
+      "commit_safe_reason": "The row records draft plan categories and blocked action names, not filled applicant content.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "row_id": "aj-v2-006",
+      "event_type": "devhub_attended_preflight",
+      "occurred_at": "2026-05-31T00:05:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["devhub:public-entry-guidance", "surface:attended-preflight-template"],
+      "guardrail_refs": ["guardrail:human-attendance-required", "guardrail:no-browser-state-commit"],
+      "redacted_summary": "DevHub preflight row demonstrates attendance gate, public entry citation, and stop-before-login marker.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["attendance_marker_only", "public_navigation_labels", "no_account_scope"]
+      },
+      "commit_safe_reason": "The row is a fixture preflight record and does not include browser state or account-scoped data.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "row_id": "aj-v2-007",
+      "event_type": "refusal",
+      "occurred_at": "2026-05-31T00:06:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["policy:consequential-action-boundary"],
+      "guardrail_refs": ["guardrail:refuse-restricted-automation", "guardrail:manual-user-action-for-final-steps"],
+      "redacted_summary": "Refusal row demonstrates blocking a request for a consequential permitting action until user attendance and exact confirmation.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["request_placeholder", "policy_category_only", "no_attempted_action_payload"]
+      },
+      "commit_safe_reason": "The refusal records policy categories and does not attempt or describe private action data.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "row_id": "aj-v2-008",
+      "event_type": "manual_handoff",
+      "occurred_at": "2026-05-31T00:07:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["handoff:attended-review-template", "guardrail:evidence-review-before-final-action"],
+      "guardrail_refs": ["guardrail:operator-review-required", "guardrail:stop-before-consequential-control"],
+      "redacted_summary": "Manual handoff row demonstrates reviewer prompts, evidence categories, and stop conditions for attended review.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["review_categories_only", "no_private_notes", "no_runtime_files"]
+      },
+      "commit_safe_reason": "The row is a synthetic handoff checklist with no user or account material.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "row_id": "aj-v2-009",
+      "event_type": "completion_evidence",
+      "occurred_at": "2026-05-31T00:08:00Z",
+      "actor": "ppd-fixture-exporter",
+      "source_evidence_ids": ["validation:offline-self-test-command", "packet:action-journal-export-v2"],
+      "guardrail_refs": ["guardrail:offline-validation-only", "guardrail:commit-safe-evidence-only"],
+      "redacted_summary": "Completion evidence row records that the packet is ready for offline validation by exact command replay.",
+      "redaction_check": {
+        "passed": true,
+        "raw_values_committed": false,
+        "checks": ["validation_command_exact", "fixture_paths_public", "no_official_outcome_claim"]
+      },
+      "commit_safe_reason": "The row proves fixture packet completeness through offline validation references only.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "decisions": [
+    {
+      "action_id": "missing-decision",
+      "action_class": "reversible_draft_preview",
+      "required_attendance_indicators": [],
+      "source_evidence_requirements": {
+        "required": true,
+        "present": true,
+        "minimum_items": 1
+      },
+      "selector_confidence_placeholders": {
+        "required": true,
+        "present": true,
+        "value": {
+          "placeholder": "selector-confidence-not-measured-offline"
+        }
+      },
+      "preview_required": true,
+      "refused_action_examples": [],
+      "validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/action_preflight_decision_table_v2.py"]
+      ]
+    },
+    {
+      "action_id": "missing-attendance",
+      "decision": "manual-handoff",
+      "action_class": "reversible_draft_preview",
+      "source_evidence_requirements": {
+        "required": true,
+        "present": true,
+        "minimum_items": 1
+      },
+      "selector_confidence_placeholders": {
+        "required": true,
+        "present": true,
+        "value": {
+          "placeholder": "selector-confidence-not-measured-offline"
+        }
+      },
+      "preview_required": true,
+      "refused_action_examples": [],
+      "validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/action_preflight_decision_table_v2.py"]
+      ]
+    },
+    {
+      "action_id": "missing-source-evidence-requirements",
+      "decision": "manual-handoff",
+      "action_class": "reversible_draft_preview",
+      "required_attendance_indicators": [],
+      "selector_confidence_placeholders": {
+        "required": true,
+        "present": true,
+        "value": {
+          "placeholder": "selector-confidence-not-measured-offline"
+        }
+      },
+      "preview_required": true,
+      "refused_action_examples": [],
+      "validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/action_preflight_decision_table_v2.py"]
+      ]
+    },
+    {
+      "action_id": "missing-selector-confidence",
+      "decision": "manual-handoff",
+      "action_class": "reversible_draft_preview",
+      "required_attendance_indicators": [],
+      "source_evidence_requirements": {
+        "required": true,
+        "present": true,
+        "minimum_items": 1
+      },
+      "preview_required": true,
+      "refused_action_examples": [],
+      "validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/action_preflight_decision_table_v2.py"]
+      ]
+    },
+    {
+      "action_id": "missing-preview-required",
+      "decision": "manual-handoff",
+      "action_class": "reversible_draft_preview",
+      "required_attendance_indicators": [],
+      "source_evidence_requirements": {
+        "required": true,
+        "present": true,
+        "minimum_items": 1
+      },
+      "selector_confidence_placeholders": {
+        "required": true,
+        "present": true,
+        "value": {
+          "placeholder": "selector-confidence-not-measured-offline"
+        }
+      },
+      "refused_action_examples": [],
+      "validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/action_preflight_decision_table_v2.py"]
+      ]
+    },
+    {
+      "action_id": "missing-refused-example",
+      "decision": "block",
+      "action_class": "submission",
+      "required_attendance_indicators": ["operator_present"],
+      "source_evidence_requirements": {
+        "required": true,
+        "present": true,
+        "minimum_items": 1
+      },
+      "selector_confidence_placeholders": {
+        "required": true,
+        "present": true,
+        "value": {
+          "placeholder": "selector-confidence-not-measured-offline"
+        }
+      },
+      "preview_required": true,
+      "refused_action_examples": [],
+      "validation_commands": [
+        ["python3", "-m", "py_compile", "ppd/action_preflight_decision_table_v2.py"]
+      ]
+    },
+    {
+      "action_id": "missing-validation-commands",
+      "decision": "manual-handoff",
+      "action_class": "reversible_draft_preview",
+      "required_attendance_indicators": [],
+      "source_evidence_requirements": {
+        "required": true,
+        "present": true,
+        "minimum_items": 1
+      },
+      "selector_confidence_placeholders": {
+        "required": true,
+        "present": true,
+        "value": {
+          "placeholder": "selector-confidence-not-measured-offline"
+        }
+      },
+      "preview_required": true,
+      "refused_action_examples": []
+    }
+  ]
+}

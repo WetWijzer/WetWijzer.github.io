@@ -1,0 +1,22 @@
+{
+  "version": "post-recompile-agent-readiness-replay-v2",
+  "replay_cases": [
+    {"id": "case-001", "type": "replay_case", "summary": "baseline deterministic replay"},
+    {"id": "case-002", "type": "stale_source_hold_resolution_placeholder", "summary": "requires placeholder instead of resolution claim"},
+    {"id": "case-003", "type": "caution_template_check", "summary": "verifies caution language is present"},
+    {"id": "case-004", "type": "next_safe_action_summary", "summary": "summarizes the next non-consequential action"},
+    {"id": "case-005", "type": "refused_consequential_action_example", "summary": "shows refusal for submission or certification"},
+    {"id": "case-006", "type": "reviewer_disposition", "summary": "captures reviewer approve or reject disposition"}
+  ],
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+  "mutation_flags": {
+    "prompt_mutation": false,
+    "guardrail_mutation": false,
+    "devhub_surface_mutation": false,
+    "source_mutation": false,
+    "contract_mutation": false,
+    "requirement_mutation": false,
+    "process_model_mutation": false,
+    "release_state_mutation": false
+  }
+}

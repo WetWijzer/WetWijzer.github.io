@@ -1,0 +1,226 @@
+{
+  "packet_type": "ppd.inactive_guardrail_bundle_promotion_candidate.v2",
+  "packet_version": "v2",
+  "packet_id": "inactive-guardrail-bundle-promotion-candidate-v2-valid-001",
+  "fixture_first": true,
+  "metadata_only": true,
+  "candidate_only": true,
+  "inactive_only": true,
+  "reviewer_rows_consumed": true,
+  "no_devhub_opened": true,
+  "no_live_source_crawl": true,
+  "no_prompt_changes": true,
+  "no_active_guardrail_replacement": true,
+  "no_release_activation": true,
+  "active_source_mutation": false,
+  "active_requirement_mutation": false,
+  "active_process_model_mutation": false,
+  "active_process_mutation": false,
+  "active_guardrail_replaced": false,
+  "active_guardrail_mutation": false,
+  "active_prompt_mutation": false,
+  "active_contract_mutation": false,
+  "active_devhub_surface_mutation": false,
+  "active_surface_mutation": false,
+  "active_release_state_mutation": false,
+  "source_mutation": false,
+  "requirement_mutation": false,
+  "process_model_mutation": false,
+  "process_mutation": false,
+  "guardrail_mutation": false,
+  "prompt_mutation": false,
+  "contract_mutation": false,
+  "devhub_surface_mutation": false,
+  "surface_mutation": false,
+  "devhub_opened": false,
+  "live_source_crawl": false,
+  "release_state_activated": false,
+  "release_state_mutation": false,
+  "promotion_executed": false,
+  "approved_recompile_reviewer_rows": [
+    {
+      "row_id": "review-row-single-pdf-upload-001",
+      "reviewer_disposition": "approved_for_inactive_guardrail_bundle_candidate_v2",
+      "requirement_delta_traces": [
+        "requirement-delta-trace-single-pdf-upload"
+      ],
+      "predicate_impact_review_note": "Predicate impact reviewed against the inactive single PDF upload staging fixture.",
+      "migration_risk_disposition": "no_active_migration_allowed_review_only",
+      "stale_source_hold_carry_forward_decision": "carry_forward_existing_hold_until_public_source_refresh",
+      "blocked_action_reminder_check": "verified_consequential_actions_remain_blocked"
+    },
+    {
+      "row_id": "review-row-certification-checkpoint-002",
+      "reviewer_disposition": "approved_for_inactive_guardrail_bundle_candidate_v2",
+      "requirement_delta_traces": [
+        "requirement-delta-trace-certification-checkpoint"
+      ],
+      "predicate_impact_review_note": "Predicate impact reviewed for acknowledgement and certification checkpoints while keeping consequential actions blocked.",
+      "migration_risk_disposition": "no_active_migration_allowed_review_only",
+      "stale_source_hold_carry_forward_decision": "carry_forward_existing_hold_until_public_source_refresh",
+      "blocked_action_reminder_check": "verified_consequential_actions_remain_blocked"
+    }
+  ],
+  "inactive_bundle_candidate_records": [
+    {
+      "sequence": 1,
+      "candidate_id": "inactive-bundle-candidate-single-pdf-upload-001",
+      "inactive_guardrail_bundle_candidate_id": "guardrail-bundle-candidate-single-pdf-upload-v2-inactive",
+      "active_guardrail_bundle_id": "guardrail-bundle-single-pdf-active",
+      "candidate_status": "inactive_candidate_only",
+      "source_reviewer_row_ref": "review-row-single-pdf-upload-001",
+      "source_evidence_trace_placeholder_refs": [
+        "trace-placeholder-single-pdf-upload-001"
+      ],
+      "predicate_snapshot_placeholder_refs": [
+        "predicate-snapshot-single-pdf-upload-001"
+      ],
+      "rollback_ref": "rollback-single-pdf-upload-001",
+      "reviewer_approval_placeholder_ref": "approval-placeholder-single-pdf-upload-001",
+      "release_gate_prerequisite_ref": "release-gate-single-pdf-upload-001",
+      "replaces_active_guardrail": false,
+      "activation_allowed": false
+    },
+    {
+      "sequence": 2,
+      "candidate_id": "inactive-bundle-candidate-certification-checkpoint-002",
+      "inactive_guardrail_bundle_candidate_id": "guardrail-bundle-candidate-certification-checkpoint-v2-inactive",
+      "active_guardrail_bundle_id": "guardrail-bundle-building-intake-active",
+      "candidate_status": "inactive_candidate_only",
+      "source_reviewer_row_ref": "review-row-certification-checkpoint-002",
+      "source_evidence_trace_placeholder_refs": [
+        "trace-placeholder-certification-checkpoint-002"
+      ],
+      "predicate_snapshot_placeholder_refs": [
+        "predicate-snapshot-certification-checkpoint-002"
+      ],
+      "rollback_ref": "rollback-certification-checkpoint-002",
+      "reviewer_approval_placeholder_ref": "approval-placeholder-certification-checkpoint-002",
+      "release_gate_prerequisite_ref": "release-gate-certification-checkpoint-002",
+      "replaces_active_guardrail": false,
+      "activation_allowed": false
+    }
+  ],
+  "source_evidence_trace_placeholders": [
+    {
+      "placeholder_id": "trace-placeholder-single-pdf-upload-001",
+      "candidate_id": "inactive-bundle-candidate-single-pdf-upload-001",
+      "source_evidence_ids": [
+        "official-source:submit-plans-online-20260508",
+        "fixture-source:guardrail-recompile-reviewer-packet-v2:single-pdf-upload"
+      ],
+      "trace_status": "placeholder_pending_manual_evidence_review"
+    },
+    {
+      "placeholder_id": "trace-placeholder-certification-checkpoint-002",
+      "candidate_id": "inactive-bundle-candidate-certification-checkpoint-002",
+      "source_evidence_ids": [
+        "official-source:devhub-guide-submit-permit-application-20260508",
+        "fixture-source:guardrail-recompile-reviewer-packet-v2:certification-checkpoint"
+      ],
+      "trace_status": "placeholder_pending_manual_evidence_review"
+    }
+  ],
+  "predicate_snapshot_placeholders": [
+    {
+      "snapshot_id": "predicate-snapshot-single-pdf-upload-001",
+      "candidate_id": "inactive-bundle-candidate-single-pdf-upload-001",
+      "predicate_ids": [
+        "predicate-candidate.single-pdf-upload-staging-v2"
+      ],
+      "snapshot_status": "placeholder_pending_recompile_snapshot_review",
+      "activation_allowed": false
+    },
+    {
+      "snapshot_id": "predicate-snapshot-certification-checkpoint-002",
+      "candidate_id": "inactive-bundle-candidate-certification-checkpoint-002",
+      "predicate_ids": [
+        "predicate-candidate.certification-checkpoint-v2"
+      ],
+      "snapshot_status": "placeholder_pending_recompile_snapshot_review",
+      "activation_allowed": false
+    }
+  ],
+  "rollback_references": [
+    {
+      "rollback_ref": "rollback-single-pdf-upload-001",
+      "candidate_id": "inactive-bundle-candidate-single-pdf-upload-001",
+      "rollback_status": "ready_no_active_changes",
+      "rollback_target": "discard_inactive_candidate_only",
+      "plan_summary": "Discard the inactive candidate record and leave active guardrails, prompts, release state, and DevHub surfaces unchanged."
+    },
+    {
+      "rollback_ref": "rollback-certification-checkpoint-002",
+      "candidate_id": "inactive-bundle-candidate-certification-checkpoint-002",
+      "rollback_status": "ready_no_active_changes",
+      "rollback_target": "discard_inactive_candidate_only",
+      "plan_summary": "Discard the inactive candidate record and leave active guardrails, prompts, release state, and DevHub surfaces unchanged."
+    }
+  ],
+  "reviewer_approval_placeholders": [
+    {
+      "placeholder_id": "approval-placeholder-single-pdf-upload-001",
+      "candidate_id": "inactive-bundle-candidate-single-pdf-upload-001",
+      "approval_status": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": "",
+      "notes": ""
+    },
+    {
+      "placeholder_id": "approval-placeholder-certification-checkpoint-002",
+      "candidate_id": "inactive-bundle-candidate-certification-checkpoint-002",
+      "approval_status": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": "",
+      "notes": ""
+    }
+  ],
+  "release_gate_prerequisites": [
+    {
+      "gate_ref": "release-gate-single-pdf-upload-001",
+      "candidate_id": "inactive-bundle-candidate-single-pdf-upload-001",
+      "gate_status": "blocked_pending_manual_release_review",
+      "requires_offline_validation": true,
+      "requires_reviewer_approval": true,
+      "requires_rollback_review": true,
+      "requires_no_active_guardrail_replacement": true,
+      "activation_allowed": false
+    },
+    {
+      "gate_ref": "release-gate-certification-checkpoint-002",
+      "candidate_id": "inactive-bundle-candidate-certification-checkpoint-002",
+      "gate_status": "blocked_pending_manual_release_review",
+      "requires_offline_validation": true,
+      "requires_reviewer_approval": true,
+      "requires_rollback_review": true,
+      "requires_no_active_guardrail_replacement": true,
+      "activation_allowed": false
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/agent_readiness/inactive_guardrail_bundle_promotion_candidate_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_inactive_guardrail_bundle_promotion_candidate_v2"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

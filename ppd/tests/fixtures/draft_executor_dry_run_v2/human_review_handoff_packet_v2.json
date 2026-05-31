@@ -1,0 +1,17 @@
+{
+  "contract_version": "post_preview_human_review_handoff_packet_v2",
+  "user_facts": {
+    "project_address": "1120 SW 5th Ave, Portland, OR",
+    "site_plan": "fixture-only-site-plan.pdf"
+  },
+  "source_evidence": {
+    "project_address": {
+      "source_id": "fixture-review-note-001",
+      "description": "Human review packet fixture address evidence"
+    },
+    "site_plan": {
+      "source_id": "fixture-review-note-002",
+      "description": "Human review packet fixture document reference"
+    }
+  }
+}

@@ -40,16 +40,23 @@ def test_builds_fixture_first_human_review_handoff_packet_v2() -> None:
     assert packet["attestations"] == {key: True for key in sorted(REQUIRED_ATTESTATIONS)}
 
 
-def test_handoff_contains_cited_checklist_deferrals_acceptance_and_rollback() -> None:
+def test_handoff_contains_cited_review_sections() -> None:
     packet = _packet()
+    required_sections = (
+        "reviewer_checklist_items",
+        "reviewer_prompts",
+        "evidence_summaries",
+        "unresolved_missing_fact_prompts",
+        "stale_conflicting_evidence_prompts",
+        "blocked_action_reminders",
+        "attendance_reminders",
+        "unresolved_deferrals",
+        "acceptance_criteria",
+        "rollback_verification",
+    )
 
-    assert packet["reviewer_checklist_items"]
-    assert packet["unresolved_deferrals"]
-    assert packet["acceptance_criteria"]
-    assert packet["rollback_verification"]
-    assert packet["offline_validation_commands"]
-
-    for field in ("reviewer_checklist_items", "unresolved_deferrals", "acceptance_criteria", "rollback_verification"):
+    for field in required_sections:
+        assert packet[field]
         for row in packet[field]:
             assert row["citations"], field
             assert row["summary"]
@@ -59,8 +66,9 @@ def test_handoff_contains_cited_checklist_deferrals_acceptance_and_rollback() ->
         assert row["disposition"] in ALLOWED_DEFERRAL_DISPOSITIONS
 
     deferral_ids = {row["deferral_id"] for row in packet["unresolved_deferrals"]}
+    assert "missing-fact-missing-fact-1" in deferral_ids
     assert "stale-evidence-stale-evidence-1" in deferral_ids
-    assert "conflicting-evidence-conflict-1" in deferral_ids
+    assert "conflicting-evidence-single-pdf-vs-supporting-pdf-separation" in deferral_ids
     assert "blocked-action-official-record-change" in deferral_ids
 
 
@@ -89,6 +97,25 @@ def test_rejects_missing_citations_and_attestations() -> None:
     assert "attestations.no_live must be true" in joined
 
 
+def test_rejects_missing_post_preview_handoff_sections() -> None:
+    required_sections = (
+        "reviewer_prompts",
+        "evidence_summaries",
+        "unresolved_missing_fact_prompts",
+        "stale_conflicting_evidence_prompts",
+        "blocked_action_reminders",
+        "attendance_reminders",
+        "offline_validation_commands",
+    )
+
+    for field in required_sections:
+        broken = _packet()
+        broken[field] = []
+        result = validate_human_review_handoff_packet_v2(broken)
+        assert not result.ok, field
+        assert f"{field} must be non-empty" in "; ".join(result.errors)
+
+
 def test_rejects_missing_acceptance_deferral_disposition_and_rollback_sections() -> None:
     packet = _packet()
     broken = deepcopy(packet)
@@ -105,17 +132,23 @@ def test_rejects_missing_acceptance_deferral_disposition_and_rollback_sections()
     assert "unresolved_deferrals[0].disposition must record a reviewer deferral disposition" in joined
 
 
-def test_rejects_private_or_live_artifact_fields() -> None:
-    packet = _packet()
-    packet["auth_state"] = "not allowed"
-    packet["reviewer_checklist_items"][0]["summary"] = "A live browser completed this review."
+def test_rejects_private_session_browser_raw_or_downloaded_artifact_fields() -> None:
+    unsafe_keys = (
+        "auth_state",
+        "session_artifact",
+        "browser_artifact",
+        "raw_crawl_output",
+        "raw_downloaded_artifact",
+        "downloaded_document",
+        "private_artifact",
+    )
 
-    result = validate_human_review_handoff_packet_v2(packet)
-
-    assert not result.ok
-    joined = "; ".join(result.errors)
-    assert "auth_state is not allowed" in joined
-    assert "contains unsafe live" in joined
+    for key in unsafe_keys:
+        packet = _packet()
+        packet[key] = "not allowed"
+        result = validate_human_review_handoff_packet_v2(packet)
+        assert not result.ok, key
+        assert f"$.{key} is not allowed" in "; ".join(result.errors)
 
 
 def test_rejects_unsafe_handoff_content_classes() -> None:
@@ -124,16 +157,20 @@ def test_rejects_unsafe_handoff_content_classes() -> None:
         ("raw_pdf", "%PDF raw body"),
         ("browser_artifact", "trace.zip"),
         ("note", "The permit will be approved."),
+        ("note", "This is a legal guarantee."),
         ("note", "Finally submit the application."),
+        ("note", "The application completed the official action."),
         ("note", "The raw crawl output is attached."),
         ("note", "This includes authenticated facts from the account."),
+        ("note", "Opened DevHub during review."),
+        ("note", "Live DevHub completed."),
     ]
 
     for key, value in unsafe_cases:
         packet = _packet()
         packet[key] = value
         result = validate_human_review_handoff_packet_v2(packet)
-        assert not result.ok, key
+        assert not result.ok, value
 
 
 def test_rejects_active_mutation_flags_without_rejecting_negative_attestations() -> None:
@@ -143,6 +180,8 @@ def test_rejects_active_mutation_flags_without_rejecting_negative_attestations()
     for key in (
         "source_mutation_enabled",
         "surface_registry_mutation_enabled",
+        "active_devhub_surface_mutation",
+        "active_contract_mutation",
         "active_guardrail_mutation",
         "prompt_mutation_enabled",
         "active_monitoring_mutation",
@@ -153,7 +192,7 @@ def test_rejects_active_mutation_flags_without_rejecting_negative_attestations()
         broken[key] = True
         result = validate_human_review_handoff_packet_v2(broken)
         assert not result.ok, key
-        assert "active source, surface-registry, guardrail, prompt, monitoring, release-state, or agent-state mutation flag" in "; ".join(result.errors)
+        assert "active source, DevHub surface, contract, guardrail, prompt, monitoring, release-state, or agent-state mutation flag" in "; ".join(result.errors)
 
 
 def test_rejects_invalid_source_packets() -> None:

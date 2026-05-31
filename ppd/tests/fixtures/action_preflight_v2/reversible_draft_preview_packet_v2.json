@@ -1,0 +1,64 @@
+{
+  "preview_packet": {
+    "packet_version": 2,
+    "reversible": true,
+    "draft_preview_only": true,
+    "executes_playwright_actions": false,
+    "opens_devhub": false,
+    "stores_browser_artifacts": false,
+    "enables_privileged_actions": false,
+    "stores_official_draft": false
+  },
+  "actions": [
+    {
+      "action_id": "draft-preview-address-normalization",
+      "label": "Preview normalized permit address draft fields",
+      "requires_attendance": true,
+      "attendance_indicators": [
+        "operator_present",
+        "review_before_any_official_save"
+      ],
+      "source_evidence": [
+        {
+          "source": "fixture:permit_intake_preview",
+          "field": "site_address",
+          "quote": "1120 SW 5th Ave"
+        }
+      ],
+      "selector_confidence": {
+        "placeholder": "selector-confidence-not-measured-offline",
+        "minimum_required_before_live_use": "high"
+      }
+    },
+    {
+      "action_id": "submit-application",
+      "label": "Submit application",
+      "requires_attendance": true,
+      "attendance_indicators": [
+        "operator_present"
+      ],
+      "source_evidence": [
+        {
+          "source": "fixture:submit_button",
+          "field": "button_text",
+          "quote": "Submit"
+        }
+      ],
+      "selector_confidence": {
+        "placeholder": "selector-confidence-not-measured-offline",
+        "minimum_required_before_live_use": "high"
+      }
+    },
+    {
+      "action_id": "draft-preview-owner-name",
+      "label": "Preview owner name draft field",
+      "requires_attendance": false,
+      "attendance_indicators": [],
+      "source_evidence": [],
+      "selector_confidence": {
+        "placeholder": "selector-confidence-not-measured-offline",
+        "minimum_required_before_live_use": "high"
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "packet_type": "ppd_source_freshness_scheduler_packet_v2",
+  "packet_version": "2.0",
+  "packet_id": "fixture-source-freshness-scheduler-v2-001",
+  "generated_at": "2026-05-31T00:00:00Z",
+  "fixture_first": true,
+  "metadata_only": true,
+  "scheduler_rows": [
+    {
+      "source_id": "ppd-online-permitting-tools",
+      "canonical_url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "source_anchor": "Online permitting tools overview",
+      "source_anchor_citations": [
+        "official_source_anchors.online_permitting_tools_overview"
+      ],
+      "recrawl_frequency": "every_few_days",
+      "stale_source_hold_triggers": [
+        "missing_last_seen_at",
+        "content_hash_changed",
+        "recrawl_cadence_exceeded"
+      ],
+      "affected_surface_categories": [
+        "public_ppd_guidance",
+        "devhub_public_guidance"
+      ],
+      "skipped_authenticated_url_note": "Authenticated DevHub URLs are skipped by this metadata-only scheduler packet and require attended user session review before observation.",
+      "skip_reason": "none"
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_source_freshness_scheduler_packet_v2"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "side_effect_boundary": {
+    "live_crawl_performed": false,
+    "live_crawl_claimed": false,
+    "private_artifacts_committed": false,
+    "raw_artifacts_committed": false,
+    "downloaded_artifacts_committed": false,
+    "network_io_allowed": false,
+    "active_source_mutation": false,
+    "active_requirement_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_process_model_mutation": false,
+    "active_contract_mutation": false,
+    "active_prompt_mutation": false,
+    "active_devhub_surface_mutation": false,
+    "active_release_state_mutation": false
+  },
+  "packet_summary": {
+    "scheduler_row_count": 1
+  }
+}

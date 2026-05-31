@@ -1,0 +1,70 @@
+{
+  "packet_version": "devhub_read_only_surface_map_reviewer_packet_v2",
+  "candidate_rows": [
+    {
+      "candidate_row_id": "candidate-devhub-home-read-only",
+      "surface_id": "devhub-home-read-only",
+      "review_status": "human_reviewed",
+      "reviewer": "offline-reviewer",
+      "review_rationale": "Candidate remains limited to public-source-backed labels and redacted read-only observation metadata.",
+      "observation_trace_ids": ["trace-devhub-home-read-only"],
+      "redaction_acceptance_ref": "redaction-devhub-home-read-only",
+      "unresolved_selector_risk_note_ids": ["selector-risk-devhub-home-read-only"],
+      "blocked_action_confirmation_ids": ["blocked-actions-devhub-home-read-only"]
+    }
+  ],
+  "observation_to_candidate_traces": [
+    {
+      "trace_id": "trace-devhub-home-read-only",
+      "candidate_row_id": "candidate-devhub-home-read-only",
+      "observation_id": "offline-observation-devhub-home-read-only",
+      "trace_note": "Offline fixture trace links the redacted observation summary to the candidate row."
+    }
+  ],
+  "redaction_acceptance_refs": [
+    {
+      "ref_id": "redaction-devhub-home-read-only",
+      "accepted": true,
+      "reviewer": "offline-reviewer",
+      "acceptance_note": "Only redacted labels and structural metadata are represented."
+    }
+  ],
+  "unresolved_selector_risk_notes": [
+    {
+      "note_id": "selector-risk-devhub-home-read-only",
+      "status": "unresolved",
+      "risk_note": "Selector stability remains a human-review note before any future guarded use."
+    }
+  ],
+  "blocked_action_confirmations": [
+    {
+      "confirmation_id": "blocked-actions-devhub-home-read-only",
+      "confirmed_blocked": true,
+      "blocked_action_note": "Official account-changing actions remain outside this read-only candidate packet."
+    }
+  ],
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "artifact_policy": {
+    "captures_auth_files": false,
+    "captures_browser_artifacts": false,
+    "captures_har_files": false,
+    "captures_private_values": false,
+    "captures_screenshots": false,
+    "captures_session_state": false,
+    "captures_traces": false,
+    "stores_downloads": false,
+    "stores_raw_crawl_output": false,
+    "stores_raw_devhub_output": false,
+    "stores_raw_pdf_output": false
+  },
+  "mutation_flags": {
+    "active_surface_map_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_source_mutation": false,
+    "active_contract_mutation": false,
+    "active_release_state_mutation": false
+  }
+}

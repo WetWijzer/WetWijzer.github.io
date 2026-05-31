@@ -1,0 +1,237 @@
+{
+  "fixture_id": "citation-span-integrity-packet-v2-synthetic-inputs",
+  "sample_records": [
+    {
+      "record_id": "sample.html.devhub-guide",
+      "record_type": "synthetic_normalized_html",
+      "synthetic": true,
+      "active_state": false,
+      "title": "Synthetic DevHub permit guide normalized HTML"
+    },
+    {
+      "record_id": "sample.pdf.single-pdf",
+      "record_type": "synthetic_normalized_pdf",
+      "synthetic": true,
+      "active_state": false,
+      "title": "Synthetic Single PDF process normalized PDF"
+    },
+    {
+      "record_id": "sample.form.trade-permit",
+      "record_type": "synthetic_normalized_form",
+      "synthetic": true,
+      "active_state": false,
+      "title": "Synthetic standard trade permit form field manifest"
+    },
+    {
+      "record_id": "sample.process.building-intake",
+      "record_type": "synthetic_process_model",
+      "synthetic": true,
+      "active_state": false,
+      "title": "Synthetic building permit intake process model"
+    },
+    {
+      "record_id": "sample.requirement.upload-gate",
+      "record_type": "synthetic_requirement",
+      "synthetic": true,
+      "active_state": false,
+      "title": "Synthetic upload gate requirement"
+    },
+    {
+      "record_id": "sample.guardrail.consequential-action",
+      "record_type": "synthetic_guardrail",
+      "synthetic": true,
+      "active_state": false,
+      "title": "Synthetic consequential action refusal guardrail"
+    }
+  ],
+  "source_evidence": [
+    {
+      "evidence_id": "synthetic-source-evidence:html.devhub-guide.account-required",
+      "record_id": "sample.html.devhub-guide",
+      "synthetic": true,
+      "privacy_classification": "commit_safe_public_fixture",
+      "freshness_status": "fresh_fixture",
+      "source_kind": "normalized_html",
+      "stable_placeholder": "public guide states account-scoped online permitting requires signed-in review"
+    },
+    {
+      "evidence_id": "synthetic-source-evidence:pdf.single-pdf.separate-supporting-docs",
+      "record_id": "sample.pdf.single-pdf",
+      "synthetic": true,
+      "privacy_classification": "commit_safe_public_fixture",
+      "freshness_status": "synthetic_current",
+      "source_kind": "normalized_pdf",
+      "stable_placeholder": "single PDF process separates drawing plans from supporting documents"
+    },
+    {
+      "evidence_id": "synthetic-source-evidence:form.trade-permit.license-fixture-options",
+      "record_id": "sample.form.trade-permit",
+      "synthetic": true,
+      "privacy_classification": "commit_safe_public_fixture",
+      "freshness_status": "review_required_fixture",
+      "source_kind": "normalized_form",
+      "stable_placeholder": "trade permit fixture options depend on license-related facts"
+    },
+    {
+      "evidence_id": "synthetic-source-evidence:process.building-intake.upload-staging",
+      "record_id": "sample.process.building-intake",
+      "synthetic": true,
+      "privacy_classification": "commit_safe_public_fixture",
+      "freshness_status": "fresh_fixture",
+      "source_kind": "process_model",
+      "stable_placeholder": "process model includes upload staging before certification and submission"
+    },
+    {
+      "evidence_id": "synthetic-source-evidence:requirement.upload-official-record-gated",
+      "record_id": "sample.requirement.upload-gate",
+      "synthetic": true,
+      "privacy_classification": "commit_safe_public_fixture",
+      "freshness_status": "fresh_fixture",
+      "source_kind": "requirement",
+      "stable_placeholder": "requirement marks official upload as exact-confirmation gated"
+    },
+    {
+      "evidence_id": "synthetic-source-evidence:guardrail.refuse-submit-certify-pay-schedule",
+      "record_id": "sample.guardrail.consequential-action",
+      "synthetic": true,
+      "privacy_classification": "commit_safe_public_fixture",
+      "freshness_status": "fresh_fixture",
+      "source_kind": "guardrail",
+      "stable_placeholder": "guardrail refuses submission, certification, payment, scheduling, and official upload without attendance"
+    }
+  ],
+  "citation_spans": [
+    {
+      "span_id": "citation-span:html.devhub-guide.account-required.p1",
+      "evidence_id": "synthetic-source-evidence:html.devhub-guide.account-required",
+      "placeholder": true,
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-source-review"
+    },
+    {
+      "span_id": "citation-span:pdf.single-pdf.separate-supporting-docs.p2",
+      "evidence_id": "synthetic-source-evidence:pdf.single-pdf.separate-supporting-docs",
+      "placeholder": true,
+      "freshness_status": "synthetic_current",
+      "reviewer_disposition_placeholder": "disposition.pending-source-review"
+    },
+    {
+      "span_id": "citation-span:form.trade-permit.license-fixture-options.fieldset",
+      "evidence_id": "synthetic-source-evidence:form.trade-permit.license-fixture-options",
+      "placeholder": true,
+      "freshness_status": "review_required_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-requirement-review"
+    },
+    {
+      "span_id": "citation-span:process.building-intake.upload-staging.stage",
+      "evidence_id": "synthetic-source-evidence:process.building-intake.upload-staging",
+      "placeholder": true,
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-process-review"
+    },
+    {
+      "span_id": "citation-span:requirement.upload-official-record-gated.rule",
+      "evidence_id": "synthetic-source-evidence:requirement.upload-official-record-gated",
+      "placeholder": true,
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-requirement-review"
+    },
+    {
+      "span_id": "citation-span:guardrail.refuse-submit-certify-pay-schedule.predicate",
+      "evidence_id": "synthetic-source-evidence:guardrail.refuse-submit-certify-pay-schedule",
+      "placeholder": true,
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-guardrail-review"
+    }
+  ],
+  "agent_facing_requirements": [
+    {
+      "requirement_id": "REQ-FIXTURE-ACCOUNT-SCOPED-DEVHUB-001",
+      "agent_facing_text": "Before drafting DevHub account-scoped steps, confirm the workflow is user-attended and account scoped.",
+      "source_evidence_ids": [
+        "synthetic-source-evidence:html.devhub-guide.account-required",
+        "synthetic-source-evidence:process.building-intake.upload-staging"
+      ],
+      "citation_span_placeholders": [
+        "citation-span:html.devhub-guide.account-required.p1",
+        "citation-span:process.building-intake.upload-staging.stage"
+      ],
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-requirement-review"
+    },
+    {
+      "requirement_id": "REQ-FIXTURE-SINGLE-PDF-SUPPORTING-DOCS-002",
+      "agent_facing_text": "Treat drawing-plan PDF readiness separately from supporting document readiness.",
+      "source_evidence_ids": [
+        "synthetic-source-evidence:pdf.single-pdf.separate-supporting-docs"
+      ],
+      "citation_span_placeholders": [
+        "citation-span:pdf.single-pdf.separate-supporting-docs.p2"
+      ],
+      "freshness_status": "synthetic_current",
+      "reviewer_disposition_placeholder": "disposition.pending-requirement-review"
+    },
+    {
+      "requirement_id": "REQ-FIXTURE-LICENSE-FACT-GAP-003",
+      "agent_facing_text": "Ask for missing license-related facts before assuming trade permit fixture options are available.",
+      "source_evidence_ids": [
+        "synthetic-source-evidence:form.trade-permit.license-fixture-options"
+      ],
+      "citation_span_placeholders": [
+        "citation-span:form.trade-permit.license-fixture-options.fieldset"
+      ],
+      "freshness_status": "review_required_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-requirement-review"
+    }
+  ],
+  "agent_facing_refusals": [
+    {
+      "refusal_id": "REFUSAL-FIXTURE-OFFICIAL-UPLOAD-001",
+      "agent_facing_text": "Refuse to upload to the official record without user attendance, exact confirmation, and post-action review.",
+      "source_evidence_ids": [
+        "synthetic-source-evidence:requirement.upload-official-record-gated",
+        "synthetic-source-evidence:guardrail.refuse-submit-certify-pay-schedule"
+      ],
+      "citation_span_placeholders": [
+        "citation-span:requirement.upload-official-record-gated.rule",
+        "citation-span:guardrail.refuse-submit-certify-pay-schedule.predicate"
+      ],
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-guardrail-review"
+    },
+    {
+      "refusal_id": "REFUSAL-FIXTURE-CERTIFY-SUBMIT-PAY-SCHEDULE-002",
+      "agent_facing_text": "Refuse certification, submission, payment, scheduling, cancellation, or purchase actions unless the user is present and confirms the exact action.",
+      "source_evidence_ids": [
+        "synthetic-source-evidence:guardrail.refuse-submit-certify-pay-schedule"
+      ],
+      "citation_span_placeholders": [
+        "citation-span:guardrail.refuse-submit-certify-pay-schedule.predicate"
+      ],
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "disposition.pending-guardrail-review"
+    }
+  ],
+  "reviewer_disposition_placeholders": [
+    {
+      "disposition_id": "disposition.pending-source-review",
+      "status": "pending_reviewer_disposition",
+      "reviewer_role": "ppd-source-reviewer"
+    },
+    {
+      "disposition_id": "disposition.pending-requirement-review",
+      "status": "pending_reviewer_disposition",
+      "reviewer_role": "ppd-requirement-reviewer"
+    },
+    {
+      "disposition_id": "disposition.pending-process-review",
+      "status": "pending_reviewer_disposition",
+      "reviewer_role": "ppd-process-reviewer"
+    },
+    {
+      "disposition_id": "disposition.pending-guardrail-review",
+      "status": "pending_reviewer_disposition",
+      "reviewer_role": "ppd-guardrail-reviewer"
+    }
+  ]
+}

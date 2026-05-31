@@ -1,0 +1,69 @@
+{
+  "packet_id": "fixture-public-change-report-v2-20260531",
+  "packet_version": "public_change_report_packet_v2_fixture",
+  "fixture_only": true,
+  "input_mode": "synthetic_changed_source_hashes",
+  "side_effect_policy": {
+    "live_content_reextracted": false,
+    "active_requirements_mutated": false,
+    "active_process_models_mutated": false,
+    "active_guardrail_bundles_mutated": false,
+    "active_source_registries_mutated": false
+  },
+  "synthetic_changed_source_hashes": [
+    {
+      "source_id": "ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "previous_hash": "sha256:fixture-submit-plans-v1",
+      "current_hash": "sha256:fixture-submit-plans-v2",
+      "hash_status": "changed",
+      "stale_source_carry_forward_note": "Carry forward the prior Single PDF source evidence until a human reviewer accepts the synthetic hash delta and authorizes a separate offline recrawl packet."
+    },
+    {
+      "source_id": "ppd-devhub-faqs",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "previous_hash": "sha256:fixture-devhub-faq-v1",
+      "current_hash": "sha256:fixture-devhub-faq-v2",
+      "hash_status": "changed",
+      "stale_source_carry_forward_note": "Carry forward existing DevHub FAQ requirement evidence for agent answers until the reviewer disposition is resolved."
+    }
+  ],
+  "requirement_deltas": [
+    {
+      "requirement_id": "placeholder-req-added-devhub-correction-review-status",
+      "change_type": "added",
+      "source_id": "ppd-devhub-faqs",
+      "requirement_summary": "Synthetic added requirement row for reviewing correction status guidance before proposing any next safe action.",
+      "affected_process_model_ids": ["process-devhub-corrections-review"],
+      "affected_guardrail_bundle_ids": ["guardrail-bundle-devhub-corrections"],
+      "reviewer_disposition_placeholder": "pending_reviewer_disposition_added_requirement",
+      "stale_source_carry_forward_note": "Do not activate this added row; keep current DevHub correction guidance unchanged until reviewer approval."
+    },
+    {
+      "requirement_id": "placeholder-req-removed-legacy-upload-reference",
+      "change_type": "removed",
+      "source_id": "ppd-submit-plans-online",
+      "requirement_summary": "Synthetic removed requirement row for a legacy upload-reference claim that may no longer be supported by the changed source hash.",
+      "affected_process_model_ids": ["process-single-pdf-submit-plans"],
+      "affected_guardrail_bundle_ids": ["guardrail-bundle-upload-staging-review"],
+      "reviewer_disposition_placeholder": "pending_reviewer_disposition_removed_requirement",
+      "stale_source_carry_forward_note": "Carry the legacy upload-reference requirement as stale evidence only; do not delete the active requirement registry entry from this packet."
+    },
+    {
+      "requirement_id": "placeholder-req-changed-single-pdf-document-grouping",
+      "change_type": "changed",
+      "source_id": "ppd-submit-plans-online",
+      "requirement_summary": "Synthetic changed requirement row for Single PDF document grouping and separate supporting-document handling.",
+      "affected_process_model_ids": ["process-single-pdf-submit-plans", "process-building-permit-plan-review"],
+      "affected_guardrail_bundle_ids": ["guardrail-bundle-upload-staging-review", "guardrail-bundle-document-preparation"],
+      "reviewer_disposition_placeholder": "pending_reviewer_disposition_changed_requirement",
+      "stale_source_carry_forward_note": "Continue using the current Single PDF guardrail bundle until a reviewer accepts or rejects this synthetic changed row."
+    }
+  ],
+  "exact_offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/public_change_report_packet_v2.py"],
+    ["python3", "-m", "py_compile", "ppd/tests/test_public_change_report_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_public_change_report_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

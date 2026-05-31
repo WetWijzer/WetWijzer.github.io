@@ -1,0 +1,19 @@
+{
+  "packet_version": "approved-executor-review-packet-v2",
+  "packet_id": "approved-review-packet-v2-fixture-001",
+  "approval_state": "approved_for_noop_dry_run",
+  "ordered_preview_steps": [
+    {
+      "step_id": "collect-fixture-fields",
+      "label": "collect synthetic permit draft fields"
+    },
+    {
+      "step_id": "render-preview-summary",
+      "label": "render preview-only mutation summary"
+    },
+    {
+      "step_id": "journal-redacted-event",
+      "label": "emit redacted journal event example"
+    }
+  ]
+}

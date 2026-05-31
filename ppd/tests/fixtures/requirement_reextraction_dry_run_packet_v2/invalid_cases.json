@@ -1,0 +1,244 @@
+{
+  "cases": [
+    {
+      "name": "private session artifact",
+      "expected_code": "forbidden_private_session_browser_raw_or_downloaded_artifact",
+      "packet": {
+        "packet_type": "requirement_reextraction_dry_run_packet_v2",
+        "schema_version": 2,
+        "mode": "fixture_first_offline_dry_run",
+        "delta_placeholders": {
+          "unchanged": {"placeholder_id": "unchanged"},
+          "added": {"placeholder_id": "added"},
+          "removed": {"placeholder_id": "removed"},
+          "changed": {"placeholder_id": "changed"}
+        },
+        "requirement_delta_rows": [
+          {
+            "delta_kind": "unchanged",
+            "requirement_id": "req-1",
+            "citation_span_placeholder": "citation-1",
+            "confidence_placeholder": "confidence-1",
+            "human_review_placeholder": "review-1",
+            "affected_process_model_placeholder": "process-1",
+            "affected_guardrail_placeholder": "guardrail-1"
+          },
+          {
+            "delta_kind": "added",
+            "requirement_id": "req-2",
+            "citation_span_placeholder": "citation-2",
+            "confidence_placeholder": "confidence-2",
+            "human_review_placeholder": "review-2",
+            "affected_process_model_placeholder": "process-2",
+            "affected_guardrail_placeholder": "guardrail-2"
+          },
+          {
+            "delta_kind": "removed",
+            "requirement_id": "req-3",
+            "citation_span_placeholder": "citation-3",
+            "confidence_placeholder": "confidence-3",
+            "human_review_placeholder": "review-3",
+            "affected_process_model_placeholder": "process-3",
+            "affected_guardrail_placeholder": "guardrail-3"
+          },
+          {
+            "delta_kind": "changed",
+            "requirement_id": "req-4",
+            "citation_span_placeholder": "citation-4",
+            "confidence_placeholder": "confidence-4",
+            "human_review_placeholder": "review-4",
+            "affected_process_model_placeholder": "process-4",
+            "affected_guardrail_placeholder": "guardrail-4"
+          }
+        ],
+        "citation_span_placeholders": [{"placeholder_id": "citation-1"}],
+        "confidence_placeholders": [{"placeholder_id": "confidence-1"}],
+        "human_review_placeholders": [{"placeholder_id": "review-1"}],
+        "affected_process_model_placeholders": [{"placeholder_id": "process-1"}],
+        "affected_guardrail_placeholders": [{"placeholder_id": "guardrail-1"}],
+        "browser_session_id": "devhub-session-123",
+        "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+      }
+    },
+    {
+      "name": "live DevHub claim",
+      "expected_code": "forbidden_live_crawl_or_devhub_claim",
+      "packet": {
+        "packet_type": "requirement_reextraction_dry_run_packet_v2",
+        "schema_version": 2,
+        "mode": "fixture_first_offline_dry_run",
+        "delta_placeholders": {
+          "unchanged": {"placeholder_id": "unchanged"},
+          "added": {"placeholder_id": "added"},
+          "removed": {"placeholder_id": "removed"},
+          "changed": {"placeholder_id": "changed"}
+        },
+        "requirement_delta_rows": [
+          {
+            "delta_kind": "unchanged",
+            "requirement_id": "req-1",
+            "citation_span_placeholder": "citation-1",
+            "confidence_placeholder": "confidence-1",
+            "human_review_placeholder": "review-1",
+            "affected_process_model_placeholder": "process-1",
+            "affected_guardrail_placeholder": "guardrail-1"
+          },
+          {
+            "delta_kind": "added",
+            "requirement_id": "req-2",
+            "citation_span_placeholder": "citation-2",
+            "confidence_placeholder": "confidence-2",
+            "human_review_placeholder": "review-2",
+            "affected_process_model_placeholder": "process-2",
+            "affected_guardrail_placeholder": "guardrail-2"
+          },
+          {
+            "delta_kind": "removed",
+            "requirement_id": "req-3",
+            "citation_span_placeholder": "citation-3",
+            "confidence_placeholder": "confidence-3",
+            "human_review_placeholder": "review-3",
+            "affected_process_model_placeholder": "process-3",
+            "affected_guardrail_placeholder": "guardrail-3"
+          },
+          {
+            "delta_kind": "changed",
+            "requirement_id": "req-4",
+            "citation_span_placeholder": "citation-4",
+            "confidence_placeholder": "confidence-4",
+            "human_review_placeholder": "review-4",
+            "affected_process_model_placeholder": "process-4",
+            "affected_guardrail_placeholder": "guardrail-4"
+          }
+        ],
+        "citation_span_placeholders": [{"placeholder_id": "citation-1"}],
+        "confidence_placeholders": [{"placeholder_id": "confidence-1"}],
+        "human_review_placeholders": [{"placeholder_id": "review-1"}],
+        "affected_process_model_placeholders": [{"placeholder_id": "process-1"}],
+        "affected_guardrail_placeholders": [{"placeholder_id": "guardrail-1"}],
+        "devhub_accessed": true,
+        "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+      }
+    },
+    {
+      "name": "permitting guarantee",
+      "expected_code": "forbidden_legal_or_permitting_guarantee",
+      "packet": {
+        "packet_type": "requirement_reextraction_dry_run_packet_v2",
+        "schema_version": 2,
+        "mode": "fixture_first_offline_dry_run",
+        "delta_placeholders": {
+          "unchanged": {"placeholder_id": "unchanged"},
+          "added": {"placeholder_id": "added"},
+          "removed": {"placeholder_id": "removed"},
+          "changed": {"placeholder_id": "changed"}
+        },
+        "requirement_delta_rows": [
+          {
+            "delta_kind": "unchanged",
+            "requirement_id": "req-1",
+            "citation_span_placeholder": "citation-1",
+            "confidence_placeholder": "confidence-1",
+            "human_review_placeholder": "review-1",
+            "affected_process_model_placeholder": "process-1",
+            "affected_guardrail_placeholder": "guardrail-1"
+          },
+          {
+            "delta_kind": "added",
+            "requirement_id": "req-2",
+            "citation_span_placeholder": "citation-2",
+            "confidence_placeholder": "confidence-2",
+            "human_review_placeholder": "review-2",
+            "affected_process_model_placeholder": "process-2",
+            "affected_guardrail_placeholder": "guardrail-2"
+          },
+          {
+            "delta_kind": "removed",
+            "requirement_id": "req-3",
+            "citation_span_placeholder": "citation-3",
+            "confidence_placeholder": "confidence-3",
+            "human_review_placeholder": "review-3",
+            "affected_process_model_placeholder": "process-3",
+            "affected_guardrail_placeholder": "guardrail-3"
+          },
+          {
+            "delta_kind": "changed",
+            "requirement_id": "req-4",
+            "citation_span_placeholder": "citation-4",
+            "confidence_placeholder": "confidence-4",
+            "human_review_placeholder": "review-4",
+            "affected_process_model_placeholder": "process-4",
+            "affected_guardrail_placeholder": "guardrail-4"
+          }
+        ],
+        "citation_span_placeholders": [{"placeholder_id": "citation-1"}],
+        "confidence_placeholders": [{"placeholder_id": "confidence-1"}],
+        "human_review_placeholders": [{"placeholder_id": "review-1"}],
+        "affected_process_model_placeholders": [{"placeholder_id": "process-1"}],
+        "affected_guardrail_placeholders": [{"placeholder_id": "guardrail-1"}],
+        "review_note": "This packet does not mean the permit will be approved.",
+        "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+      }
+    },
+    {
+      "name": "active mutation flag",
+      "expected_code": "forbidden_active_mutation_flag",
+      "packet": {
+        "packet_type": "requirement_reextraction_dry_run_packet_v2",
+        "schema_version": 2,
+        "mode": "fixture_first_offline_dry_run",
+        "delta_placeholders": {
+          "unchanged": {"placeholder_id": "unchanged"},
+          "added": {"placeholder_id": "added"},
+          "removed": {"placeholder_id": "removed"},
+          "changed": {"placeholder_id": "changed"}
+        },
+        "requirement_delta_rows": [
+          {
+            "delta_kind": "unchanged",
+            "requirement_id": "req-1",
+            "citation_span_placeholder": "citation-1",
+            "confidence_placeholder": "confidence-1",
+            "human_review_placeholder": "review-1",
+            "affected_process_model_placeholder": "process-1",
+            "affected_guardrail_placeholder": "guardrail-1"
+          },
+          {
+            "delta_kind": "added",
+            "requirement_id": "req-2",
+            "citation_span_placeholder": "citation-2",
+            "confidence_placeholder": "confidence-2",
+            "human_review_placeholder": "review-2",
+            "affected_process_model_placeholder": "process-2",
+            "affected_guardrail_placeholder": "guardrail-2"
+          },
+          {
+            "delta_kind": "removed",
+            "requirement_id": "req-3",
+            "citation_span_placeholder": "citation-3",
+            "confidence_placeholder": "confidence-3",
+            "human_review_placeholder": "review-3",
+            "affected_process_model_placeholder": "process-3",
+            "affected_guardrail_placeholder": "guardrail-3"
+          },
+          {
+            "delta_kind": "changed",
+            "requirement_id": "req-4",
+            "citation_span_placeholder": "citation-4",
+            "confidence_placeholder": "confidence-4",
+            "human_review_placeholder": "review-4",
+            "affected_process_model_placeholder": "process-4",
+            "affected_guardrail_placeholder": "guardrail-4"
+          }
+        ],
+        "citation_span_placeholders": [{"placeholder_id": "citation-1"}],
+        "confidence_placeholders": [{"placeholder_id": "confidence-1"}],
+        "human_review_placeholders": [{"placeholder_id": "review-1"}],
+        "affected_process_model_placeholders": [{"placeholder_id": "process-1"}],
+        "affected_guardrail_placeholders": [{"placeholder_id": "guardrail-1"}],
+        "active_requirement_mutation": true,
+        "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "version": "guardrail_bundle_stale_source_impact_matrix_v2",
+  "matrix_id": "fixture-stale-source-impact-matrix-v2-invalid",
+  "guardrail_bundle_id": "fixture-guardrail-bundle",
+  "impact_rows": [
+    {
+      "row_id": "source_freshness_status",
+      "impact_summary": "Live crawl completed and live DevHub verified with a real user account.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    },
+    {
+      "row_id": "affected_requirements",
+      "impact_summary": "This permit is guaranteed and will be approved.",
+      "source_evidence_ids": ["fixture-public-source-evidence"]
+    }
+  ],
+  "stale_source_hold_reasons": [
+    "stale_source_detected"
+  ],
+  "re_extraction_placeholders": [],
+  "user_facing_caution_templates": [],
+  "blocked_action_reminders": [],
+  "reviewer_dispositions": [],
+  "validation_commands": [],
+  "artifact_notes": "Do not accept auth_state, screenshot, trace.zip, raw_crawl_output, or downloaded_pdf references in committed stale-source matrices.",
+  "active_mutation_flags": {
+    "source_registry": false,
+    "requirements": true,
+    "guardrails": true,
+    "prompts": true,
+    "contracts": true,
+    "devhub_surfaces": true,
+    "release_state": true
+  }
+}

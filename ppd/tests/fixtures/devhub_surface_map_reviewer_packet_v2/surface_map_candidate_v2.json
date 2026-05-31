@@ -1,0 +1,306 @@
+{
+  "schema_version": "devhub_read_only_surface_map_candidate_v2",
+  "candidate_id": "surface-map-candidate-v2-redaction-packet-v2-synthetic-reviewer-fixture",
+  "source_redaction_packet": {
+    "schema_version": "devhub_observation_redaction_acceptance_packet_v2",
+    "packet_id": "redaction-packet-v2-synthetic-reviewer-fixture",
+    "surface_id": "devhub.synthetic.readonly.permit-status",
+    "synthetic_fixture_only": true
+  },
+  "mode": "offline_fixture_inactive_candidate",
+  "generated_at": "1970-01-01T00:00:00Z",
+  "candidate_rows": [
+    {
+      "order": 1,
+      "row_id": "surface-row-001-field-page_heading",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "row_kind": "field",
+      "source_ref": "page_heading",
+      "candidate_label": "Permit status",
+      "activation_state": "inactive_surface_map_candidate",
+      "candidate_payload": {
+        "field_id": "page_heading",
+        "field_class": "public_ui_label",
+        "stored_representation": "synthetic_literal_allowed",
+        "redaction_decision": "keep"
+      },
+      "selector_stability_placeholder_id": "selector-stability-page_heading",
+      "accessible_role_evidence_placeholder_id": "accessible-role-page_heading",
+      "redacted_validation_message_placeholder_id": "validation-message-page_heading",
+      "action_boundary_classification_id": "action-boundary-field-page_heading",
+      "reviewer_disposition_placeholder_id": "reviewer-disposition-field-page_heading",
+      "commit_safety": "fixture_only_no_devhub_access"
+    },
+    {
+      "order": 2,
+      "row_id": "surface-row-002-field-permit_number_value",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "row_kind": "field",
+      "source_ref": "permit_number_value",
+      "candidate_label": "Permit number",
+      "activation_state": "inactive_surface_map_candidate",
+      "candidate_payload": {
+        "field_id": "permit_number_value",
+        "field_class": "case_number",
+        "stored_representation": "label_and_class_only",
+        "redaction_decision": "drop"
+      },
+      "selector_stability_placeholder_id": "selector-stability-permit_number_value",
+      "accessible_role_evidence_placeholder_id": "accessible-role-permit_number_value",
+      "redacted_validation_message_placeholder_id": "validation-message-permit_number_value",
+      "action_boundary_classification_id": "action-boundary-field-permit_number_value",
+      "reviewer_disposition_placeholder_id": "reviewer-disposition-field-permit_number_value",
+      "commit_safety": "fixture_only_no_devhub_access"
+    },
+    {
+      "order": 3,
+      "row_id": "surface-row-003-action-observe_status_labels",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "row_kind": "action",
+      "source_ref": "observe_status_labels",
+      "candidate_label": "observe status labels",
+      "activation_state": "inactive_surface_map_candidate",
+      "candidate_payload": {
+        "action_id": "observe_status_labels",
+        "action_type": "review_permit_status_labels",
+        "read_only_confirmed": true,
+        "consequential_action_blocked": false
+      },
+      "selector_stability_placeholder_id": "selector-stability-observe_status_labels",
+      "accessible_role_evidence_placeholder_id": "accessible-role-observe_status_labels",
+      "redacted_validation_message_placeholder_id": "validation-message-observe_status_labels",
+      "action_boundary_classification_id": "action-boundary-action-observe_status_labels",
+      "reviewer_disposition_placeholder_id": "reviewer-disposition-action-observe_status_labels",
+      "commit_safety": "fixture_only_no_devhub_access"
+    },
+    {
+      "order": 4,
+      "row_id": "surface-row-004-action-submit_application",
+      "surface_id": "devhub.synthetic.readonly.permit-status",
+      "row_kind": "action",
+      "source_ref": "submit_application",
+      "candidate_label": "submit application",
+      "activation_state": "inactive_surface_map_candidate",
+      "candidate_payload": {
+        "action_id": "submit_application",
+        "action_type": "submit",
+        "read_only_confirmed": false,
+        "consequential_action_blocked": true
+      },
+      "selector_stability_placeholder_id": "selector-stability-submit_application",
+      "accessible_role_evidence_placeholder_id": "accessible-role-submit_application",
+      "redacted_validation_message_placeholder_id": "validation-message-submit_application",
+      "action_boundary_classification_id": "action-boundary-action-submit_application",
+      "reviewer_disposition_placeholder_id": "reviewer-disposition-action-submit_application",
+      "commit_safety": "fixture_only_no_devhub_access"
+    }
+  ],
+  "selector_stability_placeholders": [
+    {
+      "placeholder_id": "selector-stability-page_heading",
+      "row_id": "surface-row-001-field-page_heading",
+      "status": "pending_reviewer_evidence",
+      "candidate_selector": null,
+      "stability_evidence": [],
+      "review_instruction": "Record only a future redacted selector strategy after reviewer approval; no selector was captured in this fixture."
+    },
+    {
+      "placeholder_id": "selector-stability-permit_number_value",
+      "row_id": "surface-row-002-field-permit_number_value",
+      "status": "pending_reviewer_evidence",
+      "candidate_selector": null,
+      "stability_evidence": [],
+      "review_instruction": "Record only a future redacted selector strategy after reviewer approval; no selector was captured in this fixture."
+    },
+    {
+      "placeholder_id": "selector-stability-observe_status_labels",
+      "row_id": "surface-row-003-action-observe_status_labels",
+      "status": "pending_reviewer_evidence",
+      "candidate_selector": null,
+      "stability_evidence": [],
+      "review_instruction": "Record only a future redacted selector strategy after reviewer approval; no selector was captured in this fixture."
+    },
+    {
+      "placeholder_id": "selector-stability-submit_application",
+      "row_id": "surface-row-004-action-submit_application",
+      "status": "pending_reviewer_evidence",
+      "candidate_selector": null,
+      "stability_evidence": [],
+      "review_instruction": "Record only a future redacted selector strategy after reviewer approval; no selector was captured in this fixture."
+    }
+  ],
+  "accessible_role_evidence_placeholders": [
+    {
+      "placeholder_id": "accessible-role-page_heading",
+      "row_id": "surface-row-001-field-page_heading",
+      "status": "pending_reviewer_evidence",
+      "role": null,
+      "name_source": "redacted_or_not_observed",
+      "review_instruction": "Add accessible role evidence only from a later approved redacted observation."
+    },
+    {
+      "placeholder_id": "accessible-role-permit_number_value",
+      "row_id": "surface-row-002-field-permit_number_value",
+      "status": "pending_reviewer_evidence",
+      "role": null,
+      "name_source": "redacted_or_not_observed",
+      "review_instruction": "Add accessible role evidence only from a later approved redacted observation."
+    },
+    {
+      "placeholder_id": "accessible-role-observe_status_labels",
+      "row_id": "surface-row-003-action-observe_status_labels",
+      "status": "pending_reviewer_evidence",
+      "role": null,
+      "name_source": "redacted_or_not_observed",
+      "review_instruction": "Add accessible role evidence only from a later approved redacted observation."
+    },
+    {
+      "placeholder_id": "accessible-role-submit_application",
+      "row_id": "surface-row-004-action-submit_application",
+      "status": "pending_reviewer_evidence",
+      "role": null,
+      "name_source": "redacted_or_not_observed",
+      "review_instruction": "Add accessible role evidence only from a later approved redacted observation."
+    }
+  ],
+  "redacted_validation_message_placeholders": [
+    {
+      "placeholder_id": "validation-message-page_heading",
+      "row_id": "surface-row-001-field-page_heading",
+      "status": "pending_or_not_observed",
+      "message_text": null,
+      "redaction": "redacted_or_not_observed",
+      "review_instruction": "Keep validation messages redacted unless a future reviewer marks label-only text as safe."
+    },
+    {
+      "placeholder_id": "validation-message-permit_number_value",
+      "row_id": "surface-row-002-field-permit_number_value",
+      "status": "pending_or_not_observed",
+      "message_text": null,
+      "redaction": "redacted_or_not_observed",
+      "review_instruction": "Keep validation messages redacted unless a future reviewer marks label-only text as safe."
+    },
+    {
+      "placeholder_id": "validation-message-observe_status_labels",
+      "row_id": "surface-row-003-action-observe_status_labels",
+      "status": "pending_or_not_observed",
+      "message_text": null,
+      "redaction": "redacted_or_not_observed",
+      "review_instruction": "Keep validation messages redacted unless a future reviewer marks label-only text as safe."
+    },
+    {
+      "placeholder_id": "validation-message-submit_application",
+      "row_id": "surface-row-004-action-submit_application",
+      "status": "pending_or_not_observed",
+      "message_text": null,
+      "redaction": "redacted_or_not_observed",
+      "review_instruction": "Keep validation messages redacted unless a future reviewer marks label-only text as safe."
+    }
+  ],
+  "action_boundary_classifications": [
+    {
+      "classification_id": "action-boundary-field-page_heading",
+      "row_id": "surface-row-001-field-page_heading",
+      "classification": "read_only_evidence_placeholder",
+      "official_action_allowed": false,
+      "requires_attendance": true,
+      "requires_exact_confirmation": false
+    },
+    {
+      "classification_id": "action-boundary-field-permit_number_value",
+      "row_id": "surface-row-002-field-permit_number_value",
+      "classification": "read_only_evidence_placeholder",
+      "official_action_allowed": false,
+      "requires_attendance": true,
+      "requires_exact_confirmation": false
+    },
+    {
+      "classification_id": "action-boundary-action-observe_status_labels",
+      "row_id": "surface-row-003-action-observe_status_labels",
+      "classification": "safe_read_only_observation",
+      "official_action_allowed": false,
+      "requires_attendance": true,
+      "requires_exact_confirmation": false
+    },
+    {
+      "classification_id": "action-boundary-action-submit_application",
+      "row_id": "surface-row-004-action-submit_application",
+      "classification": "consequential_official_blocked",
+      "official_action_allowed": false,
+      "requires_attendance": true,
+      "requires_exact_confirmation": true
+    }
+  ],
+  "reviewer_disposition_placeholders": [
+    {
+      "placeholder_id": "reviewer-disposition-field-page_heading",
+      "row_id": "surface-row-001-field-page_heading",
+      "status": "pending_reviewer_disposition",
+      "allowed_dispositions": [
+        "accept_inactive",
+        "revise_fixture",
+        "reject"
+      ],
+      "reviewer_notes": null
+    },
+    {
+      "placeholder_id": "reviewer-disposition-field-permit_number_value",
+      "row_id": "surface-row-002-field-permit_number_value",
+      "status": "pending_reviewer_disposition",
+      "allowed_dispositions": [
+        "accept_inactive",
+        "revise_fixture",
+        "reject"
+      ],
+      "reviewer_notes": null
+    },
+    {
+      "placeholder_id": "reviewer-disposition-action-observe_status_labels",
+      "row_id": "surface-row-003-action-observe_status_labels",
+      "status": "pending_reviewer_disposition",
+      "allowed_dispositions": [
+        "accept_inactive",
+        "revise_fixture",
+        "reject"
+      ],
+      "reviewer_notes": null
+    },
+    {
+      "placeholder_id": "reviewer-disposition-action-submit_application",
+      "row_id": "surface-row-004-action-submit_application",
+      "status": "pending_reviewer_disposition",
+      "allowed_dispositions": [
+        "accept_inactive",
+        "revise_fixture",
+        "reject"
+      ],
+      "reviewer_notes": null
+    }
+  ],
+  "surface_map_safety_attestations": [
+    {
+      "attestation_id": "inactive-candidate-only",
+      "status": "confirmed",
+      "statement": "Rows are inactive candidates for reviewer intake and do not alter a deployed map."
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/devhub/surface_map_candidate_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_devhub_surface_map_candidate_v2.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

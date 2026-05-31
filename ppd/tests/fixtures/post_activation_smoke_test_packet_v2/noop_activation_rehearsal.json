@@ -1,0 +1,170 @@
+{
+  "packet_type": "ppd.inactive_activation_rehearsal.v2",
+  "packet_version": "v2",
+  "rehearsal_id": "inactive-activation-rehearsal-v2-fixture-for-post-activation-smoke",
+  "fixture_only": true,
+  "no_op_activation_plan": true,
+  "inactive_activation_rehearsal": true,
+  "source_release_decision_packet": {
+    "packet_type": "ppd.inactive_release_decision_packet.v2",
+    "packet_id": "approved-inactive-release-decision-packet-v2-fixture",
+    "approved": true
+  },
+  "preflight_checkpoints": [
+    {
+      "checkpoint_id": "approved-decision-packet-present",
+      "status": "planned_check_only",
+      "expected_input": "approved-inactive-release-decision-packet-v2-fixture",
+      "required_before": "any_separate_activation_decision"
+    },
+    {
+      "checkpoint_id": "offline-validation-command-inventory-present",
+      "status": "planned_check_only",
+      "expected_input": "offline_validation_commands",
+      "required_before": "any_separate_activation_decision"
+    },
+    {
+      "checkpoint_id": "active-state-diff-is-no-change",
+      "status": "planned_check_only",
+      "expected_input": "expected_active_state_diffs",
+      "required_before": "any_separate_activation_decision"
+    }
+  ],
+  "target_inactive_bundle_ids": [
+    "inactive-fixture-guarded-agent-release-bundle-v2",
+    "inactive-fixture-offline-release-gate-bundle-v2"
+  ],
+  "expected_active_state_diffs": [
+    {
+      "target_inactive_bundle_id": "inactive-fixture-guarded-agent-release-bundle-v2",
+      "active_state_component": "active_release_state",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-guarded-agent-release-bundle-v2",
+      "active_state_component": "agent_prompt_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-guarded-agent-release-bundle-v2",
+      "active_state_component": "contract_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-guarded-agent-release-bundle-v2",
+      "active_state_component": "devhub_surface_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-guarded-agent-release-bundle-v2",
+      "active_state_component": "guardrail_bundle_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-guarded-agent-release-bundle-v2",
+      "active_state_component": "process_model_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-guarded-agent-release-bundle-v2",
+      "active_state_component": "source_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-offline-release-gate-bundle-v2",
+      "active_state_component": "active_release_state",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-offline-release-gate-bundle-v2",
+      "active_state_component": "agent_prompt_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-offline-release-gate-bundle-v2",
+      "active_state_component": "contract_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-offline-release-gate-bundle-v2",
+      "active_state_component": "devhub_surface_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-offline-release-gate-bundle-v2",
+      "active_state_component": "guardrail_bundle_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-offline-release-gate-bundle-v2",
+      "active_state_component": "process_model_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    },
+    {
+      "target_inactive_bundle_id": "inactive-fixture-offline-release-gate-bundle-v2",
+      "active_state_component": "source_registry",
+      "expected_diff": "no_change",
+      "status": "placeholder_only"
+    }
+  ],
+  "rollback_rehearsal_references": [
+    {
+      "reference_id": "rollback-rehearsal-from-decision-packet",
+      "source_packet_id": "approved-inactive-release-decision-packet-v2-fixture",
+      "status": "reference_only",
+      "required_before": "any_separate_activation_decision"
+    }
+  ],
+  "post_activation_smoke_check_placeholders": [
+    {
+      "placeholder_id": "post-activation-daemon-self-test",
+      "status": "placeholder_only",
+      "command_ref": "offline-validation-command-1",
+      "result": null
+    },
+    {
+      "placeholder_id": "post-activation-rehearsal-unit-test",
+      "status": "placeholder_only",
+      "command_ref": "offline-validation-command-2",
+      "result": null
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_inactive_activation_rehearsal_v2.py"
+    ]
+  ],
+  "no_op_attestations": {
+    "changes_active_release_state": false,
+    "changes_prompts": false,
+    "changes_guardrails": false,
+    "changes_source_registries": false,
+    "changes_process_models": false,
+    "changes_contracts": false,
+    "changes_devhub_surfaces": false,
+    "uses_live_sources": false,
+    "accesses_devhub": false,
+    "performs_official_actions": false
+  }
+}

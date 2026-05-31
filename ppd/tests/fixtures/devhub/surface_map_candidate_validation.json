@@ -125,5 +125,60 @@
         }
       ]
     }
+  ],
+  "candidate_v2_packets": [
+    {
+      "candidate_id": "valid_readonly_surface_map_candidate_v2",
+      "schema_version": 2,
+      "mode": "fixture-first-read-only-review",
+      "candidate_rows": [
+        {
+          "row_id": "devhub_home_status_review",
+          "surface_label": "DevHub home status review placeholder",
+          "selector_stability_placeholder": "placeholder: selector stability evidence pending attended read-only review",
+          "accessible_role_evidence_placeholder": "placeholder: accessible role evidence pending attended read-only review",
+          "redacted_validation_message_placeholder": "[redacted]",
+          "action_boundary_classification": "safe_read_only",
+          "reviewer_disposition": "pending_review"
+        }
+      ],
+      "validation_commands": [
+        ["python3", "-m", "pytest", "ppd/tests/test_devhub_surface_map_candidate_validation.py"]
+      ],
+      "attestations": {
+        "no_live_devhub": true,
+        "no_browser_artifacts": true,
+        "no_auth_state": true,
+        "no_private_values": true,
+        "no_active_mutations": true
+      }
+    },
+    {
+      "candidate_id": "unsafe_readonly_surface_map_candidate_v2",
+      "schema_version": 2,
+      "candidate_rows": [
+        {
+          "row_id": "unsafe_row",
+          "surface_label": "Unsafe placeholder",
+          "selector_stability_placeholder": "placeholder present",
+          "accessible_role_evidence_placeholder": "placeholder present",
+          "redacted_validation_message_placeholder": "Call owner@example.test about permit number 24-123456-000-00-CO",
+          "action_boundary_classification": "safe_read_only",
+          "reviewer_disposition": "pending_review"
+        }
+      ],
+      "validation_commands": [
+        ["python3", "-m", "pytest", "ppd/tests/test_devhub_surface_map_candidate_validation.py"]
+      ],
+      "session_state": "storage_state.json",
+      "browser_trace": "trace.zip",
+      "raw_crawl_output": "raw DevHub body was copied",
+      "downloaded_documents": ["downloaded permit document.pdf"],
+      "notes": [
+        "Script will automate login and handle MFA prompts.",
+        "Operator may submit the application after review.",
+        "This guarantees permit approval and legal compliance."
+      ]
+    }
   ]
 }

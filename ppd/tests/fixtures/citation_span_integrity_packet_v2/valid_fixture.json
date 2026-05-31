@@ -1,0 +1,135 @@
+{
+  "fixture_id": "citation-span-integrity-v2-valid-fixture",
+  "sample_records": [
+    {
+      "record_id": "sample-html",
+      "record_type": "synthetic_normalized_html",
+      "synthetic": true,
+      "active_state": false
+    },
+    {
+      "record_id": "sample-pdf",
+      "record_type": "synthetic_normalized_pdf",
+      "synthetic": true,
+      "active_state": false
+    },
+    {
+      "record_id": "sample-form",
+      "record_type": "synthetic_normalized_form",
+      "synthetic": true,
+      "active_state": false
+    },
+    {
+      "record_id": "sample-process",
+      "record_type": "synthetic_process_model",
+      "synthetic": true,
+      "active_state": false
+    },
+    {
+      "record_id": "sample-requirement",
+      "record_type": "synthetic_requirement",
+      "synthetic": true,
+      "active_state": false
+    },
+    {
+      "record_id": "sample-guardrail",
+      "record_type": "synthetic_guardrail",
+      "synthetic": true,
+      "active_state": false
+    }
+  ],
+  "source_evidence": [
+    {
+      "evidence_id": "synthetic-source-evidence:ppd.fixture.requirement.001",
+      "synthetic": true,
+      "privacy_classification": "commit_safe_public_fixture",
+      "freshness_status": "fresh_fixture"
+    },
+    {
+      "evidence_id": "synthetic-source-evidence:ppd.fixture.refusal.001",
+      "synthetic": true,
+      "privacy_classification": "commit_safe_public_fixture",
+      "freshness_status": "fresh_fixture"
+    }
+  ],
+  "citation_spans": [
+    {
+      "span_id": "citation-span:ppd.fixture.requirement.001",
+      "evidence_id": "synthetic-source-evidence:ppd.fixture.requirement.001",
+      "placeholder": true,
+      "reviewer_disposition_placeholder": "reviewer-disposition:pending-public-source-review",
+      "freshness_status": "fresh_fixture"
+    },
+    {
+      "span_id": "citation-span:ppd.fixture.refusal.001",
+      "evidence_id": "synthetic-source-evidence:ppd.fixture.refusal.001",
+      "placeholder": true,
+      "reviewer_disposition_placeholder": "reviewer-disposition:pending-public-source-review",
+      "freshness_status": "fresh_fixture"
+    }
+  ],
+  "reviewer_disposition_placeholders": [
+    {
+      "disposition_id": "reviewer-disposition:pending-public-source-review",
+      "status": "pending_fixture_review"
+    }
+  ],
+  "agent_facing_requirements": [
+    {
+      "requirement_id": "synthetic-requirement:document-preparation",
+      "source_evidence_ids": [
+        "synthetic-source-evidence:ppd.fixture.requirement.001"
+      ],
+      "citation_span_placeholders": [
+        "citation-span:ppd.fixture.requirement.001"
+      ],
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "reviewer-disposition:pending-public-source-review",
+      "guardrail_trace_ids": [
+        "requirement-to-guardrail-trace:document-preparation"
+      ]
+    }
+  ],
+  "agent_facing_refusals": [
+    {
+      "refusal_id": "synthetic-refusal:official-submission",
+      "source_evidence_ids": [
+        "synthetic-source-evidence:ppd.fixture.refusal.001"
+      ],
+      "citation_span_placeholders": [
+        "citation-span:ppd.fixture.refusal.001"
+      ],
+      "freshness_status": "fresh_fixture",
+      "reviewer_disposition_placeholder": "reviewer-disposition:pending-public-source-review",
+      "source_trace_ids": [
+        "refusal-to-source-trace:official-submission"
+      ]
+    }
+  ],
+  "requirement_to_guardrail_traces": [
+    {
+      "trace_id": "requirement-to-guardrail-trace:document-preparation",
+      "requirement_id": "synthetic-requirement:document-preparation",
+      "guardrail_ids": [
+        "synthetic-guardrail:offline-draft-only"
+      ],
+      "source_evidence_ids": [
+        "synthetic-source-evidence:ppd.fixture.requirement.001"
+      ],
+      "freshness_status": "fresh_fixture"
+    }
+  ],
+  "refusal_to_source_traces": [
+    {
+      "trace_id": "refusal-to-source-trace:official-submission",
+      "refusal_id": "synthetic-refusal:official-submission",
+      "refused_action_predicate_ids": [
+        "synthetic-refused-action:official-submission"
+      ],
+      "source_evidence_ids": [
+        "synthetic-source-evidence:ppd.fixture.refusal.001"
+      ],
+      "freshness_status": "fresh_fixture"
+    }
+  ]
+}

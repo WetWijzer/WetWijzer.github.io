@@ -1,0 +1,55 @@
+{
+  "packet_id": "fixture-reextract-packet-v2-20260531",
+  "packet_version": "requirement-reextraction-dry-run-packet-v2",
+  "requirement_rows": [
+    {
+      "requirement_id": "REQ-UPLOAD-CORRECTION-EXACT-CONFIRMATION",
+      "requirement_type": "action_gate",
+      "subject": "agent",
+      "action": "upload correction to official record",
+      "object": "authenticated DevHub correction workflow",
+      "process_id": "process-devhub-corrections",
+      "guardrail_bundle_id": "guardrail-bundle-devhub-corrections-inactive",
+      "source_evidence_ids": [
+        "SRC-DEVHUB-FAQ-UPLOAD-CORRECTIONS",
+        "SRC-DEVHUB-UPLOAD-CORRECTIONS-GUIDE"
+      ],
+      "formalization_status": "pending_dry_run_formalization",
+      "human_review_status": "pending_review",
+      "change_hint": "changed",
+      "deadline_or_temporal_scope": "before any official correction upload action"
+    },
+    {
+      "requirement_id": "REQ-FEE-PAYMENT-REFUSAL",
+      "requirement_type": "prohibition",
+      "subject": "agent",
+      "action": "enter or submit payment details",
+      "object": "DevHub fee payment workflow",
+      "process_id": "process-devhub-fee-payment",
+      "guardrail_bundle_id": "guardrail-bundle-fee-payment-inactive",
+      "source_evidence_ids": [
+        "SRC-PPD-HOW-PAY-FEES"
+      ],
+      "formalization_status": "pending_dry_run_formalization",
+      "human_review_status": "pending_review",
+      "change_hint": "new",
+      "deadline_or_temporal_scope": "payment workflow only"
+    },
+    {
+      "requirement_id": "REQ-DRAFT-FORM-REVERSIBLE",
+      "requirement_type": "permission",
+      "subject": "agent",
+      "action": "draft local form values",
+      "object": "permit application preview fields",
+      "process_id": "process-permit-application-draft",
+      "guardrail_bundle_id": "guardrail-bundle-application-draft-inactive",
+      "source_evidence_ids": [
+        "SRC-DEVHUB-SUBMIT-PERMIT-APPLICATION-GUIDE"
+      ],
+      "formalization_status": "pending_dry_run_formalization",
+      "human_review_status": "pending_review",
+      "change_hint": "synthetic_delta",
+      "deadline_or_temporal_scope": "before acknowledgement or certification"
+    }
+  ]
+}

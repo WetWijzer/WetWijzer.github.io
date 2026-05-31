@@ -1,0 +1,16 @@
+{
+  "classifications": [
+    {
+      "action_id": "draft-preview-address-normalization",
+      "action_class": "reversible_draft_preview"
+    },
+    {
+      "action_id": "submit-application",
+      "action_class": "submission"
+    },
+    {
+      "action_id": "draft-preview-owner-name",
+      "action_class": "reversible_draft_preview"
+    }
+  ]
+}

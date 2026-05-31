@@ -1,0 +1,40 @@
+{
+  "runbook_id": "invalid-attended-devhub-read-only-observation-v2-fixture",
+  "runbook_version": "v2",
+  "mode": "attended_devhub_read_only_observation",
+  "observation_steps": [],
+  "metadata_only_capture_fields": [
+    "surface_id"
+  ],
+  "placeholders": {
+    "accessible_roles": [],
+    "validation_messages": []
+  },
+  "redacted_journal_examples": [],
+  "stop_before_action_checkpoints": [],
+  "reviewer_dispositions": [],
+  "validation_commands": [],
+  "artifact_claims": [
+    "auth_state",
+    "browser_context",
+    "raw_html",
+    "downloaded_document"
+  ],
+  "execution_claims": [
+    "live_devhub_run",
+    "official_action_completed",
+    "permit_submitted"
+  ],
+  "guarantee_claims": [
+    "legal_advice",
+    "permit_guaranteed"
+  ],
+  "mutation_flags": {
+    "mutates_prompt": true,
+    "mutates_guardrails": true,
+    "mutates_devhub_surface": true,
+    "mutates_sources": true,
+    "mutates_contracts": true,
+    "mutates_release_state": true
+  }
+}

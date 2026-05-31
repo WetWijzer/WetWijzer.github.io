@@ -1,0 +1,110 @@
+{
+  "packet_version": "stale_evidence_conflict_resolution_packet_v2",
+  "packet_id": "stale-evidence-conflict-resolution-v2-fixture",
+  "metadata_only": true,
+  "scope": "offline fixture validation for stale public source evidence conflicts",
+  "stale_source_cases": [
+    {
+      "case_id": "stale-source-submit-plans-online",
+      "source_id": "ppd-submit-plans-online",
+      "observed_freshness_status": "stale",
+      "public_citation_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "resolution": "hold affected requirement until refreshed public metadata is reviewed"
+    }
+  ],
+  "changed_hash_cases": [
+    {
+      "case_id": "changed-hash-file-naming",
+      "source_id": "ppd-spp-file-naming-standards",
+      "previous_content_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "observed_content_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "resolution": "route to reviewer disposition before guardrail refresh"
+    }
+  ],
+  "conflicting_requirement_cases": [
+    {
+      "case_id": "conflicting-single-pdf-upload-rule",
+      "requirement_ids": [
+        "REQ-SINGLE-PDF-001",
+        "REQ-SUPPORTING-DOCS-002"
+      ],
+      "conflict_summary": "Fixture models a stale conflict between plan-set bundling and separate supporting document uploads.",
+      "resolution": "ask reviewer to preserve both requirements until current source text is refreshed"
+    }
+  ],
+  "missing_document_cases": [
+    {
+      "case_id": "missing-site-plan-document",
+      "document_type": "site_plan_pdf",
+      "resolution": "ask user for the missing document before preparing any draft upload plan"
+    }
+  ],
+  "unsupported_path_cases": [
+    {
+      "case_id": "unsupported-email-only-path",
+      "path_summary": "Fixture identifies a permit path that may require email or manual PP&D handling instead of DevHub.",
+      "resolution": "refuse autonomous DevHub action and provide manual handoff notes"
+    }
+  ],
+  "user_gap_questions": [
+    {
+      "question_id": "gap-property-address-confirmation",
+      "question": "What is the project property address to compare against the cited PP&D process model?",
+      "reason": "The stale evidence review cannot resolve project-specific eligibility without this user fact."
+    }
+  ],
+  "holds_and_refusals": [
+    {
+      "hold_id": "hold-official-actions",
+      "blocked_actions": [
+        "submit",
+        "pay",
+        "schedule_inspection",
+        "upload_corrections",
+        "certify"
+      ],
+      "refusal_summary": "No official action may be completed from this stale evidence packet."
+    }
+  ],
+  "next_safe_action_summaries": [
+    {
+      "action_id": "next-safe-review-public-metadata",
+      "summary": "Run offline validation and send the cited stale evidence cases to reviewer disposition.",
+      "requires_user_attendance": false
+    }
+  ],
+  "reviewer_dispositions": [
+    {
+      "reviewer": "ppd-offline-reviewer",
+      "disposition": "hold_for_refresh",
+      "evidence_refs": [
+        "stale-source-submit-plans-online",
+        "changed-hash-file-naming"
+      ],
+      "notes": "Reviewer disposition is based on deterministic fixture metadata only."
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/validation/stale_evidence_conflict_resolution_packet_v2.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_stale_evidence_conflict_resolution_packet_v2.py"
+    ]
+  ],
+  "attestations": {
+    "no_live_crawl": true,
+    "no_devhub_login": true,
+    "no_private_artifacts": true,
+    "no_raw_or_downloaded_artifacts": true,
+    "no_official_action_completion": true,
+    "no_legal_or_permitting_guarantee": true,
+    "active_mutation": false
+  }
+}

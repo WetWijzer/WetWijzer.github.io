@@ -1,0 +1,173 @@
+{
+  "packet_id": "devhub_authenticated_workflow_boundary_packet_v2_fixture",
+  "version": "devhub-authenticated-workflow-boundary-packet-v2",
+  "scope": "Synthetic account-scoped DevHub workflow boundary packet for offline guardrail validation only. It does not describe live selectors, active prompts, credentials, session state, or browser automation steps.",
+  "non_actions": [
+    "Do not open DevHub or any PortlandOregon.gov authentication surface.",
+    "Do not create browser state, storage state, traces, HAR files, screenshots, downloads, or private session artifacts.",
+    "Do not automate login, account creation, password recovery, MFA, CAPTCHA, payment, upload, certification, submission, scheduling, cancellation, or active record changes.",
+    "Do not change active DevHub surfaces, prompts, guardrails, contracts, process models, source registries, or release state."
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub/authenticated_workflow_boundary_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_devhub_authenticated_workflow_boundary_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "redaction_expectations": [
+    "Commit-safe records must exclude credentials, password values, cookie values, MFA answers, CAPTCHA challenges or responses, payment card data, card number values, bank account data, session storage, auth state, HAR data, trace data, screenshot data, private uploads, private filenames, local private file paths, and raw authenticated page values.",
+    "Allowed evidence is limited to synthetic surface identifiers, action categories, attendance requirements, exact-confirmation requirements, redaction rules, abort conditions, reviewer placeholders, and offline validation commands.",
+    "Any account-scoped text observed during a real attended session must be summarized only after user approval and must be redacted before becoming a journal event."
+  ],
+  "abort_conditions": [
+    "Abort if a workflow requests credentials, password reset, MFA, CAPTCHA, account creation, identity verification, payment details, upload, certification, signature, submission, inspection scheduling, cancellation, or official record modification.",
+    "Abort if DevHub content differs materially from the synthetic fixture or if the user is not present for an attended workflow.",
+    "Abort if a prompt asks to persist browser state, screenshots, traces, HAR files, downloads, raw authenticated values, private document contents, or payment information.",
+    "Abort if the requested action cannot be mapped to one of the packet action categories without guessing."
+  ],
+  "reviewer_placeholders": [
+    "PPD_REVIEWER_NAME_TBD",
+    "PPD_REVIEWER_ROLE_TBD",
+    "PPD_REVIEW_DATE_TBD",
+    "PPD_SOURCE_EVIDENCE_REVIEW_TBD"
+  ],
+  "surfaces": [
+    {
+      "surface_id": "synthetic_devhub_account_home_status_lookup",
+      "synthetic_account_scope": "User-owned account dashboard or permit status area represented by fixture-only metadata.",
+      "surface_label": "Account home and status review",
+      "action_category": "read_only",
+      "attendance_required": false,
+      "exact_confirmation_required": false,
+      "allowed_offline_assistance": [
+        "Classify visible synthetic status labels from committed fixtures.",
+        "Prepare a redacted summary template for user review.",
+        "Identify missing public source citations needed before recommending next steps."
+      ],
+      "prohibited_automation": [
+        "Do not open a live authenticated dashboard.",
+        "Do not scrape account records or persist raw authenticated values.",
+        "Do not infer permit status from private data not supplied in a committed synthetic fixture."
+      ],
+      "redaction_expectations": [
+        "Remove permit numbers, names, addresses, phone numbers, email addresses, account identifiers, private notes, and document names unless the user separately approves a redacted summary.",
+        "Never persist cookies, auth state, traces, HAR data, screenshots, or session storage."
+      ],
+      "abort_conditions": [
+        "Abort if the page requests reauthentication, MFA, CAPTCHA, payment, upload, submission, scheduling, cancellation, or certification.",
+        "Abort if status text cannot be summarized without exposing private account-scoped values."
+      ],
+      "reviewer_placeholder": "PPD_READ_ONLY_REVIEWER_TBD"
+    },
+    {
+      "surface_id": "synthetic_devhub_saved_application_draft",
+      "synthetic_account_scope": "User-owned saved permit application draft represented by fixture-only field metadata.",
+      "surface_label": "Saved application draft preparation",
+      "action_category": "reversible_draft",
+      "attendance_required": false,
+      "exact_confirmation_required": false,
+      "allowed_offline_assistance": [
+        "Compare synthetic draft field labels with source-backed process requirements.",
+        "Prepare reversible draft values in a local redacted plan that the user can review.",
+        "Flag missing facts, stale evidence, and conflicts before any attended entry session."
+      ],
+      "prohibited_automation": [
+        "Do not fill live DevHub forms in this packet.",
+        "Do not save, upload, submit, certify, or alter an active draft.",
+        "Do not store raw private field values in committed artifacts."
+      ],
+      "redaction_expectations": [
+        "Use synthetic placeholders for applicant, property, contractor, valuation, and project description values.",
+        "Commit only field categories, validation expectations, and missing-fact labels."
+      ],
+      "abort_conditions": [
+        "Abort if a draft field becomes a certification, upload, fee, signature, submit, schedule, cancel, or official-change action.",
+        "Abort if the user requests unattended live form entry."
+      ],
+      "reviewer_placeholder": "PPD_DRAFT_REVIEWER_TBD"
+    },
+    {
+      "surface_id": "synthetic_devhub_submit_certify_or_upload",
+      "synthetic_account_scope": "User-owned application submission, acknowledgement, certification, correction upload, or official update represented only as a boundary category.",
+      "surface_label": "Official submission, certification, or upload",
+      "action_category": "consequential_official",
+      "attendance_required": true,
+      "exact_confirmation_required": true,
+      "exact_confirmation_checkpoint": "User must be present and confirm the exact official action, target record, documents, certification text, and expected consequence immediately before any manual action.",
+      "allowed_offline_assistance": [
+        "Prepare a checklist of documents, citations, and unresolved blockers.",
+        "Generate an exact-confirmation prompt template without executing the action.",
+        "Record a redacted manual-handoff journal event after user review."
+      ],
+      "prohibited_automation": [
+        "Do not click upload, submit, certify, acknowledge, sign, send, revise official record, or equivalent controls.",
+        "Do not attach files or read private upload contents into committed artifacts.",
+        "Do not claim completion without post-action user-visible outcome evidence."
+      ],
+      "redaction_expectations": [
+        "Redact record identifiers, document titles, private document contents, signatures, applicant data, addresses, and contact information from committed artifacts.",
+        "Keep only the action category, blocker list, confirmation requirement, and reviewer placeholder."
+      ],
+      "abort_conditions": [
+        "Abort if the user is absent or cannot confirm the exact action and target record.",
+        "Abort if certification language is unclear, source evidence is missing, or document readiness is unresolved."
+      ],
+      "reviewer_placeholder": "PPD_OFFICIAL_ACTION_REVIEWER_TBD"
+    },
+    {
+      "surface_id": "synthetic_devhub_fee_payment",
+      "synthetic_account_scope": "User-owned fee payment area represented only as a financial boundary category.",
+      "surface_label": "Fee review and payment",
+      "action_category": "financial",
+      "attendance_required": true,
+      "exact_confirmation_required": true,
+      "exact_confirmation_checkpoint": "User must be present and confirm payer identity, amount, target record, payment method handling, and final payment consequence immediately before any manual payment action.",
+      "allowed_offline_assistance": [
+        "Explain that payment is a financial workflow requiring manual handoff.",
+        "Prepare a redacted fee-review checklist using public fee source citations where available.",
+        "Block storage of payment method data and final payment execution."
+      ],
+      "prohibited_automation": [
+        "Do not enter payment card, bank account, billing, or payer details.",
+        "Do not click final payment, authorize, continue-to-processor, submit-payment, or equivalent controls.",
+        "Do not persist receipts unless separately redacted and user-approved."
+      ],
+      "redaction_expectations": [
+        "Never commit payment card data, card number values, bank account data, billing address details, transaction tokens, receipt identifiers, or payment processor state.",
+        "Use amount-needed and source-citation placeholders until the user manually verifies live fees."
+      ],
+      "abort_conditions": [
+        "Abort if payment data entry or final payment execution is requested.",
+        "Abort if the amount, payer, target record, or financial consequence is uncertain."
+      ],
+      "reviewer_placeholder": "PPD_FINANCIAL_REVIEWER_TBD"
+    },
+    {
+      "surface_id": "synthetic_devhub_unsupported_account_or_exception_path",
+      "synthetic_account_scope": "Unsupported authenticated workflow, account administration, exception, appeal, email-only path, or policy-ambiguous task represented as manual handoff.",
+      "surface_label": "Unsupported or manual-handoff path",
+      "action_category": "unsupported_manual_handoff",
+      "attendance_required": true,
+      "exact_confirmation_required": true,
+      "exact_confirmation_checkpoint": "User must be present and confirm that the action is outside supported automation and will be handled manually or by contacting PP&D through official channels.",
+      "allowed_offline_assistance": [
+        "Classify the request as unsupported for automation.",
+        "Prepare a redacted manual-handoff note and list public contact or guidance sources if already available.",
+        "Ask for human review before expanding process coverage."
+      ],
+      "prohibited_automation": [
+        "Do not automate account settings, identity, license changes, appeals, exceptions, password recovery, security prompts, or non-DevHub submission paths.",
+        "Do not guess unsupported workflow requirements from unrelated permit types.",
+        "Do not alter process models or source registries from this packet."
+      ],
+      "redaction_expectations": [
+        "Commit only the unsupported category, handoff reason, abort condition, and reviewer placeholder.",
+        "Exclude private account details, private communications, screenshots, traces, HAR data, and raw authenticated values."
+      ],
+      "abort_conditions": [
+        "Abort if the request falls outside read-only, reversible draft, consequential official, financial, or supported manual-handoff categories.",
+        "Abort if official guidance requires email, phone, in-person service, account administration, or professional judgment not captured in a reviewed process model."
+      ],
+      "reviewer_placeholder": "PPD_MANUAL_HANDOFF_REVIEWER_TBD"
+    }
+  ]
+}
