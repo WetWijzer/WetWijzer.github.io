@@ -1,0 +1,53 @@
+{
+  "fixture_version": "synthetic-processor-metadata-rows-v1",
+  "purpose": "Offline fixture for mapping processor metadata into metadata-only archive manifest and normalized-document candidates.",
+  "validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/archive_manifest_import_candidates.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_archive_manifest_import_candidates.py"]
+  ],
+  "processor_metadata_rows": [
+    {
+      "candidate_id": "archive-candidate-001",
+      "normalized_document_id": "normalized-document-candidate-001",
+      "source_url": "https://example.invalid/portland/devhub/documents/alpha",
+      "final_url": "https://example.invalid/portland/archive/documents/alpha.pdf",
+      "redirect_chain": [
+        {
+          "from_url": "https://example.invalid/portland/devhub/documents/alpha",
+          "to_url": "https://example.invalid/portland/archive/documents/alpha",
+          "status": 301
+        },
+        {
+          "from_url": "https://example.invalid/portland/archive/documents/alpha",
+          "to_url": "https://example.invalid/portland/archive/documents/alpha.pdf",
+          "status": 302
+        }
+      ],
+      "http_status": 200,
+      "content_type": "application/pdf",
+      "content_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "processor_name": "synthetic-ppd-fixture-processor",
+      "processor_version": "1.0.0-fixture",
+      "skipped_reasons": [],
+      "no_raw_body": true,
+      "reviewer_hold": false,
+      "document_title": "Synthetic Alpha Permit Document"
+    },
+    {
+      "candidate_id": "archive-candidate-002",
+      "normalized_document_id": "normalized-document-candidate-002",
+      "source_url": "https://example.invalid/portland/devhub/documents/beta",
+      "final_url": "https://example.invalid/portland/devhub/documents/beta",
+      "redirect_chain": [],
+      "http_status": 403,
+      "content_type": "text/html; charset=utf-8",
+      "content_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "processor_name": "synthetic-ppd-fixture-processor",
+      "processor_version": "1.0.0-fixture",
+      "skipped_reason": "access-requires-review-before-fetch",
+      "no_raw_body": true,
+      "reviewer_hold": true,
+      "document_title": null
+    }
+  ]
+}

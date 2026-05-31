@@ -1,0 +1,73 @@
+{
+  "packet_version": "agent-missing-information-rehearsal-v2",
+  "workflow_cases": [
+    {
+      "case_id": "case-address-check",
+      "workflow": "permit intake missing information rehearsal",
+      "expected_missing_information": "applicant mailing address"
+    }
+  ],
+  "missing_fact_rows": [
+    {
+      "fact_id": "fact-site-contact",
+      "prompt": "Confirm the site contact name.",
+      "reason": "Required for reviewer follow-up."
+    }
+  ],
+  "missing_document_rows": [
+    {
+      "document_id": "doc-site-plan",
+      "document_type": "site plan",
+      "reason": "Needed to rehearse a missing-document prompt."
+    }
+  ],
+  "stale_or_conflicting_evidence_rows": [
+    {
+      "evidence_id": "evidence-zoning-note",
+      "issue": "Fixture note is older than the packet scenario date.",
+      "resolution_prompt": "Ask reviewer to verify the current source before relying on it."
+    }
+  ],
+  "blocked_actions": [
+    {
+      "action": "submit application",
+      "reason": "Submission is outside dry-run rehearsal scope."
+    }
+  ],
+  "next_safe_action_rows": [
+    {
+      "action": "ask reviewer for missing address",
+      "precondition": "No authenticated DevHub session is used.",
+      "owner": "agent"
+    }
+  ],
+  "citation_references": [
+    {
+      "citation_id": "citation-fixture-001",
+      "source": "committed PP&D fixture",
+      "locator": "ppd/tests/fixtures/missing_information_packet_v2_valid.json"
+    }
+  ],
+  "reviewer_dispositions": [
+    {
+      "reviewer": "fixture-reviewer",
+      "disposition": "needs applicant confirmation",
+      "reason": "The packet rehearses asking for missing information only."
+    }
+  ],
+  "validation_commands": [
+    {
+      "command": "python3 -m unittest ppd.tests.test_missing_information_packet_v2",
+      "expected_result": "passes"
+    }
+  ],
+  "required_confirmations": {
+    "dry_run_only": true,
+    "no_private_session_artifacts": true,
+    "no_official_action_completion_claims": true,
+    "no_legal_or_permitting_guarantees": true,
+    "no_live_crawl_or_devhub_claims": true,
+    "no_active_mutation_flags": true
+  },
+  "artifact_paths": []
+}

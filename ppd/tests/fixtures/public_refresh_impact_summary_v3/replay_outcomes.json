@@ -1,0 +1,86 @@
+{
+  "fixture_version": "public-refresh-impact-summary-v3-fixture-1",
+  "description": "Synthetic public refresh replay outcomes for offline impact-summary aggregation only.",
+  "synthetic_replay_outcomes": [
+    {
+      "outcome_id": "replay-source-001",
+      "row_type": "source",
+      "status": "changed",
+      "affected_ids": ["src-ppd-devhub-faq", "src-ppd-apply-permits"],
+      "evidence_ids": ["ev-public-refresh-001"],
+      "notes": "Synthetic replay reports public guidance hash drift requiring source review."
+    },
+    {
+      "outcome_id": "replay-archive-001",
+      "row_type": "archive",
+      "status": "blocked",
+      "affected_ids": ["archive-src-ppd-devhub-faq-20260531"],
+      "evidence_ids": ["ev-public-refresh-002"],
+      "notes": "Archive capture remains metadata-only because raw download persistence is forbidden."
+    },
+    {
+      "outcome_id": "replay-document-001",
+      "row_type": "document",
+      "status": "changed",
+      "affected_ids": ["doc-devhub-faq-normalized", "doc-apply-permits-normalized"],
+      "evidence_ids": ["ev-public-refresh-003"],
+      "notes": "Normalized document rows require fixture review before requirement promotion."
+    },
+    {
+      "outcome_id": "replay-requirement-001",
+      "row_type": "requirement",
+      "status": "held",
+      "affected_ids": ["req-devhub-upload-gate", "req-fee-payment-gate"],
+      "evidence_ids": ["ev-public-refresh-004"],
+      "notes": "Requirement changes stay on reviewer hold until cited public evidence is revalidated."
+    },
+    {
+      "outcome_id": "replay-process-model-001",
+      "row_type": "process_model",
+      "status": "changed",
+      "affected_ids": ["process-building-permit-request", "process-trade-permit-standard"],
+      "evidence_ids": ["ev-public-refresh-005"],
+      "notes": "Process stages are affected by synthetic guidance changes but no model files are mutated."
+    },
+    {
+      "outcome_id": "replay-guardrail-001",
+      "row_type": "guardrail",
+      "status": "held",
+      "affected_ids": ["guardrail-submit-block", "guardrail-payment-block", "guardrail-upload-block"],
+      "evidence_ids": ["ev-public-refresh-006"],
+      "notes": "Guardrail bundles require explicit review before release because consequential-action gates are implicated."
+    },
+    {
+      "outcome_id": "replay-agent-readiness-001",
+      "row_type": "agent_readiness",
+      "status": "blocked",
+      "affected_ids": ["agent-readiness-public-refresh"],
+      "evidence_ids": ["ev-public-refresh-007"],
+      "notes": "Agent readiness is blocked until source, requirement, process-model, and guardrail holds clear."
+    },
+    {
+      "outcome_id": "replay-reviewer-hold-001",
+      "row_type": "reviewer_hold",
+      "status": "held",
+      "affected_ids": ["review-hold-public-refresh-20260531"],
+      "evidence_ids": ["ev-public-refresh-008"],
+      "notes": "Reviewer hold summarizes all synthetic rows awaiting human evidence review."
+    },
+    {
+      "outcome_id": "replay-retry-backoff-001",
+      "row_type": "retry_backoff",
+      "status": "retry_scheduled",
+      "affected_ids": ["retry-public-refresh-daily-guides"],
+      "evidence_ids": ["ev-public-refresh-009"],
+      "notes": "Retry/backoff row records that a future live refresh must be scheduled outside this fixture-only packet."
+    },
+    {
+      "outcome_id": "replay-release-hold-001",
+      "row_type": "release_hold",
+      "status": "held",
+      "affected_ids": ["release-hold-public-refresh-v3"],
+      "evidence_ids": ["ev-public-refresh-010"],
+      "notes": "Release remains held because this packet is an impact summary, not a release-state mutation."
+    }
+  ]
+}

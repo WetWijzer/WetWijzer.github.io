@@ -1,0 +1,73 @@
+{
+  "packet_version": 2,
+  "packet_type": "public_refresh_dry_run_replay",
+  "mode": "dry_run",
+  "packet_id": "public-refresh-dry-run-replay-v2-fixture",
+  "validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_public_refresh_dry_run_replay_packet_v2.py"]
+  ],
+  "mutation_flags": {
+    "crawler_mutation": false,
+    "source_mutation": false,
+    "archive_mutation": false,
+    "document_mutation": false,
+    "requirement_mutation": false,
+    "guardrail_mutation": false,
+    "prompt_mutation": false,
+    "contract_mutation": false,
+    "devhub_surface_mutation": false,
+    "release_state_mutation": false
+  },
+  "evidence_rows": [
+    {
+      "kind": "freshness",
+      "status": "observed",
+      "evidence": "Fixture records stale and current public source timestamps without contacting the network."
+    },
+    {
+      "kind": "changed_hash",
+      "status": "observed",
+      "evidence": "Fixture compares prior_hash and candidate_hash values from deterministic metadata only."
+    },
+    {
+      "kind": "redirect_change",
+      "status": "observed",
+      "evidence": "Fixture records redirect-chain deltas from replay metadata, not from a live request."
+    },
+    {
+      "kind": "skip_or_denial",
+      "status": "blocked",
+      "evidence": "Fixture records policy skip and denial decisions for unsupported or disallowed URLs."
+    },
+    {
+      "kind": "processor_handoff_failure",
+      "status": "blocked",
+      "evidence": "Fixture records processor handoff failures and the fallback disposition."
+    },
+    {
+      "kind": "no_raw_body_archive_decision",
+      "status": "observed",
+      "evidence": "Fixture confirms no raw response body is persisted in committed artifacts."
+    },
+    {
+      "kind": "requirement_or_guardrail_impact",
+      "status": "planned",
+      "evidence": "Fixture identifies candidate requirement and guardrail impacts for reviewer triage."
+    },
+    {
+      "kind": "reviewer_hold",
+      "status": "held",
+      "evidence": "Fixture records reviewer hold criteria before any promotion or release decision."
+    },
+    {
+      "kind": "retry_backoff_plan",
+      "status": "planned",
+      "evidence": "Fixture records deterministic retry counts and backoff windows without executing requests."
+    },
+    {
+      "kind": "validation_command",
+      "status": "validated",
+      "evidence": "Fixture lists validation commands as string arrays for offline packet checks."
+    }
+  ]
+}

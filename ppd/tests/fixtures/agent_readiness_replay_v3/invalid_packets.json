@@ -1,0 +1,78 @@
+{
+  "missing_workflow_coverage": {
+    "version": "v3",
+    "expected_asks": ["Ask for missing address."],
+    "holds_or_refusals": ["Hold on CAPTCHA."],
+    "next_safe_action_rows": [{"trigger": "captcha", "action": "stop"}],
+    "citation_references": [{"url": "https://www.portland.gov/"}],
+    "reviewer_dispositions": [{"disposition": "reject"}],
+    "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+  },
+  "missing_expected_asks": {
+    "version": "v3",
+    "workflow_coverage": ["lookup"],
+    "holds_or_refusals": ["Hold on auth."],
+    "next_safe_action_rows": [{"trigger": "auth", "action": "stop"}],
+    "citation_references": [{"url": "https://www.portland.gov/"}],
+    "reviewer_dispositions": [{"disposition": "reject"}],
+    "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+  },
+  "missing_holds_or_refusals": {
+    "version": "v3",
+    "workflow_coverage": ["lookup"],
+    "expected_asks": ["Ask for missing permit number."],
+    "next_safe_action_rows": [{"trigger": "payment", "action": "stop"}],
+    "citation_references": [{"url": "https://www.portland.gov/"}],
+    "reviewer_dispositions": [{"disposition": "reject"}],
+    "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+  },
+  "missing_next_safe_action_rows": {
+    "version": "v3",
+    "workflow_coverage": ["lookup"],
+    "expected_asks": ["Ask for missing permit number."],
+    "holds_or_refusals": ["Hold on payment."],
+    "citation_references": [{"url": "https://www.portland.gov/"}],
+    "reviewer_dispositions": [{"disposition": "reject"}],
+    "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+  },
+  "missing_citation_references": {
+    "version": "v3",
+    "workflow_coverage": ["lookup"],
+    "expected_asks": ["Ask for missing permit number."],
+    "holds_or_refusals": ["Hold on payment."],
+    "next_safe_action_rows": [{"trigger": "payment", "action": "stop"}],
+    "reviewer_dispositions": [{"disposition": "reject"}],
+    "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+  },
+  "missing_reviewer_dispositions": {
+    "version": "v3",
+    "workflow_coverage": ["lookup"],
+    "expected_asks": ["Ask for missing permit number."],
+    "holds_or_refusals": ["Hold on payment."],
+    "next_safe_action_rows": [{"trigger": "payment", "action": "stop"}],
+    "citation_references": [{"url": "https://www.portland.gov/"}],
+    "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+  },
+  "missing_validation_commands": {
+    "version": "v3",
+    "workflow_coverage": ["lookup"],
+    "expected_asks": ["Ask for missing permit number."],
+    "holds_or_refusals": ["Hold on payment."],
+    "next_safe_action_rows": [{"trigger": "payment", "action": "stop"}],
+    "citation_references": [{"url": "https://www.portland.gov/"}],
+    "reviewer_dispositions": [{"disposition": "reject"}]
+  },
+  "prohibited_artifacts_claims_and_mutation": {
+    "version": "v3",
+    "workflow_coverage": ["lookup"],
+    "expected_asks": ["Ask for missing permit number."],
+    "holds_or_refusals": ["Hold on payment."],
+    "next_safe_action_rows": [{"trigger": "payment", "action": "stop"}],
+    "citation_references": [{"url": "https://www.portland.gov/"}],
+    "reviewer_dispositions": [{"disposition": "reject"}],
+    "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+    "artifacts": [{"kind": "downloaded", "path": "private/session/browser/raw/devhub.pdf"}],
+    "claims": ["Live crawl DevHub session completed official action and provides a legal guarantee."],
+    "active_mutation_flags": ["submit"]
+  }
+}

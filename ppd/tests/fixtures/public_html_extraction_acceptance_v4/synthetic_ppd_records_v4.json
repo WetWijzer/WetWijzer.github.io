@@ -1,0 +1,146 @@
+{
+  "packet_id": "public-html-extraction-acceptance-v4",
+  "packet_version": 4,
+  "fixture_only": true,
+  "network_access_required": false,
+  "devhub_access_required": false,
+  "processor_execution_required": false,
+  "raw_body_persisted": false,
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/tests/test_public_html_extraction_acceptance_packet_v4.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_public_html_extraction_acceptance_packet_v4.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "records": [
+    {
+      "document_id": "synthetic-ppd-public-html-001",
+      "source_id": "synthetic-portland-gov-ppd-guide",
+      "canonical_url": "https://www.portland.gov/ppd/synthetic-fixture/apply-permit-guide",
+      "document_type": "public_html",
+      "language": "en",
+      "title": "Apply for a Synthetic Residential Building Permit",
+      "breadcrumbs": ["Portland.gov", "Portland Permitting & Development", "Permits", "Apply for a permit"],
+      "visible_updated_date": "2026-05-08",
+      "headings": [
+        {"level": 1, "text": "Apply for a Synthetic Residential Building Permit", "order": 1},
+        {"level": 2, "text": "Before you apply", "order": 2},
+        {"level": 2, "text": "Steps to apply", "order": 3},
+        {"level": 3, "text": "Prepare documents", "order": 4},
+        {"level": 3, "text": "Submit the request", "order": 5},
+        {"level": 2, "text": "After submission", "order": 6}
+      ],
+      "ordered_steps": [
+        {"number": 1, "text": "Confirm the property address and permit type before starting."},
+        {"number": 2, "text": "Prepare the application form, plans, and supporting documents."},
+        {"number": 3, "text": "Upload separate PDF files using the listed naming standard."},
+        {"number": 4, "text": "Review acknowledgements before any final submission."}
+      ],
+      "callouts": [
+        {"kind": "info", "text": "Some permit types use email or another intake path."},
+        {"kind": "warning", "text": "Do not submit payment or certify an application until the applicant reviews the final details."}
+      ],
+      "tables": [
+        {
+          "caption": "Synthetic required documents",
+          "headers": ["Document", "When required", "Format"],
+          "rows": [
+            ["Application form", "All requests", "PDF"],
+            ["Site plan", "Exterior work", "PDF"],
+            ["Structural calculations", "Structural changes", "PDF"]
+          ]
+        }
+      ],
+      "contact_blocks": [
+        {
+          "label": "PP&D General Inquiries",
+          "phone": "503-823-7300",
+          "email": "ppd@example.invalid",
+          "hours": "Monday through Friday, 8 a.m. to 5 p.m."
+        }
+      ],
+      "related_links": [
+        {"text": "Submit plans online", "url": "https://www.portland.gov/ppd/get-permit/submit-plans-online"},
+        {"text": "DevHub help", "url": "https://www.portland.gov/ppd/devhub-faqs"}
+      ],
+      "downloadable_links": [
+        {
+          "text": "Synthetic permit application PDF",
+          "url": "https://www.portland.gov/ppd/documents/synthetic-permit-application/download",
+          "file_type": "pdf",
+          "download": true,
+          "metadata": {"content_type": "application/pdf", "requires_authentication": false}
+        }
+      ],
+      "citation_spans": [
+        {"field": "ordered_steps[1]", "start": 120, "end": 188, "source_text": "Prepare the application form, plans, and supporting documents."},
+        {"field": "callouts[1]", "start": 340, "end": 428, "source_text": "Do not submit payment or certify an application until the applicant reviews the final details."}
+      ],
+      "extraction_confidence": 0.96,
+      "human_review_status": "accepted_fixture",
+      "reviewer_holds": []
+    },
+    {
+      "document_id": "synthetic-ppd-public-html-002",
+      "source_id": "synthetic-portland-gov-ppd-warning-page",
+      "canonical_url": "https://www.portland.gov/ppd/synthetic-fixture/corrections-upload-guide",
+      "document_type": "public_html",
+      "language": "en",
+      "title": "Upload Synthetic Permit Corrections",
+      "breadcrumbs": ["Portland.gov", "Portland Permitting & Development", "Permit review", "Corrections"],
+      "visible_updated_date": "2026-05-08",
+      "headings": [
+        {"level": 1, "text": "Upload Synthetic Permit Corrections", "order": 1},
+        {"level": 2, "text": "Find the request", "order": 2},
+        {"level": 2, "text": "Review checksheet items", "order": 3},
+        {"level": 2, "text": "Upload corrected files", "order": 4}
+      ],
+      "ordered_steps": [
+        {"number": 1, "text": "Use the permit or application number to locate the request."},
+        {"number": 2, "text": "Compare each checksheet item with the corrected plan sheet."},
+        {"number": 3, "text": "Stage corrected files for review without submitting automatically."}
+      ],
+      "callouts": [
+        {"kind": "warning", "text": "Correction uploads are authenticated actions and require applicant attendance."}
+      ],
+      "tables": [
+        {
+          "caption": "Synthetic correction upload metadata",
+          "headers": ["Field", "Expected value"],
+          "rows": [
+            ["Permit number", "Required"],
+            ["Review group", "Required when shown"],
+            ["Corrected PDF", "Required"]
+          ]
+        }
+      ],
+      "contact_blocks": [
+        {
+          "label": "Permit Review Help",
+          "phone": "503-823-7000",
+          "email": "permitreview@example.invalid",
+          "hours": "Monday through Friday, 8 a.m. to 3 p.m."
+        }
+      ],
+      "related_links": [
+        {"text": "How to use online permitting tools", "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools"}
+      ],
+      "downloadable_links": [
+        {
+          "text": "Synthetic checksheet response template",
+          "url": "https://www.portland.gov/ppd/documents/synthetic-checksheet-response/download",
+          "file_type": "pdf",
+          "download": true,
+          "metadata": {"content_type": "application/pdf", "requires_authentication": false}
+        }
+      ],
+      "citation_spans": [
+        {"field": "callouts[0]", "start": 90, "end": 164, "source_text": "Correction uploads are authenticated actions and require applicant attendance."}
+      ],
+      "extraction_confidence": 0.91,
+      "human_review_status": "hold_for_reviewer",
+      "reviewer_holds": [
+        {"reason": "authenticated_action_boundary", "field": "ordered_steps[2]", "note": "Fixture confirms staging language and blocks automatic submission."}
+      ]
+    }
+  ]
+}

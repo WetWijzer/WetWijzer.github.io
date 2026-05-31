@@ -1,0 +1,254 @@
+{
+  "packet_version": "public-crawl-retry-recovery-v2",
+  "mode": "fixture_first_offline",
+  "created_for_task": "checkbox-35 supervisor-20260531-956",
+  "artifact_manifest": [],
+  "live_crawl_claims": [],
+  "legal_or_permitting_guarantees": [],
+  "mutation_boundaries": {
+    "network_access": false,
+    "raw_download": false,
+    "processor_execution": false,
+    "active_crawler": false,
+    "source_mutation": false,
+    "archive_mutation": false,
+    "document_mutation": false,
+    "requirement_mutation": false,
+    "guardrail_mutation": false,
+    "prompt_mutation": false,
+    "contract_mutation": false,
+    "devhub_surface_mutation": false,
+    "release_state_mutation": false
+  },
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/crawler/public_crawl_retry_recovery_packet_v2.py"],
+    ["python3", "-m", "py_compile", "ppd/tests/test_public_crawl_retry_recovery_packet_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_public_crawl_retry_recovery_packet_v2.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "scenarios": [
+    {
+      "name": "robots_policy_denial",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/blocked-by-robots-fixture",
+        "policy_source": "robots",
+        "policy_decision": "deny"
+      },
+      "retry_plan": {
+        "decision": "do_not_retry",
+        "backoff_seconds": [],
+        "reason": "robots_or_policy_denial_is_not_transient"
+      },
+      "recovery_packet": {
+        "archive_decision": "metadata_only_skip",
+        "skip_reason": "disallowed_by_robots_or_policy",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "synthetic_policy_denial",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://devhub.portlandoregon.gov/private-fixture",
+        "policy_source": "ppd_local_policy",
+        "policy_decision": "deny"
+      },
+      "retry_plan": {
+        "decision": "do_not_retry",
+        "backoff_seconds": [],
+        "reason": "authenticated_or_private_path_requires_attended_boundary"
+      },
+      "recovery_packet": {
+        "archive_decision": "metadata_only_skip",
+        "skip_reason": "private_or_authenticated_boundary",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "timeout_row",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/timeout-fixture",
+        "elapsed_ms": 30000,
+        "status": "timeout"
+      },
+      "retry_plan": {
+        "decision": "retry_with_backoff",
+        "backoff_seconds": [30, 120, 300],
+        "max_attempts": 3,
+        "reason": "timeout_may_be_transient"
+      },
+      "recovery_packet": {
+        "archive_decision": "defer_capture",
+        "skip_reason": "timeout",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "redirect_changed",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/old-fixture",
+        "redirect_chain": [
+          "https://www.portland.gov/ppd/old-fixture",
+          "https://www.portland.gov/ppd/new-fixture"
+        ],
+        "redirect_changed_from_previous_manifest": true
+      },
+      "retry_plan": {
+        "decision": "do_not_retry_until_reviewed",
+        "backoff_seconds": [],
+        "reason": "redirect_change_needs_reviewer_disposition_before_canonical_update"
+      },
+      "recovery_packet": {
+        "archive_decision": "metadata_only_redirect_record",
+        "skip_reason": "redirect_changed",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "content_type_skip",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/calendar-fixture.ics",
+        "content_type": "text/calendar"
+      },
+      "retry_plan": {
+        "decision": "do_not_retry",
+        "backoff_seconds": [],
+        "reason": "unsupported_content_type_is_deterministic"
+      },
+      "recovery_packet": {
+        "archive_decision": "metadata_only_skip",
+        "skip_reason": "unsupported_content_type",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "too_large_skip",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/oversize-fixture.pdf",
+        "content_length_bytes": 209715201,
+        "max_allowed_bytes": 209715200
+      },
+      "retry_plan": {
+        "decision": "do_not_retry",
+        "backoff_seconds": [],
+        "reason": "too_large_for_public_fixture_policy"
+      },
+      "recovery_packet": {
+        "archive_decision": "metadata_only_skip",
+        "skip_reason": "too_large",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "processor_handoff_failure",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/handoff-fixture",
+        "processor_name": "ipfs_datasets_py.web_archive",
+        "handoff_status": "failed_before_execution"
+      },
+      "retry_plan": {
+        "decision": "retry_after_processor_health_check",
+        "backoff_seconds": [60, 300],
+        "max_attempts": 2,
+        "reason": "handoff_failure_may_reflect_local_processor_availability"
+      },
+      "recovery_packet": {
+        "archive_decision": "defer_capture",
+        "skip_reason": "processor_handoff_failure",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "no_raw_body_archive_decision",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/no-body-fixture",
+        "body_persistence_policy": "metadata_only"
+      },
+      "retry_plan": {
+        "decision": "do_not_retry",
+        "backoff_seconds": [],
+        "reason": "metadata_and_normalized_reference_are_sufficient"
+      },
+      "recovery_packet": {
+        "archive_decision": "metadata_and_normalized_reference_only",
+        "skip_reason": "raw_body_not_persisted_by_policy",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "retry_backoff_plan",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/transient-503-fixture",
+        "http_status": 503
+      },
+      "retry_plan": {
+        "decision": "retry_with_backoff",
+        "backoff_seconds": [60, 300, 900],
+        "max_attempts": 3,
+        "jitter": "deterministic_zero_jitter_for_fixture",
+        "reason": "server_unavailable_may_be_transient"
+      },
+      "recovery_packet": {
+        "archive_decision": "defer_capture",
+        "skip_reason": "transient_http_status",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    },
+    {
+      "name": "reviewer_disposition_placeholder",
+      "fixture_only": true,
+      "commits_raw_body": false,
+      "executes_processor": false,
+      "starts_crawler": false,
+      "synthetic_input": {
+        "requested_url": "https://www.portland.gov/ppd/reviewer-placeholder-fixture",
+        "needs_human_review": true
+      },
+      "retry_plan": {
+        "decision": "hold_for_review",
+        "backoff_seconds": [],
+        "reason": "reviewer_must_choose_accept_skip_retry_or_update_fixture"
+      },
+      "recovery_packet": {
+        "archive_decision": "review_required_before_any_state_change",
+        "skip_reason": "pending_reviewer_disposition",
+        "reviewer_disposition_placeholder": "pending_reviewer_disposition"
+      }
+    }
+  ]
+}

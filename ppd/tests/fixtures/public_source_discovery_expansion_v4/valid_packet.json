@@ -1,0 +1,27 @@
+{
+  "packet_version": 4,
+  "sources": [
+    {
+      "canonical_url": "https://www.portland.gov/ppd/permits",
+      "source_page": "https://www.portland.gov/ppd",
+      "link_text": "Permits",
+      "allowlist_decision": "allow"
+    }
+  ],
+  "duplicate_normalization": [
+    {
+      "input_url": "https://www.portland.gov/ppd/permits?utm_source=test",
+      "normalized_url": "https://www.portland.gov/ppd/permits"
+    }
+  ],
+  "skipped_urls": [
+    {
+      "url": "https://www.portland.gov/devhub/session-only",
+      "reason": "outside public source allowlist and requires a private session"
+    }
+  ],
+  "validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_public_source_discovery_expansion_v4_validation.py"]
+  ],
+  "notes": "Deterministic fixture only; no authenticated automation or crawl output is included."
+}

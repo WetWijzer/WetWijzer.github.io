@@ -1,0 +1,158 @@
+{
+  "packet_type": "ppd.inactive_guardrail_migration_preview_packet.v2",
+  "mode": "inactive_guardrail_migration_preview_validation_only",
+  "inactive_preview_only": true,
+  "fixture_id": "synthetic_inactive_guardrail_migration_preview_packet_v2",
+  "source_mode": "committed_fixture_only",
+  "active_guardrail_mutation_allowed": false,
+  "active_prompt_mutation_allowed": false,
+  "active_requirement_mutation_allowed": false,
+  "active_process_model_mutation_allowed": false,
+  "active_contract_mutation_allowed": false,
+  "active_source_mutation_allowed": false,
+  "active_devhub_surface_mutation_allowed": false,
+  "active_release_state_mutation_allowed": false,
+  "live_crawl_allowed": false,
+  "devhub_access_allowed": false,
+  "official_action_allowed": false,
+  "source_evidence_traces": [
+    {
+      "trace_id": "trace.readonly.zoning_summary",
+      "source_mode": "synthetic_committed_fixture_only",
+      "live_crawl": false,
+      "citation_placeholder": "{{synthetic_zoning_summary_source}}"
+    },
+    {
+      "trace_id": "trace.reversible.draft_form",
+      "source_mode": "synthetic_committed_fixture_only",
+      "live_crawl": false,
+      "citation_placeholder": "{{synthetic_draft_form_source}}"
+    },
+    {
+      "trace_id": "trace.official.submit_payment",
+      "source_mode": "synthetic_committed_fixture_only",
+      "live_crawl": false,
+      "citation_placeholder": "{{synthetic_official_action_source}}"
+    },
+    {
+      "trace_id": "trace.stale.source_hold",
+      "source_mode": "synthetic_committed_fixture_only",
+      "live_crawl": false,
+      "citation_placeholder": "{{synthetic_stale_source_review}}"
+    }
+  ],
+  "predicate_rows": [
+    {
+      "id": "predicate.readonly.zoning_summary",
+      "status": "proposed_inactive",
+      "if_all": ["process_stage:zoning_review", "action:read_summary"],
+      "then": "read_only",
+      "source_evidence_trace_ids": ["trace.readonly.zoning_summary"]
+    },
+    {
+      "id": "predicate.reversible.draft_form",
+      "status": "proposed_inactive",
+      "if_all": ["process_stage:intake", "action:prepare_local_preview"],
+      "then": "reversible_draft",
+      "source_evidence_trace_ids": ["trace.reversible.draft_form"]
+    },
+    {
+      "id": "predicate.official.submit_payment",
+      "status": "proposed_inactive",
+      "if_all": ["process_stage:filing", "action:submit_or_pay"],
+      "then": "refuse_without_attended_exact_confirmation",
+      "source_evidence_trace_ids": ["trace.official.submit_payment"]
+    }
+  ],
+  "deontic_rule_rows": [
+    {
+      "id": "deontic.readonly.zoning_summary",
+      "status": "proposed_inactive",
+      "modality": "permitted_read_only_preview",
+      "source_evidence_trace_ids": ["trace.readonly.zoning_summary"]
+    },
+    {
+      "id": "deontic.reversible.draft_form",
+      "status": "proposed_inactive",
+      "modality": "permitted_local_preview_only",
+      "source_evidence_trace_ids": ["trace.reversible.draft_form"]
+    },
+    {
+      "id": "deontic.official.submit_payment",
+      "status": "proposed_inactive",
+      "modality": "prohibited_without_attended_exact_confirmation",
+      "source_evidence_trace_ids": ["trace.official.submit_payment"]
+    }
+  ],
+  "temporal_rule_rows": [
+    {
+      "id": "temporal.before_official_action",
+      "status": "proposed_inactive",
+      "scope": "before_any_official_submission_upload_payment_or_scheduling_step",
+      "source_evidence_trace_ids": ["trace.reversible.draft_form", "trace.official.submit_payment"]
+    },
+    {
+      "id": "temporal.stale_source_hold",
+      "status": "proposed_inactive",
+      "scope": "hold_until_reviewer_confirms_source_freshness",
+      "source_evidence_trace_ids": ["trace.stale.source_hold"]
+    }
+  ],
+  "reversible_action_predicates": [
+    {
+      "id": "reversible.prepare_local_preview",
+      "status": "proposed_inactive",
+      "requires_local_preview": true,
+      "allowed_only_before_official_action": true,
+      "source_evidence_trace_ids": ["trace.reversible.draft_form"]
+    }
+  ],
+  "exact_confirmation_predicates": [
+    {
+      "id": "exact_confirmation.submit_or_pay",
+      "status": "proposed_inactive",
+      "required_confirmation_text_placeholder": "{{exact_user_confirmation_text}}",
+      "must_be_attended": true,
+      "source_evidence_trace_ids": ["trace.official.submit_payment"]
+    }
+  ],
+  "refused_action_predicates": [
+    {
+      "id": "refused.submit_or_pay_without_confirmation",
+      "status": "proposed_inactive",
+      "refuse_when_unattended": true,
+      "refuse_when_confirmation_missing": true,
+      "source_evidence_trace_ids": ["trace.official.submit_payment"]
+    }
+  ],
+  "stale_source_holds": [
+    {
+      "id": "stale_source_hold.file_naming_standard",
+      "status": "proposed_inactive",
+      "release_condition_placeholder": "{{reviewer_confirms_source_freshness}}",
+      "source_evidence_trace_ids": ["trace.stale.source_hold"]
+    }
+  ],
+  "reviewer_dispositions": [
+    {
+      "disposition_id": "reviewer.readonly.zoning_summary",
+      "status": "pending_reviewer_disposition",
+      "allowed_dispositions": ["accept_preview_mapping", "revise_preview_mapping", "reject_preview_mapping"]
+    },
+    {
+      "disposition_id": "reviewer.reversible.draft_form",
+      "status": "pending_reviewer_disposition",
+      "allowed_dispositions": ["accept_preview_mapping", "revise_preview_mapping", "reject_preview_mapping"]
+    },
+    {
+      "disposition_id": "reviewer.official.submit_payment",
+      "status": "pending_reviewer_disposition",
+      "allowed_dispositions": ["accept_preview_mapping", "revise_preview_mapping", "reject_preview_mapping"]
+    }
+  ],
+  "validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/agent_readiness/inactive_guardrail_migration_preview_packet_v2.py"],
+    ["python3", "-m", "unittest", "ppd.tests.test_inactive_guardrail_migration_preview_packet_v2"],
+    ["python3", "-m", "unittest", "discover", "-s", "ppd/tests", "-p", "test_*.py"]
+  ]
+}

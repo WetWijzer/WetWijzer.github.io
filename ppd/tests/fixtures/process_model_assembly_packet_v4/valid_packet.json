@@ -1,0 +1,176 @@
+{
+  "packet_type": "ppd.process_model_assembly_packet.v4",
+  "packet_version": "v4",
+  "fixture_first": true,
+  "recommendation_mode": "inactive_process_model_assembly_recommendations_only",
+  "active_process_model_mutation": false,
+  "active_requirement_mutation": false,
+  "active_guardrail_mutation": false,
+  "active_prompt_mutation": false,
+  "active_contract_mutation": false,
+  "active_source_registry_mutation": false,
+  "active_devhub_surface_mutation": false,
+  "active_release_state_mutation": false,
+  "active_process_models_changed": false,
+  "requirements_changed": false,
+  "guardrails_changed": false,
+  "prompts_changed": false,
+  "contracts_changed": false,
+  "source_registries_changed": false,
+  "devhub_surfaces_changed": false,
+  "release_state_changed": false,
+  "synthetic_requirement_nodes": [
+    {
+      "requirement_id": "synthetic-req-building-intake-documents-v4-001",
+      "requirement_type": "document_requirement",
+      "subject": "building permit intake candidate",
+      "action": "prepare reviewable document set",
+      "object": "application form, plan set, and supporting calculations as separate offline evidence rows",
+      "process_stage": "document preparation",
+      "formalization_status": "synthetic_fixture_for_review",
+      "source_evidence_ids": ["fixture-source:process-model-assembly-v4:doc-matrix"]
+    },
+    {
+      "requirement_id": "synthetic-req-fee-deadline-gate-v4-002",
+      "requirement_type": "fee_trigger",
+      "subject": "offline assembly candidate",
+      "action": "flag possible fee and deadline dependency",
+      "object": "payment and temporal trigger rows for reviewer triage",
+      "process_stage": "fee payment",
+      "formalization_status": "synthetic_fixture_for_review",
+      "source_evidence_ids": ["fixture-source:process-model-assembly-v4:fee-deadline"]
+    }
+  ],
+  "eligibility_rule_rows": [
+    {
+      "eligibility_rule_id": "eligibility-rule-v4-001",
+      "requirement_node_ref": "synthetic-req-building-intake-documents-v4-001",
+      "rule_label": "building plan review path candidate",
+      "candidate_condition": "project appears to need building permit plan review; reviewer must confirm current official path",
+      "evidence_ref": "citation:process-model-assembly-v4:span-001",
+      "status": "inactive_candidate_only"
+    }
+  ],
+  "required_user_fact_rows": [
+    {
+      "fact_row_id": "required-user-fact-v4-001",
+      "fact_label": "project address or property identifier candidate",
+      "requirement_node_ref": "synthetic-req-building-intake-documents-v4-001",
+      "process_stage": "property lookup",
+      "candidate_required_when": "agent cannot choose a path without user-provided property facts; fixture remains inactive",
+      "evidence_ref": "citation:process-model-assembly-v4:span-001",
+      "status": "inactive_candidate_only"
+    }
+  ],
+  "document_requirement_matrix_rows": [
+    {
+      "matrix_row_id": "doc-matrix-row-v4-001",
+      "document_label": "application form candidate",
+      "requirement_node_ref": "synthetic-req-building-intake-documents-v4-001",
+      "process_stage": "application data entry",
+      "candidate_required_when": "building permit intake appears to require an application artifact; reviewer confirmation required",
+      "evidence_ref": "citation:process-model-assembly-v4:span-001",
+      "status": "inactive_candidate_only"
+    },
+    {
+      "matrix_row_id": "doc-matrix-row-v4-002",
+      "document_label": "plan set candidate",
+      "requirement_node_ref": "synthetic-req-building-intake-documents-v4-001",
+      "process_stage": "document preparation",
+      "candidate_required_when": "plan review path appears to require drawings; reviewer confirmation required",
+      "evidence_ref": "citation:process-model-assembly-v4:span-002",
+      "status": "inactive_candidate_only"
+    }
+  ],
+  "fee_deadline_trigger_rows": [
+    {
+      "trigger_id": "fee-deadline-trigger-v4-001",
+      "requirement_node_ref": "synthetic-req-fee-deadline-gate-v4-002",
+      "trigger_type": "fee_trigger",
+      "process_stage": "fee payment",
+      "candidate_condition": "fees may become due after intake or review milestone; keep inactive until official source refresh and reviewer approval",
+      "blocked_action": "financial workflow remains user-attended and exact-confirmation gated",
+      "status": "inactive_candidate_only"
+    }
+  ],
+  "unsupported_path_notes": [
+    {
+      "unsupported_path_id": "unsupported-path-v4-001",
+      "path_label": "permit type not fully represented by fixture evidence",
+      "note": "Do not infer DevHub availability for every permit path from this packet.",
+      "required_followup": "attach current official source evidence and reviewer disposition before promotion",
+      "status": "inactive_note_only"
+    }
+  ],
+  "devhub_boundary_rows": [
+    {
+      "boundary_id": "devhub-boundary-v4-001",
+      "surface_label": "DevHub application intake candidate boundary",
+      "auth_scope": "attended account-scoped workflow boundary only",
+      "allowed_agent_posture": "offline recommendation and reversible draft planning only",
+      "blocked_actions": ["official filing action", "official upload action", "official certification action", "financial completion action", "inspection calendar action"],
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "status": "inactive_boundary_only"
+    }
+  ],
+  "citation_spans": [
+    {
+      "citation_span_id": "citation-span-v4-001",
+      "source_evidence_id": "citation:process-model-assembly-v4:span-001",
+      "source_label": "synthetic fixture citation for application document matrix row",
+      "span_summary": "Fixture summary placeholder for a public PP&D application document requirement; not active source evidence.",
+      "source_freshness": "stale_evidence_hold",
+      "status": "fixture_citation_only"
+    },
+    {
+      "citation_span_id": "citation-span-v4-002",
+      "source_evidence_id": "citation:process-model-assembly-v4:span-002",
+      "source_label": "synthetic fixture citation for plan set document matrix row",
+      "span_summary": "Fixture summary placeholder for a public PP&D plan set requirement; not active source evidence.",
+      "source_freshness": "stale_evidence_hold",
+      "status": "fixture_citation_only"
+    }
+  ],
+  "stale_evidence_holds": [
+    {
+      "hold_id": "stale-hold-v4-001",
+      "held_refs": ["citation-span-v4-001", "citation-span-v4-002"],
+      "reason": "Fixture uses synthetic public-source summaries and must not be activated without current official-source refresh.",
+      "release_condition": "reviewer approves refreshed citation spans and exact offline validation commands pass",
+      "status": "hold_active"
+    }
+  ],
+  "reviewer_dispositions": [
+    {
+      "disposition_id": "reviewer-disposition-v4-001",
+      "reviewer": "unassigned",
+      "reviewed_at": null,
+      "decision": "pending",
+      "notes": "Reviewer must confirm eligibility rules, user facts, document rows, fee/deadline triggers, unsupported path notes, DevHub boundaries, citations, and stale-evidence holds before any active promotion.",
+      "status": "pending_manual_review"
+    }
+  ],
+  "inactive_process_model_assembly_recommendations": [
+    {
+      "recommendation_id": "inactive-process-model-assembly-v4-001",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "permit_type": "building permit with plan review",
+      "scope": "offline fixture assembly recommendation only",
+      "requirement_node_refs": ["synthetic-req-building-intake-documents-v4-001", "synthetic-req-fee-deadline-gate-v4-002"],
+      "eligibility_rule_refs": ["eligibility-rule-v4-001"],
+      "required_user_fact_refs": ["required-user-fact-v4-001"],
+      "document_matrix_refs": ["doc-matrix-row-v4-001", "doc-matrix-row-v4-002"],
+      "fee_deadline_trigger_refs": ["fee-deadline-trigger-v4-001"],
+      "unsupported_path_refs": ["unsupported-path-v4-001"],
+      "devhub_boundary_refs": ["devhub-boundary-v4-001"],
+      "citation_span_refs": ["citation-span-v4-001", "citation-span-v4-002"],
+      "stale_evidence_hold_refs": ["stale-hold-v4-001"],
+      "reviewer_disposition_refs": ["reviewer-disposition-v4-001"],
+      "status": "inactive_recommendation_only",
+      "activation_blockers": ["current official-source refresh missing", "reviewer disposition pending", "active process model update explicitly out of scope", "DevHub observed boundary not promoted"],
+      "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    }
+  ],
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+}

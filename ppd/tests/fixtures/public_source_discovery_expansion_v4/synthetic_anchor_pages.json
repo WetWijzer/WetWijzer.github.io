@@ -1,0 +1,83 @@
+{
+  "fixture_name": "fixture-first public source discovery expansion v4 synthetic PP&D anchor pages",
+  "fixture_only": true,
+  "no_network_access": true,
+  "source_anchor_pages": [
+    {
+      "page_id": "ppd-landing",
+      "url": "https://www.portland.gov/ppd/",
+      "title": "Portland Permitting & Development",
+      "anchors": [
+        {
+          "href": "/ppd/how-use-online-permitting-tools/",
+          "link_text": "Online permitting tools overview",
+          "content_type_hint": "public_html"
+        },
+        {
+          "href": "https://WWW.PORTLAND.GOV:443/ppd/get-permit/apply-permits/#start",
+          "link_text": "Apply for permits",
+          "content_type_hint": "public_html"
+        },
+        {
+          "href": "https://www.portlandmaps.com/",
+          "link_text": "Portland Maps public references",
+          "content_type_hint": "external_reference"
+        },
+        {
+          "href": "https://example.com/permit-reference",
+          "link_text": "Unofficial external permit reference",
+          "content_type_hint": "unknown"
+        }
+      ]
+    },
+    {
+      "page_id": "online-tools",
+      "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "title": "How to use online permitting tools",
+      "anchors": [
+        {
+          "href": "https://devhub.portlandoregon.gov/",
+          "link_text": "DevHub public portal",
+          "content_type_hint": "devhub_public"
+        },
+        {
+          "href": "/ppd/devhub-faqs",
+          "link_text": "DevHub FAQ",
+          "content_type_hint": "public_html"
+        },
+        {
+          "href": "/ppd/documents/how-pay-fees/download",
+          "link_text": "How to pay fees PDF",
+          "content_type_hint": "public_pdf"
+        },
+        {
+          "href": "mailto:devhub@example.invalid",
+          "link_text": "Email help address",
+          "content_type_hint": "unknown"
+        }
+      ]
+    },
+    {
+      "page_id": "apply-permits",
+      "url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "title": "Apply for permits",
+      "anchors": [
+        {
+          "href": "../brochures-forms-handouts/permits-and-inspections-applications/",
+          "link_text": "Permit applications and forms index",
+          "content_type_hint": "public_form"
+        },
+        {
+          "href": "https://www.portland.gov/ppd/get-permit/apply-permits/",
+          "link_text": "Apply for permits duplicate footer link",
+          "content_type_hint": "public_html"
+        },
+        {
+          "href": "https://www.portland.gov/user/login",
+          "link_text": "PortlandOregon.gov sign-in flow",
+          "content_type_hint": "public_html"
+        }
+      ]
+    }
+  ]
+}

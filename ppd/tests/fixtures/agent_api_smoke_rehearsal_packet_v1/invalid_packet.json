@@ -1,0 +1,13 @@
+{
+  "packet_version": "agent_api_smoke_rehearsal_packet_v1",
+  "scenarios": [],
+  "expected_response_rows": [],
+  "citation_references": {},
+  "stale_source_holds": [],
+  "exact_confirmation_gates": [],
+  "refusal_rows": [],
+  "validation_commands": [],
+  "active_mutation": true,
+  "browser_session_trace": "private/sessions/devhub-trace.zip",
+  "claim": "Live crawl completed and permit will be approved after application submitted."
+}

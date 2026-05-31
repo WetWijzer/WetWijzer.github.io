@@ -1,0 +1,90 @@
+{
+  "fixture_id": "inactive_guardrail_preview_v2.synthetic_ppd_devhub_deltas",
+  "process_id": "synthetic.ppd.devhub.permit_application.inactive_preview",
+  "permit_type": "synthetic_ppd_permit_application",
+  "synthetic_inactive_process_model_deltas": [
+    {
+      "delta_id": "delta.read.status_review",
+      "inactive": true,
+      "source_evidence_ids": ["synthetic-source.devhub-faq.status-review"],
+      "process_stage": "prescreen/intake",
+      "action": "review_status_message",
+      "object": "permit_request_status",
+      "action_class": "read_only",
+      "source_freshness": "current",
+      "conditions": ["user_has_attended_authenticated_session"]
+    },
+    {
+      "delta_id": "delta.draft.application_fields",
+      "inactive": true,
+      "source_evidence_ids": ["synthetic-source.devhub-guide.dynamic-questions"],
+      "process_stage": "application data entry",
+      "action": "draft_form_values",
+      "object": "application_questionnaire",
+      "action_class": "reversible_draft",
+      "source_freshness": "current",
+      "conditions": ["facts_are_known", "draft_is_not_submitted"]
+    },
+    {
+      "delta_id": "delta.confirm.upload_staging",
+      "inactive": true,
+      "source_evidence_ids": ["synthetic-source.submit-plans-online.uploads"],
+      "process_stage": "upload staging",
+      "action": "stage_upload_metadata",
+      "object": "supporting_document_manifest",
+      "action_class": "reversible_draft",
+      "source_freshness": "current",
+      "requires_exact_confirmation": true,
+      "conditions": ["files_remain_local", "no_official_upload_is_performed"]
+    },
+    {
+      "delta_id": "delta.refuse.submit_application",
+      "inactive": true,
+      "source_evidence_ids": ["synthetic-source.devhub-guide.submit-application"],
+      "process_stage": "submission",
+      "action": "submit_permit_request",
+      "object": "permit_application",
+      "action_class": "consequential_official",
+      "source_freshness": "current",
+      "requires_exact_confirmation": true,
+      "conditions": ["user_is_attending", "exact_submission_confirmation_present"]
+    },
+    {
+      "delta_id": "delta.refuse.payment",
+      "inactive": true,
+      "source_evidence_ids": ["synthetic-source.fee-payment-guide.final-payment"],
+      "process_stage": "fee payment",
+      "action": "submit_payment",
+      "object": "permit_fee_payment",
+      "action_class": "consequential_official",
+      "source_freshness": "current",
+      "requires_exact_confirmation": true,
+      "conditions": ["user_is_attending", "payment_details_are_not_stored"]
+    },
+    {
+      "delta_id": "delta.refuse.schedule_inspection",
+      "inactive": true,
+      "source_evidence_ids": ["synthetic-source.online-tools.inspection-scheduling"],
+      "process_stage": "inspections",
+      "action": "schedule_inspection",
+      "object": "official_inspection_appointment",
+      "action_class": "consequential_official",
+      "source_freshness": "current",
+      "requires_exact_confirmation": true,
+      "temporal_scope": "inspection_date_and_time_selected_by_user",
+      "conditions": ["user_is_attending", "exact_schedule_confirmation_present"]
+    },
+    {
+      "delta_id": "delta.stale.file_naming_standard",
+      "inactive": true,
+      "source_evidence_ids": ["synthetic-source.spp-file-naming-standards.stale"],
+      "process_stage": "document preparation",
+      "action": "validate_file_name",
+      "object": "plan_pdf_file_name",
+      "action_class": "requires_human_review",
+      "source_freshness": "stale",
+      "temporal_scope": "hold_until_source_registry_refresh",
+      "conditions": ["source_registry_marks_evidence_stale"]
+    }
+  ]
+}

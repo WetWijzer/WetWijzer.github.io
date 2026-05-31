@@ -1,0 +1,200 @@
+{
+  "packet_version": "inactive-process-model-promotion-gate-v2",
+  "source_mode": "fixture_first_synthetic_only",
+  "process_model_state": "inactive",
+  "forbidden_surfaces": [
+    "active_process_models",
+    "requirements",
+    "guardrails",
+    "prompts",
+    "contracts",
+    "source_registries",
+    "devhub_surfaces",
+    "release_state",
+    "live_crawl",
+    "private_files",
+    "uploads",
+    "submissions",
+    "certifications",
+    "payments",
+    "scheduling"
+  ],
+  "gate_names": [
+    "permit_family_recommendation",
+    "citation_integrity",
+    "stale_evidence_hold",
+    "document_matrix",
+    "fee_deadline_matrix",
+    "unsupported_path_notes",
+    "reviewer_disposition",
+    "offline_validation_commands"
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/logic/inactive_process_model_promotion_gate_v2.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_inactive_process_model_promotion_gate_v2.py"]
+  ],
+  "synthetic_inactive_delta_rows": [
+    {
+      "delta_id": "synthetic-inactive-delta-promote-001",
+      "process_id": "inactive-synthetic-residential-alteration-v2",
+      "state": "inactive",
+      "source_kind": "synthetic_fixture",
+      "permit_family_recommendation": {
+        "permit_family": "building",
+        "recommendation": "promote",
+        "rationale": "Synthetic fixture has cited documents, fee and deadline checks, unsupported-path notes, and reviewer approval.",
+        "citation_ids": ["c-file-rules-001", "c-fee-001"]
+      },
+      "citations": [
+        {
+          "citation_id": "c-file-rules-001",
+          "source_id": "synthetic-public-submit-plans-online",
+          "scope": "synthetic_fixture",
+          "locator": "fixture:submit-plans-online#single-pdf",
+          "quote_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        {
+          "citation_id": "c-fee-001",
+          "source_id": "synthetic-public-fee-guide",
+          "scope": "synthetic_fixture",
+          "locator": "fixture:fee-guide#payment-trigger",
+          "quote_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      ],
+      "citation_integrity_check": {
+        "status": "passed",
+        "checked_at": "2026-05-31",
+        "checked_by": "fixture-validator"
+      },
+      "stale_evidence": [],
+      "stale_evidence_hold_check": {
+        "status": "clear",
+        "checked_at": "2026-05-31"
+      },
+      "document_matrix": {
+        "required": ["building_permit_application", "single_pdf_plan_set", "structural_calculations"],
+        "mapped": ["building_permit_application", "single_pdf_plan_set", "structural_calculations"]
+      },
+      "fee_deadline_matrix": {
+        "fees": [
+          {"name": "intake_or_review_fee", "trigger": "application intake or review", "citation_id": "c-fee-001"}
+        ],
+        "deadlines": [
+          {"name": "correction_response_window", "event": "checksheets issued", "citation_id": "c-file-rules-001"}
+        ]
+      },
+      "unsupported_path_notes": [
+        {"path": "permit types requiring email-only intake", "reason": "not safely inferred as supported by this inactive process model", "citation_id": "c-file-rules-001"}
+      ],
+      "reviewer_disposition": {
+        "status": "approved_for_inactive_promotion_packet",
+        "reviewer": "synthetic-reviewer",
+        "reviewed_at": "2026-05-31"
+      }
+    },
+    {
+      "delta_id": "synthetic-inactive-delta-hold-001",
+      "process_id": "inactive-synthetic-trade-with-plan-review-v2",
+      "state": "inactive",
+      "source_kind": "synthetic_fixture",
+      "permit_family_recommendation": {
+        "permit_family": "trade_with_plan_review",
+        "recommendation": "hold",
+        "rationale": "Synthetic fixture intentionally keeps stale evidence and one document mapping unresolved for reviewer hold coverage.",
+        "citation_ids": ["c-trade-review-001"]
+      },
+      "citations": [
+        {
+          "citation_id": "c-trade-review-001",
+          "source_id": "synthetic-public-trade-plan-review",
+          "scope": "synthetic_fixture",
+          "locator": "fixture:trade-plan-review#documents",
+          "quote_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+        }
+      ],
+      "citation_integrity_check": {
+        "status": "passed",
+        "checked_at": "2026-05-31",
+        "checked_by": "fixture-validator"
+      },
+      "stale_evidence": [
+        {"citation_id": "c-trade-review-001", "status": "needs_refresh", "reason": "fixture simulates changed document wording"}
+      ],
+      "stale_evidence_hold_check": {
+        "status": "hold_required",
+        "checked_at": "2026-05-31"
+      },
+      "document_matrix": {
+        "required": ["trade_application", "plan_review_documents", "license_facts"],
+        "mapped": ["trade_application", "plan_review_documents"]
+      },
+      "fee_deadline_matrix": {
+        "fees": [
+          {"name": "plan_review_fee", "trigger": "plan review required", "citation_id": "c-trade-review-001"}
+        ],
+        "deadlines": [
+          {"name": "review_response_window", "event": "review comments issued", "citation_id": "c-trade-review-001"}
+        ]
+      },
+      "unsupported_path_notes": [
+        {"path": "standard trade purchase without plan review", "reason": "different process path", "citation_id": "c-trade-review-001"}
+      ],
+      "reviewer_disposition": {
+        "status": "needs_human_review",
+        "reviewer": "synthetic-reviewer",
+        "reviewed_at": "2026-05-31"
+      }
+    },
+    {
+      "delta_id": "synthetic-inactive-delta-reject-001",
+      "process_id": "inactive-synthetic-unsupported-action-v2",
+      "state": "inactive",
+      "source_kind": "synthetic_fixture",
+      "permit_family_recommendation": {
+        "permit_family": "unsupported_path",
+        "recommendation": "reject",
+        "rationale": "Synthetic fixture covers reviewer rejection while retaining all required gate evidence rows.",
+        "citation_ids": ["c-unsupported-001"]
+      },
+      "citations": [
+        {
+          "citation_id": "c-unsupported-001",
+          "source_id": "synthetic-public-unsupported-path",
+          "scope": "synthetic_fixture",
+          "locator": "fixture:unsupported-path#manual-only",
+          "quote_hash": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        }
+      ],
+      "citation_integrity_check": {
+        "status": "passed",
+        "checked_at": "2026-05-31",
+        "checked_by": "fixture-validator"
+      },
+      "stale_evidence": [],
+      "stale_evidence_hold_check": {
+        "status": "clear",
+        "checked_at": "2026-05-31"
+      },
+      "document_matrix": {
+        "required": ["manual_review_packet"],
+        "mapped": ["manual_review_packet"]
+      },
+      "fee_deadline_matrix": {
+        "fees": [
+          {"name": "manual_review_fee_check", "trigger": "manual path review", "citation_id": "c-unsupported-001"}
+        ],
+        "deadlines": [
+          {"name": "manual_review_timing_check", "event": "manual review requested", "citation_id": "c-unsupported-001"}
+        ]
+      },
+      "unsupported_path_notes": [
+        {"path": "manual-only intake", "reason": "not represented as an inactive promotion candidate", "citation_id": "c-unsupported-001"}
+      ],
+      "reviewer_disposition": {
+        "status": "rejected",
+        "reviewer": "synthetic-reviewer",
+        "reviewed_at": "2026-05-31"
+      }
+    }
+  ]
+}

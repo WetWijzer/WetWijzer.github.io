@@ -1,0 +1,71 @@
+{
+  "packet_id": "public-refresh-dry-run-replay-v2-source-fixture-20260531",
+  "fixture_first": true,
+  "metadata_only": true,
+  "scenarios": [
+    {
+      "scenario_id": "scenario-source-freshness",
+      "scenario_kind": "source_freshness",
+      "source_id": "ppd-devhub-faq",
+      "citation_ids": [
+        "fixture-citation-source-freshness"
+      ]
+    },
+    {
+      "scenario_id": "scenario-changed-hash",
+      "scenario_kind": "changed_hash",
+      "source_id": "ppd-apply-permits",
+      "citation_ids": [
+        "fixture-citation-changed-hash"
+      ]
+    },
+    {
+      "scenario_id": "scenario-redirect-change",
+      "scenario_kind": "redirect_change",
+      "source_id": "ppd-online-tools",
+      "citation_ids": [
+        "fixture-citation-redirect-change"
+      ]
+    },
+    {
+      "scenario_id": "scenario-content-type-skip",
+      "scenario_kind": "content_type_skip",
+      "source_id": "ppd-image-asset",
+      "citation_ids": [
+        "fixture-citation-content-type-skip"
+      ]
+    },
+    {
+      "scenario_id": "scenario-too-large-skip",
+      "scenario_kind": "too_large_skip",
+      "source_id": "ppd-large-handout",
+      "citation_ids": [
+        "fixture-citation-too-large-skip"
+      ]
+    },
+    {
+      "scenario_id": "scenario-robots-policy-denial",
+      "scenario_kind": "robots_policy_denial",
+      "source_id": "ppd-policy-denied",
+      "citation_ids": [
+        "fixture-citation-robots-policy-denial"
+      ]
+    },
+    {
+      "scenario_id": "scenario-processor-handoff-failure",
+      "scenario_kind": "processor_handoff_failure",
+      "source_id": "ppd-processor-fixture",
+      "citation_ids": [
+        "fixture-citation-processor-handoff-failure"
+      ]
+    },
+    {
+      "scenario_id": "scenario-no-raw-body-archive",
+      "scenario_kind": "no_raw_body_archive",
+      "source_id": "ppd-no-raw-body",
+      "citation_ids": [
+        "fixture-citation-no-raw-body-archive"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,285 @@
+{
+  "packet_version": "v3",
+  "packet_type": "processor_handoff_acceptance",
+  "mode": "fixture_first_offline",
+  "created_for_task": "checkbox-39 supervisor-20260531-983",
+  "live_processor_execution_allowed": false,
+  "network_access_allowed": false,
+  "raw_downloads_allowed": false,
+  "devhub_access_allowed": false,
+  "private_file_access_allowed": false,
+  "active_crawler_mutation_allowed": false,
+  "active_source_mutation_allowed": false,
+  "active_archive_mutation_allowed": false,
+  "active_document_mutation_allowed": false,
+  "active_requirement_mutation_allowed": false,
+  "process_model_mutation_allowed": false,
+  "guardrail_mutation_allowed": false,
+  "prompt_mutation_allowed": false,
+  "contract_mutation_allowed": false,
+  "release_state_change_allowed": false,
+  "seed_urls": [
+    {
+      "url": "https://www.portland.gov/ppd",
+      "surface": "ppd_public_landing",
+      "source_type": "public_html",
+      "synthetic": true,
+      "public_seed": true
+    },
+    {
+      "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "surface": "ppd_online_tools_overview",
+      "source_type": "public_html",
+      "synthetic": true,
+      "public_seed": true
+    },
+    {
+      "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "surface": "ppd_fee_payment_public_pdf_guidance",
+      "source_type": "public_pdf",
+      "synthetic": true,
+      "public_seed": true
+    }
+  ],
+  "allowlist_decisions": [
+    {
+      "url": "https://www.portland.gov/ppd",
+      "host": "www.portland.gov",
+      "decision": "allow",
+      "reason": "official_ppd_public_seed",
+      "checked_live": false
+    },
+    {
+      "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "host": "www.portland.gov",
+      "decision": "allow",
+      "reason": "official_ppd_public_seed",
+      "checked_live": false
+    },
+    {
+      "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "host": "www.portland.gov",
+      "decision": "allow",
+      "reason": "official_ppd_public_pdf_guidance",
+      "checked_live": false
+    },
+    {
+      "url": "https://example.com/not-portland",
+      "host": "example.com",
+      "decision": "skip",
+      "reason": "outside_allowlist",
+      "checked_live": false
+    }
+  ],
+  "robots_policy_preflight_rows": [
+    {
+      "url": "https://www.portland.gov/ppd",
+      "robots_status": "synthetic_allow",
+      "policy_status": "allowed_by_fixture_policy",
+      "user_agent": "ppd-fixture-preflight",
+      "checked_live": false,
+      "raw_body_requested": false
+    },
+    {
+      "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "robots_status": "synthetic_allow",
+      "policy_status": "allowed_by_fixture_policy",
+      "user_agent": "ppd-fixture-preflight",
+      "checked_live": false,
+      "raw_body_requested": false
+    },
+    {
+      "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "robots_status": "synthetic_allow",
+      "policy_status": "allowed_by_fixture_policy",
+      "user_agent": "ppd-fixture-preflight",
+      "checked_live": false,
+      "raw_body_requested": false
+    }
+  ],
+  "processor_capability_selections": [
+    {
+      "url": "https://www.portland.gov/ppd",
+      "processor_name": "ipfs_datasets_py.web_archive.fixture_review",
+      "processor_version": "fixture-v3",
+      "selected": true,
+      "live_execution": false,
+      "capabilities": [
+        "html_metadata",
+        "pdf_metadata",
+        "link_inventory",
+        "archive_manifest_projection"
+      ]
+    },
+    {
+      "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "processor_name": "ipfs_datasets_py.web_archive.fixture_review",
+      "processor_version": "fixture-v3",
+      "selected": true,
+      "live_execution": false,
+      "capabilities": [
+        "html_metadata",
+        "pdf_metadata",
+        "link_inventory",
+        "archive_manifest_projection"
+      ]
+    },
+    {
+      "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "processor_name": "ipfs_datasets_py.web_archive.fixture_review",
+      "processor_version": "fixture-v3",
+      "selected": true,
+      "live_execution": false,
+      "capabilities": [
+        "html_metadata",
+        "pdf_metadata",
+        "link_inventory",
+        "archive_manifest_projection"
+      ]
+    }
+  ],
+  "archive_manifest_expectations": [
+    {
+      "url": "https://www.portland.gov/ppd",
+      "no_raw_body_persisted": true,
+      "raw_body_artifact_ref": null,
+      "expected_fields": [
+        "manifest_id",
+        "source_id",
+        "canonical_url",
+        "requested_url",
+        "redirect_chain",
+        "http_status",
+        "content_type",
+        "content_hash",
+        "capture_started_at",
+        "capture_finished_at",
+        "processor_name",
+        "processor_version",
+        "archive_artifact_ref",
+        "normalized_document_id",
+        "skipped_reason",
+        "no_raw_body_persisted"
+      ]
+    },
+    {
+      "url": "https://www.portland.gov/ppd/how-use-online-permitting-tools",
+      "no_raw_body_persisted": true,
+      "raw_body_artifact_ref": null,
+      "expected_fields": [
+        "manifest_id",
+        "source_id",
+        "canonical_url",
+        "requested_url",
+        "redirect_chain",
+        "http_status",
+        "content_type",
+        "content_hash",
+        "capture_started_at",
+        "capture_finished_at",
+        "processor_name",
+        "processor_version",
+        "archive_artifact_ref",
+        "normalized_document_id",
+        "skipped_reason",
+        "no_raw_body_persisted"
+      ]
+    },
+    {
+      "url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "no_raw_body_persisted": true,
+      "raw_body_artifact_ref": null,
+      "expected_fields": [
+        "manifest_id",
+        "source_id",
+        "canonical_url",
+        "requested_url",
+        "redirect_chain",
+        "http_status",
+        "content_type",
+        "content_hash",
+        "capture_started_at",
+        "capture_finished_at",
+        "processor_name",
+        "processor_version",
+        "archive_artifact_ref",
+        "normalized_document_id",
+        "skipped_reason",
+        "no_raw_body_persisted"
+      ]
+    }
+  ],
+  "skipped_urls": [
+    {
+      "url": "https://example.com/not-portland",
+      "decision": "skip",
+      "reason_code": "outside_allowlist",
+      "live_checked": false,
+      "raw_body_requested": false
+    },
+    {
+      "url": "ftp://www.portland.gov/ppd/file",
+      "decision": "skip",
+      "reason_code": "unsupported_scheme",
+      "live_checked": false,
+      "raw_body_requested": false
+    },
+    {
+      "url": "https://devhub.portlandoregon.gov/auth/account",
+      "decision": "skip",
+      "reason_code": "private_authenticated",
+      "live_checked": false,
+      "raw_body_requested": false
+    },
+    {
+      "url": "https://www.portland.gov/ppd/disallowed-by-fixture-policy",
+      "decision": "skip",
+      "reason_code": "disallowed_by_robots_or_policy",
+      "live_checked": false,
+      "raw_body_requested": false
+    },
+    {
+      "url": "https://www.portland.gov/ppd/raw-download-fixture",
+      "decision": "skip",
+      "reason_code": "raw_download_not_permitted",
+      "live_checked": false,
+      "raw_body_requested": false
+    },
+    {
+      "url": "https://www.portland.gov/ppd/oversize-fixture.pdf",
+      "decision": "skip",
+      "reason_code": "too_large",
+      "live_checked": false,
+      "raw_body_requested": false
+    },
+    {
+      "url": "https://www.portland.gov/ppd/archive-fixture.zip",
+      "decision": "skip",
+      "reason_code": "unsupported_content_type",
+      "live_checked": false,
+      "raw_body_requested": false
+    }
+  ],
+  "retry_backoff_expectations": {
+    "max_attempts": 3,
+    "initial_delay_seconds": 2,
+    "multiplier": 2,
+    "jitter": false,
+    "retryable_statuses": [429, 500, 502, 503, 504],
+    "live_retry_allowed": false
+  },
+  "persistence_flags": {
+    "no_raw_body_persisted": true,
+    "no_private_files": true,
+    "no_auth_state": true,
+    "no_screenshots": true,
+    "no_traces": true,
+    "no_har": true,
+    "no_downloaded_documents": true
+  },
+  "handoff_gate": {
+    "fixture_review_complete": true,
+    "accepted_for_live_processor_execution": false,
+    "requires_human_review_before_live": true
+  }
+}

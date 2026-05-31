@@ -1,0 +1,47 @@
+{
+  "schema_version": "devhub_readonly_observation_notes_v3",
+  "packet_id": "synthetic-readonly-notes-v3-001",
+  "synthetic_fixture_only": true,
+  "authorized_read_only_observation": true,
+  "mode": "offline_fixture_read_only_notes",
+  "reviewer": "synthetic_ppd_fixture_reviewer",
+  "observations": [
+    {
+      "surface_id": "devhub-status-review-synthetic",
+      "url_pattern": "https://devhub.portlandoregon.gov/synthetic/status-review/*",
+      "page_heading": "Permit status review",
+      "landmark_notes": [
+        "Main landmark exposes status summary and request detail regions.",
+        "Navigation landmark includes dashboard return link only."
+      ],
+      "observed_fields": [
+        {
+          "field_id": "request_status",
+          "label": "Request status",
+          "selector_hint": "role=status[name='Request status']",
+          "confidence": 0.93,
+          "note": "Stable accessible role and label in synthetic read-only note."
+        },
+        {
+          "field_id": "review_group",
+          "label": "Review group",
+          "selector_hint": "text='Review group' >> xpath=following-sibling::*[1]",
+          "confidence": 0.81,
+          "note": "Label adjacency is usable but should be reviewer-held before promotion."
+        }
+      ],
+      "validation_notes": [
+        "Required document controls are not represented in this read-only surface delta.",
+        "Status text must remain redacted and normalized to category-level labels only."
+      ],
+      "abort_notes": [
+        "Abort if DevHub asks for sign-in, MFA, CAPTCHA, payment, upload, submission, scheduling, cancellation, or certification.",
+        "Abort if any browser artifact, auth state, screenshot, trace, HAR, cookie, or raw authenticated value would be stored."
+      ],
+      "reviewer_notes": [
+        "Hold for reviewer because selector confidence for review_group is below promotion threshold.",
+        "Hold for reviewer before any active surface-map, prompt, guardrail, contract, source registry, process model, or release-state change."
+      ]
+    }
+  ]
+}

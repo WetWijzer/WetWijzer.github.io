@@ -1,0 +1,133 @@
+{
+  "fixture_id": "synthetic-inactive-release-transition-audit-packet-v1",
+  "description": "Synthetic release decision rows for inactive no-op transition auditing only.",
+  "decision_rows": [
+    {
+      "row_id": "synthetic-release-ready-row",
+      "decision": "release-ready",
+      "promotion_prerequisites": {
+        "source_registry_frozen": true,
+        "guardrail_bundle_validated": true,
+        "requirements_snapshot_reviewed": true
+      },
+      "source_evidence": [
+        {
+          "evidence_id": "ready-source-evidence",
+          "evidence_text": "Synthetic public PP&D source evidence for a release-ready inactive audit row.",
+          "expected_sha256": "3a2749e66a828c92a881fdfde34621bdb5f5f0c0ca6f1c78f351022af6b47704"
+        }
+      ],
+      "reviewer_approvals": [
+        {
+          "reviewer_id": "fixture-reviewer-policy",
+          "role": "policy",
+          "approved": true
+        },
+        {
+          "reviewer_id": "fixture-reviewer-validation",
+          "role": "validation",
+          "approved": true
+        }
+      ],
+      "rollback_blocker_checks": [
+        {
+          "check_id": "ready-no-rollback-blockers",
+          "blocker_present": false,
+          "cleared": true
+        }
+      ],
+      "validation_commands": [
+        {
+          "command_id": "ready-self-test-record",
+          "argv": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+          "exit_code": 0,
+          "recorded_at": "2026-05-31T00:00:00Z",
+          "output_sha256": "5c5d9f387e7dc8ed732f105b904593db5bc47c5c92924b9f10b0299bbec81ed2"
+        }
+      ]
+    },
+    {
+      "row_id": "synthetic-release-held-row",
+      "decision": "release-held",
+      "promotion_prerequisites": {
+        "source_registry_frozen": true,
+        "guardrail_bundle_validated": false,
+        "requirements_snapshot_reviewed": true
+      },
+      "source_evidence": [
+        {
+          "evidence_id": "held-source-evidence",
+          "evidence_text": "Synthetic public PP&D source evidence for a release-held inactive audit row.",
+          "expected_sha256": "0f6871939d484ed907b33ba20e7a1a8fa24e414ba516eafae7b2b02435814c9a"
+        }
+      ],
+      "reviewer_approvals": [
+        {
+          "reviewer_id": "fixture-reviewer-policy",
+          "role": "policy",
+          "approved": true
+        },
+        {
+          "reviewer_id": "fixture-reviewer-validation",
+          "role": "validation",
+          "approved": false
+        }
+      ],
+      "rollback_blocker_checks": [
+        {
+          "check_id": "held-validation-blocker",
+          "blocker_present": true,
+          "cleared": false
+        }
+      ],
+      "validation_commands": [
+        {
+          "command_id": "held-self-test-record",
+          "argv": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+          "exit_code": 1,
+          "recorded_at": "2026-05-31T00:00:00Z",
+          "output_sha256": "9cf7dcf5f8a4f40d0dcbff1f2c68f9c65b5b65cce80c9f64e61c73fc5efba712"
+        }
+      ]
+    },
+    {
+      "row_id": "synthetic-release-rejected-row",
+      "decision": "release-rejected",
+      "promotion_prerequisites": {
+        "source_registry_frozen": false,
+        "guardrail_bundle_validated": false,
+        "requirements_snapshot_reviewed": false
+      },
+      "source_evidence": [
+        {
+          "evidence_id": "rejected-source-evidence",
+          "evidence_text": "Synthetic public PP&D source evidence for a release-rejected inactive audit row.",
+          "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "reviewer_approvals": [
+        {
+          "reviewer_id": "fixture-reviewer-policy",
+          "role": "policy",
+          "approved": false
+        }
+      ],
+      "rollback_blocker_checks": [
+        {
+          "check_id": "rejected-source-evidence-blocker",
+          "blocker_present": true,
+          "cleared": false
+        }
+      ],
+      "validation_commands": [
+        {
+          "command_id": "rejected-self-test-record",
+          "argv": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+          "exit_code": 1,
+          "recorded_at": "2026-05-31T00:00:00Z",
+          "output_sha256": "28f9cb5fa7b6802d0d793c9723f8e6cf3774aef13f4f539ba240f6bf1dbfc3b5"
+        }
+      ]
+    }
+  ]
+}

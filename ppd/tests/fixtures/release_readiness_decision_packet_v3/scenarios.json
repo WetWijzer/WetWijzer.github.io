@@ -1,0 +1,24 @@
+{
+  "scenarios": [
+    "release-ready",
+    "release-held",
+    "release-rejected"
+  ],
+  "required_sections": [
+    "inactive_process_model_gate_recommendations",
+    "inactive_guardrail_gate_recommendations",
+    "agent_readiness_replay",
+    "devhub_observation_delta_holds",
+    "public_refresh_impact_summary",
+    "reviewer_dispositions",
+    "rollback_notes",
+    "offline_validation_commands"
+  ],
+  "forbidden_effects": {
+    "release_state_changed": false,
+    "artifact_promotion_allowed": false,
+    "live_source_access_allowed": false,
+    "devhub_access_allowed": false,
+    "private_file_access_allowed": false
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "packet_id": "fixture-release-readiness-decision-packet-v3",
+  "gate_recommendations": [
+    {
+      "gate_id": "gate-offline-release-readiness-v3",
+      "recommendation": "hold",
+      "rationale": "Offline evidence is complete enough to record a hold recommendation for human review only.",
+      "source_evidence_ids": [
+        "evidence-gate-readiness-v3"
+      ]
+    }
+  ],
+  "agent_readiness_replay_references": [
+    {
+      "replay_id": "agent-readiness-replay-v3-fixture",
+      "packet_ref": "ppd/tests/fixtures/agent_readiness_replay/offline-replay-summary-v2.json",
+      "summary": "Agent-readiness replay reference is a committed fixture reference only.",
+      "source_evidence_ids": [
+        "evidence-agent-readiness-replay-v2"
+      ]
+    }
+  ],
+  "devhub_observation_holds": [
+    {
+      "hold_id": "devhub-observation-hold-v3-fixture",
+      "status": "hold",
+      "reason": "DevHub observation remains held for attended reviewer disposition and redacted metadata review.",
+      "source_evidence_ids": [
+        "evidence-devhub-observation-hold"
+      ]
+    }
+  ],
+  "public_refresh_impact_references": [
+    {
+      "impact_id": "public-refresh-impact-v3-fixture",
+      "packet_ref": "ppd/tests/fixtures/public_refresh_impact/offline-impact-reference.json",
+      "summary": "Public refresh impact is referenced as a committed fixture dependency for human review.",
+      "source_evidence_ids": [
+        "evidence-public-refresh-impact"
+      ]
+    }
+  ],
+  "reviewer_dispositions": [
+    {
+      "reviewer_id": "ppd-release-readiness-reviewer",
+      "disposition": "approved_for_offline_hold",
+      "rationale": "Reviewer disposition permits only an offline hold decision packet.",
+      "source_evidence_ids": [
+        "evidence-reviewer-disposition"
+      ]
+    }
+  ],
+  "rollback_notes": [
+    {
+      "rollback_note_id": "rollback-note-release-readiness-v3",
+      "note": "Rollback remains a documented reviewer note and does not alter active release state.",
+      "source_evidence_ids": [
+        "evidence-rollback-note"
+      ]
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/agent_readiness/release_readiness_decision_packet_v3.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "pytest",
+      "ppd/tests/test_release_readiness_decision_packet_v3.py"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

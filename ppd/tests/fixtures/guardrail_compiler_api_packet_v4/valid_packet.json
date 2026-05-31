@@ -1,0 +1,130 @@
+{
+  "packet_type": "ppd.guardrail_compiler_api_packet.v4",
+  "packet_version": "v4",
+  "fixture_first": true,
+  "recommendation_mode": "inactive_guardrail_compiler_rows_only",
+  "source_packet_type": "ppd.process_model_assembly_packet.v4",
+  "source_recommendation_id": "inactive-process-model-assembly-v4-001",
+  "process_id": "candidate-building-plan-review-process-v4",
+  "permit_type": "building permit with plan review",
+  "active_guardrail_mutation": false,
+  "active_prompt_mutation": false,
+  "active_requirement_mutation": false,
+  "active_process_model_mutation": false,
+  "active_contract_mutation": false,
+  "active_source_registry_mutation": false,
+  "active_devhub_surface_mutation": false,
+  "active_release_state_mutation": false,
+  "guardrails_promoted": false,
+  "prompts_changed": false,
+  "requirements_changed": false,
+  "process_models_changed": false,
+  "contracts_changed": false,
+  "source_registries_changed": false,
+  "devhub_surfaces_changed": false,
+  "release_state_changed": false,
+  "deterministic_predicate_rows": [
+    {
+      "row_id": "predicate-candidate-building-plan-review-process-v4-fixture-first",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "requirement_node_ref": "synthetic-req-building-intake-documents-v4-001",
+      "predicate_name": "has_fixture_backed_inactive_assembly_recommendation",
+      "deterministic_expression": "source_recommendation_id_present AND status_is_inactive_recommendation_only",
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "deontic_rule_rows": [
+    {
+      "row_id": "deontic-candidate-building-plan-review-process-v4-attended-boundary",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "requirement_node_refs": ["synthetic-req-building-intake-documents-v4-001", "synthetic-req-fee-deadline-gate-v4-002"],
+      "modality": "prohibition",
+      "rule_text": "Agent must not perform consequential official actions from synthetic inactive recommendations.",
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "temporal_rule_rows": [
+    {
+      "row_id": "temporal-candidate-building-plan-review-process-v4-stale-source-hold",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "stale_source_hold_refs": ["stale-hold-v4-001"],
+      "temporal_condition": "until_current_official_source_refresh_and_reviewer_approval",
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "reversible_action_rows": [
+    {
+      "row_id": "reversible-candidate-building-plan-review-process-v4-offline-draft-planning",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "allowed_action": "offline draft planning from fixture rows",
+      "reversibility_basis": "No public or authenticated system side effects are performed.",
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "exact_confirmation_rows": [
+    {
+      "row_id": "exact-confirmation-candidate-building-plan-review-process-v4-consequential-boundary",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "confirmation_scope": "consequential official PP&D or DevHub action",
+      "required_confirmation": "user-attended action-specific confirmation required before any future active workflow",
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "refused_action_rows": [
+    {
+      "row_id": "refused-candidate-building-plan-review-process-v4-official-actions",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "refused_action_family": "official PP&D account, filing, attachment, payment, scheduling, and certification actions",
+      "refusal_reason": "Synthetic inactive compiler packet cannot authorize consequential external effects.",
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "missing_information_rows": [
+    {
+      "row_id": "missing-info-candidate-building-plan-review-process-v4-source-refresh-review",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "missing_information": "current official-source evidence and reviewer disposition",
+      "ask_policy": "ask only for missing, stale, ambiguous, or conflicting facts before active use",
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "explanation_template_rows": [
+    {
+      "row_id": "explanation-candidate-building-plan-review-process-v4-inactive-source-hold",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "template_key": "inactive_guardrail_compiler_source_hold",
+      "template_text": "I can use this only as an offline fixture row because {hold_reason}; reviewer disposition is {reviewer_disposition}.",
+      "placeholders": ["hold_reason", "reviewer_disposition"],
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "stale_source_hold_rows": [
+    {
+      "row_id": "stale-source-hold-candidate-building-plan-review-process-v4-001",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "source_hold_refs": ["stale-hold-v4-001"],
+      "hold_reason": "Synthetic fixture evidence cannot become active without current official-source refresh.",
+      "release_condition": "exact offline validation commands pass and reviewer disposition approves refreshed evidence",
+      "output_status": "hold_active"
+    }
+  ],
+  "reviewer_disposition_rows": [
+    {
+      "row_id": "reviewer-disposition-candidate-building-plan-review-process-v4-001",
+      "process_id": "candidate-building-plan-review-process-v4",
+      "reviewer_disposition_refs": ["reviewer-disposition-v4-001"],
+      "decision": "pending",
+      "required_review": "predicate, deontic, temporal, reversible action, exact confirmation, refused action, missing information, explanation, stale source hold, and validation rows",
+      "output_status": "pending_manual_review"
+    }
+  ],
+  "offline_validation_command_rows": [
+    {
+      "row_id": "offline-validation-command-ppd-self-test",
+      "command": ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"],
+      "exact": true,
+      "output_status": "inactive_compiler_row_only"
+    }
+  ],
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+}

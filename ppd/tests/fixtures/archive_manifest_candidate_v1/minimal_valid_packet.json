@@ -1,0 +1,51 @@
+{
+  "packet_version": "archive-manifest-import-candidate-packet-v1",
+  "packet_id": "fixture-minimal-valid",
+  "processor_identity_rows": [
+    {
+      "processor_name": "ipfs_datasets_py.web_archive",
+      "processor_version": "fixture-version",
+      "policy_adapter": "ppd-public-metadata-only"
+    }
+  ],
+  "reviewer_holds": [],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "manifest_candidates": [
+    {
+      "manifest_id": "fixture-manifest-1",
+      "source_id": "fixture-source-1",
+      "canonical_url": "https://www.portland.gov/ppd",
+      "requested_url": "https://www.portland.gov/ppd",
+      "redirect_chain": [
+        {
+          "url": "https://www.portland.gov/ppd",
+          "status": 200
+        }
+      ],
+      "http_status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "content_hash": {
+        "algorithm": "sha256",
+        "value": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      },
+      "capture_started_at": "2026-05-31T00:00:00Z",
+      "capture_finished_at": "2026-05-31T00:00:01Z",
+      "processor_name": "ipfs_datasets_py.web_archive",
+      "processor_version": "fixture-version",
+      "archive_artifact_ref": "metadata-only",
+      "normalized_document_id": "fixture-document-1",
+      "skipped": false,
+      "skipped_reason": null,
+      "no_raw_body_persisted": true
+    }
+  ],
+  "claims": [
+    "metadata-only public PP&D archive import candidate fixture"
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "packet_type": "ppd.synthetic_inactive_guardrail_migration_preview_rows.v2",
+  "fixture_id": "synthetic_inactive_guardrail_promotion_gate_packet_v2_rows",
+  "source_mode": "synthetic_committed_fixture_only",
+  "inactive_preview_only": true,
+  "source_evidence_traces": [
+    {
+      "trace_id": "evidence.predicate.readonly.preview",
+      "source_id": "fixture.ppd.guardrail.boundary",
+      "citation": "synthetic fixture: readonly preview gate boundary",
+      "evidence_kind": "committed_fixture",
+      "committed_fixture_only": true
+    },
+    {
+      "trace_id": "evidence.deontic.local.preview.only",
+      "source_id": "fixture.ppd.deontic.boundary",
+      "citation": "synthetic fixture: local preview deontic rule",
+      "evidence_kind": "committed_fixture",
+      "committed_fixture_only": true
+    },
+    {
+      "trace_id": "evidence.temporal.stale.source.hold",
+      "source_id": "fixture.ppd.temporal.boundary",
+      "citation": "synthetic fixture: stale source hold",
+      "evidence_kind": "committed_fixture",
+      "committed_fixture_only": true
+    },
+    {
+      "trace_id": "evidence.reversible.local.draft.preview",
+      "source_id": "fixture.ppd.reversible.boundary",
+      "citation": "synthetic fixture: reversible local draft preview",
+      "evidence_kind": "committed_fixture",
+      "committed_fixture_only": true
+    },
+    {
+      "trace_id": "evidence.exact.confirmation.official.action",
+      "source_id": "fixture.ppd.confirmation.boundary",
+      "citation": "synthetic fixture: exact confirmation gate",
+      "evidence_kind": "committed_fixture",
+      "committed_fixture_only": true
+    },
+    {
+      "trace_id": "evidence.refused.unattended.payment",
+      "source_id": "fixture.ppd.refusal.boundary",
+      "citation": "synthetic fixture: refused unattended payment action",
+      "evidence_kind": "committed_fixture",
+      "committed_fixture_only": true
+    },
+    {
+      "trace_id": "evidence.stale.source.file.naming",
+      "source_id": "fixture.ppd.stale.source.boundary",
+      "citation": "synthetic fixture: stale source file naming hold",
+      "evidence_kind": "committed_fixture",
+      "committed_fixture_only": true
+    }
+  ],
+  "deterministic_predicates": [
+    {
+      "row_id": "predicate.readonly.preview",
+      "deterministic_predicate": true,
+      "deontic_rule": "permission",
+      "temporal_rule": "current",
+      "reversible_action": true,
+      "requires_exact_confirmation": true,
+      "refuses_prohibited_action": true,
+      "source_evidence_trace_ids": ["evidence.predicate.readonly.preview"],
+      "required_explanation_placeholders": ["{{action_classification}}"]
+    }
+  ],
+  "deontic_rules": [
+    {
+      "row_id": "deontic.local.preview.only",
+      "deterministic_predicate": true,
+      "deontic_rule": "obligation",
+      "temporal_rule": "before_official_action",
+      "reversible_action": true,
+      "requires_exact_confirmation": true,
+      "refuses_prohibited_action": true,
+      "source_evidence_trace_ids": ["evidence.deontic.local.preview.only"],
+      "required_explanation_placeholders": ["{{required_confirmation}}"]
+    }
+  ],
+  "temporal_rules": [
+    {
+      "row_id": "temporal.stale.source.hold",
+      "deterministic_predicate": true,
+      "deontic_rule": "action_gate",
+      "temporal_rule": "hold_until_fresh",
+      "reversible_action": true,
+      "requires_exact_confirmation": true,
+      "refuses_prohibited_action": true,
+      "stale_source_hold": true,
+      "source_evidence_trace_ids": ["evidence.temporal.stale.source.hold"],
+      "required_explanation_placeholders": ["{{stale_source_reason}}"]
+    }
+  ],
+  "reversible_action_predicates": [
+    {
+      "row_id": "reversible.local.draft.preview",
+      "deterministic_predicate": true,
+      "deontic_rule": "permission",
+      "temporal_rule": "before_official_action",
+      "reversible_action": true,
+      "requires_exact_confirmation": true,
+      "refuses_prohibited_action": true,
+      "source_evidence_trace_ids": ["evidence.reversible.local.draft.preview"],
+      "required_explanation_placeholders": ["{{reversible_boundary}}"]
+    }
+  ],
+  "exact_confirmation_predicates": [
+    {
+      "row_id": "exact.confirmation.official.action",
+      "deterministic_predicate": true,
+      "deontic_rule": "action_gate",
+      "temporal_rule": "before_official_action",
+      "reversible_action": true,
+      "requires_exact_confirmation": true,
+      "refuses_prohibited_action": true,
+      "source_evidence_trace_ids": ["evidence.exact.confirmation.official.action"],
+      "required_explanation_placeholders": ["{{exact_confirmation_text}}"]
+    }
+  ],
+  "refused_action_predicates": [
+    {
+      "row_id": "refused.unattended.payment",
+      "deterministic_predicate": true,
+      "deontic_rule": "prohibition",
+      "temporal_rule": "before_official_action",
+      "reversible_action": true,
+      "requires_exact_confirmation": true,
+      "refuses_prohibited_action": false,
+      "refused_action_failure": true,
+      "source_evidence_trace_ids": ["evidence.refused.unattended.payment"],
+      "required_explanation_placeholders": ["{{refusal_reason}}"]
+    }
+  ],
+  "stale_source_holds": [
+    {
+      "row_id": "stale.source.file.naming",
+      "deterministic_predicate": true,
+      "deontic_rule": "action_gate",
+      "temporal_rule": "hold_until_fresh",
+      "reversible_action": true,
+      "requires_exact_confirmation": true,
+      "refuses_prohibited_action": true,
+      "stale_source_hold": true,
+      "source_evidence_trace_ids": ["evidence.stale.source.file.naming"],
+      "required_explanation_placeholders": ["{{stale_source_reason}}"]
+    }
+  ],
+  "explanation_template_placeholders": [
+    {"placeholder": "{{action_classification}}"},
+    {"placeholder": "{{required_confirmation}}"},
+    {"placeholder": "{{stale_source_reason}}"},
+    {"placeholder": "{{reversible_boundary}}"},
+    {"placeholder": "{{exact_confirmation_text}}"},
+    {"placeholder": "{{refusal_reason}}"}
+  ],
+  "reviewer_dispositions": [
+    {"row_id": "predicate.readonly.preview", "status": "accepted_for_gate_evaluation"},
+    {"row_id": "deontic.local.preview.only", "status": "accepted_for_gate_evaluation"},
+    {"row_id": "temporal.stale.source.hold", "status": "accepted_for_gate_evaluation"},
+    {"row_id": "reversible.local.draft.preview", "status": "accepted_for_gate_evaluation"},
+    {"row_id": "exact.confirmation.official.action", "status": "accepted_for_gate_evaluation"},
+    {"row_id": "refused.unattended.payment", "status": "accepted_for_gate_evaluation"},
+    {"row_id": "stale.source.file.naming", "status": "accepted_for_gate_evaluation"}
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/agent_readiness/inactive_guardrail_promotion_gate_packet_v2.py"],
+    ["python3", "-m", "unittest", "ppd.tests.test_inactive_guardrail_promotion_gate_packet_v2"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

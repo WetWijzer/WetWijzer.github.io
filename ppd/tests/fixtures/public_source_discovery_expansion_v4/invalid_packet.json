@@ -1,0 +1,25 @@
+{
+  "packet_version": 4,
+  "sources": [
+    {
+      "canonical_url": "",
+      "source_page": "",
+      "link_text": "",
+      "allowlist_decision": "",
+      "outside_allowlist_promotion": true
+    }
+  ],
+  "duplicate_normalization": [],
+  "skipped_urls": [
+    {
+      "url": "https://example.invalid/private"
+    }
+  ],
+  "validation_commands": [],
+  "raw_artifacts": ["raw.html"],
+  "downloaded_artifacts": ["permit.pdf"],
+  "auth_state": {"storageState": "private"},
+  "traces": ["trace.zip"],
+  "notes": "This claims a live crawl and DevHub automation. It also makes a legal guarantee and a permitting guarantee.",
+  "mutation_enabled": true
+}

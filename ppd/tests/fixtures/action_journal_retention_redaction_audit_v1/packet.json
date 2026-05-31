@@ -1,0 +1,215 @@
+{
+  "packet_version": "action-journal-retention-redaction-audit-packet-v1",
+  "packet_id": "fixture-first-action-journal-retention-redaction-audit-v1",
+  "fixture_first": true,
+  "synthetic_only": true,
+  "public_crawl_performed": false,
+  "live_source_crawl_performed": false,
+  "devhub_opened": false,
+  "browser_artifacts_stored": false,
+  "private_files_read": false,
+  "real_forms_drafted": false,
+  "official_action_attempted": false,
+  "active_journal_mutated": false,
+  "active_export_state_mutated": false,
+  "offline_validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "source_citations": [
+    {
+      "citation_id": "fixture-citation:ppd-public-crawl-policy",
+      "source_kind": "synthetic_public_policy_fixture",
+      "synthetic_excerpt_ref": "Synthetic PP&D crawl metadata may keep URL, status, content type, hash, and skipped reason only."
+    },
+    {
+      "citation_id": "fixture-citation:requirement-extraction-policy",
+      "source_kind": "synthetic_requirement_fixture",
+      "synthetic_excerpt_ref": "Requirement summaries must retain source evidence references and human-review status."
+    },
+    {
+      "citation_id": "fixture-citation:gap-analysis-policy",
+      "source_kind": "synthetic_gap_fixture",
+      "synthetic_excerpt_ref": "Gap analysis may report missing labels and blocked actions without retaining private user facts."
+    },
+    {
+      "citation_id": "fixture-citation:devhub-guardrail-policy",
+      "source_kind": "synthetic_devhub_policy_fixture",
+      "synthetic_excerpt_ref": "DevHub automation remains attended and preflight-only unless exact confirmation is present."
+    },
+    {
+      "citation_id": "fixture-citation:journal-retention-policy",
+      "source_kind": "synthetic_retention_fixture",
+      "synthetic_excerpt_ref": "Commit-safe journal rows need retention labels, redaction checks, and offline validation commands."
+    }
+  ],
+  "journal_events": [
+    {
+      "event_id": "journal-fixture-001",
+      "event_type": "synthetic_public_crawl",
+      "occurred_at": "2026-05-31T00:00:00Z",
+      "actor": "fixture-validator",
+      "citation_refs": ["fixture-citation:ppd-public-crawl-policy"],
+      "retention_label": "commit_safe_synthetic_public_metadata_90d",
+      "redacted_values": {
+        "canonical_url_sample": "[REDACTED:synthetic_url]",
+        "content_hash_sample": "[REDACTED:synthetic_hash]"
+      },
+      "redaction_audit": {
+        "raw_values_committed": false,
+        "private_files_read": false,
+        "browser_artifacts_stored": false,
+        "official_action_attempted": false,
+        "checks": ["metadata-only", "synthetic-source-only", "no-raw-body"]
+      },
+      "commit_safe_reason": "Synthetic crawl metadata row demonstrates retention labels without live requests or raw body persistence.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "event_id": "journal-fixture-002",
+      "event_type": "requirement_extraction",
+      "occurred_at": "2026-05-31T00:01:00Z",
+      "actor": "fixture-validator",
+      "citation_refs": ["fixture-citation:requirement-extraction-policy"],
+      "retention_label": "commit_safe_requirement_summary_180d",
+      "redacted_values": {
+        "requirement_summary_sample": "[REDACTED:synthetic_requirement]",
+        "evidence_span_sample": "[REDACTED:synthetic_span]"
+      },
+      "redaction_audit": {
+        "raw_values_committed": false,
+        "private_files_read": false,
+        "browser_artifacts_stored": false,
+        "official_action_attempted": false,
+        "checks": ["citation-ref-present", "human-review-state-summary", "no-source-body"]
+      },
+      "commit_safe_reason": "Requirement extraction is represented by cited synthetic summaries only.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "event_id": "journal-fixture-003",
+      "event_type": "user_gap_analysis",
+      "occurred_at": "2026-05-31T00:02:00Z",
+      "actor": "fixture-validator",
+      "citation_refs": ["fixture-citation:gap-analysis-policy"],
+      "retention_label": "commit_safe_gap_summary_180d",
+      "redacted_values": {
+        "known_fact_sample": "[REDACTED:synthetic_known_fact]",
+        "missing_fact_sample": "[REDACTED:synthetic_missing_fact]"
+      },
+      "redaction_audit": {
+        "raw_values_committed": false,
+        "private_files_read": false,
+        "browser_artifacts_stored": false,
+        "official_action_attempted": false,
+        "checks": ["no-user-fact-values", "blocked-actions-summary-only", "citation-ref-present"]
+      },
+      "commit_safe_reason": "Gap analysis records categories and blocked action summaries without private case facts.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "event_id": "journal-fixture-004",
+      "event_type": "reversible_draft_plan",
+      "occurred_at": "2026-05-31T00:03:00Z",
+      "actor": "fixture-validator",
+      "citation_refs": ["fixture-citation:gap-analysis-policy", "fixture-citation:devhub-guardrail-policy"],
+      "retention_label": "commit_safe_reversible_draft_summary_90d",
+      "redacted_values": {
+        "draft_field_label_sample": "[REDACTED:synthetic_field_label]",
+        "draft_source_sample": "[REDACTED:synthetic_source]"
+      },
+      "redaction_audit": {
+        "raw_values_committed": false,
+        "private_files_read": false,
+        "browser_artifacts_stored": false,
+        "official_action_attempted": false,
+        "checks": ["plan-only", "no-real-form", "reversible-action-only"]
+      },
+      "commit_safe_reason": "Draft plan is limited to reversible synthetic planning and does not draft a real form.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "event_id": "journal-fixture-005",
+      "event_type": "devhub_attended_preflight",
+      "occurred_at": "2026-05-31T00:04:00Z",
+      "actor": "fixture-validator",
+      "citation_refs": ["fixture-citation:devhub-guardrail-policy"],
+      "retention_label": "commit_safe_attended_preflight_summary_90d",
+      "redacted_values": {
+        "surface_name_sample": "[REDACTED:synthetic_surface]",
+        "preflight_result_sample": "[REDACTED:synthetic_preflight]"
+      },
+      "redaction_audit": {
+        "raw_values_committed": false,
+        "private_files_read": false,
+        "browser_artifacts_stored": false,
+        "official_action_attempted": false,
+        "checks": ["preflight-only", "no-browser-opened", "no-private-state"]
+      },
+      "commit_safe_reason": "DevHub row records an attended preflight expectation without opening DevHub or storing browser state.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "event_id": "journal-fixture-006",
+      "event_type": "manual_handoff",
+      "occurred_at": "2026-05-31T00:05:00Z",
+      "actor": "fixture-validator",
+      "citation_refs": ["fixture-citation:devhub-guardrail-policy", "fixture-citation:journal-retention-policy"],
+      "retention_label": "commit_safe_manual_handoff_summary_90d",
+      "redacted_values": {
+        "handoff_reason_sample": "[REDACTED:synthetic_handoff_reason]",
+        "confirmation_need_sample": "[REDACTED:synthetic_confirmation]"
+      },
+      "redaction_audit": {
+        "raw_values_committed": false,
+        "private_files_read": false,
+        "browser_artifacts_stored": false,
+        "official_action_attempted": false,
+        "checks": ["handoff-summary-only", "no-private-values", "no-official-step"]
+      },
+      "commit_safe_reason": "Manual handoff records a redacted reason and confirmation requirement only.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "event_id": "journal-fixture-007",
+      "event_type": "refused_action",
+      "occurred_at": "2026-05-31T00:06:00Z",
+      "actor": "fixture-validator",
+      "citation_refs": ["fixture-citation:devhub-guardrail-policy", "fixture-citation:journal-retention-policy"],
+      "retention_label": "commit_safe_refusal_summary_180d",
+      "redacted_values": {
+        "refused_action_sample": "[REDACTED:synthetic_refused_action]",
+        "policy_reason_sample": "[REDACTED:synthetic_policy_reason]"
+      },
+      "redaction_audit": {
+        "raw_values_committed": false,
+        "private_files_read": false,
+        "browser_artifacts_stored": false,
+        "official_action_attempted": false,
+        "checks": ["refusal-summary-only", "consequential-action-blocked", "citation-ref-present"]
+      },
+      "commit_safe_reason": "Refusal row documents that a consequential action was blocked without retaining sensitive details.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "event_id": "journal-fixture-008",
+      "event_type": "completion_evidence",
+      "occurred_at": "2026-05-31T00:07:00Z",
+      "actor": "fixture-validator",
+      "citation_refs": ["fixture-citation:journal-retention-policy"],
+      "retention_label": "commit_safe_completion_evidence_summary_180d",
+      "redacted_values": {
+        "validation_command_sample": "[REDACTED:offline_command_ref]",
+        "evidence_summary_sample": "[REDACTED:synthetic_evidence_summary]"
+      },
+      "redaction_audit": {
+        "raw_values_committed": false,
+        "private_files_read": false,
+        "browser_artifacts_stored": false,
+        "official_action_attempted": false,
+        "checks": ["offline-command-exact", "fixture-complete", "no-active-state-mutation"]
+      },
+      "commit_safe_reason": "Completion evidence is limited to fixture validation evidence and exact offline validation commands.",
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    }
+  ]
+}
