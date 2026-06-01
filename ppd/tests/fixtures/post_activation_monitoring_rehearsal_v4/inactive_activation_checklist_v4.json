@@ -1,0 +1,29 @@
+{
+  "checklist_version": "activation_checklist_v4",
+  "fixture_id": "inactive_activation_checklist_v4_fixture",
+  "activation_state": "inactive",
+  "fixture_only": true,
+  "external_effects_allowed": false,
+  "prohibited_actions": [
+    "activate_guardrails",
+    "open_devhub",
+    "read_private_documents",
+    "crawl_live_sites",
+    "upload",
+    "submit",
+    "certify",
+    "pay",
+    "schedule",
+    "legal_or_permitting_guarantee"
+  ],
+  "reviewer_routes": {
+    "blocked_consequential_action": "ppd-human-review",
+    "blocked_financial_action": "ppd-human-review",
+    "rollback_threshold_breach": "ppd-operations-review"
+  },
+  "thresholds": {
+    "stale_source_max_age_days": 30,
+    "rollback_error_budget_breach_count": 1
+  },
+  "exact_confirmation_phrase": "I understand this is an offline fixture rehearsal only"
+}

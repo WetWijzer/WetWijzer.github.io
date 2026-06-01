@@ -1,0 +1,77 @@
+{
+  "fixture_kind": "post_activation_monitoring_rehearsal_v4",
+  "snapshot_id": "monitoring-v4-public-only-2026-05-08",
+  "created_at": "2026-05-08T00:00:00Z",
+  "source_citations": [
+    {
+      "source_id": "src-devhub-guide-submit-application",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "title": "DevHub permit application guide",
+      "last_verified_at": "2026-05-08",
+      "excerpt": "The public guide describes application request types, save-for-later behavior, uploads, and acknowledgement review."
+    },
+    {
+      "source_id": "src-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "title": "Submit Plans Online / Single PDF Process",
+      "last_verified_at": "2026-05-08",
+      "excerpt": "Plans are prepared as one PDF while applications, calculations, and supporting documents are separate PDFs."
+    },
+    {
+      "source_id": "src-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "title": "DevHub FAQs",
+      "last_verified_at": "2026-05-08",
+      "excerpt": "DevHub account-scoped services include permit requests, corrections, inspection scheduling, and fee payment."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "case-missing-facts",
+      "source_ids": ["src-devhub-guide-submit-application"],
+      "missing_facts": ["site_address", "permit_type"],
+      "stale_evidence": [],
+      "conflicting_evidence": []
+    },
+    {
+      "case_id": "case-stale-evidence",
+      "source_ids": ["src-devhub-faq"],
+      "missing_facts": [],
+      "stale_evidence": [
+        {
+          "fact_id": "contractor_license_status",
+          "observed_at": "2026-01-15",
+          "freshness_required_after": "2026-05-01"
+        }
+      ],
+      "conflicting_evidence": []
+    },
+    {
+      "case_id": "case-conflicting-evidence",
+      "source_ids": ["src-devhub-guide-submit-application"],
+      "missing_facts": [],
+      "stale_evidence": [],
+      "conflicting_evidence": [
+        {
+          "fact_id": "project_scope",
+          "values": ["interior remodel", "detached ADU"],
+          "resolution_required": "Ask user to confirm the active scope before drafting."
+        }
+      ]
+    },
+    {
+      "case_id": "case-ready-draft",
+      "source_ids": ["src-devhub-guide-submit-application"],
+      "missing_facts": [],
+      "stale_evidence": [],
+      "conflicting_evidence": []
+    },
+    {
+      "case_id": "case-citations",
+      "source_ids": ["src-devhub-guide-submit-application", "src-submit-plans-online"],
+      "missing_facts": [],
+      "stale_evidence": [],
+      "conflicting_evidence": []
+    }
+  ]
+}

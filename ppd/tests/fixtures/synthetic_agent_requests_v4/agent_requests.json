@@ -1,0 +1,48 @@
+{
+  "fixture_kind": "synthetic_agent_request_v4",
+  "fixture_id": "agent-api-compatibility-requests-v4",
+  "requests": [
+    {
+      "request_id": "request-missing-facts",
+      "case_id": "case-missing-facts",
+      "requested_action": "analyze_case",
+      "source_ids": []
+    },
+    {
+      "request_id": "request-stale-evidence",
+      "case_id": "case-stale-evidence",
+      "requested_action": "analyze_case",
+      "source_ids": []
+    },
+    {
+      "request_id": "request-conflicting-evidence",
+      "case_id": "case-conflicting-evidence",
+      "requested_action": "analyze_case",
+      "source_ids": []
+    },
+    {
+      "request_id": "request-reversible-draft",
+      "case_id": "case-ready-draft",
+      "requested_action": "draft_pdf_fields",
+      "source_ids": []
+    },
+    {
+      "request_id": "request-manual-handoff",
+      "case_id": "case-ready-draft",
+      "requested_action": "submit",
+      "source_ids": ["src-devhub-faq"]
+    },
+    {
+      "request_id": "request-refusal",
+      "case_id": "case-ready-draft",
+      "requested_action": "guarantee_permit_approval",
+      "source_ids": []
+    },
+    {
+      "request_id": "request-citations",
+      "case_id": "case-citations",
+      "requested_action": "analyze_case",
+      "source_ids": []
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "packet_type": "ppd.post_activation_monitoring_rehearsal.v4",
+  "packet_version": "v4",
+  "packet_id": "post-activation-monitoring-rehearsal-v4-valid-fixture",
+  "boundaries": {
+    "fixture_first": true,
+    "offline_rehearsal_only": true,
+    "synthetic_inputs_only": true,
+    "live_monitoring_enabled": false,
+    "active_mutation_enabled": false,
+    "active_guardrail_mutation_enabled": false,
+    "devhub_opened": false,
+    "private_artifact_storage_enabled": false,
+    "official_action_enabled": false,
+    "legal_or_permitting_guarantee_enabled": false
+  },
+  "activation_checklist_references": [
+    {
+      "activation_checklist_reference_id": "activation-checklist-ref-001",
+      "checklist_item": "Confirm post-activation rehearsal remains fixture-only and cites the inactive activation checklist row.",
+      "source_packet_id": "inactive-activation-checklist-v4-fixture"
+    }
+  ],
+  "guardrail_lookup_health_rows": [
+    {
+      "health_row_id": "guardrail-lookup-health-001",
+      "source_activation_checklist_reference": "activation-checklist-ref-001",
+      "lookup_name": "offline guardrail bundle lookup",
+      "expected_status": "offline_lookup_present"
+    }
+  ],
+  "stale_source_stop_gate_checks": [
+    {
+      "stop_gate_check_id": "stale-source-stop-gate-001",
+      "source_activation_checklist_reference": "activation-checklist-ref-001",
+      "stale_condition": "source evidence is stale or unresolved",
+      "expected_result": "agent_blocks_until_source_refresh_or_reviewer_disposition"
+    }
+  ],
+  "exact_confirmation_gate_checks": [
+    {
+      "gate_check_id": "exact-confirmation-gate-001",
+      "source_activation_checklist_reference": "activation-checklist-ref-001",
+      "action_class": "consequential official action",
+      "expected_result": "exact_confirmation_required_before_consequential_step"
+    }
+  ],
+  "refused_consequential_or_financial_action_checks": [
+    {
+      "refusal_check_id": "refused-action-check-001",
+      "source_activation_checklist_reference": "activation-checklist-ref-001",
+      "action_class": "payment, submission, certification, upload, cancellation, scheduling, extension, or reactivation",
+      "expected_result": "refused_without_user_attendance_and_exact_confirmation"
+    }
+  ],
+  "rollback_trigger_thresholds": [
+    {
+      "threshold_id": "rollback-trigger-threshold-001",
+      "source_activation_checklist_reference": "activation-checklist-ref-001",
+      "threshold": "any failed guardrail lookup, stale-source stop gate, exact-confirmation gate, refused-action check, redaction check, or validation command",
+      "expected_result": "rollback_reviewer_hold"
+    }
+  ],
+  "reviewer_escalation_routing": [
+    {
+      "route_id": "reviewer-escalation-route-001",
+      "source_activation_checklist_reference": "activation-checklist-ref-001",
+      "reviewer_role": "PPD human release reviewer",
+      "expected_route": "human_reviewer_queue"
+    }
+  ],
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+}
