@@ -1,0 +1,26 @@
+{
+  "packet_type": "stale-source agent hold",
+  "version": 1,
+  "monitoring_outcome_references": [
+    {"id": "monitor-001", "status": "stale-source hold required"}
+  ],
+  "affected_missing_information_rows": [
+    {"row_id": "missing-info-001", "reason": "source freshness cannot be verified from committed corpus"}
+  ],
+  "blocked_action_rows": [
+    {"action_id": "crawl-001", "reason": "blocked until reviewer resolves stale source"}
+  ],
+  "next_safe_action_rows": [
+    {"action_id": "review-001", "owner": "reviewer", "action": "review committed fixture evidence"}
+  ],
+  "citation_warnings": [
+    {"citation_id": "citation-001", "warning": "citation requires reviewer confirmation before use"}
+  ],
+  "reviewer_holds": [
+    {"hold_id": "hold-001", "reviewer_required": true}
+  ],
+  "validation_commands": [
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ],
+  "notes": "Uses committed fixtures only. No network or browser automation was performed."
+}

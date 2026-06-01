@@ -1,16 +1,56 @@
 {
-  "createdAt": "2026-05-31T15:50:36.691003Z",
+  "createdAt": "2026-06-01T06:01:42.837824Z",
   "decision": {
-    "action": "reconcile_repeated_llm_loop_and_restart",
-    "reason": "4 recent durable LLM parse/runtime diagnostics were recorded for the same task before the daemon exited; park the looping task and restart on the next independent task without invoking the LLM repair path",
+    "action": "invoke_codex",
+    "reason": "3 consecutive daemon rounds failed without an accepted patch",
     "severity": "warning"
   },
   "failedAgenticRepair": {
-    "changedFiles": [],
-    "errors": [],
-    "failureKind": "llm",
-    "summary": "Repeated LLM parse/runtime diagnostic loop detected.",
-    "validationResults": []
+    "changedFiles": [
+      "ppd/daemon/prompt_builder.py"
+    ],
+    "errors": [
+      "Validation failed in temporary worktree; candidate was not promoted."
+    ],
+    "failureKind": "validation",
+    "summary": "Tighten PP&D daemon prompt construction for stuck long DevHub validation tasks and recent syntax-preflight failures.",
+    "validationResults": [
+      {
+        "command": [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ],
+        "returncode": 0,
+        "stderr": "/home/barberb/portland-laws.github.io/ppd/daemon/worktrees/cycle-20260601T060135824204Z-667af9c9/ppd/tests/test_draft_preview_agent_handoff_acceptance_packet_v2.py:104: SyntaxWarning: invalid escape sequence '\\[' with pytest.raises(AcceptancePacketError, match=\"migration_checklist_items\\[0\\].summary required\"):",
+        "stdout": "{ \"ok\": true, \"task_count\": 30 }"
+      },
+      {
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "ppd/tests",
+          "-p",
+          "test_*.py"
+        ],
+        "returncode": 1,
+        "stderr": ".................................................................................................................................................................................................................................................................................................................................................................................F.F...................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "bash",
+          "-lc",
+          "files=$(find ppd -name '*.ts' -not -path '*/node_modules/*' -print); test -z \"$files\" || npx tsc --noEmit --target ES2020 --module ESNext --moduleResolution node --strict --skipLibCheck --types node $files"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    ]
   },
   "fallbackActions": [
     "preserve failed repair diagnostics without accepting the invalid patch",

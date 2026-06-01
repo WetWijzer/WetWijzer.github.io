@@ -1,0 +1,67 @@
+{
+  "packet_type": "ppd.inactive_candidate_rollback_rehearsal_source.v1",
+  "fixture_first": true,
+  "offline_only": true,
+  "synthetic_refs_only": true,
+  "input_refs": {
+    "synthetic_inactive_release_candidate": {
+      "artifact_id": "synthetic_inactive_release_candidate_v1",
+      "schema_version": "v1",
+      "status": "inactive_hold",
+      "synthetic": true,
+      "inactive": true
+    },
+    "synthetic_smoke_replay": {
+      "artifact_id": "synthetic_smoke_replay_v1",
+      "schema_version": "v1",
+      "status": "blocked_regression_observed",
+      "synthetic": true,
+      "inactive": true
+    },
+    "synthetic_monitoring_outcome": {
+      "artifact_id": "synthetic_monitoring_outcome_v1",
+      "schema_version": "v1",
+      "status": "hold_required",
+      "synthetic": true,
+      "inactive": true
+    },
+    "synthetic_stale_source_hold_packet": {
+      "artifact_id": "synthetic_stale_source_hold_packet_v1",
+      "schema_version": "v1",
+      "status": "hold_active",
+      "synthetic": true,
+      "inactive": true
+    }
+  },
+  "reviewer_dispositions": [
+    {
+      "role": "release_reviewer",
+      "disposition": "hold_candidate_for_rollback_rehearsal",
+      "evidence_ref": "synthetic_inactive_release_candidate_v1@v1",
+      "requires_rollback_rehearsal": true
+    },
+    {
+      "role": "smoke_replay_reviewer",
+      "disposition": "rollback_required_due_to_smoke_replay_regression",
+      "evidence_ref": "synthetic_smoke_replay_v1@v1",
+      "requires_rollback_rehearsal": true
+    },
+    {
+      "role": "monitoring_reviewer",
+      "disposition": "rollback_required_due_to_monitoring_hold",
+      "evidence_ref": "synthetic_monitoring_outcome_v1@v1",
+      "requires_rollback_rehearsal": true
+    },
+    {
+      "role": "source_freshness_reviewer",
+      "disposition": "rollback_required_due_to_stale_source_hold",
+      "evidence_ref": "synthetic_stale_source_hold_packet_v1@v1",
+      "requires_rollback_rehearsal": true
+    }
+  ],
+  "exact_offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/inactive_candidate_rollback_rehearsal_packet_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_inactive_candidate_rollback_rehearsal_packet_v1.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

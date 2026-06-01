@@ -1,0 +1,100 @@
+{
+  "packet_type": "ppd.inactive_candidate_rollback_rehearsal_packet.v1",
+  "packet_version": "v1",
+  "fixture_only": true,
+  "rollback_rehearsal_only": true,
+  "candidate_only": true,
+  "inactive_candidate_refs": [
+    {
+      "candidate_ref": "inactive-candidate:source-registry-refresh-001",
+      "candidate_state": "inactive_reference_only",
+      "evidence_refs": [
+        "fixture:evidence:source-registry-refresh-001"
+      ],
+      "active_candidate_mutation": false
+    }
+  ],
+  "smoke_replay_refs": [
+    {
+      "smoke_replay_ref": "smoke-replay:inactive-candidate-001",
+      "replay_mode": "offline_fixture_only",
+      "passed": true,
+      "candidate_refs": [
+        "inactive-candidate:source-registry-refresh-001"
+      ]
+    }
+  ],
+  "monitoring_outcome_refs": [
+    {
+      "monitoring_outcome_ref": "monitoring-outcome:source-freshness-001",
+      "outcome": "clear_for_rehearsal",
+      "source_refs": [
+        "source:ppd-public-guidance"
+      ]
+    }
+  ],
+  "stale_source_hold_refs": [],
+  "rollback_triggers": [
+    {
+      "trigger_ref": "rollback-trigger:source-freshness-regression",
+      "trigger_state": "rehearsal_only",
+      "candidate_refs": [
+        "inactive-candidate:source-registry-refresh-001"
+      ],
+      "reason": "Rehearse reviewer-owned hold if freshness evidence regresses before any separate activation review."
+    }
+  ],
+  "rollback_order": [
+    {
+      "sequence": 1,
+      "trigger_ref": "rollback-trigger:source-freshness-regression",
+      "candidate_refs": [
+        "inactive-candidate:source-registry-refresh-001"
+      ],
+      "rollback_state": "rehearsal_only_no_active_rollback",
+      "validation_command_refs": [
+        "validation-command-1"
+      ]
+    }
+  ],
+  "evidence_preservation_checks": [
+    {
+      "check_ref": "evidence-preservation:inactive-candidate-001",
+      "evidence_ref": "inactive-candidate:source-registry-refresh-001",
+      "preserved": true,
+      "private_artifacts_absent": true,
+      "raw_artifacts_absent": true
+    },
+    {
+      "check_ref": "evidence-preservation:smoke-replay-001",
+      "evidence_ref": "smoke-replay:inactive-candidate-001",
+      "preserved": true,
+      "private_artifacts_absent": true,
+      "raw_artifacts_absent": true
+    }
+  ],
+  "reviewer_dispositions": [
+    {
+      "reviewer_ref": "reviewer:release-safety",
+      "disposition": "pending_manual_review",
+      "candidate_refs": [
+        "inactive-candidate:source-registry-refresh-001"
+      ],
+      "notes": "Manual reviewer disposition remains pending for this fixture-only rehearsal."
+    }
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "side_effect_attestations": {
+    "active_candidate_mutation": false,
+    "active_fixture_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false
+  }
+}

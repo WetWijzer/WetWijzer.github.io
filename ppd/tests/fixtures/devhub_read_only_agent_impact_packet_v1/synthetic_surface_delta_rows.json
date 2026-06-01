@@ -1,0 +1,18 @@
+[
+  {
+    "candidate_row_id": "surface-row-home-status",
+    "surface_id": "devhub-home-status-review",
+    "impact_topic": "DevHub home status review",
+    "delta_ref_id": "surface-delta-home-status",
+    "source_placeholder_id": "source-placeholder-home-status",
+    "reviewer_owner": "ppd-devhub-read-only-reviewer"
+  },
+  {
+    "candidate_row_id": "surface-row-attachment-list",
+    "surface_id": "devhub-attachment-list-review",
+    "impact_topic": "redacted attachment list metadata",
+    "delta_ref_id": "surface-delta-attachment-list",
+    "source_placeholder_id": "source-placeholder-attachment-list",
+    "reviewer_owner": "ppd-devhub-read-only-reviewer"
+  }
+]

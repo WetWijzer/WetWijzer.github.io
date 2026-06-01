@@ -1,0 +1,105 @@
+{
+  "packet_version": "devhub_read_only_surface_delta_packet_v1",
+  "packet_id": "devhub-read-only-surface-delta-v1-synthetic",
+  "mode": "offline_fixture_read_only_delta",
+  "observation_evidence_refs": [
+    {
+      "evidence_ref_id": "evidence-home-structure",
+      "source_packet_id": "readonly-observation-synthetic-v3",
+      "note": "Redacted fixture observation of the home status surface structure."
+    }
+  ],
+  "candidate_surface_map_change_rows": [
+    {
+      "candidate_row_id": "surface-row-home-status",
+      "surface_id": "devhub-home-status-review",
+      "change_type": "read_only_surface_metadata_candidate",
+      "reviewer_owner": "ppd-devhub-read-only-reviewer",
+      "review_status": "pending_human_review_hold",
+      "candidate_only": true,
+      "active_mutation": false,
+      "observation_evidence_ref_ids": ["evidence-home-structure"],
+      "selector_confidence_note_ids": ["selector-note-home-status"],
+      "action_classification_check_ids": ["action-check-home-status"],
+      "redaction_policy_impact_ids": ["redaction-impact-home-status"],
+      "attendance_or_exact_confirmation_requirement_ids": ["attendance-home-status"],
+      "unsupported_or_manual_handoff_path_ids": ["handoff-home-status"],
+      "reviewer_hold_ids": ["hold-home-status"]
+    }
+  ],
+  "selector_confidence_notes": [
+    {
+      "note_id": "selector-note-home-status",
+      "surface_id": "devhub-home-status-review",
+      "confidence": "fixture_only",
+      "note": "Selector confidence remains fixture-only and cannot be upgraded by this packet."
+    }
+  ],
+  "action_classification_checks": [
+    {
+      "check_id": "action-check-home-status",
+      "surface_id": "devhub-home-status-review",
+      "classification": "read_only",
+      "consequential_action_blocked": true,
+      "official_action_completed": false,
+      "note": "Only read-only status review metadata is represented."
+    }
+  ],
+  "redaction_policy_impacts": [
+    {
+      "impact_id": "redaction-impact-home-status",
+      "surface_id": "devhub-home-status-review",
+      "redaction_required": true,
+      "private_values_retained": false,
+      "note": "Only redacted labels and structural metadata may be retained."
+    }
+  ],
+  "attendance_or_exact_confirmation_requirements": [
+    {
+      "requirement_id": "attendance-home-status",
+      "surface_id": "devhub-home-status-review",
+      "requires_attendance": true,
+      "requires_exact_confirmation": true,
+      "automation_can_proceed_unattended": false,
+      "note": "Any later official workflow requires user attendance and exact confirmation."
+    }
+  ],
+  "unsupported_or_manual_handoff_paths": [
+    {
+      "path_id": "handoff-home-status",
+      "surface_id": "devhub-home-status-review",
+      "disposition": "manual_handoff",
+      "note": "Unsupported controls remain outside this candidate delta and require manual review."
+    }
+  ],
+  "reviewer_holds": [
+    {
+      "hold_id": "hold-home-status",
+      "surface_id": "devhub-home-status-review",
+      "hold_active": true,
+      "reviewer_role": "ppd-devhub-read-only-reviewer",
+      "note": "Hold stays active until human review accepts or rejects the candidate row."
+    }
+  ],
+  "artifact_policy": {
+    "captures_credentials": false,
+    "captures_session_state": false,
+    "captures_browser_artifacts": false,
+    "captures_screenshots": false,
+    "captures_traces": false,
+    "captures_har_files": false,
+    "captures_private_values": false,
+    "stores_raw_crawl_output": false,
+    "stores_raw_devhub_output": false,
+    "stores_downloaded_documents": false
+  },
+  "mutation_flags": {
+    "active_registry_mutation": false,
+    "active_surface_map_mutation": false,
+    "active_devhub_surface_mutation": false,
+    "surface_map_mutation_enabled": false,
+    "devhub_surface_mutation_enabled": false,
+    "registry_mutation_enabled": false
+  },
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+}

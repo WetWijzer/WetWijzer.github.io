@@ -1,0 +1,53 @@
+{
+  "fixture_id": "stale-source-agent-hold-packet-v1-synthetic-monitoring-outcomes",
+  "monitoring_outcomes": [
+    {
+      "row_id": "outcome-001",
+      "source_id": "source-devhub-permit-application-guide",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-guide-submit-permit-application",
+      "outcome": "stale",
+      "severity": "high",
+      "observed_at": "2026-06-01T10:19:00Z",
+      "affected_process_ids": ["process-building-permit-application"],
+      "affected_requirement_ids": ["requirement-devhub-application-dynamic-questions"],
+      "affected_guardrail_bundle_ids": ["guardrail-building-permit-application"],
+      "affected_agent_checks": ["permit_type_selection_complete", "dynamic_questions_current"],
+      "citation_ids": ["citation-devhub-guide-submit-application-steps"],
+      "current_next_safe_action": "draft_devhub_application_fields",
+      "replacement_next_safe_action": "hold_for_offline_source_freshness_review",
+      "reviewer_note": "Synthetic stale outcome requires affected permit application checks to hold before draft guidance is treated as current."
+    },
+    {
+      "row_id": "outcome-002",
+      "source_id": "source-submit-plans-online-single-pdf",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "outcome": "changed",
+      "severity": "medium",
+      "observed_at": "2026-06-01T10:19:00Z",
+      "affected_process_ids": ["process-building-permit-application"],
+      "affected_requirement_ids": ["requirement-single-pdf-plan-set", "requirement-supporting-documents-separate-pdfs"],
+      "affected_guardrail_bundle_ids": ["guardrail-building-permit-application"],
+      "affected_agent_checks": ["document_package_complete", "file_preparation_current"],
+      "citation_ids": ["citation-single-pdf-guidance"],
+      "current_next_safe_action": "tell_agent_ready_to_prepare_upload_package",
+      "replacement_next_safe_action": "ask_reviewer_to_confirm_file_preparation_requirements_offline",
+      "reviewer_note": "Synthetic changed outcome affects document and file preparation checks; uploads remain blocked."
+    },
+    {
+      "row_id": "outcome-003",
+      "source_id": "source-fee-payment-guide",
+      "canonical_url": "https://www.portland.gov/ppd/documents/how-pay-fees/download",
+      "outcome": "citation_gap",
+      "severity": "medium",
+      "observed_at": "2026-06-01T10:19:00Z",
+      "affected_process_ids": ["process-fee-payment-review"],
+      "affected_requirement_ids": ["requirement-payment-final-submit-gate"],
+      "affected_guardrail_bundle_ids": ["guardrail-fee-payment"],
+      "affected_agent_checks": ["payment_guidance_cited", "final_payment_blocked"],
+      "citation_ids": [],
+      "current_next_safe_action": "explain_payment_steps_from_cached_guidance",
+      "replacement_next_safe_action": "warn_that_payment_guidance_needs_reviewer_citation_before_use",
+      "reviewer_note": "Synthetic citation gap should warn agents not to present payment instructions as current."
+    }
+  ]
+}

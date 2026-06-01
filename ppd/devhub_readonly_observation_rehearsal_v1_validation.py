@@ -3,7 +3,7 @@
 These packets are offline review artifacts. They may describe redacted, cited UI
 observations, but they must not contain private account values, browser/session
 artifacts, write-capable actions, consequential action language, automated auth
-handling, or active state mutation flags.
+handling, live crawl claims, or active state mutation flags.
 """
 
 from __future__ import annotations
@@ -19,7 +19,9 @@ PUBLIC_CITATION_RE = re.compile(r"^https://", re.IGNORECASE)
 REQUIRED_REDACTION_REQUIREMENTS = frozenset(
     {
         "no_private_account_values",
+        "no_credentials",
         "no_session_files",
+        "no_browser_state",
         "no_screenshots",
         "no_traces",
         "no_har_artifacts",
@@ -32,8 +34,41 @@ REQUIRED_ATTENDANCE_CHECKPOINTS = frozenset(
         "operator_present_before_observation",
         "read_only_scope_review",
         "manual_handoff_on_consequential_control",
-        "user_visible_completion_review",
+        "user_visible_review",
     }
+)
+
+REQUIRED_PLACEHOLDER_KINDS = frozenset({"attachment", "status", "fee"})
+
+REQUIRED_COMMAND_PREFIXES = (
+    ("python3", "-m", "unittest"),
+    ("python3", "ppd/daemon/ppd_daemon.py", "--self-test"),
+)
+
+REQUIRED_ROW_COLLECTIONS = (
+    ("renewal_authorization_reference", ("renewal_authorization_references", "renewal_authorization_rows"), "renewal_authorization_reference"),
+    ("observed_heading_row", ("observed_heading_rows", "heading_rows"), "observed_heading"),
+    ("url_pattern_row", ("url_pattern_rows", "observed_url_pattern_rows"), "url_pattern"),
+    ("accessible_landmark_row", ("accessible_landmark_rows", "landmark_rows"), "landmark"),
+    ("read_only_action_label_row", ("read_only_action_label_rows", "action_label_rows"), "action_label"),
+    ("validation_message_row", ("validation_message_rows", "validation_rows"), "validation_message"),
+    ("stop_condition_row", ("stop_condition_rows", "stop_conditions"), "stop_condition"),
+    ("manual_handoff_row", ("manual_handoff_rows", "manual_handoffs"), "manual_handoff"),
+)
+
+CREDENTIAL_KEY_PARTS = (
+    "credential",
+    "credentials",
+    "password",
+    "passwd",
+    "passcode",
+    "secret",
+    "token",
+    "api_key",
+    "apikey",
+    "otp",
+    "one_time_code",
+    "mfa_code",
 )
 
 SESSION_KEY_PARTS = (
@@ -46,6 +81,14 @@ SESSION_KEY_PARTS = (
     "local_storage",
     "session_storage",
     "playwright_auth",
+)
+
+BROWSER_ARTIFACT_KEY_PARTS = (
+    "browser_state",
+    "browser_context",
+    "playwright_state",
+    "downloaded_document",
+    "raw_crawl_output",
 )
 
 SCREENSHOT_KEY_PARTS = ("screenshot", "screen_capture", "image_capture")
@@ -65,7 +108,6 @@ PRIVATE_VALUE_KEY_PARTS = (
     "license_number",
     "account_id",
     "username",
-    "password",
     "email",
     "phone",
 )
@@ -83,6 +125,26 @@ AUTH_AUTOMATION_KEY_PARTS = (
     "password_recovery",
 )
 
+OFFICIAL_COMPLETION_KEY_PARTS = (
+    "official_action_complete",
+    "official_action_completed",
+    "submission_complete",
+    "payment_complete",
+    "upload_complete",
+    "inspection_scheduled",
+    "permit_approved",
+)
+
+CONSEQUENTIAL_KEY_PARTS = (
+    "consequential_action",
+    "payment_action",
+    "submission_action",
+    "upload_action",
+    "schedule_action",
+    "certification_action",
+    "cancellation_action",
+)
+
 PRIVATE_VALUE_PATTERNS = (
     re.compile(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", re.IGNORECASE),
     re.compile(r"\b(?:\+?1[-. ]?)?\(?\d{3}\)?[-. ]\d{3}[-. ]\d{4}\b"),
@@ -93,7 +155,7 @@ ARTIFACT_PATH_PATTERNS = (
     re.compile(r"\b\S+\.har\b", re.IGNORECASE),
     re.compile(r"\btrace\.zip\b", re.IGNORECASE),
     re.compile(r"\b\S+\.(?:png|jpe?g|webp)\b", re.IGNORECASE),
-    re.compile(r"\b(?:storage_state|auth_state|cookies)\.json\b", re.IGNORECASE),
+    re.compile(r"\b(?:storage_state|auth_state|cookies|session)\.json\b", re.IGNORECASE),
     re.compile(r"file://", re.IGNORECASE),
     re.compile(r"/(?:home|Users|private|tmp|var/folders)/[^\s]+"),
     re.compile(r"[A-Za-z]:\\\\(?:Users|Temp|Windows|ProgramData)\\\\[^\s]+"),
@@ -125,8 +187,18 @@ AUTH_AUTOMATION_TEXT_RE = re.compile(
     re.IGNORECASE,
 )
 
-OFFICIAL_ACTION_LANGUAGE_RE = re.compile(
-    r"\b(?:certif(?:y|ies|ication)|acknowledg(?:e|ement)|submit|submission|submitted|payment|pay|paid|purchase|upload|attach|schedule|scheduling|cancel|cancellation|withdraw|reactivate|inspection)\b",
+OFFICIAL_ACTION_COMPLETION_RE = re.compile(
+    r"\b(?:certif(?:ied|ication completed)|acknowledg(?:ed|ement completed)|submitted|submission completed|payment completed|paid|purchased|uploaded|scheduled|cancelled|canceled|withdrawn|reactivated|inspection scheduled|permit approved|official action completed)\b",
+    re.IGNORECASE,
+)
+
+CONSEQUENTIAL_ACTION_RE = re.compile(
+    r"\b(?:certify|acknowledge|submit|pay|purchase|upload|schedule|cancel|withdraw|reactivate|finalize|official action|consequential action)\b",
+    re.IGNORECASE,
+)
+
+LIVE_CRAWL_RE = re.compile(
+    r"\b(?:live crawl|live crawler|ran live|performed live|live devhub|opened devhub|accessed devhub|authenticated devhub|logged in|used authenticated session|live browser|live network)\b",
     re.IGNORECASE,
 )
 
@@ -167,8 +239,11 @@ def validate_devhub_readonly_observation_rehearsal_v1(packet: Mapping[str, Any])
         return [ObservationRehearsalViolation("invalid_packet", "$", "packet must be a mapping")]
 
     _validate_ui_observations(packet, violations)
+    _validate_required_rows(packet, violations)
+    _validate_redacted_placeholders(packet, violations)
     _validate_redaction_requirements(packet, violations)
     _validate_attendance_checkpoints(packet, violations)
+    _validate_validation_commands(packet, violations)
     _scan_value(packet, "$", violations)
     return violations
 
@@ -227,6 +302,65 @@ def _validate_ui_observations(packet: Mapping[str, Any], violations: list[Observ
             violations.append(ObservationRehearsalViolation("uncited_ui_evidence", path, "UI observation requires a non-empty evidence summary"))
         if not _has_public_citation(observation.get("citations", observation.get("source_citations", observation.get("evidence_citations")))):
             violations.append(ObservationRehearsalViolation("uncited_ui_evidence", path, "UI observation lacks a public HTTPS citation"))
+
+
+def _validate_required_rows(packet: Mapping[str, Any], violations: list[ObservationRehearsalViolation]) -> None:
+    for code, keys, evidence_key in REQUIRED_ROW_COLLECTIONS:
+        rows = _first_present(packet, keys)
+        path = "$.'" + keys[0] + "'"
+        if not _is_sequence(rows) or not rows:
+            violations.append(ObservationRehearsalViolation("missing_" + code, path, "packet requires one or more cited " + keys[0]))
+            continue
+        for index, row in enumerate(rows):
+            row_path = f"$.{keys[0]}[{index}]"
+            if not isinstance(row, Mapping):
+                violations.append(ObservationRehearsalViolation("missing_" + code, row_path, "row must be a mapping"))
+                continue
+            evidence = row.get(evidence_key, row.get("label", row.get("value", row.get("summary"))))
+            if not isinstance(evidence, str) or not evidence.strip():
+                violations.append(ObservationRehearsalViolation("missing_" + code, row_path, "row requires observed text or pattern evidence"))
+            if not _has_public_citation(row.get("citations", row.get("source_citations", row.get("evidence_citations")))):
+                violations.append(ObservationRehearsalViolation("missing_" + code, row_path, "row requires a public HTTPS citation"))
+            if row.get("read_only") is not True and code in {"read_only_action_label_row", "stop_condition_row", "manual_handoff_row"}:
+                violations.append(ObservationRehearsalViolation("missing_" + code, row_path, "row must be explicitly read-only"))
+
+
+def _validate_redacted_placeholders(packet: Mapping[str, Any], violations: list[ObservationRehearsalViolation]) -> None:
+    rows = _first_present(packet, ("redacted_placeholder_rows", "redacted_placeholders", "placeholder_rows"))
+    if not _is_sequence(rows) or not rows:
+        violations.append(
+            ObservationRehearsalViolation(
+                "missing_redacted_placeholder_row",
+                "$.redacted_placeholder_rows",
+                "packet requires redacted attachment, status, and fee placeholder rows",
+            )
+        )
+        return
+
+    seen: set[str] = set()
+    for index, row in enumerate(rows):
+        path = f"$.redacted_placeholder_rows[{index}]"
+        if not isinstance(row, Mapping):
+            violations.append(ObservationRehearsalViolation("missing_redacted_placeholder_row", path, "placeholder row must be a mapping"))
+            continue
+        kind = str(row.get("placeholder_kind", row.get("kind", row.get("placeholder_type", "")))).strip().lower()
+        if kind:
+            seen.add(kind)
+        placeholder = row.get("placeholder", row.get("value", row.get("redacted_value")))
+        if not _is_redacted_marker(placeholder):
+            violations.append(ObservationRehearsalViolation("missing_redacted_placeholder_row", path, "placeholder row must use a redacted marker"))
+        if not _has_public_citation(row.get("citations", row.get("source_citations"))):
+            violations.append(ObservationRehearsalViolation("missing_redacted_placeholder_row", path, "placeholder row requires a public HTTPS citation"))
+
+    missing = REQUIRED_PLACEHOLDER_KINDS - seen
+    if missing:
+        violations.append(
+            ObservationRehearsalViolation(
+                "missing_redacted_placeholder_row",
+                "$.redacted_placeholder_rows",
+                "missing redacted placeholder kinds: " + ", ".join(sorted(missing)),
+            )
+        )
 
 
 def _validate_redaction_requirements(packet: Mapping[str, Any], violations: list[ObservationRehearsalViolation]) -> None:
@@ -307,6 +441,34 @@ def _validate_attendance_checkpoints(packet: Mapping[str, Any], violations: list
         )
 
 
+def _validate_validation_commands(packet: Mapping[str, Any], violations: list[ObservationRehearsalViolation]) -> None:
+    commands = packet.get("validation_commands")
+    if not _is_sequence(commands) or not commands:
+        violations.append(ObservationRehearsalViolation("missing_validation_command", "$.validation_commands", "packet requires deterministic validation commands"))
+        return
+
+    normalized: list[tuple[str, ...]] = []
+    for index, command in enumerate(commands):
+        path = f"$.validation_commands[{index}]"
+        if not _is_sequence(command) or not command or not all(isinstance(part, str) and part.strip() for part in command):
+            violations.append(ObservationRehearsalViolation("missing_validation_command", path, "validation command must be a non-empty argv list"))
+            continue
+        parts = tuple(str(part).strip() for part in command)
+        normalized.append(parts)
+        if any(part in {"&&", ";", "|", "||"} for part in parts):
+            violations.append(ObservationRehearsalViolation("missing_validation_command", path, "validation command must not be a shell pipeline"))
+
+    for prefix in REQUIRED_COMMAND_PREFIXES:
+        if not any(command[: len(prefix)] == prefix for command in normalized):
+            violations.append(
+                ObservationRehearsalViolation(
+                    "missing_validation_command",
+                    "$.validation_commands",
+                    "missing validation command prefix: " + " ".join(prefix),
+                )
+            )
+
+
 def _scan_value(value: Any, path: str, violations: list[ObservationRehearsalViolation], key_hint: str = "") -> None:
     if isinstance(value, Mapping):
         for raw_key, child in value.items():
@@ -327,8 +489,12 @@ def _scan_value(value: Any, path: str, violations: list[ObservationRehearsalViol
 
 
 def _scan_key_value(key: str, value: Any, path: str, violations: list[ObservationRehearsalViolation]) -> None:
+    if any(part in key for part in CREDENTIAL_KEY_PARTS) and _is_present(value) and not _is_redacted_marker(value):
+        violations.append(ObservationRehearsalViolation("credential_artifact", path, "credentials and authentication secrets are not allowed"))
     if any(part in key for part in SESSION_KEY_PARTS) and _is_present(value):
         violations.append(ObservationRehearsalViolation("session_file_artifact", path, "session files and auth state are not allowed"))
+    if any(part in key for part in BROWSER_ARTIFACT_KEY_PARTS) and _is_present(value):
+        violations.append(ObservationRehearsalViolation("browser_artifact", path, "browser state, raw crawl output, and downloaded artifacts are not allowed"))
     if any(part in key for part in SCREENSHOT_KEY_PARTS) and _is_present(value):
         violations.append(ObservationRehearsalViolation("screenshot_artifact", path, "screenshots are not allowed in committed intake packets"))
     if any(part in key for part in TRACE_KEY_PARTS) and _is_present(value):
@@ -339,6 +505,10 @@ def _scan_key_value(key: str, value: Any, path: str, violations: list[Observatio
         violations.append(ObservationRehearsalViolation("private_account_value", path, "private account values must be absent or redacted"))
     if any(part in key for part in AUTH_AUTOMATION_KEY_PARTS) and _is_present(value) and value is not False:
         violations.append(ObservationRehearsalViolation("prohibited_auth_automation", path, "automated login, CAPTCHA, MFA, password recovery, or account-creation handling is not allowed"))
+    if any(part in key for part in OFFICIAL_COMPLETION_KEY_PARTS) and _is_present(value) and value is not False:
+        violations.append(ObservationRehearsalViolation("official_action_completion_claim", path, "official-action completion claims are not allowed"))
+    if any(part in key for part in CONSEQUENTIAL_KEY_PARTS) and _is_present(value) and value is not False:
+        violations.append(ObservationRehearsalViolation("consequential_action_claim", path, "consequential-action claims are not allowed"))
     if key in {"action_class", "action_type", "control_class"} and str(value).strip().lower() in WRITE_ACTION_CLASSES:
         violations.append(ObservationRehearsalViolation("write_capable_action", path, "write-capable actions are not allowed"))
     if key in {"write_action_allowed", "write_capable", "can_write", "can_click", "can_fill", "official_action_allowed"} and value is not False:
@@ -385,17 +555,35 @@ def _scan_string(value: str, path: str, violations: list[ObservationRehearsalVio
             )
         )
 
-    if OFFICIAL_ACTION_LANGUAGE_RE.search(stripped):
+    if OFFICIAL_ACTION_COMPLETION_RE.search(stripped):
         violations.append(
             ObservationRehearsalViolation(
-                "prohibited_official_action_language",
+                "official_action_completion_claim",
                 path,
-                "certification, submission, payment, upload, scheduling, cancellation, or related official-action language is not allowed",
+                "official-action completion claims are not allowed",
+            )
+        )
+    elif CONSEQUENTIAL_ACTION_RE.search(stripped):
+        violations.append(
+            ObservationRehearsalViolation(
+                "consequential_action_claim",
+                path,
+                "consequential-action claims are not allowed in read-only observation packets",
             )
         )
 
+    if LIVE_CRAWL_RE.search(stripped):
+        violations.append(ObservationRehearsalViolation("live_crawl_claim", path, "live crawl, authenticated DevHub, and live browser claims are not allowed"))
+
     if MUTATION_TEXT_RE.search(stripped):
         violations.append(ObservationRehearsalViolation("active_mutation_flag", path, "string references active DevHub or state mutation"))
+
+
+def _first_present(packet: Mapping[str, Any], keys: Sequence[str]) -> Any:
+    for key in keys:
+        if key in packet:
+            return packet[key]
+    return None
 
 
 def _has_public_citation(citations: Any) -> bool:
@@ -436,4 +624,4 @@ def _is_redacted_marker(value: Any) -> bool:
     if not isinstance(value, str):
         return False
     normalized = value.strip().lower()
-    return normalized in {"[redacted]", "redacted", "", "***redacted***"}
+    return normalized in {"[redacted]", "redacted", "", "***redacted***", "[placeholder-redacted]"}

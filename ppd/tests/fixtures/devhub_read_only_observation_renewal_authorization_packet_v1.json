@@ -1,0 +1,97 @@
+{
+  "packet_version": "attended_devhub_read_only_observation_renewal_authorization_packet_v1",
+  "packet_id": "synthetic-read-only-observation-renewal-authorization-v1",
+  "attendance_prerequisites": [
+    {
+      "attendance_prerequisite_id": "attendance-required-1",
+      "status": "required",
+      "note": "A human operator must be present and must confirm the observation remains limited to read-only review."
+    }
+  ],
+  "allowed_read_only_surfaces": [
+    {
+      "surface_id": "devhub-home-status-review",
+      "classification": "safe_read_only",
+      "requires_attendance": true,
+      "allows_mutation": false,
+      "note": "Metadata-only review of headings, visible labels, and navigation state for renewal planning."
+    }
+  ],
+  "redaction_requirements": [
+    {
+      "redaction_requirement_id": "redaction-required-1",
+      "requirement": "Record synthetic labels, public citations, placeholder ids, and aggregate observation status only."
+    }
+  ],
+  "stop_conditions": [
+    {
+      "stop_condition_id": "stop-before-official-change-1",
+      "condition": "Stop before any submit application, pay fee, upload document, schedule inspection, certify, or cancel permit control."
+    }
+  ],
+  "manual_handoff_points": [
+    {
+      "manual_handoff_point_id": "handoff-before-official-change-1",
+      "note": "Manual handoff is required before submit permit, make payment, upload correction, schedule inspection, certification, or cancel permit workflows."
+    }
+  ],
+  "observation_evidence_placeholders": [
+    {
+      "evidence_placeholder_id": "evidence-placeholder-1",
+      "status": "placeholder_only",
+      "note": "Future observation evidence must stay metadata-only and cite public guidance or synthetic fixture ids."
+    }
+  ],
+  "authorization_rows": [
+    {
+      "authorization_row_id": "authorize-home-status-review-renewal",
+      "authorization_scope": "attended read-only observation renewal planning",
+      "reviewer_owner": "ppd-reviewer",
+      "renewal_reason": "Refresh offline surface mapping for visible status-review labels using fixture-first evidence.",
+      "attendance_prerequisite_id": "attendance-required-1",
+      "surface_id": "devhub-home-status-review",
+      "redaction_requirement_id": "redaction-required-1",
+      "stop_condition_id": "stop-before-official-change-1",
+      "manual_handoff_point_id": "handoff-before-official-change-1",
+      "evidence_placeholder_id": "evidence-placeholder-1",
+      "source_evidence_ids": [
+        "public-devhub-faq",
+        "public-online-permitting-tools"
+      ]
+    }
+  ],
+  "artifact_policy": {
+    "captures_auth_files": false,
+    "captures_browser_artifacts": false,
+    "captures_har_files": false,
+    "captures_private_page_values": false,
+    "captures_private_values": false,
+    "captures_screenshots": false,
+    "captures_session_state": false,
+    "captures_traces": false,
+    "creates_auth_files": false,
+    "creates_browser_artifacts": false,
+    "creates_har_files": false,
+    "creates_screenshots": false,
+    "creates_session_state": false,
+    "creates_traces": false,
+    "stores_downloads": false,
+    "stores_raw_crawl_output": false,
+    "stores_raw_private_output": false
+  },
+  "mutation_flags": {
+    "active_surface_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_agent_state_mutation": false,
+    "active_authorization_mutation": false
+  },
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "packet_type": "ppd.devhub_read_only_agent_impact_packet.v1",
+  "packet_version": "v1",
+  "packet_id": "fixture-devhub-read-only-agent-impact-packet-v1",
+  "fixture_only": true,
+  "read_only": true,
+  "surface_delta_refs": [
+    {
+      "surface_delta_ref": "surface-delta:devhub-home-status-read-only",
+      "surface_id": "devhub-home-status",
+      "delta_summary": "Fixture-only read-only status review surface delta placeholder.",
+      "read_only": true,
+      "active_surface_map_mutation": false
+    }
+  ],
+  "affected_missing_information_rows": [
+    {
+      "missing_information_row_id": "missing-info:permit-number",
+      "surface_delta_ref": "surface-delta:devhub-home-status-read-only",
+      "description": "Agent must ask for the permit or request number before read-only status comparison.",
+      "reviewer_hold_ref": "hold:missing-info:permit-number"
+    }
+  ],
+  "blocked_action_predicate_rows": [
+    {
+      "predicate_id": "blocked-action:official-upload",
+      "surface_delta_ref": "surface-delta:devhub-home-status-read-only",
+      "description": "Block any upload, submission, certification, scheduling, cancellation, or payment action.",
+      "reviewer_hold_ref": "hold:blocked-action:official-upload"
+    }
+  ],
+  "next_safe_action_rows": [
+    {
+      "next_safe_action_id": "next-safe-action:ask-for-public-reference",
+      "surface_delta_ref": "surface-delta:devhub-home-status-read-only",
+      "action_label": "Ask for a non-private public reference or stop for attended review.",
+      "reviewer_hold_ref": "hold:next-safe-action:ask-for-public-reference"
+    }
+  ],
+  "reversible_draft_eligibility_notes": [
+    {
+      "note_id": "reversible-note:metadata-only-draft",
+      "surface_delta_ref": "surface-delta:devhub-home-status-read-only",
+      "note": "Only metadata-only reversible draft guidance is eligible; no active DevHub change is allowed.",
+      "reviewer_hold_ref": "hold:reversible-note:metadata-only-draft"
+    }
+  ],
+  "exact_confirmation_warnings": [
+    {
+      "warning_id": "exact-confirmation:official-actions",
+      "surface_delta_ref": "surface-delta:devhub-home-status-read-only",
+      "description": "Consequential official actions require attended handoff and exact user confirmation outside this read-only packet.",
+      "reviewer_hold_ref": "hold:exact-confirmation:official-actions"
+    }
+  ],
+  "citation_source_placeholders": [
+    {
+      "placeholder_id": "citation-placeholder:devhub-faq-read-only-services",
+      "surface_delta_ref": "surface-delta:devhub-home-status-read-only",
+      "source_id": "source:ppd-devhub-faqs",
+      "citation_status": "pending_source_resolution",
+      "reviewer_hold_ref": "hold:citation-placeholder:devhub-faq-read-only-services"
+    }
+  ],
+  "reviewer_holds": [
+    {
+      "hold_id": "hold:missing-info:permit-number",
+      "row_id": "missing-info:permit-number",
+      "decision": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": ""
+    },
+    {
+      "hold_id": "hold:blocked-action:official-upload",
+      "row_id": "blocked-action:official-upload",
+      "decision": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": ""
+    },
+    {
+      "hold_id": "hold:next-safe-action:ask-for-public-reference",
+      "row_id": "next-safe-action:ask-for-public-reference",
+      "decision": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": ""
+    },
+    {
+      "hold_id": "hold:reversible-note:metadata-only-draft",
+      "row_id": "reversible-note:metadata-only-draft",
+      "decision": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": ""
+    },
+    {
+      "hold_id": "hold:exact-confirmation:official-actions",
+      "row_id": "exact-confirmation:official-actions",
+      "decision": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": ""
+    },
+    {
+      "hold_id": "hold:citation-placeholder:devhub-faq-read-only-services",
+      "row_id": "citation-placeholder:devhub-faq-read-only-services",
+      "decision": "pending_manual_review",
+      "reviewer": "",
+      "reviewed_at": ""
+    }
+  ],
+  "attestations": {
+    "active_contract_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_process_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_state_mutation": false,
+    "active_requirement_mutation": false,
+    "active_source_mutation": false,
+    "active_surface_map_mutation": false,
+    "consequential_action_performed": false,
+    "devhub_accessed": false,
+    "legal_or_permitting_guarantee_made": false,
+    "live_crawl_performed": false,
+    "live_devhub_claim_made": false,
+    "official_action_completed": false
+  },
+  "validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/agent_readiness/devhub_read_only_agent_impact_packet_v1.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_devhub_read_only_agent_impact_packet_v1.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

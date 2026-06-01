@@ -1,0 +1,86 @@
+{
+  "packet_id": "devhub-read-only-observation-renewal-authorization-v1-fixture",
+  "schema_version": "attended-devhub-read-only-observation-authorization-packet/v1",
+  "mode": "fixture_first_read_only_observation",
+  "created_for_task": "checkbox-48 supervisor-20260601-1023",
+  "live_devhub_opening_authorized": false,
+  "auth_state_storage_authorized": false,
+  "active_devhub_mutation_authorized": false,
+  "synthetic_user_attendance_prerequisites": [
+    "A synthetic test user is represented only by fixture metadata and no credential, cookie, token, MFA, CAPTCHA, or private account value is requested or stored.",
+    "Any future live observation must be attended by the real user in a visible browser and must pause before login, MFA, CAPTCHA, payment, upload, certification, submission, scheduling, cancellation, or account-change steps.",
+    "The observer may record only redacted structural facts and must treat account-scoped values as private by default."
+  ],
+  "allowed_read_only_surfaces": [
+    "DevHub Home structural landmarks after user-attended login confirmation",
+    "My Permits & Requests list structure without private values",
+    "Permit or request detail page headings, section labels, and status-label structure without private values",
+    "Fee notice review labels without payment detail entry",
+    "Correction request review labels without upload or official response",
+    "Attachment list labels without downloading private documents",
+    "Inspection result labels without scheduling, rescheduling, or cancellation"
+  ],
+  "redaction_requirements": [
+    "Redact names, emails, phone numbers, addresses, permit numbers, application numbers, IVR numbers, license numbers, invoice numbers, payment details, uploaded document names, local file paths, and free-text account messages.",
+    "Record selectors, headings, action labels, and validation-message categories only when they do not expose private values.",
+    "Do not create screenshots, Playwright traces, HAR files, raw HTML dumps, downloaded documents, cookies, local storage, session storage, auth state, or credential artifacts.",
+    "Use placeholders such as REDACTED_ACCOUNT_VALUE and STRUCTURE_ONLY_OBSERVATION when evidence would otherwise contain private account data."
+  ],
+  "stop_conditions": [
+    "Any credential, MFA, CAPTCHA, password recovery, account creation, or security challenge appears.",
+    "Any control would upload, submit, certify, pay, schedule, cancel, change account settings, or make an official record change.",
+    "A page requests payment card, bank, license, identity, property-owner, contractor, applicant, or private contact values.",
+    "A downloadable private document, authenticated raw response, screenshot, trace, HAR, or auth-state capture would be created.",
+    "The user is no longer present or cannot review the next observed action.",
+    "The observation would mutate an active DevHub surface map, prompt, guardrail, process model, release artifact, crawler state, or daemon state."
+  ],
+  "manual_handoff_points": [
+    "Opening DevHub or navigating to an authenticated DevHub surface",
+    "PortlandOregon.gov sign-in, MFA, CAPTCHA, account recovery, or account creation",
+    "Reviewing private permit, fee, correction, attachment, inspection, or account values",
+    "Deciding whether to download, upload, submit, certify, pay, schedule, cancel, or change account data",
+    "Approving any future transition from fixture-only observation planning to an attended live read-only observation"
+  ],
+  "observation_evidence_placeholders": [
+    {
+      "evidence_id": "placeholder-devhub-home-landmarks",
+      "surface": "DevHub Home",
+      "allowed_content": "Redacted landmark and navigation-label structure only",
+      "private_values": "REDACTED_ACCOUNT_VALUE",
+      "artifact_policy": "no screenshots, traces, HAR files, auth state, raw HTML, or downloads"
+    },
+    {
+      "evidence_id": "placeholder-my-permits-requests-structure",
+      "surface": "My Permits & Requests",
+      "allowed_content": "Section labels, table-header labels, and empty structural categories only",
+      "private_values": "REDACTED_ACCOUNT_VALUE",
+      "artifact_policy": "no screenshots, traces, HAR files, auth state, raw HTML, or downloads"
+    },
+    {
+      "evidence_id": "placeholder-permit-detail-status-labels",
+      "surface": "Permit detail read-only review",
+      "allowed_content": "Status-label categories and non-private validation-message categories only",
+      "private_values": "REDACTED_ACCOUNT_VALUE",
+      "artifact_policy": "no screenshots, traces, HAR files, auth state, raw HTML, or downloads"
+    }
+  ],
+  "prohibited_actions": [
+    "open_devhub",
+    "store_auth_state",
+    "create_screenshots_traces_or_har",
+    "read_private_values",
+    "fill_forms",
+    "upload_files",
+    "submit_requests",
+    "certify_acknowledgements",
+    "enter_or_execute_payments",
+    "schedule_or_cancel_inspections",
+    "change_account_settings",
+    "mutate_active_devhub_surface_prompt_guardrail_process_model_release_crawler_or_daemon_state"
+  ],
+  "offline_validation_commands": [
+    ["python3", "-m", "py_compile", "ppd/devhub/read_only_observation_authorization.py"],
+    ["python3", "-m", "pytest", "ppd/tests/test_read_only_observation_authorization_packet.py"],
+    ["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]
+  ]
+}

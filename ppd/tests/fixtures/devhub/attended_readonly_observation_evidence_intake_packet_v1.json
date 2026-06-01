@@ -1,0 +1,128 @@
+{
+  "packet_version": "attended_devhub_read_only_observation_evidence_intake_packet_v1",
+  "fixture_first": true,
+  "read_only_only": true,
+  "metadata_only": true,
+  "artifact_policy": {
+    "opens_devhub": false,
+    "stores_credentials": false,
+    "stores_session_state": false,
+    "stores_browser_artifacts": false,
+    "stores_auth_files": false,
+    "stores_screenshots": false,
+    "stores_traces": false,
+    "stores_har_files": false,
+    "stores_private_values": false,
+    "stores_raw_crawl_output": false,
+    "stores_downloaded_documents": false,
+    "performs_form_filling": false,
+    "performs_uploads": false,
+    "performs_submissions": false,
+    "performs_certifications": false,
+    "performs_payments": false,
+    "performs_inspection_scheduling": false,
+    "performs_cancellations": false,
+    "performs_account_changes": false,
+    "performs_live_crawl": false
+  },
+  "mutation_flags": {
+    "active_devhub_surface_mutation": false,
+    "active_prompt_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_process_model_mutation": false,
+    "active_release_state_mutation": false,
+    "active_crawler_mutation": false,
+    "active_daemon_state_mutation": false
+  },
+  "renewal_authorization_rows": [
+    {
+      "authorization_row_id": "renewal-auth-row-home-001",
+      "origin": "synthetic_renewal_authorization_row",
+      "classification": "safe_read_only",
+      "authorized_surface_id": "devhub-home-readonly-placeholder",
+      "authorized_evidence_categories": [
+        "page_heading",
+        "url_pattern",
+        "accessible_landmarks",
+        "read_only_action_labels",
+        "validation_messages",
+        "fee_notice_status_placeholders"
+      ]
+    },
+    {
+      "authorization_row_id": "renewal-auth-row-permit-detail-001",
+      "origin": "synthetic_renewal_authorization_row",
+      "classification": "read_only_observation",
+      "authorized_surface_id": "devhub-permit-detail-readonly-placeholder",
+      "authorized_evidence_categories": [
+        "page_heading",
+        "url_pattern",
+        "accessible_landmarks",
+        "read_only_action_labels",
+        "attachment_list_metadata_placeholders",
+        "fee_notice_status_placeholders"
+      ]
+    }
+  ],
+  "redacted_observation_placeholders": [
+    {
+      "placeholder_id": "redacted-placeholder-home-001",
+      "origin": "redacted_observation_placeholder",
+      "surface_id": "devhub-home-readonly-placeholder",
+      "private_values_redacted": true,
+      "placeholder_fields": [
+        "account-display-name-placeholder",
+        "case-summary-count-placeholder",
+        "dashboard-status-badge-placeholder"
+      ]
+    },
+    {
+      "placeholder_id": "redacted-placeholder-permit-detail-001",
+      "origin": "redacted_observation_placeholder",
+      "surface_id": "devhub-permit-detail-readonly-placeholder",
+      "private_values_redacted": true,
+      "placeholder_fields": [
+        "permit-id-placeholder",
+        "site-address-placeholder",
+        "attachment-label-placeholder",
+        "fee-notice-placeholder",
+        "status-text-placeholder"
+      ]
+    }
+  ],
+  "intake_rows": [
+    {
+      "intake_row_id": "intake-home-readonly-001",
+      "classification": "safe_read_only",
+      "authorization_row_id": "renewal-auth-row-home-001",
+      "placeholder_id": "redacted-placeholder-home-001",
+      "observed_page_headings": ["DevHub Home"],
+      "observed_url_patterns": ["https://devhub.portlandoregon.gov/home/*"],
+      "accessible_landmarks": ["banner", "navigation", "main", "contentinfo"],
+      "read_only_action_labels": ["View permits and requests", "Review status", "Open help"],
+      "validation_messages": ["Synthetic placeholder for dashboard empty-state message"],
+      "attachment_list_metadata_placeholders": ["No attachment list expected for synthetic home placeholder"],
+      "fee_notice_status_placeholders": ["Synthetic fee notice badge placeholder", "Synthetic status summary placeholder"],
+      "stop_condition_hits": ["Stop before any sign-in control, write-capable case action, official record change, payment, scheduling, cancellation, certification, or upload control."],
+      "manual_handoff_notes": ["Manual reviewer records only redacted labels and metadata placeholders, then hands off before any official action or private account detail is needed."],
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    },
+    {
+      "intake_row_id": "intake-permit-detail-readonly-001",
+      "classification": "read_only_observation",
+      "authorization_row_id": "renewal-auth-row-permit-detail-001",
+      "placeholder_id": "redacted-placeholder-permit-detail-001",
+      "observed_page_headings": ["Permit Details", "Status"],
+      "observed_url_patterns": ["https://devhub.portlandoregon.gov/permits/*", "https://devhub.portlandoregon.gov/requests/*"],
+      "accessible_landmarks": ["banner", "navigation", "main", "region:case-summary"],
+      "read_only_action_labels": ["View summary", "Review fees", "Review attachments", "Back to list"],
+      "validation_messages": ["Synthetic placeholder for missing filter text", "Synthetic placeholder for unavailable document metadata"],
+      "attachment_list_metadata_placeholders": ["attachment-label-placeholder", "attachment-count-placeholder", "last-updated-date-placeholder"],
+      "fee_notice_status_placeholders": ["fee-notice-label-placeholder", "amount-redacted-placeholder", "status-badge-placeholder"],
+      "stop_condition_hits": ["Stop before upload, submit, certification, payment, inspection scheduling, cancellation, account change, or any field edit."],
+      "manual_handoff_notes": ["Manual reviewer notes the redacted heading, URL pattern, landmarks, labels, and placeholder metadata only; any official action requires a separate attended confirmation."],
+      "offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    }
+  ],
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+}

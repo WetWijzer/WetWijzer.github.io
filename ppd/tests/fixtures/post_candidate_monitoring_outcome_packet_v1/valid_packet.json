@@ -1,0 +1,67 @@
+{
+  "packet_type": "ppd.post_candidate_monitoring_outcome_packet.v1",
+  "packet_id": "fixture-post-candidate-monitoring-outcome-packet-v1",
+  "monitoring_plan_ref": {
+    "packet_type": "ppd.post_candidate_public_refresh_monitoring_plan.v1",
+    "packet_id": "fixture-post-candidate-public-refresh-monitoring-plan-v1",
+    "fixture_path": "ppd/tests/fixtures/post_candidate_public_refresh_monitoring_plan_v1/valid_packet.json"
+  },
+  "purpose": "Record validation-first post-candidate public-refresh monitoring outcomes from synthetic plan rows only.",
+  "synthetic_monitoring_plan_rows": [
+    {
+      "check_id": "official-anchor-public-guidance-follow-up",
+      "coverage_categories": ["official_ppd_anchors", "devhub_public_guidance"],
+      "source_evidence_ids": ["src-ppd-landing-anchor", "src-online-permitting-tools", "src-devhub-faqs"],
+      "hold_thresholds": {"missing_required_source_count": 1, "changed_required_guidance_count": 1, "stale_fixture_age_days": 7},
+      "reviewer_routing": {"primary_reviewer": "ppd-public-source-reviewer", "escalation_reviewer": "ppd-release-owner"}
+    },
+    {
+      "check_id": "file-preparation-and-fee-guidance-follow-up",
+      "coverage_categories": ["file_preparation_guidance", "fee_payment_guidance"],
+      "source_evidence_ids": ["src-submit-plans-online", "src-spp-file-naming-standards", "src-fee-payment-guide"],
+      "hold_thresholds": {"missing_required_source_count": 1, "changed_required_guidance_count": 1, "stale_fixture_age_days": 7},
+      "reviewer_routing": {"primary_reviewer": "ppd-forms-and-fees-reviewer", "escalation_reviewer": "ppd-release-owner"}
+    },
+    {
+      "check_id": "forms-index-and-portland-maps-follow-up",
+      "coverage_categories": ["forms_index", "linked_portland_maps_references"],
+      "source_evidence_ids": ["src-permit-applications-forms-index", "src-linked-portland-maps-public-reference"],
+      "hold_thresholds": {"missing_required_source_count": 1, "missing_linked_reference_count": 1, "stale_fixture_age_days": 7},
+      "reviewer_routing": {"primary_reviewer": "ppd-source-linkage-reviewer", "escalation_reviewer": "ppd-release-owner"}
+    }
+  ],
+  "per_anchor_outcomes": [
+    {"source_evidence_id": "src-ppd-landing-anchor", "check_id": "official-anchor-public-guidance-follow-up", "outcome": "pass", "stale_source_reasons": [], "reviewer_routing": {"primary_reviewer": "ppd-public-source-reviewer", "route_reason": "synthetic anchor metadata remains within hold thresholds"}, "dependency_refs": ["fixture-post-candidate-public-refresh-monitoring-plan-v1", "src-ppd-landing-anchor"]},
+    {"source_evidence_id": "src-online-permitting-tools", "check_id": "official-anchor-public-guidance-follow-up", "outcome": "pass", "stale_source_reasons": [], "reviewer_routing": {"primary_reviewer": "ppd-public-source-reviewer", "route_reason": "synthetic public guidance metadata remains within hold thresholds"}, "dependency_refs": ["fixture-post-candidate-public-refresh-monitoring-plan-v1", "src-online-permitting-tools"]},
+    {"source_evidence_id": "src-devhub-faqs", "check_id": "official-anchor-public-guidance-follow-up", "outcome": "pass", "stale_source_reasons": [], "reviewer_routing": {"primary_reviewer": "ppd-public-source-reviewer", "route_reason": "synthetic DevHub public FAQ metadata remains within hold thresholds"}, "dependency_refs": ["fixture-post-candidate-public-refresh-monitoring-plan-v1", "src-devhub-faqs"]},
+    {"source_evidence_id": "src-submit-plans-online", "check_id": "file-preparation-and-fee-guidance-follow-up", "outcome": "pass", "stale_source_reasons": [], "reviewer_routing": {"primary_reviewer": "ppd-forms-and-fees-reviewer", "route_reason": "synthetic submit-plans guidance metadata remains within hold thresholds"}, "dependency_refs": ["fixture-post-candidate-public-refresh-monitoring-plan-v1", "src-submit-plans-online"]},
+    {"source_evidence_id": "src-spp-file-naming-standards", "check_id": "file-preparation-and-fee-guidance-follow-up", "outcome": "hold", "stale_source_reasons": ["fixture_age_exceeds_threshold"], "reviewer_routing": {"primary_reviewer": "ppd-forms-and-fees-reviewer", "escalation_reviewer": "ppd-release-owner"}, "dependency_refs": ["fixture-post-candidate-public-refresh-monitoring-plan-v1", "src-spp-file-naming-standards"]},
+    {"source_evidence_id": "src-fee-payment-guide", "check_id": "file-preparation-and-fee-guidance-follow-up", "outcome": "pass", "stale_source_reasons": [], "reviewer_routing": {"primary_reviewer": "ppd-forms-and-fees-reviewer", "route_reason": "synthetic fee-payment guidance metadata remains within hold thresholds"}, "dependency_refs": ["fixture-post-candidate-public-refresh-monitoring-plan-v1", "src-fee-payment-guide"]},
+    {"source_evidence_id": "src-permit-applications-forms-index", "check_id": "forms-index-and-portland-maps-follow-up", "outcome": "pass", "stale_source_reasons": [], "reviewer_routing": {"primary_reviewer": "ppd-source-linkage-reviewer", "route_reason": "synthetic forms-index metadata remains within hold thresholds"}, "dependency_refs": ["fixture-post-candidate-public-refresh-monitoring-plan-v1", "src-permit-applications-forms-index"]},
+    {"source_evidence_id": "src-linked-portland-maps-public-reference", "check_id": "forms-index-and-portland-maps-follow-up", "outcome": "reject", "stale_source_reasons": ["linked_reference_gap"], "reviewer_routing": {"primary_reviewer": "ppd-source-linkage-reviewer", "escalation_reviewer": "ppd-release-owner"}, "dependency_refs": ["fixture-post-candidate-public-refresh-monitoring-plan-v1", "src-linked-portland-maps-public-reference"]}
+  ],
+  "dependency_refs": ["ppd.post_candidate_public_refresh_monitoring_plan.v1", "fixture-post-candidate-public-refresh-monitoring-plan-v1", "ppd/tests/fixtures/post_candidate_public_refresh_monitoring_plan_v1/valid_packet.json"],
+  "reviewer_routing": {"primary_reviewer": "ppd-monitoring-outcome-reviewer", "escalation_reviewer": "ppd-release-owner"},
+  "execution_boundaries": {
+    "fixture_first_only": true,
+    "uses_live_crawl": false,
+    "uses_live_devhub": false,
+    "downloads_documents": false,
+    "opens_devhub": false,
+    "reads_private_files": false,
+    "changes_scheduler_state": false,
+    "performs_official_actions": false,
+    "active_source_mutation": false,
+    "active_archive_mutation": false,
+    "active_document_mutation": false,
+    "active_requirement_mutation": false,
+    "active_process_model_mutation": false,
+    "active_guardrail_mutation": false,
+    "active_prompt_mutation": false,
+    "active_release_mutation": false,
+    "active_crawler_mutation": false,
+    "active_daemon_mutation": false,
+    "active_monitoring_mutation": false
+  },
+  "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+}
