@@ -1,0 +1,150 @@
+{
+  "fixture_id": "process-model-impact-candidate-v4-fixture",
+  "requirement_reextraction_delta_queue_v4": [
+    {
+      "delta_id": "req-redelta-v4-eligibility-building-001",
+      "requirement_id": "req-building-eligibility-placeholder-001",
+      "requirement_queue_ref": "public-refresh-requirement-reextraction-delta-queue-v4:fixture",
+      "operation": "change",
+      "process_model_id": "pm-placeholder-building-alteration",
+      "prior_process_model_placeholder_ref": "pm-placeholder-building-alteration",
+      "impact_area": "eligibility_rules",
+      "impact_label": "eligibility-impact",
+      "candidate_text": "Inactive candidate: require reviewer confirmation that the building alteration path still matches the placeholder scope before activation.",
+      "source_evidence_ids": ["evidence-placeholder-building-eligibility-001"],
+      "rationale": "Synthetic v4 delta queue marks eligibility wording as changed.",
+      "reviewer_hold": "needs_process_owner_review"
+    },
+    {
+      "delta_id": "req-redelta-v4-facts-trade-001",
+      "requirement_id": "req-trade-fact-placeholder-001",
+      "requirement_queue_ref": "public-refresh-requirement-reextraction-delta-queue-v4:fixture",
+      "operation": "add",
+      "process_model_id": "pm-placeholder-trade-permit",
+      "prior_process_model_placeholder_ref": "pm-placeholder-trade-permit",
+      "impact_area": "required_facts",
+      "impact_label": "required-fact-impact",
+      "candidate_text": "Inactive candidate: add a required fact asking whether license-related fixture choices affect the placeholder trade workflow.",
+      "source_evidence_ids": ["evidence-placeholder-trade-fact-001"],
+      "rationale": "Synthetic v4 delta queue identifies a missing user fact for trade workflow screening.",
+      "reviewer_hold": "needs_source_review"
+    },
+    {
+      "delta_id": "req-redelta-v4-documents-solar-001",
+      "requirement_id": "req-solar-document-placeholder-001",
+      "requirement_queue_ref": "public-refresh-requirement-reextraction-delta-queue-v4:fixture",
+      "operation": "change",
+      "process_model_id": "pm-placeholder-solar-permit",
+      "prior_process_model_placeholder_ref": "pm-placeholder-solar-permit",
+      "impact_area": "required_documents",
+      "impact_label": "document-impact",
+      "candidate_text": "Inactive candidate: update solar placeholder documents to keep application materials separate from plan drawings until reviewer approval.",
+      "source_evidence_ids": ["evidence-placeholder-solar-document-001"],
+      "rationale": "Synthetic v4 delta queue identifies a document grouping impact.",
+      "reviewer_hold": "needs_process_owner_review"
+    },
+    {
+      "delta_id": "req-redelta-v4-file-rules-001",
+      "requirement_id": "req-file-rule-placeholder-001",
+      "requirement_queue_ref": "public-refresh-requirement-reextraction-delta-queue-v4:fixture",
+      "operation": "change",
+      "process_model_id": "pm-placeholder-building-alteration",
+      "prior_process_model_placeholder_ref": "pm-placeholder-building-alteration",
+      "impact_area": "file_rules",
+      "impact_label": "file-rule-impact",
+      "candidate_text": "Inactive candidate: add a file rule reminder that plan sets and supporting materials remain distinct placeholder uploads.",
+      "source_evidence_ids": ["evidence-placeholder-file-rule-001"],
+      "rationale": "Synthetic v4 delta queue identifies a file preparation impact.",
+      "reviewer_hold": "needs_source_review"
+    },
+    {
+      "delta_id": "req-redelta-v4-fee-001",
+      "requirement_id": "req-fee-placeholder-001",
+      "requirement_queue_ref": "public-refresh-requirement-reextraction-delta-queue-v4:fixture",
+      "operation": "hold",
+      "process_model_id": "pm-placeholder-trade-permit",
+      "prior_process_model_placeholder_ref": "pm-placeholder-trade-permit",
+      "impact_area": "fees",
+      "impact_label": "fee-impact",
+      "candidate_text": "Inactive candidate: hold fee trigger formalization until reviewer verifies whether the placeholder should model fee notice review only.",
+      "source_evidence_ids": ["evidence-placeholder-fee-001"],
+      "rationale": "Synthetic v4 delta queue identifies a fee trigger that should not be activated automatically.",
+      "reviewer_hold": "needs_rollback_review"
+    },
+    {
+      "delta_id": "req-redelta-v4-deadline-001",
+      "requirement_id": "req-deadline-placeholder-001",
+      "requirement_queue_ref": "public-refresh-requirement-reextraction-delta-queue-v4:fixture",
+      "operation": "hold",
+      "process_model_id": "pm-placeholder-trade-permit",
+      "prior_process_model_placeholder_ref": "pm-placeholder-trade-permit",
+      "impact_area": "deadlines",
+      "impact_label": "deadline-impact",
+      "candidate_text": "Inactive candidate: hold deadline formalization until reviewer verifies source wording and placeholder fit.",
+      "source_evidence_ids": ["evidence-placeholder-deadline-001"],
+      "rationale": "Synthetic v4 delta queue identifies a deadline candidate that should not be activated automatically.",
+      "reviewer_hold": "needs_source_review"
+    },
+    {
+      "delta_id": "req-redelta-v4-unsupported-path-001",
+      "requirement_id": "req-unsupported-path-placeholder-001",
+      "requirement_queue_ref": "public-refresh-requirement-reextraction-delta-queue-v4:fixture",
+      "operation": "add",
+      "process_model_id": "pm-placeholder-demolition-permit",
+      "prior_process_model_placeholder_ref": "pm-placeholder-demolition-permit",
+      "impact_area": "unsupported_paths",
+      "impact_label": "unsupported-path-impact",
+      "candidate_text": "Inactive candidate: add an unsupported-path note for workflows that the placeholder cannot confidently route through DevHub.",
+      "source_evidence_ids": ["evidence-placeholder-unsupported-path-001"],
+      "rationale": "Synthetic v4 delta queue identifies an unsupported-path candidate.",
+      "reviewer_hold": "needs_process_owner_review"
+    },
+    {
+      "delta_id": "req-redelta-v4-devhub-surface-001",
+      "requirement_id": "req-devhub-surface-placeholder-001",
+      "requirement_queue_ref": "public-refresh-requirement-reextraction-delta-queue-v4:fixture",
+      "operation": "change",
+      "process_model_id": "pm-placeholder-corrections",
+      "prior_process_model_placeholder_ref": "pm-placeholder-corrections",
+      "impact_area": "devhub_surface_refs",
+      "impact_label": "devhub-surface-ref-impact",
+      "candidate_text": "Inactive candidate: update the DevHub surface reference placeholder for correction review without claiming any observed account state.",
+      "source_evidence_ids": ["evidence-placeholder-devhub-surface-001"],
+      "rationale": "Synthetic v4 delta queue identifies a surface-reference impact for inactive review.",
+      "devhub_surface_ref": "surface-placeholder-corrections-review",
+      "reviewer_hold": "needs_surface_review"
+    }
+  ],
+  "process_model_placeholders": [
+    {
+      "process_model_id": "pm-placeholder-building-alteration",
+      "permit_type": "building alteration placeholder",
+      "placeholder_only": true,
+      "active_model_ref": null
+    },
+    {
+      "process_model_id": "pm-placeholder-trade-permit",
+      "permit_type": "trade permit placeholder",
+      "placeholder_only": true,
+      "active_model_ref": null
+    },
+    {
+      "process_model_id": "pm-placeholder-solar-permit",
+      "permit_type": "solar permit placeholder",
+      "placeholder_only": true,
+      "active_model_ref": null
+    },
+    {
+      "process_model_id": "pm-placeholder-demolition-permit",
+      "permit_type": "demolition permit placeholder",
+      "placeholder_only": true,
+      "active_model_ref": null
+    },
+    {
+      "process_model_id": "pm-placeholder-corrections",
+      "permit_type": "corrections placeholder",
+      "placeholder_only": true,
+      "active_model_ref": null
+    }
+  ]
+}

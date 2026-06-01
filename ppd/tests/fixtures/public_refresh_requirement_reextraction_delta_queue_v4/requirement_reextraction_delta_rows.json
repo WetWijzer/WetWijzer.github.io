@@ -1,0 +1,64 @@
+{
+  "requirement_reextraction_delta_queue_v4_rows": [
+    {
+      "requirement_reextraction_delta_queue_v4_row": true,
+      "row_id": "delta-row-devhub-faq-account-services-001",
+      "freshness_packet_refs": [
+        "freshness-packet::ppd-devhub-faq::2026-05-08"
+      ],
+      "source_evidence_placeholders": [
+        "placeholder:evidence-devhub-faq-account-services"
+      ],
+      "expected_requirement_types": [
+        "precondition",
+        "action_gate"
+      ],
+      "affected_process_stages": [
+        "account setup or manual login",
+        "application data entry"
+      ],
+      "human_review_status": "needs_human_review",
+      "skipped_source_reasons": [
+        "not_skipped_fixture_source"
+      ],
+      "reviewer_holds": [
+        "hold_until_freshness_packet_reviewed",
+        "hold_until_source_evidence_placeholder_resolved",
+        "hold_until_reviewer_approval"
+      ],
+      "validation_commands": [
+        [
+          "python3",
+          "-m",
+          "py_compile",
+          "ppd/agent_readiness/public_refresh_requirement_reextraction_delta_queue_v4.py"
+        ],
+        [
+          "python3",
+          "-m",
+          "pytest",
+          "ppd/tests/test_public_refresh_requirement_reextraction_delta_queue_v4.py"
+        ],
+        [
+          "python3",
+          "ppd/daemon/ppd_daemon.py",
+          "--self-test"
+        ]
+      ],
+      "candidate_requirement_id": "pending-requirement-devhub-account-services-delta",
+      "candidate_summary": "Synthetic delta row for reviewer-only requirement re-extraction planning from normalized public DevHub FAQ evidence placeholders.",
+      "active_mutation": false,
+      "active_requirement_mutation": false,
+      "active_process_model_mutation": false,
+      "active_guardrail_mutation": false,
+      "live_crawl": false,
+      "live_extraction": false,
+      "ocr_completed": false,
+      "raw_public_body_artifact": false,
+      "private_artifact": false,
+      "session_artifact": false,
+      "auth_artifact": false,
+      "legal_or_permitting_guarantee": false
+    }
+  ]
+}

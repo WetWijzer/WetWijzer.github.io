@@ -1,0 +1,4 @@
+{
+  "manifest_id": "fixture-first-guardrail-recompile-reviewer-packet-v4-manifest",
+  "guardrail_bundle_recompile_candidate_v4_fixture": "../guardrail_bundle_recompile_candidate_v4/input_manifest.json"
+}

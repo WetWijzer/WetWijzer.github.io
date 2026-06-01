@@ -1,0 +1,64 @@
+{
+  "replay_version": "post-recompile-agent-readiness-replay-v4",
+  "reviewer_packet_refs": [
+    "ppd/tests/fixtures/post_recompile_agent_readiness_replay_v4/reviewer_packet_summary.json"
+  ],
+  "synthetic_agent_request_fixtures": [
+    {
+      "fixture_id": "safe-gap-analysis-request",
+      "path": "ppd/tests/fixtures/post_recompile_agent_readiness_replay_v4/safe_gap_analysis_request.json"
+    }
+  ],
+  "affected_missing_information_prompts": [
+    {
+      "prompt_id": "property-owner-confirmation",
+      "reason": "Owner relationship is required before a draft permit workflow can be considered ready."
+    }
+  ],
+  "blocked_stale_evidence_paths": [
+    {
+      "path": "source_evidence.permit_fees.last_verified_at",
+      "block_reason": "Fee evidence must be refreshed before payment guidance is offered."
+    }
+  ],
+  "blocked_consequential_or_financial_actions": [
+    {
+      "action": "submit_permit_application",
+      "block_reason": "Official submission requires attended user review and exact confirmation."
+    },
+    {
+      "action": "pay_permit_fee",
+      "block_reason": "Payment detail entry and final payment execution are financial actions."
+    }
+  ],
+  "reversible_draft_only_next_actions": [
+    {
+      "action": "draft_local_pdf_field_mapping",
+      "limit": "Local preview only; no upload, certification, submission, scheduling, cancellation, or payment."
+    }
+  ],
+  "explanation_template_coverage": {
+    "missing_information": "Ask for the specific missing fact and cite the affected PP&D process requirement.",
+    "stale_evidence": "Explain which evidence is stale and that the action is blocked until refreshed.",
+    "consequential_action": "Explain that the user must be present and give exact confirmation before official action."
+  },
+  "manual_handoff_reminders": [
+    "Manual handoff is required for login, MFA, CAPTCHA, certification, upload, submission, scheduling, cancellation, and payment."
+  ],
+  "rollback_notes": [
+    "Replay readiness changes are validation-only and can be rolled back by removing this packet from the replay set.",
+    "Draft-only local artifacts must not be treated as official DevHub changes."
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "runtime_controls": {
+    "read_only_replay": true,
+    "draft_only": true,
+    "requires_attended_handoff": true
+  }
+}

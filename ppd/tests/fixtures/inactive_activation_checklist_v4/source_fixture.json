@@ -1,0 +1,184 @@
+{
+  "fixture_id": "inactive-activation-checklist-v4-source-fixture",
+  "post_decision_smoke_replay_v4_refs": [
+    "ppd/tests/fixtures/post_decision_smoke_replay_v4/source_fixture.json"
+  ],
+  "post_decision_smoke_replay_v4_fixtures": [
+    {
+      "packet_type": "ppd.post_decision_smoke_replay.v4",
+      "packet_version": "v4",
+      "packet_id": "post-decision-smoke-replay-v4-fixture",
+      "mode": "fixture_first_post_decision_smoke_replay_v4",
+      "consumes_only": {
+        "release_decision_packet_v4_fixtures": true,
+        "inactive_guardrail_placeholder_fixtures": true
+      },
+      "source_fixture_refs": [
+        "ppd/tests/fixtures/post_decision_smoke_replay_v4/source_fixture.json"
+      ],
+      "required_source_references": {
+        "release_decision_packet_v4_refs": [
+          "ppd/tests/fixtures/release_decision_packet_v4/inactive_guardrail_promotion_candidates_v4.json"
+        ],
+        "inactive_guardrail_placeholder_fixture_refs": [
+          "placeholder-guardrail-no-go-outcome",
+          "placeholder-guardrail-source-freshness-caveat"
+        ]
+      },
+      "boundaries": {
+        "fixture_first": true,
+        "release_decision_packet_v4_fixtures_only": true,
+        "inactive_guardrail_placeholder_fixtures_only": true,
+        "guardrail_activation_enabled": false,
+        "devhub_opened": false,
+        "private_documents_read": false,
+        "upload_enabled": false,
+        "submission_enabled": false,
+        "certification_enabled": false,
+        "payment_enabled": false,
+        "scheduling_enabled": false,
+        "legal_or_permitting_guarantee_enabled": false
+      },
+      "release_outcome_handling": {
+        "go_no_go_outcome": "NO_GO",
+        "agent_expected_outcome": "block_activation_and_surface_unresolved_holds",
+        "candidate_ids": [
+          "candidate-v4-inactive-zoning-crosscheck",
+          "candidate-v4-inactive-intake-smoke"
+        ],
+        "activation_allowed": false
+      },
+      "unresolved_hold_propagation": [
+        {
+          "candidate_id": "candidate-v4-inactive-zoning-crosscheck",
+          "hold_id": "hold-source-freshness-review",
+          "reason": "Reviewer has not accepted the fixture source freshness caveat.",
+          "owner_placeholder": "TBD_SOURCE_REVIEWER",
+          "hold_status": "unresolved_hold_propagated",
+          "blocks_go": true
+        }
+      ],
+      "source_freshness_caveat_display": [
+        {
+          "display_id": "source-freshness-c480027b30c0",
+          "display_text": "Fixture data is suitable for offline packet assembly only and does not prove current Portland PP&D source freshness.",
+          "display_required": true
+        }
+      ],
+      "agent_api_compatibility_notes": [
+        {
+          "display_id": "agent-api-0c57f102fb96",
+          "display_text": "Packet consumers must treat this as reviewer guidance data, not as an activation contract.",
+          "display_required": true
+        },
+        {
+          "display_id": "agent-api-623e5f8ccdf3",
+          "display_text": "Post-decision smoke replay must remain offline unless a separate approved task authorizes later access.",
+          "display_required": true
+        }
+      ],
+      "guardrail_placeholder_checks": [
+        {
+          "placeholder_id": "placeholder-guardrail-no-go-outcome",
+          "guardrail_bundle_id": "inactive-placeholder-bundle-no-go-outcome",
+          "placeholder_status": "inactive_placeholder_only",
+          "activation_allowed": false,
+          "expected_agent_behavior": "treat_as_placeholder_and_do_not_activate"
+        },
+        {
+          "placeholder_id": "placeholder-guardrail-source-freshness-caveat",
+          "guardrail_bundle_id": "inactive-placeholder-bundle-source-freshness",
+          "placeholder_status": "inactive_placeholder_only",
+          "activation_allowed": false,
+          "expected_agent_behavior": "treat_as_placeholder_and_do_not_activate"
+        }
+      ],
+      "rollback_owner_placeholders": [
+        {
+          "candidate_or_placeholder_id": "candidate-v4-inactive-zoning-crosscheck",
+          "rollback_owner_placeholder": "TBD_ROLLBACK_OWNER",
+          "rollback_decision_placeholder": "TBD_AFTER_REVIEW",
+          "owner_assignment_status": "placeholder_pending_manual_assignment",
+          "active_state_changed": false
+        },
+        {
+          "candidate_or_placeholder_id": "candidate-v4-inactive-intake-smoke",
+          "rollback_owner_placeholder": "TBD_ROLLBACK_OWNER",
+          "rollback_decision_placeholder": "TBD_AFTER_REVIEW",
+          "owner_assignment_status": "placeholder_pending_manual_assignment",
+          "active_state_changed": false
+        },
+        {
+          "candidate_or_placeholder_id": "placeholder-guardrail-no-go-outcome",
+          "rollback_owner_placeholder": "TBD_ROLLBACK_OWNER",
+          "rollback_decision_placeholder": "TBD_AFTER_REVIEW",
+          "owner_assignment_status": "placeholder_pending_manual_assignment",
+          "active_state_changed": false
+        }
+      ],
+      "manual_handoff_reminders": [
+        {
+          "reminder_id": "manual-handoff-release-reviewer",
+          "handoff_status": "pending_manual_handoff",
+          "acknowledgement_required": true,
+          "reminder": "Human release reviewer must reconcile no-go holds before any later activation task."
+        }
+      ],
+      "smoke_expectations": [
+        {
+          "expectation_id": "go-no-go-outcome-handling",
+          "expected_result": "NO_GO",
+          "activation_allowed": false
+        },
+        {
+          "expectation_id": "inactive-guardrail-placeholder-checks",
+          "expected_result": "all_placeholders_remain_inactive",
+          "activation_allowed": false
+        },
+        {
+          "expectation_id": "unresolved-hold-propagation",
+          "expected_result": "unresolved_holds_are_preserved_and_block_go",
+          "activation_allowed": false
+        },
+        {
+          "expectation_id": "source-freshness-caveat-display",
+          "expected_result": "source_freshness_caveats_are_user_visible",
+          "activation_allowed": false
+        },
+        {
+          "expectation_id": "agent-api-compatibility-checks",
+          "expected_result": "agent_api_compatibility_notes_are_user_visible",
+          "activation_allowed": false
+        },
+        {
+          "expectation_id": "rollback-owner-placeholder-checks",
+          "expected_result": "rollback_owners_remain_placeholder_pending_manual_assignment",
+          "activation_allowed": false
+        },
+        {
+          "expectation_id": "manual-handoff-reminders",
+          "expected_result": "manual_handoff_acknowledgement_required",
+          "activation_allowed": false
+        },
+        {
+          "expectation_id": "offline-validation-command-exactness",
+          "expected_result": "daemon_self_test_only",
+          "activation_allowed": false
+        }
+      ],
+      "attestations": {
+        "guardrails_activated": false,
+        "devhub_opened": false,
+        "private_documents_read": false,
+        "uploads_performed": false,
+        "submissions_performed": false,
+        "certifications_performed": false,
+        "payments_performed": false,
+        "scheduling_performed": false,
+        "legal_or_permitting_guarantees_made": false
+      },
+      "exact_offline_validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]],
+      "validation_commands": [["python3", "ppd/daemon/ppd_daemon.py", "--self-test"]]
+    }
+  ]
+}

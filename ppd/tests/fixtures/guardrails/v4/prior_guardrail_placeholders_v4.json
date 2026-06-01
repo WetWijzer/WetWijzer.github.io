@@ -1,0 +1,24 @@
+{
+  "schema": "prior_guardrail_placeholder_fixture_v4",
+  "fixture_id": "prior-placeholder-guardrails-v4",
+  "guardrails": [
+    {
+      "guardrail_id": "inactive-permit-intake-source-check",
+      "placeholder_id": "placeholder-permit-intake-source-check",
+      "agent_id": "permit-intake-agent",
+      "notes": "candidate must remain inactive pending reviewer signoff"
+    },
+    {
+      "guardrail_id": "inactive-inspection-routing-source-check",
+      "placeholder_id": "placeholder-inspection-routing-source-check",
+      "agent_id": "inspection-routing-agent",
+      "notes": "held because readiness replay is not ready"
+    },
+    {
+      "guardrail_id": "inactive-legacy-source-check",
+      "placeholder_id": "placeholder-legacy-source-check",
+      "agent_id": "legacy-agent",
+      "notes": "held because no post-recompile replay exists"
+    }
+  ]
+}

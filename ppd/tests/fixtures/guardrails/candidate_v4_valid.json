@@ -1,0 +1,43 @@
+{
+  "candidate_version": "v4",
+  "process_impact_references": [
+    "ppd process map reference: intake review remains read-only"
+  ],
+  "prior_guardrail_placeholders": [
+    "placeholder retained for preexisting no-submit guardrail"
+  ],
+  "inactive_predicate_changes": [
+    {
+      "name": "draft_only_permit_status_predicate",
+      "active": false,
+      "reason": "candidate describes an inactive predicate only"
+    }
+  ],
+  "reversible_action_gates": [
+    "all generated artifacts are local fixtures and may be discarded"
+  ],
+  "exact_confirmation_gates": [
+    "requires exact user confirmation before any future non-read-only step"
+  ],
+  "refused_consequential_financial_action_gates": [
+    "refuses payment, submission, certification, cancellation, and upload actions"
+  ],
+  "stale_evidence_blocks": [
+    "blocks recommendations when source evidence is stale or undated"
+  ],
+  "explanation_templates": [
+    "explain source, timestamp, limitation, and next manual review step"
+  ],
+  "reviewer_holds": [
+    "hold for reviewer when evidence conflicts or official action is requested"
+  ],
+  "rollback_notes": [
+    "remove candidate bundle and keep prior guardrails unchanged"
+  ],
+  "validation_commands": [
+    ["python3", "-m", "pytest", "ppd/tests/test_guardrail_bundle_candidate_v4.py"]
+  ],
+  "notes": [
+    "candidate is read-only and fixture-backed"
+  ]
+}

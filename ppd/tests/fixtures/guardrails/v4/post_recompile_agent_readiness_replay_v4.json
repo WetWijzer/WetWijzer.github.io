@@ -1,0 +1,16 @@
+{
+  "schema": "post_recompile_agent_readiness_replay_v4",
+  "replay_id": "fixture-readiness-replay-v4",
+  "agents": [
+    {
+      "agent_id": "permit-intake-agent",
+      "ready": true,
+      "compiled_at": "2026-06-01T00:00:00Z"
+    },
+    {
+      "agent_id": "inspection-routing-agent",
+      "ready": false,
+      "compiled_at": "2026-06-01T00:00:00Z"
+    }
+  ]
+}

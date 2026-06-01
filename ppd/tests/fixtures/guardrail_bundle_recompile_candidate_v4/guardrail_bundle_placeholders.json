@@ -1,0 +1,22 @@
+{
+  "packet_type": "ppd.guardrail_bundle_placeholders.v1",
+  "placeholders": [
+    {
+      "guardrail_bundle_id": "placeholder-guardrail-bundle-single-pdf-v1",
+      "process_id": "process-single-pdf-fixture",
+      "active": false,
+      "status": "placeholder_only",
+      "predicate_slots": [
+        {"slot_id": "slot-reversible-actions", "category": "reversible_action_predicates"},
+        {"slot_id": "slot-exact-confirmation", "category": "exact_confirmation_predicates"},
+        {"slot_id": "slot-refused-consequential", "category": "refused_consequential_action_predicates"},
+        {"slot_id": "slot-stale-evidence", "category": "stale_evidence_block_predicates"},
+        {"slot_id": "slot-explanation-template", "category": "explanation_templates"},
+        {"slot_id": "slot-validation-status", "category": "validation_status"},
+        {"slot_id": "slot-reviewer-holds", "category": "reviewer_holds"},
+        {"slot_id": "slot-rollback-notes", "category": "rollback_notes"},
+        {"slot_id": "slot-offline-validation", "category": "offline_validation_commands"}
+      ]
+    }
+  ]
+}

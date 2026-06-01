@@ -1,0 +1,67 @@
+{
+  "packet_version": "public-source-freshness-evidence-packet-v4",
+  "packet_id": "freshness-packet-v4-fixture-001",
+  "generated_from": "committed fixture only",
+  "sources": [
+    {
+      "source_id": "bds-permit-application-html",
+      "source_type": "html",
+      "public_url": "https://www.portland.gov/ppd/permits/building-permits",
+      "freshness_status": "changed",
+      "previous_fingerprint": "sha256:old-html-fixture",
+      "current_fingerprint": "sha256:new-html-fixture",
+      "last_seen_at": "2026-05-20T00:00:00Z",
+      "expected_requirement_types": ["submittal", "fee", "inspection"],
+      "affected_process_stages": ["application", "plan_review", "inspection"],
+      "reviewer_holds": ["confirm changed fee language before extraction"]
+    },
+    {
+      "source_id": "commercial-permit-application-pdf",
+      "source_type": "pdf",
+      "public_url": "https://www.portland.gov/ppd/documents/commercial-building-permit-application/download",
+      "freshness_status": "stale",
+      "previous_fingerprint": "sha256:old-pdf-fixture",
+      "current_fingerprint": "sha256:old-pdf-fixture",
+      "last_seen_at": "2026-04-01T00:00:00Z",
+      "expected_requirement_types": ["form_field", "signature", "document"],
+      "affected_process_stages": ["application", "intake"],
+      "reviewer_holds": ["PDF text must be reviewed from approved fixture evidence only"]
+    },
+    {
+      "source_id": "intake-form-public-form",
+      "source_type": "form",
+      "public_url": "https://www.portland.gov/ppd/permits/apply",
+      "freshness_status": "review_required",
+      "previous_fingerprint": null,
+      "current_fingerprint": "sha256:form-fixture",
+      "last_seen_at": "2026-05-28T00:00:00Z",
+      "expected_requirement_types": ["form_field", "eligibility", "attestation"],
+      "affected_process_stages": ["application", "intake"],
+      "reviewer_holds": ["manual reviewer must verify no authenticated DevHub behavior is inferred"]
+    },
+    {
+      "source_id": "unchanged-public-checklist",
+      "source_type": "html",
+      "public_url": "https://www.portland.gov/ppd/permits/checklists",
+      "freshness_status": "unchanged",
+      "previous_fingerprint": "sha256:same",
+      "current_fingerprint": "sha256:same",
+      "last_seen_at": "2026-05-29T00:00:00Z",
+      "expected_requirement_types": ["checklist"],
+      "affected_process_stages": ["application"],
+      "reviewer_holds": []
+    },
+    {
+      "source_id": "gis-layer",
+      "source_type": "map",
+      "public_url": "https://www.portlandmaps.com/",
+      "freshness_status": "changed",
+      "previous_fingerprint": "sha256:old-map",
+      "current_fingerprint": "sha256:new-map",
+      "last_seen_at": "2026-05-30T00:00:00Z",
+      "expected_requirement_types": ["zoning"],
+      "affected_process_stages": ["site_review"],
+      "reviewer_holds": []
+    }
+  ]
+}

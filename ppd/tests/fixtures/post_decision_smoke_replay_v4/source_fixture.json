@@ -1,0 +1,72 @@
+{
+  "fixture_id": "post-decision-smoke-replay-v4-source-fixture",
+  "source_fixture_refs": [
+    "ppd/tests/fixtures/post_decision_smoke_replay_v4/source_fixture.json"
+  ],
+  "release_decision_packet_v4_refs": [
+    "ppd/tests/fixtures/release_decision_packet_v4/inactive_guardrail_promotion_candidates_v4.json"
+  ],
+  "inactive_guardrail_placeholder_fixture_refs": [
+    "placeholder-guardrail-no-go-outcome",
+    "placeholder-guardrail-source-freshness-caveat"
+  ],
+  "release_decision_packet_v4": {
+    "packet_version": "release_decision_packet_v4",
+    "input_candidate_version": "inactive_guardrail_promotion_candidate_v4",
+    "source_mode": "fixtures_only",
+    "guardrail_activation": "not_performed",
+    "devhub_access": "not_performed",
+    "legal_or_permitting_guarantee": "not_provided",
+    "recommendation": "NO_GO",
+    "recommendation_rationale": "Unresolved holds remain; do not promote guardrails.",
+    "candidate_ids": [
+      "candidate-v4-inactive-zoning-crosscheck",
+      "candidate-v4-inactive-intake-smoke"
+    ],
+    "unresolved_hold_inventory": [
+      {
+        "candidate_id": "candidate-v4-inactive-zoning-crosscheck",
+        "hold_id": "hold-source-freshness-review",
+        "reason": "Reviewer has not accepted the fixture source freshness caveat.",
+        "owner_placeholder": "TBD_SOURCE_REVIEWER"
+      }
+    ],
+    "source_freshness_caveats": [
+      "Fixture data is suitable for offline packet assembly only and does not prove current Portland PP&D source freshness."
+    ],
+    "agent_api_compatibility_notes": [
+      "Packet consumers must treat this as reviewer guidance data, not as an activation contract.",
+      "Post-decision smoke replay must remain offline unless a separate approved task authorizes live access."
+    ],
+    "rollback_owner_placeholders": [
+      {
+        "candidate_id": "candidate-v4-inactive-zoning-crosscheck",
+        "rollback_owner_placeholder": "TBD_ROLLBACK_OWNER",
+        "rollback_decision_placeholder": "TBD_AFTER_REVIEW"
+      },
+      {
+        "candidate_id": "candidate-v4-inactive-intake-smoke",
+        "rollback_owner_placeholder": "TBD_ROLLBACK_OWNER",
+        "rollback_decision_placeholder": "TBD_AFTER_REVIEW"
+      }
+    ]
+  },
+  "inactive_guardrail_placeholder_fixtures": [
+    {
+      "fixture_kind": "inactive_guardrail_placeholder_fixture",
+      "placeholder_id": "placeholder-guardrail-no-go-outcome",
+      "guardrail_bundle_id": "inactive-placeholder-bundle-no-go-outcome",
+      "placeholder_status": "inactive_placeholder_only",
+      "activation_allowed": false,
+      "rollback_owner_placeholder": "TBD_ROLLBACK_OWNER"
+    },
+    {
+      "fixture_kind": "inactive_guardrail_placeholder_fixture",
+      "placeholder_id": "placeholder-guardrail-source-freshness-caveat",
+      "guardrail_bundle_id": "inactive-placeholder-bundle-source-freshness",
+      "placeholder_status": "inactive_placeholder_only",
+      "activation_allowed": false,
+      "rollback_owner_placeholder": "TBD_ROLLBACK_OWNER"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "fixture_first": true,
+  "live_sites_crawled": false,
+  "documents_downloaded": false,
+  "raw_bodies_stored": false,
+  "devhub_opened": false,
+  "authenticated_surfaces_opened": false,
+  "source_registry_mutated": false,
+  "archive_manifest_mutated": false,
+  "official_actions_performed": false,
+  "committed_source_registry_rows": [
+    {
+      "row_id": "registry-row-ppd-apply-permits",
+      "committed_placeholder": true,
+      "source_id": "ppd-apply-permits",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "freshness_status": "stale",
+      "affected_requirement_ids": ["REQ-APPLY-001"],
+      "citation_placeholders": ["citation-placeholder:source-registry:ppd-apply-permits"]
+    },
+    {
+      "row_id": "registry-row-ppd-submit-plans",
+      "committed_placeholder": true,
+      "source_id": "ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "freshness_status": "current",
+      "affected_requirement_ids": ["REQ-PLANS-001", "REQ-FILE-001"],
+      "citation_placeholders": ["citation-placeholder:source-registry:ppd-submit-plans-online"]
+    },
+    {
+      "row_id": "registry-row-devhub-public-portal",
+      "committed_placeholder": true,
+      "source_id": "devhub-public-portal",
+      "canonical_url": "https://devhub.portlandoregon.gov",
+      "freshness_status": "current",
+      "affected_requirement_ids": ["REQ-DEVHUB-001"],
+      "citation_placeholders": ["citation-placeholder:source-registry:devhub-public-portal"]
+    },
+    {
+      "row_id": "registry-row-ppd-devhub-faq",
+      "committed_placeholder": true,
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "freshness_status": "current",
+      "affected_requirement_ids": ["REQ-FAQ-001"],
+      "citation_placeholders": ["citation-placeholder:source-registry:ppd-devhub-faq"]
+    }
+  ],
+  "committed_archive_manifest_placeholders": [
+    {
+      "manifest_id": "manifest-placeholder-ppd-apply-permits",
+      "row_id": "manifest-placeholder-ppd-apply-permits",
+      "committed_placeholder": true,
+      "source_id": "ppd-apply-permits",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/apply-permits",
+      "previous_content_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "content_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "skipped_reason": "",
+      "no_raw_body_persisted": true,
+      "citation_placeholders": ["citation-placeholder:archive-manifest:ppd-apply-permits"]
+    },
+    {
+      "manifest_id": "manifest-placeholder-ppd-submit-plans",
+      "row_id": "manifest-placeholder-ppd-submit-plans",
+      "committed_placeholder": true,
+      "source_id": "ppd-submit-plans-online",
+      "canonical_url": "https://www.portland.gov/ppd/get-permit/submit-plans-online",
+      "previous_content_hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "content_hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "skipped_reason": "",
+      "no_raw_body_persisted": true,
+      "citation_placeholders": ["citation-placeholder:archive-manifest:ppd-submit-plans-online"]
+    },
+    {
+      "manifest_id": "manifest-placeholder-devhub-public-portal",
+      "row_id": "manifest-placeholder-devhub-public-portal",
+      "committed_placeholder": true,
+      "source_id": "devhub-public-portal",
+      "canonical_url": "https://devhub.portlandoregon.gov",
+      "previous_content_hash": "",
+      "content_hash": "",
+      "skipped_reason": "public portal metadata placeholder only",
+      "no_raw_body_persisted": true,
+      "citation_placeholders": ["citation-placeholder:archive-manifest:devhub-public-portal"]
+    },
+    {
+      "manifest_id": "manifest-placeholder-ppd-devhub-faq",
+      "row_id": "manifest-placeholder-ppd-devhub-faq",
+      "committed_placeholder": true,
+      "source_id": "ppd-devhub-faq",
+      "canonical_url": "https://www.portland.gov/ppd/devhub-faqs",
+      "previous_content_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "content_hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "skipped_reason": "",
+      "no_raw_body_persisted": true,
+      "citation_placeholders": ["citation-placeholder:archive-manifest:ppd-devhub-faq"]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "packet_type": "ppd.process_model_impact_candidate.v4",
+  "packet_version": "v4",
+  "fixture_first": true,
+  "impact_rows": [
+    {
+      "impact_id": "impact-reversible-draft-actions",
+      "process_id": "process-single-pdf-fixture",
+      "impact_kind": "predicate_recompile_candidate_input",
+      "guardrail_categories": ["reversible_action_predicates"],
+      "summary": "Draft preparation remains reversible and local until an exact confirmation gate is reached.",
+      "citation_refs": ["fixture-source:process-model-impact-v4:reversible-actions"]
+    },
+    {
+      "impact_id": "impact-exact-confirmation-gates",
+      "process_id": "process-single-pdf-fixture",
+      "impact_kind": "predicate_recompile_candidate_input",
+      "guardrail_categories": ["exact_confirmation_predicates"],
+      "summary": "Consequential boundaries require action-specific user confirmation and attended handling.",
+      "citation_refs": ["fixture-source:process-model-impact-v4:exact-confirmation"]
+    },
+    {
+      "impact_id": "impact-refused-consequential-actions",
+      "process_id": "process-single-pdf-fixture",
+      "impact_kind": "predicate_recompile_candidate_input",
+      "guardrail_categories": ["refused_consequential_action_predicates"],
+      "summary": "Official-action execution is refused by the inactive candidate and converted to handoff text.",
+      "citation_refs": ["fixture-source:process-model-impact-v4:refused-consequential"]
+    },
+    {
+      "impact_id": "impact-stale-evidence-blocks",
+      "process_id": "process-single-pdf-fixture",
+      "impact_kind": "predicate_recompile_candidate_input",
+      "guardrail_categories": ["stale_evidence_block_predicates", "reviewer_holds"],
+      "summary": "Stale or conflicting source evidence blocks recommendations until reviewer disposition is recorded.",
+      "citation_refs": ["fixture-source:process-model-impact-v4:stale-evidence"]
+    },
+    {
+      "impact_id": "impact-explanation-validation-rollback",
+      "process_id": "process-single-pdf-fixture",
+      "impact_kind": "predicate_recompile_candidate_input",
+      "guardrail_categories": ["explanation_templates", "validation_status", "rollback_notes", "offline_validation_commands"],
+      "summary": "Inactive candidate output must explain fixture provenance, offline validation status, reviewer hold state, and discard-only rollback.",
+      "citation_refs": ["fixture-source:process-model-impact-v4:explanation-validation-rollback"]
+    }
+  ]
+}

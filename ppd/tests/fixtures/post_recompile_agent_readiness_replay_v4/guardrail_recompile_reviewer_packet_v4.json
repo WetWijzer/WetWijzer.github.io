@@ -1,0 +1,42 @@
+{
+  "packet_version": "guardrail_recompile_reviewer_packet_v4",
+  "missing_information_prompts": [
+    {
+      "id": "contractor_license_number",
+      "prompt": "Ask for the contractor license number before drafting permit-specific guidance."
+    }
+  ],
+  "stale_evidence_paths": [
+    "reviewer_packet_v3/legacy_fee_table.html"
+  ],
+  "blocked_consequential_or_financial_actions": [
+    {
+      "action_risk": "financial",
+      "reason": "Payments, submissions, certifications, scheduling, cancellations, and final permit advice require manual handoff."
+    },
+    {
+      "action_risk": "consequential",
+      "reason": "Payments, submissions, certifications, scheduling, cancellations, and final permit advice require manual handoff."
+    }
+  ],
+  "explanation_templates": {
+    "required": [
+      "draft_only_notice",
+      "manual_handoff_notice",
+      "missing_information_notice",
+      "stale_evidence_notice"
+    ],
+    "available": [
+      "draft_only_notice",
+      "manual_handoff_notice",
+      "missing_information_notice",
+      "stale_evidence_notice"
+    ]
+  },
+  "manual_handoff_reminders": [
+    "Escalate payment, submission, certification, scheduling, cancellation, and final legal/permitting advice to a human operator."
+  ],
+  "rollback_notes": [
+    "Rollback uses prior committed fixtures only; do not restore private DevHub traces or downloaded documents."
+  ]
+}

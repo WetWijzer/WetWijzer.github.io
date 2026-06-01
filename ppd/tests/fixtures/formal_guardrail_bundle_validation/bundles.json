@@ -1,0 +1,118 @@
+{
+  "valid_bundle": {
+    "guardrail_bundle_id": "gb-formal-safe-draft",
+    "validation_status": "validated",
+    "source_evidence_ids": ["src-ppd-apply", "src-single-pdf-process"],
+    "deterministic_predicates": {
+      "evidence_freshness": {
+        "src-ppd-apply": "current",
+        "src-single-pdf-process": "verified"
+      },
+      "private_value_fields": []
+    },
+    "fail_closed_proof_obligations": [
+      {"code": "missing_citation", "status": "fail_closed"},
+      {"code": "stale_evidence", "status": "fail_closed"},
+      {"code": "private_value_required", "status": "fail_closed"},
+      {"code": "consequential_action_blocked", "status": "fail_closed"},
+      {"code": "financial_action_blocked", "status": "fail_closed"}
+    ],
+    "proposed_autonomous_plan": {
+      "cited_evidence_ids": ["src-ppd-apply", "src-single-pdf-process"],
+      "private_value_fields": [],
+      "proposed_actions": [
+        {"action_id": "compare-public-checklist", "kind": "analysis"},
+        {"action_id": "prepare-local-preview", "kind": "local_preview"}
+      ]
+    }
+  },
+  "invalid_cases": [
+    {
+      "name": "missing_citation",
+      "patch": {
+        "proposed_autonomous_plan": {
+          "cited_evidence_ids": ["src-ppd-apply"],
+          "private_value_fields": [],
+          "proposed_actions": [
+            {"action_id": "prepare-local-preview", "kind": "local_preview"}
+          ]
+        }
+      },
+      "expected_code": "missing_citation"
+    },
+    {
+      "name": "stale_evidence",
+      "patch": {
+        "deterministic_predicates": {
+          "evidence_freshness": {
+            "src-ppd-apply": "current",
+            "src-single-pdf-process": "stale"
+          },
+          "private_value_fields": []
+        }
+      },
+      "expected_code": "stale_evidence"
+    },
+    {
+      "name": "private_value_required",
+      "patch": {
+        "deterministic_predicates": {
+          "evidence_freshness": {
+            "src-ppd-apply": "current",
+            "src-single-pdf-process": "verified"
+          },
+          "private_value_fields": ["owner_legal_name"]
+        }
+      },
+      "expected_code": "private_value_required"
+    },
+    {
+      "name": "consequential_action",
+      "patch": {
+        "proposed_autonomous_plan": {
+          "cited_evidence_ids": ["src-ppd-apply", "src-single-pdf-process"],
+          "private_value_fields": [],
+          "proposed_actions": [
+            {"action_id": "upload-corrections", "kind": "upload"}
+          ]
+        }
+      },
+      "expected_code": "consequential_action_blocked"
+    },
+    {
+      "name": "financial_action",
+      "patch": {
+        "proposed_autonomous_plan": {
+          "cited_evidence_ids": ["src-ppd-apply", "src-single-pdf-process"],
+          "private_value_fields": [],
+          "proposed_actions": [
+            {"action_id": "submit-payment", "kind": "payment"}
+          ]
+        }
+      },
+      "expected_code": "financial_action_blocked"
+    },
+    {
+      "name": "missing_proof_obligation",
+      "patch": {
+        "fail_closed_proof_obligations": [
+          {"code": "missing_citation", "status": "fail_closed"}
+        ]
+      },
+      "expected_code": "missing_proof_obligation"
+    },
+    {
+      "name": "proof_obligation_not_fail_closed",
+      "patch": {
+        "fail_closed_proof_obligations": [
+          {"code": "missing_citation", "status": "warn_only"},
+          {"code": "stale_evidence", "status": "fail_closed"},
+          {"code": "private_value_required", "status": "fail_closed"},
+          {"code": "consequential_action_blocked", "status": "fail_closed"},
+          {"code": "financial_action_blocked", "status": "fail_closed"}
+        ]
+      },
+      "expected_code": "proof_obligation_not_fail_closed"
+    }
+  ]
+}

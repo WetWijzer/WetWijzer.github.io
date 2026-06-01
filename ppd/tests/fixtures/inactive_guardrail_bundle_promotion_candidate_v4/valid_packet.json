@@ -1,0 +1,148 @@
+{
+  "packet_type": "ppd.inactive_guardrail_promotion_candidate.v4",
+  "packet_version": "v4",
+  "packet_id": "inactive-guardrail-promotion-candidate-v4-valid-001",
+  "fixture_first": true,
+  "inactive_candidate_only": true,
+  "metadata_only": true,
+  "readiness_replay_refs_required": true,
+  "prior_guardrail_placeholders_required": true,
+  "manual_reviewer_signoff_required": true,
+  "rollback_plan_required": true,
+  "post_promotion_smoke_required": true,
+  "stale_source_holds_carried_forward": true,
+  "validation_commands_required": true,
+  "active_guardrail_mutation": false,
+  "active_guardrail_bundle_mutation": false,
+  "active_prompt_mutation": false,
+  "active_process_model_mutation": false,
+  "active_requirement_mutation": false,
+  "active_source_mutation": false,
+  "active_devhub_surface_mutation": false,
+  "active_release_state_mutation": false,
+  "active_mutation": false,
+  "guardrails_changed": false,
+  "guardrail_bundles_changed": false,
+  "prompts_changed": false,
+  "process_models_changed": false,
+  "requirements_changed": false,
+  "sources_changed": false,
+  "release_state_changed": false,
+  "promotion_executed": false,
+  "activation_executed": false,
+  "official_action_completed": false,
+  "opens_devhub": false,
+  "stores_private_artifacts": false,
+  "uploads": false,
+  "submits": false,
+  "certifies": false,
+  "pays": false,
+  "schedules": false,
+  "readiness_replay_references": [
+    {
+      "replay_ref": "readiness-replay-single-pdf-v4",
+      "candidate_id": "inactive-promotion-single-pdf-v4",
+      "replay_status": "fixture_reference_pending_manual_review",
+      "source_packet_ref": "post-recompile-agent-readiness-replay-v2-fixture"
+    }
+  ],
+  "prior_guardrail_placeholder_fixtures": [
+    {
+      "fixture_ref": "prior-placeholder-single-pdf-v4",
+      "candidate_id": "inactive-promotion-single-pdf-v4",
+      "fixture_status": "prior_inactive_placeholder_required",
+      "guardrail_bundle_id": "guardrail-bundle-single-pdf-placeholder"
+    }
+  ],
+  "inactive_promotion_rows": [
+    {
+      "candidate_id": "inactive-promotion-single-pdf-v4",
+      "candidate_status": "inactive_candidate_only",
+      "readiness_replay_ref": "readiness-replay-single-pdf-v4",
+      "prior_guardrail_placeholder_fixture_ref": "prior-placeholder-single-pdf-v4",
+      "activation_prerequisite_ref": "activation-prereq-single-pdf-v4",
+      "stale_source_hold_ref": "stale-hold-single-pdf-v4",
+      "reviewer_signoff_placeholder_ref": "reviewer-signoff-single-pdf-v4",
+      "rollback_plan_ref": "rollback-single-pdf-v4",
+      "post_promotion_smoke_check_ref": "smoke-single-pdf-v4",
+      "activation_allowed": false
+    }
+  ],
+  "activation_prerequisites": [
+    {
+      "prerequisite_id": "activation-prereq-single-pdf-v4",
+      "candidate_id": "inactive-promotion-single-pdf-v4",
+      "requires_readiness_replay": true,
+      "requires_prior_placeholder_fixture": true,
+      "requires_stale_source_hold_review": true,
+      "requires_reviewer_signoff": true,
+      "requires_rollback_plan": true,
+      "requires_post_promotion_smoke": true,
+      "requires_validation_commands": true,
+      "activation_allowed": false
+    }
+  ],
+  "stale_source_holds": [
+    {
+      "hold_id": "stale-hold-single-pdf-v4",
+      "candidate_id": "inactive-promotion-single-pdf-v4",
+      "hold_status": "held_pending_public_source_freshness_review",
+      "promotion_blocked": true,
+      "reason": "Carry stale-source hold until a separate public-source freshness review clears cited evidence."
+    }
+  ],
+  "reviewer_signoff_placeholders": [
+    {
+      "placeholder_id": "reviewer-signoff-single-pdf-v4",
+      "candidate_id": "inactive-promotion-single-pdf-v4",
+      "signoff_status": "pending_manual_review",
+      "reviewer": "",
+      "signed_at": "",
+      "notes": ""
+    }
+  ],
+  "rollback_plan": [
+    {
+      "rollback_ref": "rollback-single-pdf-v4",
+      "candidate_id": "inactive-promotion-single-pdf-v4",
+      "rollback_target": "discard_inactive_candidate_only",
+      "active_state_changed": false,
+      "plan_summary": "Discard this inactive candidate and leave active guardrail bundles, prompts, sources, release state, and DevHub surfaces unchanged."
+    }
+  ],
+  "post_promotion_smoke_checks": [
+    {
+      "smoke_check_id": "smoke-single-pdf-v4",
+      "candidate_id": "inactive-promotion-single-pdf-v4",
+      "smoke_status": "planned_not_run_for_inactive_candidate",
+      "requires_separate_post_promotion_task": true,
+      "check_summary": "Later reviewed promotion tasks must run guarded-agent smoke checks after any approved promotion."
+    }
+  ],
+  "offline_validation_commands": [
+    [
+      "python3",
+      "-m",
+      "py_compile",
+      "ppd/agent_readiness/inactive_guardrail_bundle_promotion_candidate_v4.py"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_inactive_guardrail_bundle_promotion_candidate_v4"
+    ],
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "ppd/daemon/ppd_daemon.py",
+      "--self-test"
+    ]
+  ]
+}

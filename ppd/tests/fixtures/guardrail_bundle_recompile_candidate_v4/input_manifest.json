@@ -1,0 +1,5 @@
+{
+  "manifest_id": "fixture-first-guardrail-bundle-recompile-candidate-v4-manifest",
+  "process_model_impact_candidate_v4_fixture": "process_model_impact_candidate_v4.json",
+  "guardrail_bundle_placeholders_fixture": "guardrail_bundle_placeholders.json"
+}

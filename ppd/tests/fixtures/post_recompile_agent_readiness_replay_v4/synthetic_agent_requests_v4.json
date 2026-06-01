@@ -1,0 +1,47 @@
+{
+  "fixture_version": "synthetic_agent_requests_v4",
+  "agent_requests": [
+    {
+      "id": "req-missing-contractor-license",
+      "missing_information": ["contractor_license_number"],
+      "action_kind": "draft_checklist",
+      "action_risk": "informational",
+      "draft_only": true,
+      "reversible": true,
+      "next_action": "draft checklist after asking for missing contractor license number"
+    },
+    {
+      "id": "req-stale-evidence-path",
+      "evidence_path": "reviewer_packet_v3/legacy_fee_table.html",
+      "action_kind": "quote_fee_table",
+      "action_risk": "informational",
+      "draft_only": true,
+      "reversible": true,
+      "next_action": "do not quote stale fee evidence"
+    },
+    {
+      "id": "req-financial-payment",
+      "action_kind": "pay_fee",
+      "action_risk": "financial",
+      "draft_only": false,
+      "reversible": false,
+      "next_action": "pay a permit fee"
+    },
+    {
+      "id": "req-consequential-submit",
+      "action_kind": "submit_application",
+      "action_risk": "consequential",
+      "draft_only": false,
+      "reversible": false,
+      "next_action": "submit application to PP&D"
+    },
+    {
+      "id": "req-draft-summary",
+      "action_kind": "draft_summary",
+      "action_risk": "informational",
+      "draft_only": true,
+      "reversible": true,
+      "next_action": "draft applicant-facing checklist summary from approved public fixture excerpts"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "fixture_version": "release_decision_packet_v4_fixture_set",
+  "candidates": [
+    {
+      "candidate_id": "candidate-v4-inactive-zoning-crosscheck",
+      "candidate_version": "inactive_guardrail_promotion_candidate_v4",
+      "status": "inactive",
+      "guardrails_active": false,
+      "unresolved_holds": [
+        {
+          "hold_id": "hold-source-freshness-review",
+          "reason": "Reviewer has not accepted the fixture source freshness caveat.",
+          "owner_placeholder": "TBD_SOURCE_REVIEWER"
+        }
+      ],
+      "source_freshness_caveats": [
+        "Fixture data is suitable for offline packet assembly only and does not prove current Portland PP&D source freshness."
+      ],
+      "agent_api_compatibility_notes": [
+        "Packet consumers must treat this as reviewer guidance data, not as an activation contract.",
+        "No authenticated DevHub API call is required or permitted for this fixture."
+      ],
+      "rollback": {
+        "owner_placeholder": "TBD_ROLLBACK_OWNER",
+        "decision_placeholder": "TBD_AFTER_REVIEW"
+      }
+    },
+    {
+      "candidate_id": "candidate-v4-inactive-intake-smoke",
+      "candidate_version": "inactive_guardrail_promotion_candidate_v4",
+      "status": "inactive",
+      "guardrails_active": false,
+      "unresolved_holds": [],
+      "source_freshness_caveats": [
+        "Fixture data is suitable for offline packet assembly only and does not prove current Portland PP&D source freshness."
+      ],
+      "agent_api_compatibility_notes": [
+        "Post-decision smoke replay must remain offline unless a separate approved task authorizes live access."
+      ],
+      "rollback": {
+        "owner_placeholder": "TBD_ROLLBACK_OWNER",
+        "decision_placeholder": "TBD_AFTER_REVIEW"
+      }
+    }
+  ]
+}
