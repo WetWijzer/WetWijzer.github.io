@@ -1,0 +1,67 @@
+{
+  "packet_version": "stale_readiness_reviewer_disposition_packet_v1",
+  "combined_readiness_references": [
+    {
+      "packet_id": "combined-stale-readiness-fixture-v1",
+      "path": "ppd/tests/fixtures/stale_readiness_packet_v1/combined_public_devhub_stale_readiness_fixture.json"
+    }
+  ],
+  "disposition_rows": [
+    {
+      "disposition": "proceed",
+      "target": "fixture-current-public-index",
+      "owner": "public-source-owner",
+      "reviewer": "automation-reviewer",
+      "rationale": "Fixture references are current and can remain eligible for later review."
+    },
+    {
+      "disposition": "hold",
+      "target": "stale-public-guidance-row",
+      "owner": "source-freshness-owner",
+      "reviewer": "stale-source-reviewer",
+      "stale_source_hold_reasons": [
+        "referenced public guidance freshness evidence is absent"
+      ],
+      "rationale": "Hold until the stale-source reference is reconciled in fixture evidence."
+    },
+    {
+      "disposition": "reject",
+      "target": "unsafe-claim-row",
+      "owner": "agent-safety-owner",
+      "reviewer": "agent-safety-reviewer",
+      "rationale": "Reject any packet that contains prohibited claims or artifacts."
+    }
+  ],
+  "dependency_ordering": [
+    "combined readiness packet review",
+    "stale-source hold reconciliation",
+    "reviewer disposition signoff"
+  ],
+  "owner_routing": [
+    "public-source-owner",
+    "source-freshness-owner",
+    "agent-safety-owner"
+  ],
+  "reviewer_routing": [
+    "automation-reviewer",
+    "stale-source-reviewer",
+    "agent-safety-reviewer"
+  ],
+  "stale_source_hold_reasons": [
+    "referenced public guidance freshness evidence is absent"
+  ],
+  "rollback_notes": [
+    "Remove this reviewer packet from the inactive queue and keep prior fixture state unchanged."
+  ],
+  "validation_commands": [
+    [
+      "python3",
+      "-m",
+      "unittest",
+      "ppd.tests.test_stale_readiness_reviewer_disposition_packet_v1"
+    ]
+  ],
+  "mutation_flags": {
+    "active_mutation": false
+  }
+}
