@@ -447,12 +447,13 @@ function Header({
   const totalLaws = counts?.laws;
   const release = manifest?.backend?.release ? ` · release ${manifest.backend.release.slice(0, 8)}` : '';
   const providerLabel = manifest?.provider === 'huggingface' ? 'Hugging Face datasets' : 'local sample fallback';
+  const datasetLabel = manifest?.backend?.baseCorpus || manifest?.datasetId;
   const dataSummary = manifest
     ? [
         totalLaws ? `${totalLaws.toLocaleString()} laws` : '',
         `${totalArticles.toLocaleString()} articles`,
         counts?.cidRows ? `${counts.cidRows.toLocaleString()} CID rows` : '',
-        `updated ${formatDate(manifest.generatedAt)}${release}`,
+        `build date ${formatDate(manifest.generatedAt)}${release}`,
       ].filter(Boolean).join(' · ')
     : 'Loading WetWijzer Netherlands law dataset';
 
@@ -482,7 +483,7 @@ function Header({
           </p>
           {manifest && (
             <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-[#607068]">
-              Source: {providerLabel}
+              Provider: {providerLabel}{datasetLabel ? ` · Dataset: ${datasetLabel}` : ''}
             </p>
           )}
         </div>

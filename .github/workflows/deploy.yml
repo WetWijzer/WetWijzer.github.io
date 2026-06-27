@@ -44,26 +44,14 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Validate OpenRouter proxy config
-        if: ${{ (vars.VITE_OPENROUTER_ENABLED || 'true') == 'true' }}
-        run: |
-          if [ -z "$VITE_OPENROUTER_BASE_URL" ]; then
-            echo "::error::VITE_OPENROUTER_BASE_URL is empty. Set repository variable VITE_OPENROUTER_BASE_URL or update the workflow default."
-            exit 1
-          fi
-          case "$VITE_OPENROUTER_BASE_URL" in
-            *openrouter.ai*)
-              echo "::error::VITE_OPENROUTER_BASE_URL must point to the serverless proxy, not directly to OpenRouter."
-              exit 1
-              ;;
-          esac
-        env:
-          VITE_OPENROUTER_BASE_URL: ${{ vars.VITE_OPENROUTER_BASE_URL || 'https://animegf.chat:8787/api/openrouter' }}
+      - name: Validate Netherlands sample corpus
+        run: npm run validate:netherlands-corpus
       - name: Build
-        run: npx vite build
+        run: npm run build
         env:
-          VITE_OPENROUTER_ENABLED: ${{ vars.VITE_OPENROUTER_ENABLED || 'true' }}
-          VITE_OPENROUTER_BASE_URL: ${{ vars.VITE_OPENROUTER_BASE_URL || 'https://animegf.chat:8787/api/openrouter' }}
+          VITE_WETWIJZER_DATA_PROVIDER: ${{ vars.VITE_WETWIJZER_DATA_PROVIDER || 'huggingface' }}
+          VITE_OPENROUTER_ENABLED: ${{ vars.VITE_OPENROUTER_ENABLED || 'false' }}
+          VITE_OPENROUTER_BASE_URL: ${{ vars.VITE_OPENROUTER_BASE_URL || '' }}
           VITE_LOCAL_GENERATION_FALLBACK_MS: ${{ vars.VITE_LOCAL_GENERATION_FALLBACK_MS || '5000' }}
           VITE_LOCAL_GENERATION_TIMEOUT_MS: ${{ vars.VITE_LOCAL_GENERATION_TIMEOUT_MS || '12000' }}
           VITE_LOCAL_PROBE_TIMEOUT_MS: ${{ vars.VITE_LOCAL_PROBE_TIMEOUT_MS || '10000' }}

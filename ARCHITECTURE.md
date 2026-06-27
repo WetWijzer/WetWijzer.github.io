@@ -1,16 +1,18 @@
 # WetWijzer Architecture
 
-WetWijzer is a static Vite/React site for Netherlands legal information search. It preserves the useful generic browser functionality from the fork while replacing the old jurisdiction-specific corpus with Dutch law metadata and dataset configuration.
+WetWijzer is a static Vite/React site for Netherlands legal information search. It preserves the useful generic browser functionality from the fork while replacing the old jurisdiction-specific corpus with Dutch law metadata and Hugging Face backed dataset access.
 
 ## Application Flow
 
 1. `src/main.tsx` mounts `src/AppStatic.tsx`.
 2. `src/AppStatic.tsx` renders `src/components/WetWijzerLegalResearchApp.tsx`.
-3. `loadWetWijzerCorpus()` reads browser-ready artifacts from `public/corpus/netherlands/current/`.
-4. The search panel combines BM25-style keyword search with optional browser embeddings.
-5. The chat panel builds cited answers from retrieved local evidence.
-6. The graph panel reads local JSON-LD-derived entity and relationship artifacts.
-7. Article rows carry inherited law status fields such as `law_status`, `is_current`, `valid_from`, `valid_to`, `status_source`, and `status_confidence`.
+3. `loadWetWijzerCorpus()` uses provider interfaces from `src/lib/netherlandsCorpus.ts`.
+4. The default provider queries Hugging Face Dataset Viewer APIs for the CID-indexed corpus, BM25 rows, vector rows, and JSON-LD graph rows.
+5. The static provider reads the small deterministic sample cache from `public/corpus/netherlands/current/` when forced by configuration or when remote access fails.
+6. The search panel layers BM25-style keyword search, vector reranking metadata, and graph expansion where available.
+7. The chat panel builds cited answers from retrieved evidence.
+8. The graph panel displays related JSON-LD-derived entities and relationships.
+9. Article rows carry inherited law status fields such as `law_status`, `is_current`, `valid_from`, `valid_to`, `status_source`, and `status_confidence`.
 
 ## Data Stack
 
@@ -21,7 +23,7 @@ The production dataset stack is published on Hugging Face:
 - `justicedao/ipfs_netherlands_laws_bm25_index`
 - `justicedao/ipfs_netherlands_laws_knowledge_graph`
 
-The browser bundle includes a small deterministic sample cache so the static app can build and run without downloading the full corpus at runtime. The manifest records the Hugging Face dataset IDs and the current project metadata.
+The browser requests paginated Dataset Viewer rows and search results. It does not download the full corpus. The browser bundle includes a small deterministic sample cache so the static app can build, test, and fall back cleanly when Hugging Face access is unavailable. The manifest records the Hugging Face dataset IDs and the current project metadata.
 
 ## Source Semantics
 
@@ -45,3 +47,5 @@ npm test
 ```
 
 No Hugging Face tokens or other private credentials are required for the static build.
+
+Deployment details for GitHub Pages are documented in `docs/GITHUB_PAGES_DEPLOYMENT.md`.

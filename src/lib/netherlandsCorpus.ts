@@ -235,6 +235,7 @@ interface ViewerSizeResponse {
 }
 
 type DatasetRow = Record<string, unknown>;
+type DataProviderMode = 'huggingface' | 'static';
 
 const DEFAULT_CORPUS_BASE_URL = '/corpus/netherlands/current';
 const CORPUS_BASE_URL = DEFAULT_CORPUS_BASE_URL;
@@ -656,16 +657,27 @@ class StaticCorpusProvider implements RetrievalProvider {
 
 function getProvider(): RetrievalProvider {
   if (!provider) {
-    provider = shouldUseStaticProvider()
+    provider = getConfiguredProviderMode() === 'static'
       ? new StaticCorpusProvider()
       : new ResilientCorpusProvider(new HuggingFaceCorpusProvider(), new StaticCorpusProvider());
   }
   return provider;
 }
 
-function shouldUseStaticProvider(): boolean {
-  if (typeof window === 'undefined') return false;
-  return window.localStorage.getItem('WETWIJZER_DATA_PROVIDER') === 'static';
+function getConfiguredProviderMode(): DataProviderMode {
+  if (typeof window !== 'undefined') {
+    const browserOverride = readProviderMode(window.localStorage.getItem('WETWIJZER_DATA_PROVIDER'));
+    if (browserOverride) return browserOverride;
+  }
+  const viteEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
+  return readProviderMode(viteEnv?.VITE_WETWIJZER_DATA_PROVIDER) || 'huggingface';
+}
+
+function readProviderMode(value?: string | null): DataProviderMode | null {
+  const normalized = value?.trim().toLowerCase();
+  if (normalized === 'static' || normalized === 'static-sample') return 'static';
+  if (normalized === 'hf' || normalized === 'huggingface') return 'huggingface';
+  return null;
 }
 
 export async function loadWetWijzerCorpusManifest(): Promise<WetWijzerCorpusManifest> {

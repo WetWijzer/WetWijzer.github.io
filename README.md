@@ -62,6 +62,8 @@ npm run build
 npm test
 ```
 
+Deployment notes for GitHub Pages live in [docs/GITHUB_PAGES_DEPLOYMENT.md](docs/GITHUB_PAGES_DEPLOYMENT.md).
+
 ## Runtime Data Layout
 
 WetWijzer uses provider interfaces in `src/lib/netherlandsCorpus.ts` for corpus loading, search, graph traversal, and CID lookup. The default provider queries Hugging Face Dataset Viewer APIs for the published Netherlands dataset stack. The bundled static files are intentionally small sample/fallback artifacts, not the production source of truth.
@@ -72,7 +74,7 @@ Static sample artifacts live under:
 public/corpus/netherlands/current/
 ```
 
-The manifest at `public/corpus/netherlands/current/artifacts.manifest.json` records the Hugging Face dataset stack and the browser sample artifact list. Playwright tests force the static sample with `WETWIJZER_DATA_PROVIDER=static` in `localStorage`; normal browser sessions use the Hugging Face provider with sample fallback. Do not hardcode Hugging Face tokens or private credentials into this repository.
+The manifest at `public/corpus/netherlands/current/artifacts.manifest.json` records the Hugging Face dataset stack and the browser sample artifact list. Playwright tests force the static sample with `WETWIJZER_DATA_PROVIDER=static` in `localStorage`; normal browser sessions use the Hugging Face provider with sample fallback. Builds can also set `VITE_WETWIJZER_DATA_PROVIDER=static` or `VITE_WETWIJZER_DATA_PROVIDER=huggingface`. Do not hardcode Hugging Face tokens or private credentials into this repository.
 
 ## Legal Notice
 
